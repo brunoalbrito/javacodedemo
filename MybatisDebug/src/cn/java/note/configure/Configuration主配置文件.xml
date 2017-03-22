@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<settings> <!-- configuration.setXXX(...) -->
+		<property name="vfsImpl" value="org.apache.ibatis.io.JBoss6VFS,org.apache.ibatis.io.DefaultVFS" /> <!-- 虚拟文件系统，用于文件的查找 -->
+		<property name="autoMappingBehavior" value="PARTIAL" /><!-- 是否自动映射，即创建出来的行，是否自动填充到bean对象，org.apache.ibatis.executor.resultset.DefaultResultSetHandler.getRowValue(...)应用  -->
+		<property name="autoMappingUnknownColumnBehavior" value="NONE" />
+		<property name="cacheEnabled" value="true" /> <!-- 是否允许缓存，决定是否用 org.apache.ibatis.executor.CachingExecutor 包装 org.apache.ibatis.executor.Executor  -->
+		<property name="proxyFactory" value="org.apache.ibatis.executor.loader.javassist.JavassistProxyFactory" />
+		<property name="lazyLoadingEnabled" value="false" />
+		<property name="aggressiveLazyLoading" value="true" />
+		<property name="multipleResultSetsEnabled" value="true" />
+		<property name="useColumnLabel" value="true" />
+		<property name="useGeneratedKeys" value="false" /> <!-- false时使用org.apache.ibatis.executor.keygen.NoKeyGenerator -->
+		<property name="defaultExecutorType" value="SIMPLE" />  <!-- 指定实际执行器（SIMPLE不是别名，是内部常量）org.apache.ibatis.executor.SimpleExecutor  -->
+		<property name="defaultStatementTimeout" value="null" /> <!-- SQL执行的默认超时时间，Statement.setQueryTimeout(queryTimeout); -->
+		<property name="defaultFetchSize" value="100" /> <!-- 列表查询默认获取的数量，Statement.setFetchSize(defaultFetchSize); -->
+		<property name="mapUnderscoreToCamelCase" value="false" />
+		<property name="safeRowBoundsEnabled" value="false" />
+		<property name="localCacheScope" value="SESSION" />
+		<property name="jdbcTypeForNull" value="OTHER" /> <!-- 调用方法传递null，对应数据库的类型OTHER -->
+		<property name="lazyLoadTriggerMethods" value="equals,clone,hashCode,toString" />
+		<property name="safeResultHandlerEnabled" value="true" />
+		<property name="defaultScriptingLanguage" value="org.apache.ibatis.scripting.xmltags.XMLLanguageDriver" /> <!-- org.apache.ibatis.scripting.defaults.RawLanguageDriver -->
+		<property name="callSettersOnNulls" value="false" />
+		<property name="useActualParamName" value="false" /> <!-- 在mapper方法参数映射的时候，如果没有使用@Param注解，是否自动使用参数实际名，如 int userid作为第一个参数，那么实际名称为arg0 -->
+		<property name="logPrefix" value="..." /> <!-- 日志前缀 LogFactory.getLog(logPrefix + "cn.java.mapper.UserMapper"); -->
+		<property name="logImpl" value="cn.java.LogImpl" /> <!-- 日志实现 -->
+		<property name="configurationFactory" value="cn.java.ConfigurationFactory" /> <!-- 配置工厂 -->
+	</settings>
+	
+	<!-- 属性文件 -->
+	<!-- 引入属性文件或者直接在此配置属性，全局变量（会替换占位符） -->
+	<properties resource="mysql.properties"><!-- configuration.setVariables(defaults); -->
+		<property name="propertie1" value="propertie1Value" />
+		<property name="propertie2" value="propertie2Value" />
+		<property name="myTablePrefix" value="tb_" /> <!-- ${${myTablePrefix}table1} ===》 tb_table1-->
+	</properties>
+	
+	<!-- 类别名，使用别名的好处是：通过别名获取目标类，那么目标类就变成可以变的。  -->
+	<!-- configuration.getTypeAliasRegistry().resolveAlias(alias);  -->
+	<typeAliases>
+		<package name="cn.java.package1" /> <!-- configuration.getTypeAliasRegistry().registerAliases(typeAliasPackage); -->
+		<package name="cn.java.package2" /> <!-- 指定包（包括子目录）下的类都进行别名化 -->
+		<typeAlias alias="Clazz1" type="cn.java.entity.Clazz1" />  <!-- configuration.getTypeAliasRegistry().registerAlias(alias, clazz);-->
+		<typeAlias alias="Clazz2" type="cn.java.entity.Clazz2" />
+		
+		<typeAlias alias="JDBC" type="org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory" />  <!-- 框架内部有一些内置的类别名，org.apache.ibatis.session.Configuration 构造函数中  -->
+		<typeAlias alias="POOLED" type="org.apache.ibatis.datasource.pooled.PooledDataSourceFactory" />  
+		<typeAlias alias="PERPETUAL" type="org.apache.ibatis.cache.impl.PerpetualCache" /> 
+		<typeAlias alias="LRU" type="org.apache.ibatis.cache.decorators.LruCache" /> 
+	    <typeAlias alias="SLF4J" type="org.apache.ibatis.logging.slf4j.Slf4jImpl" /> 
+	    <typeAlias alias="DB_VENDOR" type="org.apache.ibatis.mapping.VendorDatabaseIdProvider" /> 
+	    <typeAlias alias="XML" type="org.apache.ibatis.scripting.xmltags.XMLLanguageDriver" /> 
+	    <typeAlias alias="..." type="..." /> 
+	</typeAliases>
+	
+	<!-- 插件（拦截器） -->
+	<plugins> <!--  configuration.addInterceptor(interceptorInstance); -->
+		<plugin interceptor="cn.java.interceptor.MyInterceptor1"> 
+			<property name="propertie1" value="propertie1Value" />
+			<property name="propertie2" value="propertie2Value" />
+			<property name="propertie2" value="${pluginProperty1}" /> <!-- 引用属性文件中的配置 -->
+		</plugin>
+		<plugin interceptor="cn.java.interceptor.MyInterceptor2">
+			<property name="propertie1" value="propertie1Value" />
+			<property name="propertie2" value="propertie2Value" />
+		</plugin>
+	</plugins>
+	
+	<objectFactory type="org.apache.ibatis.reflection.factory.DefaultObjectFactory"> <!-- configuration.setObjectFactory(factory); -->
+		<property name="propertie1" value="propertie1Value" />
+		<property name="propertie2" value="propertie2Value" />
+	</objectFactory>
+
+	<objectWrapperFactory type="org.apache.ibatis.reflection.wrapper.DefaultObjectWrapperFactory" /> <!-- configuration.setObjectWrapperFactory(factory); -->
+	
+	<reflectorFactory type="org.apache.ibatis.reflection.DefaultReflectorFactory" /> <!-- configuration.setReflectorFactory(factory); -->
+	
+	<environments default="environment1"> <!--  使用的是 environment1，其他没用处 -->
+		<environment id="environment1">  <!-- configuration.setEnvironment(environmentBuilder.build()); -->
+			<transactionManager type="JDBC" > <!-- 事务管理器 -->
+				<property name="property1" value="property1Value" />
+				<property name="property2" value="property2Value" />
+			</transactionManager>
+			<dataSource type="POOLED"> <!-- 数据源 -->
+				<property name="driver" value="${driver}" />
+				<property name="url" value="${url}" />
+				<property name="username" value="${username}" />
+				<property name="password" value="${password}" />
+			</dataSource>
+		</environment>
+		<environment id="environment2"> 
+			<transactionManager type="MANAGED" >  <!-- 事务管理器 -->
+				<property name="property1" value="property1Value" />
+				<property name="property2" value="property2Value" />
+			</transactionManager>
+			<dataSource type="JNDI"> <!-- 数据源 -->
+				<property value="${driver}" name="driver" />
+				<property value="${url}" name="url" />
+				<property value="${username}" name="username" />
+				<property value="${password}" name="password" />
+			</dataSource>
+		</environment>
+		<environment id="environment3"> 
+			<transactionManager type="MANAGED" >  <!-- 事务管理器 -->
+				<property name="property1" value="property1Value" />
+				<property name="property2" value="property2Value" />
+			</transactionManager>
+			<dataSource type="UNPOOLED"> <!-- 数据源 -->
+				<property value="${driver}" name="driver" />
+				<property value="${url}" name="url" />
+				<property value="${username}" name="username" />
+				<property value="${password}" name="password" />
+			</dataSource>
+		</environment>
+	</environments>
+
+	<databaseIdProvider type="VENDOR"> <!--  获取数据库产品名的类  -->
+		<properties name="MySQL" value="MySQL" /><!-- 数据库产品名 -->
+		<properties name="ORACLE" value="ORACLE" />
+		<properties name="DB2" value="数据库产品名" /> <!-- configuration.setDatabaseId(数据库产品名); -->
+	</databaseIdProvider>
+
+	<typeHandlers> <!-- 类型处理器（数据库类型和java的类型转换）  -->
+		<package name="" /> <!--  configuration.getTypeHandlerRegistry.register(typeHandlerPackage); -->
+		<package name="" />
+		<typeHandler javaType="java.lang.String" jdbcType="org.apache.ibatis.type.JdbcType.VARCHAR" handler="cn.java.typehandler.StringTypeHandler" /> <!--  configuration.getTypeHandlerRegistry.register(javaTypeClass, jdbcType, typeHandlerClass); -->
+		<typeHandler javaType="" jdbcType="" handler="" />
+	</typeHandlers>
+	
+	<mappers><!-- 包名、XML文件路径、实际Mapper类 -->
+		<package name="cn.java.mapper1" /> <!-- configuration.addMappers(mapperPackage); -->
+		<package name="cn.java.mapper2" /> <!-- 指定包（包括子目录）下的*.class文件（必须是接口） -->
+		<mapper resource="cn/java/mapper/UserMapper.xml" />
+		<mapper url="cn/java/mapper/UserMapper.xml" />
+		<mapper class="cn.java.mapper1.UserMapper" /> <!-- configuration.addMapper(mapperInterface); -->
+	</mappers>
+</configuration>
