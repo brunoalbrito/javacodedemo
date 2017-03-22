@@ -95,7 +95,7 @@ public class Test {
 				// 连接MySql数据库
 				String url = "jdbc:mysql://127.0.0.1:3306/rap_db";
 				String username = "root";
-				String password = "Aa123456";
+				String password = "123456";
 				try {
 					connection = DriverManager.getConnection(url, username, password);
 					ConnectionUtil.printConnectionMetaData(connection);
