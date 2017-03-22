@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="lib" path="lib/ognl-3.1.9/ognl-3.1.9.jar" sourcepath="lib/ognl-3.1.9/ognl-3.1.9-sources.jar"/>
+	<classpathentry kind="lib" path="lib/jboss-javassist-javassist-6a3ed31/javassist.jar"/>
+	<classpathentry kind="lib" path="lib/mysql-connector-java-5.1.41/mysql-connector-java-5.1.41-bin.jar"/>
+	<classpathentry kind="lib" path="lib/bcpkix-jdk15on-156.jar"/>
+	<classpathentry kind="lib" path="lib/bcprov-jdk15on-156.jar"/>
+	<classpathentry kind="lib" path="lib/gson-2.7.jar"/>
+	<classpathentry kind="lib" path="lib/pinyin4j-2.5.0.jar"/>
+	<classpathentry kind="lib" path="lib/prettytime-3.2.3.Final.jar"/>
+	<classpathentry kind="lib" path="lib/rhino-1.7.7.jar"/>
+	<classpathentry kind="lib" path="lib/rxtx-2.1-7-bins-r2/RXTXcomm.jar"/>
+	<classpathentry kind="lib" path="lib/jna-4.3.0/dist/win32-x86-64.jar"/>
+	<classpathentry kind="lib" path="lib/jna-4.3.0/dist/jna.jar"/>
+	<classpathentry kind="lib" path="lib/jna-4.3.0/dist/jna-platform.jar" sourcepath="lib/jna-4.3.0/contrib/platform/src"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
