@@ -30,3 +30,22 @@ target/
 .DS_Store
 Thumbs.db
 
+/.gitignore
+/LICENSE
+/NOTICE
+/README
+/cn/
+/dubbo/
+/dubbo-admin/
+/dubbo-cluster/
+/dubbo-common/
+/dubbo-config/
+/dubbo-container/
+/dubbo-demo/
+/dubbo-filter/
+/dubbo-monitor/
+/dubbo-registry/
+/dubbo-remoting/
+/dubbo-rpc/
+/dubbo-simple/
+/dubbo-test/
