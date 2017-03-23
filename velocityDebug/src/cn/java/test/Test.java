@@ -1,6 +1,7 @@
 package cn.java.test;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 
@@ -9,33 +10,23 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 
 public class Test {
+	
+	private static final String templateFile = "templates/test.vm";
+	
 	public static void main(String[] args) throws Exception{
 		test1_merge();
+		test2_mergeTemplate();
+		test3_evaluate();
 	}
 
-	public static void debug() throws Exception{
-		// 默认配置文件  /org/apache/velocity/runtime/defaults/velocity.properties
-		/* 
-		指令配置文件  /org/apache/velocity/runtime/defaults/directive.properties
-		{
-			directive.1=org.apache.velocity.runtime.directive.Foreach
-			directive.2=org.apache.velocity.runtime.directive.Include
-			directive.3=org.apache.velocity.runtime.directive.Parse
-			directive.4=org.apache.velocity.runtime.directive.Macro
-			directive.5=org.apache.velocity.runtime.directive.Literal
-			directive.6=org.apache.velocity.runtime.directive.Evaluate
-			directive.7=org.apache.velocity.runtime.directive.Break
-			directive.8=org.apache.velocity.runtime.directive.Define
-			directive.9=org.apache.velocity.runtime.directive.Stop
-		}
-		 */
-		
-
-	}
+	
+	/**
+	 * 渲染方式一
+	 * @throws Exception
+	 */
 	public static void test1_merge() throws Exception{
-		String templateFile = "test.vm";
 		Velocity.init();
-		//		Velocity.init("velocity.properties");
+//		Velocity.init("velocity.properties");
 
 		// 数据容器
 		VelocityContext context = new VelocityContext();
@@ -55,9 +46,11 @@ public class Test {
 		writer.close();
 	}
 
-
+	/**
+	 * 渲染方式二
+	 * @throws Exception
+	 */
 	public static void test2_mergeTemplate() throws Exception{
-		String templateFile = "test.vm";
 		Velocity.init();
 
 		// 数据容器
@@ -71,6 +64,10 @@ public class Test {
 		System.out.println(" string : " + stringWriter );
 	}
 
+	/**
+	 * 渲染方式三
+	 * @throws Exception
+	 */
 	public static void test3_evaluate() throws Exception{
 		// 数据容器
 		VelocityContext context = new VelocityContext();
