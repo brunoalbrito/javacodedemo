@@ -3,7 +3,17 @@ package cn.java.note.javacc;
 public class Test {
 
 	
-	public static void main(String[] args) {
+	public static void javacc(String[] args) {
+		/**
+		 	file:///C:/Users/XY/Desktop/javacc-6.0/javacc-6.0/doc/commandline.html
+		 	javacc命令（用于生成语法和词法分析器）
+		 		javacc option-settings  inputfile
+		 		javacc -STATIC=false -LOOKAHEAD:1 -debug_parser mygrammar.jj
+		 		
+		 		
+		 */
+	}
+		public static void main(String[] args) {
 
 		/*
 			javaCC 是一个能生成语法和词法分析器的生成程序。
@@ -17,9 +27,6 @@ public class Test {
 			foo.jjt的文件结构
 			
 			
-			生成语法和词法分析器
-			javacc foo.jj
-				
 		 */
 	}
 
