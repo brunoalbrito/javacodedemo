@@ -1,1 +1,105 @@
 Hello from $name in the $project project.
+
+--------------
+页面设置值
+#set($this="Velocity")
+#set($var0="Velocity")
+
+获取值
+$this is great!
+$var0 is great!
+
+- int plus
+#set($intvar=$intvar+2)
+int new value ： $intvar 
+- map
+map value : $map['key1']
+- list
+list value : $list[0]
+- object
+obj value : $user.id , $user.username
+anonymous obj value : $bean.property1
+
+条件判断，写法1
+#set($condition=true)
+#if($condition)
+    The condition is true!
+#else
+    The condition is false!
+#end
+
+条件判断，写法2
+#{set}($condition=true)
+#if ($condition)
+    The condition is true!
+#else
+    The condition is false!
+#end
+
+
+## 这是注释
+#*
+	.....
+*#
+
+---------------指令----------------------
+-----指令1：Foreach --------
+#foreach($value in $list)
+    $value is great!
+#end
+
+-----指令2：Include，不解析Velocity脚本标签 --------
+#include("templates/header.vm")
+
+-----指令3：Parse，解析Velocity脚本标签 --------
+#parse("templates/header.vm")
+
+-----指令4： Macro 宏，会在构造抽象语法树的时候，就执行独立替换--------
+定义
+#macro(MACRO_NAME1 $MACRO_PARAM0)
+#if($username.equals($MACRO_PARAM0))<img src="http://www.xxx.com/ico/${username}.gif">#end
+#end
+
+使用
+#set($username = "username1") ## 定义变量
+<font color="#ffff">头衔#MACRO_NAME1("username1")</font> 
+<font color="#ffff">头衔#MACRO_NAME1("username1")</font> 
+
+-----指令5：Literal，不解析的内容 --------
+#literal()
+	$literal1 unparsed content 
+#end
+
+#[[
+	$username	unparsed content
+]]#
+
+-----指令6：Evaluate --------
+#evaluate("We are using $project $name to render this.");
+
+-----指令7：Break--------
+#foreach($index in [0..23])
+	#if($index == 10)
+		#break
+	#end
+   $index
+#end
+
+-----指令8：Define，动态渲染，多个引用共享一个对象$definekey1--------
+#define($definekey1)
+	this is define tag render: $username
+#end
+$definekey1
+$definekey1
+
+-----指令9：定义自己的指令--------
+#foo($definekey1)
+	this is foo tag render: $username
+#end
+$definekey1
+$definekey1
+
+-----指令10：Stop，直接中断页面的渲染，后面的内容部会输出--------
+#stop
+这是后面的内容，在stop后，得不到渲染
+

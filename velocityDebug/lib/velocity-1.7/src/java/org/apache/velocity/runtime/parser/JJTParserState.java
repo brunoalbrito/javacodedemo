@@ -78,7 +78,7 @@ public class JJTParserState {
   public void openNodeScope(Node n) {
     marks.add(new Integer(mk));
     mk = sp;
-    n.jjtOpen();
+    n.jjtOpen(); // parser.getToken(1);
   }
 
 

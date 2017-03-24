@@ -118,7 +118,7 @@ public final class InternalContextAdapterImpl implements InternalContextAdapter
      */
     public void pushCurrentTemplateName( String s )
     {
-        icb.pushCurrentTemplateName( s );
+        icb.pushCurrentTemplateName( s ); // org.apache.velocity.VelocityContext
     }
 
     /**

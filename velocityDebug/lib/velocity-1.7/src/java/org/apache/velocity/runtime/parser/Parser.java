@@ -94,7 +94,7 @@ public class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConsta
     {
         SimpleNode sn = null;
 
-        currentTemplateName = templateName;
+        currentTemplateName = templateName; // "templates/test.vm"
 
         try
         {
@@ -152,7 +152,9 @@ public class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConsta
      */
     public Directive getDirective(String directive)
     {
-        return (Directive) rsvc.getDirective(directive);
+    	// rsvc === org.apache.velocity.runtime.RuntimeInstance
+        return (Directive) rsvc.getDirective(directive); 
+//        return org.apache.velocity.runtime.directive.Foreach
     }
 
     /**
@@ -277,70 +279,72 @@ public class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConsta
  * which implements the ParserVisitor interface
  * which is generated automatically by JavaCC
  */
-  final public SimpleNode process() throws ParseException {
-                        /*@bgen(jjtree) process */
-  ASTprocess jjtn000 = new ASTprocess(this, JJTPROCESS);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
-    try {
-      label_1:
-      while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case LPAREN:
-        case RPAREN:
-        case ESCAPE_DIRECTIVE:
-        case SET_DIRECTIVE:
-        case SINGLE_LINE_COMMENT_START:
-        case DOUBLE_ESCAPE:
-        case ESCAPE:
-        case TEXT:
-        case FORMAL_COMMENT:
-        case MULTI_LINE_COMMENT:
-        case TEXTBLOCK:
-        case STRING_LITERAL:
-        case IF_DIRECTIVE:
-        case INTEGER_LITERAL:
-        case FLOATING_POINT_LITERAL:
-        case WORD:
-        case BRACKETED_WORD:
-        case IDENTIFIER:
-        case DOT:
-        case LCURLY:
-        case RCURLY:
-        case EMPTY_INDEX:
-          ;
-          break;
-        default:
-          jj_la1[0] = jj_gen;
-          break label_1;
-        }
-        Statement();
-      }
-      jj_consume_token(0);
-     jjtree.closeNodeScope(jjtn000, true);
-     jjtc000 = false;
-     {if (true) return jjtn000;}
-    } catch (Throwable jjte000) {
-     if (jjtc000) {
-       jjtree.clearNodeScope(jjtn000);
-       jjtc000 = false;
-     } else {
-       jjtree.popNode();
-     }
-     if (jjte000 instanceof RuntimeException) {
-       {if (true) throw (RuntimeException)jjte000;}
-     }
-     if (jjte000 instanceof ParseException) {
-       {if (true) throw (ParseException)jjte000;}
-     }
-     {if (true) throw (Error)jjte000;}
-    } finally {
-     if (jjtc000) {
-       jjtree.closeNodeScope(jjtn000, true);
-     }
+    final public SimpleNode process() throws ParseException {
+    	/*@bgen(jjtree) process */
+    	ASTprocess jjtn000 = new ASTprocess(this, JJTPROCESS); // 构建语法树
+    	boolean jjtc000 = true;
+    	jjtree.openNodeScope(jjtn000);
+    	try {
+    		label_1:
+			while (true) { // 循环，直到没有Token（一条语句，有一棵语法树）
+				switch ((jj_ntk==-1)?jj_ntk():jj_ntk) { // token的类型
+				case LPAREN:
+				case RPAREN:
+				case ESCAPE_DIRECTIVE:
+				case SET_DIRECTIVE:
+				case SINGLE_LINE_COMMENT_START:
+				case DOUBLE_ESCAPE:
+				case ESCAPE:
+				case TEXT:
+				case FORMAL_COMMENT:
+				case MULTI_LINE_COMMENT:
+				case TEXTBLOCK:
+				case STRING_LITERAL:
+				case IF_DIRECTIVE:
+				case INTEGER_LITERAL:
+				case FLOATING_POINT_LITERAL:
+				case WORD:
+				case BRACKETED_WORD:
+				case IDENTIFIER:
+				case DOT:
+				case LCURLY:
+				case RCURLY:
+				case EMPTY_INDEX:
+					;
+					break;
+				default:
+					jj_la1[0] = jj_gen;
+					break label_1;
+				}
+				Statement();
+			}
+	    	jj_consume_token(0);
+	    	jjtree.closeNodeScope(jjtn000, true);
+	    	jjtc000 = false;
+	    	{
+	    		if (true) return jjtn000;
+	    	}
+    	} catch (Throwable jjte000) {
+    		if (jjtc000) {
+    			jjtree.clearNodeScope(jjtn000);
+    			jjtc000 = false;
+    		} else {
+    			jjtree.popNode();
+    		}
+    		if (jjte000 instanceof RuntimeException) {
+    			{if (true) throw (RuntimeException)jjte000;}
+    		}
+    		if (jjte000 instanceof ParseException) {
+    			{if (true) throw (ParseException)jjte000;}
+    		}
+    		{if (true) throw (Error)jjte000;}
+    	} finally {
+    		if (jjtc000) {
+    			jjtree.closeNodeScope(jjtn000, true);
+    		}
+    	}
+    	throw new Error("Missing return statement in function");
     }
-    throw new Error("Missing return statement in function");
-  }
 
 /**
  * These are the types of statements that
@@ -716,10 +720,10 @@ public class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConsta
         }
         else
         {
-            directiveName = t.image.substring(1);
+            directiveName = t.image.substring(1); // 指令的名称
         }
 
-        d = getDirective(directiveName);
+        d = getDirective(directiveName); // org.apache.velocity.runtime.directive.Foreach
 
         /*
          *  Velocimacro support : if the directive is macro directive
@@ -737,7 +741,7 @@ public class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConsta
          * about parser tokens
          */
 
-        jjtn000.setDirectiveName(directiveName);
+        jjtn000.setDirectiveName(directiveName); // 指令的名称
 
         if ( d == null)
         {
@@ -3596,7 +3600,7 @@ public class Parser/*@bgen(jjtree)*/implements ParserTreeConstants, ParserConsta
     Token t = token;
     for (int i = 0; i < index; i++) {
       if (t.next != null) t = t.next;
-      else t = t.next = token_source.getNextToken();
+      else t = t.next = token_source.getNextToken(); // org.apache.velocity.runtime.parser.ParserTokenManager
     }
     return t;
   }

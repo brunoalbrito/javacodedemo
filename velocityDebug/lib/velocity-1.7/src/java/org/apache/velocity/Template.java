@@ -131,7 +131,7 @@ public class Template extends Resource
             try
             {
                 BufferedReader br = new BufferedReader( new InputStreamReader( is, encoding ) );
-                data = rsvc.parse( br, name); //  解析模板
+                data = rsvc.parse( br, name); //  解析模板   org.apache.velocity.runtime.parser.Parser
                 initDocument(); // 初始化抽象语法树
                 return true;
             }
@@ -226,7 +226,7 @@ public class Template extends Resource
 
             ((SimpleNode)data).init( ica, rsvc); // 初始化抽象语法树
 
-            String property = scopeName+'.'+RuntimeConstants.PROVIDE_SCOPE_CONTROL;
+            String property = scopeName+'.'+RuntimeConstants.PROVIDE_SCOPE_CONTROL; // "template.provide.scope.control"
             provideScope = rsvc.getBoolean(property, provideScope);
         }
         finally
@@ -301,7 +301,7 @@ public class Template extends Resource
             /**
              * Set the macro libraries
              */
-            ica.setMacroLibraries(macroLibraries);
+            ica.setMacroLibraries(macroLibraries); // null
 
             if (macroLibraries != null)
             {
@@ -312,6 +312,7 @@ public class Template extends Resource
                      */
                     try
                     {
+                    	// org.apache.velocity.runtime.RuntimeInstance
                         rsvc.getTemplate((String) macroLibraries.get(i));
                     }
                     catch (ResourceNotFoundException re)
@@ -353,7 +354,7 @@ public class Template extends Resource
                 ica.pushCurrentTemplateName( name );
                 ica.setCurrentResource( this );
 
-                ( (SimpleNode) data ).render( ica, writer);
+                ( (SimpleNode) data ).render( ica, writer); //!!!
             }
             catch (StopCommand stop)
             {

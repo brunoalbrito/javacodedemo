@@ -177,6 +177,7 @@ public class Velocity implements RuntimeConstants
         throws ParseErrorException, MethodInvocationException,
             ResourceNotFoundException
     {
+    	// org.apache.velocity.runtime.RuntimeInstance.evaluate(context, out, logTag, instring);
         return RuntimeSingleton.getRuntimeServices()
             .evaluate(context, out, logTag, instring);
     }

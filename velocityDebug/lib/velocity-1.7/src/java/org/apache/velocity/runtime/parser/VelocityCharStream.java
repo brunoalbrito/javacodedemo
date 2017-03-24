@@ -150,7 +150,7 @@ implements CharStream
         {
             if ((i = inputStream.read(buffer, maxNextCharInd,
                     available - maxNextCharInd)) == -1)
-            {
+            { // 读取数据到 buffer
                 inputStream.close();
                 throw new java.io.IOException();
             }
@@ -178,7 +178,7 @@ implements CharStream
     public final char BeginToken() throws java.io.IOException
     {
         tokenBegin = -1;
-        char c = readChar();
+        char c = readChar(); // 读取一个char
         tokenBegin = bufpos;
 
         return c;
@@ -243,7 +243,7 @@ implements CharStream
 
         if (++bufpos >= maxNextCharInd)
         {
-            FillBuff();
+            FillBuff(); // 填充缓冲区
         }
 
         /*
