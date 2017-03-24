@@ -114,7 +114,7 @@
 <XPD:ATTR name="Left" type="integer">700</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">344</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">384</XPD:ATTR>
-<XPD:ATTR name="Height" type="integer">108</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">82</XPD:ATTR>
 <XPD:REF name="Model">Vi03r3tYREGSgDQwGXB12AAA</XPD:REF>
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="frPNxVPsS061H6dYVR4GaAAA">
 <XPD:OBJ name="NameLabel" type="LabelView" guid="edOIAtCfckyt7GzVI/HAuQAA">
@@ -173,7 +173,7 @@
 <XPD:OBJ name="OwnedViews[5]" type="UMLDependencyView" guid="H7NlE2JIdkGMWd0pMY3gYAAA">
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">1083,403;1304,410</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">1083,395;1304,407</XPD:ATTR>
 <XPD:REF name="Model">VlS8mZNkFEus3HQmHbRyQAAA</XPD:REF>
 <XPD:REF name="Head">LkB8plTJREq9/IXxMic1dwAA</XPD:REF>
 <XPD:REF name="Tail">w84lBU/viU2zLPohcdBRxAAA</XPD:REF>
@@ -259,7 +259,7 @@
 <XPD:OBJ name="OwnedViews[8]" type="UMLRealizationView" guid="aMRX6DLKWUqGMpNGbL88zwAA">
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">825,344;663,205</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">838,344;663,205</XPD:ATTR>
 <XPD:REF name="Model">yYeLvN2KBEyaD06RPc/2fwAA</XPD:REF>
 <XPD:REF name="Head">bIuRpoGL4kKzKAZS91kmFwAA</XPD:REF>
 <XPD:REF name="Tail">w84lBU/viU2zLPohcdBRxAAA</XPD:REF>
@@ -285,7 +285,7 @@
 <XPD:OBJ name="OwnedViews[9]" type="UMLRealizationView" guid="2vRkWqtuRESD82l49llz9AAA">
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">897,344;920,149</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">896,344;920,149</XPD:ATTR>
 <XPD:REF name="Model">dz3czfU8+Uy/0IP7U7ZTGAAA</XPD:REF>
 <XPD:REF name="Head">A/zPV8Sa5kCdQyvUryg0pgAA</XPD:REF>
 <XPD:REF name="Tail">w84lBU/viU2zLPohcdBRxAAA</XPD:REF>
@@ -336,7 +336,7 @@
 <XPD:OBJ name="OwnedViews[11]" type="UMLDependencyView" guid="WoDEy1e310eYj6Pl1bbutgAA">
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">525,497;700,449</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">525,496;757,425</XPD:ATTR>
 <XPD:REF name="Model">a3ki3kfSt0SiBbHz1w5QJgAA</XPD:REF>
 <XPD:REF name="Head">w84lBU/viU2zLPohcdBRxAAA</XPD:REF>
 <XPD:REF name="Tail">AxaF5zbs/0KbOKfhch8NaQAA</XPD:REF>
@@ -441,7 +441,7 @@
 <XPD:REF name="ClientDependencies[2]">dz3czfU8+Uy/0IP7U7ZTGAAA</XPD:REF>
 <XPD:ATTR name="#SupplierDependencies" type="integer">1</XPD:ATTR>
 <XPD:REF name="SupplierDependencies[0]">a3ki3kfSt0SiBbHz1w5QJgAA</XPD:REF>
-<XPD:ATTR name="#Operations" type="integer">3</XPD:ATTR>
+<XPD:ATTR name="#Operations" type="integer">1</XPD:ATTR>
 <XPD:OBJ name="Operations[0]" type="UMLOperation" guid="vbBmmOm5WEqKvJTkj8rtmwAA">
 <XPD:ATTR name="Name" type="string">public Log4JLogger</XPD:ATTR>
 <XPD:REF name="Owner">Vi03r3tYREGSgDQwGXB12AAA</XPD:REF>
@@ -449,24 +449,6 @@
 <XPD:OBJ name="Parameters[0]" type="UMLParameter" guid="BCUpV51Eqk++xMrzWaHbcAAA">
 <XPD:ATTR name="Name" type="string">String name</XPD:ATTR>
 <XPD:REF name="BehavioralFeature">vbBmmOm5WEqKvJTkj8rtmwAA</XPD:REF>
-</XPD:OBJ>
-</XPD:OBJ>
-<XPD:OBJ name="Operations[1]" type="UMLOperation" guid="MAEl+O0uSkKEWBbJtiu3pQAA">
-<XPD:ATTR name="Name" type="string">public void info</XPD:ATTR>
-<XPD:REF name="Owner">Vi03r3tYREGSgDQwGXB12AAA</XPD:REF>
-<XPD:ATTR name="#Parameters" type="integer">1</XPD:ATTR>
-<XPD:OBJ name="Parameters[0]" type="UMLParameter" guid="B3jo7+BfsEen7GTtobAcTQAA">
-<XPD:ATTR name="Name" type="string">Object message</XPD:ATTR>
-<XPD:REF name="BehavioralFeature">MAEl+O0uSkKEWBbJtiu3pQAA</XPD:REF>
-</XPD:OBJ>
-</XPD:OBJ>
-<XPD:OBJ name="Operations[2]" type="UMLOperation" guid="wKR8VVvXEUWDBpLdoybWdgAA">
-<XPD:ATTR name="Name" type="string">public void error</XPD:ATTR>
-<XPD:REF name="Owner">Vi03r3tYREGSgDQwGXB12AAA</XPD:REF>
-<XPD:ATTR name="#Parameters" type="integer">1</XPD:ATTR>
-<XPD:OBJ name="Parameters[0]" type="UMLParameter" guid="CwRIMmtmpkKUaeYHagmESgAA">
-<XPD:ATTR name="Name" type="string">Object message</XPD:ATTR>
-<XPD:REF name="BehavioralFeature">wKR8VVvXEUWDBpLdoybWdgAA</XPD:REF>
 </XPD:OBJ>
 </XPD:OBJ>
 <XPD:ATTR name="#Attributes" type="integer">2</XPD:ATTR>

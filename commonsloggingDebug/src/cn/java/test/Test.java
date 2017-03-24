@@ -9,4 +9,10 @@ public class Test {
 		log.debug("this is debug info");
 		
 	}
+	public static void test(){
+		/*
+			org.apache.commons.logging.impl.Log4JLogger
+		 */
+		
+	}
 }
