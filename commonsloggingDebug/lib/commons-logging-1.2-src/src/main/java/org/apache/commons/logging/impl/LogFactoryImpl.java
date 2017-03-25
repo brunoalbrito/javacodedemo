@@ -887,6 +887,11 @@ public class LogFactoryImpl extends LogFactory {
      * @return classname specified by the user, or <code>null</code>
      */
     private String findUserSpecifiedLogClassName() {
+    	/*
+	    	在配置中"org.apache.commons.logging.log"指定日志适配器类（可自己定义）
+		        在系统环境变量"org.apache.commons.logging.Log"指定日志适配器类（可自己定义）
+		        在系统环境变量"org.apache.commons.logging.log"指定日志适配器类（可自己定义）
+    	 */
         if (isDiagnosticsEnabled()) {
             logDiagnostic("Trying to get log class from attribute '" + LOG_PROPERTY + "'");
         }
@@ -899,6 +904,7 @@ public class LogFactoryImpl extends LogFactory {
             }
             specifiedClass = (String) getAttribute(LOG_PROPERTY_OLD);
         }
+        
 
         if (specifiedClass == null) {
             if (isDiagnosticsEnabled()) {
@@ -1031,7 +1037,7 @@ public class LogFactoryImpl extends LogFactory {
                     }
                 }
 
-                constructor = c.getConstructor(logConstructorSignature); // 创建对象
+                constructor = c.getConstructor(logConstructorSignature); // 创建logger对象
                 Object o = constructor.newInstance(params);
 
                 // Note that we do this test after trying to create an instance
