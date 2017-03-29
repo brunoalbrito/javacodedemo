@@ -15,5 +15,14 @@
 	<classpathentry kind="lib" path="lib/jna-4.3.0/dist/win32-x86-64.jar"/>
 	<classpathentry kind="lib" path="lib/jna-4.3.0/dist/jna.jar"/>
 	<classpathentry kind="lib" path="lib/jna-4.3.0/dist/jna-platform.jar" sourcepath="lib/jna-4.3.0/contrib/platform/src"/>
+	<classpathentry kind="lib" path="lib/hbase/hbase-client-0.98.24-hadoop2.jar"/>
+	<classpathentry kind="lib" path="lib/hbase/hadoop-common-2.2.0.jar"/>
+	<classpathentry kind="lib" path="lib/hbase/hbase-common-0.98.24-hadoop2.jar"/>
+	<classpathentry kind="lib" path="lib/hbase/hadoop-client-2.2.0.jar"/>
+	<classpathentry kind="lib" path="lib/kubernetes-client-driver-thirdparty/kubernetes-api-2.2.205/slf4j-api-1.7.25.jar"/>
+	<classpathentry kind="lib" path="lib/docker-client-driver-thirdparty/docker-java-3.0.6.jar"/>
+	<classpathentry kind="lib" path="lib/kubernetes-client-driver-thirdparty/kubernetes-api-2.2.205/kubernetes-client-2.0.5.jar"/>
+	<classpathentry kind="lib" path="lib/kubernetes-client-driver-thirdparty/kubernetes-api-2.2.205/kubernetes-model-1.0.67.jar"/>
+	<classpathentry kind="lib" path="lib/openshift-client-driver-thirdparty/openshift-client-2.2.7.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

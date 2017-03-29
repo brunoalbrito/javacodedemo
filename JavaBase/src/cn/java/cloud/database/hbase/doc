@@ -1,0 +1,17 @@
+创建数据存放目录
+	mkdir -p /root/temp/hbase/hbase-0.98.24-hadoop2/mydata
+修改配置文件：http://blog.csdn.net/ningxuezhu/article/details/50547970
+	/root/temp/hbase/hbase-0.98.24-hadoop2/conf/hbase-site.xml
+
+指定数据存储路径： 
+<configuration>
+    <property><!-- 这个目录是region server的共享目录，用来持久化HBase。 -->
+	    <name>hbase.rootdir</name>
+	    <value>/root/temp/hbase/hbase-0.98.24-hadoop2/mydata</value>
+	</property>
+</configuration>
+
+启动
+	. /root/temp/hbase/hbase-0.98.24-hadoop2/bin/start-hbase.sh
+
+
