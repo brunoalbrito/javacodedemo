@@ -1,4 +1,4 @@
-package cn.java.note.javacc;
+package cn.java.compiler.javacc;
 
 public class Test {
 

@@ -1,4 +1,4 @@
-package cn.java.device.socket;
+package cn.java.socket;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
