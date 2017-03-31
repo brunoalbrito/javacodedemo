@@ -24,5 +24,6 @@
 	<classpathentry kind="lib" path="lib/kubernetes-client-driver-thirdparty/kubernetes-api-2.2.205/kubernetes-client-2.0.5.jar"/>
 	<classpathentry kind="lib" path="lib/kubernetes-client-driver-thirdparty/kubernetes-api-2.2.205/kubernetes-model-1.0.67.jar"/>
 	<classpathentry kind="lib" path="lib/openshift-client-driver-thirdparty/openshift-client-2.2.7.jar"/>
+	<classpathentry kind="lib" path="lib/cglib-3.2.4/cglib-nodep-3.2.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
