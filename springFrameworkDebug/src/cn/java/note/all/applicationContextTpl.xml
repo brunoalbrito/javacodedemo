@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- xmlns，指定的是默认命名空间 -->
+<!-- xmlns，指定的是默认命名空间 
+	xsi:schemaLocation 指定键值对： publicId  systemId
+-->
+
 <beans xmlns="http://www.springframework.org/schema/beans"
 	default-lazy-init="false" 
 	default-merge="default" 

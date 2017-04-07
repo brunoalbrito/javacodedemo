@@ -1,4 +1,4 @@
-package cn.java.note.web;
+package cn.java.note.all;
 
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.GenericBeanDefinition;

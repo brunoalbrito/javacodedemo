@@ -1,4 +1,4 @@
-package cn.java.note.web;
+package cn.java.note.all;
 
 import java.util.Set;
 

@@ -511,7 +511,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 		int countBefore = getRegistry().getBeanDefinitionCount(); // org.springframework.beans.factory.support.DefaultListableBeanFactory
 //		resource === org.springframework.web.context.support.ServletContextResource
 //		resource === org.springframework.core.io.FileSystemResource
-		documentReader.registerBeanDefinitions(doc, createReaderContext(resource));
+		documentReader.registerBeanDefinitions(doc, createReaderContext(resource)); // 解析dom树的节点
 		return getRegistry().getBeanDefinitionCount() - countBefore;
 	}
 

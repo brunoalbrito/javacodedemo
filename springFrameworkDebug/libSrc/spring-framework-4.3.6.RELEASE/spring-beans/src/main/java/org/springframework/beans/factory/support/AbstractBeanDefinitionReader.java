@@ -213,6 +213,7 @@ public abstract class AbstractBeanDefinitionReader implements EnvironmentCapable
 		if (resourceLoader instanceof ResourcePatternResolver) { // !!!!
 			// Resource pattern matching available.
 			try {
+				// 支持表达式的地址
 				// resources = org.springframework.web.context.support.ServletContextResource
 				// resources = org.springframework.core.io.FileSystemResource
 				Resource[] resources = ((ResourcePatternResolver) resourceLoader).getResources(location); // org.springframework.context.support.AbstractApplicationContext

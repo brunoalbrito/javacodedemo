@@ -1,4 +1,4 @@
-package cn.java.io.commport;
+package cn.java.codec.charbyte;
 
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;

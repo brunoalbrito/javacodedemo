@@ -71,7 +71,7 @@ public class DequeAndQueueTest {
 		public static void testConcurrentLinkedQueue() {
 			System.out.println("-----------ConcurrentLinkedQueue---------------");
 			ConcurrentLinkedQueue<String> queue = new ConcurrentLinkedQueue<String>();
-			queue.add("element1 inserts at tail of ConcurrentLinkedQueue");
+			queue.add("element1 inserts at tail of ConcurrentLinkedQueue"); // 队列没有边界、插入元素不能为null
 			System.out.println(queue.peek());
 			System.out.println(queue.poll());
 		}
@@ -79,7 +79,7 @@ public class DequeAndQueueTest {
 		public static void testLinkedBlockingQueue() {
 			System.out.println("-----------LinkedBlockingQueue---------------");
 			LinkedBlockingQueue<String> queue = new LinkedBlockingQueue<String>();
-			queue.add("element1 inserts at tail of LinkedBlockingQueue");
+			queue.add("element1 inserts at tail of LinkedBlockingQueue"); // 有容量限制
 			System.out.println(queue.peek());
 			System.out.println(queue.poll());
 		}
@@ -87,7 +87,7 @@ public class DequeAndQueueTest {
 		public static void testLinkedTransferQueue() {
 			System.out.println("-----------LinkedTransferQueue---------------");
 			LinkedTransferQueue<String> queue = new LinkedTransferQueue<String>();
-			queue.add("element1 inserts at tail of LinkedTransferQueue");
+			queue.add("element1 inserts at tail of LinkedTransferQueue"); // 队列没有边界、插入元素不能为null
 			System.out.println(queue.peek());
 			System.out.println(queue.poll());
 		}
@@ -95,7 +95,7 @@ public class DequeAndQueueTest {
 		public static void testPriorityBlockingQueue() {
 			System.out.println("-----------PriorityBlockingQueue---------------");
 			PriorityBlockingQueue<String> queue = new PriorityBlockingQueue<String>();
-			queue.add("element1 inserts at tail of PriorityBlockingQueue");
+			queue.add("element1 inserts at tail of PriorityBlockingQueue"); // 元素要能比较，插入元素不能为null
 			System.out.println(queue.peek());
 			System.out.println(queue.poll());
 		}
@@ -103,7 +103,7 @@ public class DequeAndQueueTest {
 		public static void testSynchronousQueue() {
 			System.out.println("-----------SynchronousQueue---------------");
 			SynchronousQueue<String> queue = new SynchronousQueue<String>();
-			queue.add("element1 inserts at tail of SynchronousQueue");
+			queue.add("element1 inserts at tail of SynchronousQueue"); // 有容量限制
 			System.out.println(queue.peek());
 			System.out.println(queue.poll());
 		}

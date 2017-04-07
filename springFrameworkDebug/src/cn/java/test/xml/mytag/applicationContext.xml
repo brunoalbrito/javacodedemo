@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.janchou.org/schema/mybeanstag" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.janchou.org/schema/myaoptag"
+	xsi:schemaLocation="http://www.janchou.org/schema/mybeanstag http://www.janchou.org/schema/mytag/spring-mybeanstag-3.0.xsd
+		http://www.janchou.org/schema/myaoptag http://www.janchou.org/schema/mytag/spring-myaoptag-4.2.xsd
+		">
+
+	<bean id="hello1" class="cn.java.test.impl.HelloImpl" />
+	<aop:bean id="hello2" class="cn.java.test.impl.HelloImpl" />
+
+</beans>  

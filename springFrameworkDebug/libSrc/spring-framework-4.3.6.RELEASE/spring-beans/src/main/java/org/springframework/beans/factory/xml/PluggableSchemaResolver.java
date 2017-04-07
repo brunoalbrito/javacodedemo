@@ -106,11 +106,14 @@ public class PluggableSchemaResolver implements EntityResolver {
 			logger.trace("Trying to resolve XML entity with public id [" + publicId +
 					"] and system id [" + systemId + "]");
 		}
+		// publicId == null
+		// systemId == "http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
 
 		if (systemId != null) {
-			String resourceLocation = getSchemaMappings().get(systemId);
+			String resourceLocation = getSchemaMappings().get(systemId);//!!!
 			if (resourceLocation != null) {
-				Resource resource = new ClassPathResource(resourceLocation, this.classLoader);
+				// resourceLocation == "org/springframework/beans/factory/xml/spring-beans-3.0.xsd"
+				Resource resource = new ClassPathResource(resourceLocation, this.classLoader); 
 				try {
 					InputSource source = new InputSource(resource.getInputStream());
 					source.setPublicId(publicId);
@@ -141,13 +144,19 @@ public class PluggableSchemaResolver implements EntityResolver {
 						logger.debug("Loading schema mappings from [" + this.schemaMappingsLocation + "]");
 					}
 					try {
+						// 获取类路径上的所有配置
 						Properties mappings =
-								PropertiesLoaderUtils.loadAllProperties(this.schemaMappingsLocation, this.classLoader);
+								PropertiesLoaderUtils.loadAllProperties(this.schemaMappingsLocation, this.classLoader); // spring-xxxx.jar 包中 "META-INF/spring.schemas"
 						if (logger.isDebugEnabled()) {
 							logger.debug("Loaded schema mappings: " + mappings);
 						}
 						Map<String, String> schemaMappings = new ConcurrentHashMap<String, String>(mappings.size());
 						CollectionUtils.mergePropertiesIntoMap(mappings, schemaMappings);
+						/*
+							http\://www.springframework.org/schema/beans/spring-beans-2.0.xsd=org/springframework/beans/factory/xml/spring-beans-2.0.xsd
+							http\://www.springframework.org/schema/beans/spring-beans-2.5.xsd=org/springframework/beans/factory/xml/spring-beans-2.5.xsd
+							http\://www.springframework.org/schema/beans/spring-beans-3.0.xsd=org/springframework/beans/factory/xml/spring-beans-3.0.xsd
+						 */
 						this.schemaMappings = schemaMappings;
 					}
 					catch (IOException ex) {

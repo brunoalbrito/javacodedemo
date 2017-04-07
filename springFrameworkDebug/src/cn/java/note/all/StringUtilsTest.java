@@ -1,4 +1,4 @@
-package cn.java.note.web;
+package cn.java.note.all;
 
 import org.springframework.util.PatternMatchUtils;
 import org.springframework.util.StringUtils;

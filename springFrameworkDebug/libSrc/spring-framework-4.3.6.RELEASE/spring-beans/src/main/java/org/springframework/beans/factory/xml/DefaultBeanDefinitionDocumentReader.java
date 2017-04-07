@@ -168,13 +168,13 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 					if (delegate.isDefaultNamespace(ele)) {
 						parseDefaultElement(ele, delegate); // !!! 默认元素
 					}
-					else {
+					else {  // 嵌套自定义标签
 						delegate.parseCustomElement(ele); // !!! 自定义元素
 					}
 				}
 			}
 		}
-		else {
+		else { // 自定义标签
 			delegate.parseCustomElement(root);
 		}
 	}

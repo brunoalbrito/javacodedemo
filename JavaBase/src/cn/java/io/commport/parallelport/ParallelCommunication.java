@@ -2,7 +2,7 @@ package cn.java.io.commport.parallelport;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import cn.java.io.commport.CharByteConverterUtil;
+import cn.java.codec.charbyte.CharByteConverterUtil;
 import gnu.io.CommPortIdentifier;
 import gnu.io.NoSuchPortException;
 import gnu.io.ParallelPort;

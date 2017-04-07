@@ -64,14 +64,14 @@ public class ResourceEntityResolver extends DelegatingEntityResolver {
 	 * to load XML entity includes with
 	 */
 	public ResourceEntityResolver(ResourceLoader resourceLoader) {
-		super(resourceLoader.getClassLoader());
+		super(resourceLoader.getClassLoader()); // org.springframework.web.context.support.XmlWebApplicationContext.getClassLoader()
 		this.resourceLoader = resourceLoader;
 	}
 
 
 	@Override
 	public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
-		InputSource source = super.resolveEntity(publicId, systemId);
+		InputSource source = super.resolveEntity(publicId, systemId);  // 调用父类的
 		if (source == null && systemId != null) {
 			String resourcePath = null;
 			try {

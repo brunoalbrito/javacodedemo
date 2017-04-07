@@ -312,7 +312,7 @@ public class ContextLoader {
 			// Store context in local instance variable, to guarantee that
 			// it is available on ServletContext shutdown.
 			if (this.context == null) {
-				this.context = createWebApplicationContext(servletContext);// !!!  org.springframework.web.context.support.XmlWebApplicationContext
+				this.context = createWebApplicationContext(servletContext);// !!!  new org.springframework.web.context.support.XmlWebApplicationContext()
 			}
 			if (this.context instanceof ConfigurableWebApplicationContext) {
 				ConfigurableWebApplicationContext cwac = (ConfigurableWebApplicationContext) this.context;

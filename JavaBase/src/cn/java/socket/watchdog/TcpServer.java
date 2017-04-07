@@ -1,4 +1,4 @@
-package cn.java.socket;
+package cn.java.socket.watchdog;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
