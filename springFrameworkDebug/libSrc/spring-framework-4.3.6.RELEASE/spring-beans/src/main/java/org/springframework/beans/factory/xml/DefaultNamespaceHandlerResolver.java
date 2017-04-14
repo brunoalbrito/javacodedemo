@@ -111,18 +111,19 @@ public class DefaultNamespaceHandlerResolver implements NamespaceHandlerResolver
 	 */
 	@Override
 	public NamespaceHandler resolve(String namespaceUri) {
-//		http://www.springframework.org/schema/c=org.springframework.beans.factory.xml.SimpleConstructorNamespaceHandler
-//		http://www.springframework.org/schema/p=org.springframework.beans.factory.xml.SimplePropertyNamespaceHandler
-//		http://www.springframework.org/schema/util=org.springframework.beans.factory.xml.UtilNamespaceHandler
-		Map<String, Object> handlerMappings = getHandlerMappings();
-		Object handlerOrClassName = handlerMappings.get(namespaceUri);
+		Map<String, Object> handlerMappings = getHandlerMappings();// !!! 收集所有jar包中"META-INF/spring.handlers"的命名空间的处理器配置
+		/*
+			namespaceUri == "http://www.springframework.org/schema/aop"
+			handlerOrClassName == org.springframework.aop.config.AopNamespaceHandler
+		 */
+		Object handlerOrClassName = handlerMappings.get(namespaceUri); // !!! 获取指定命名空间的处理器
 		if (handlerOrClassName == null) {
 			return null;
 		}
-		else if (handlerOrClassName instanceof NamespaceHandler) {
+		else if (handlerOrClassName instanceof NamespaceHandler) { // 已经是对象了
 			return (NamespaceHandler) handlerOrClassName;
 		}
-		else {
+		else { // 实例化
 			String className = (String) handlerOrClassName;
 			try {
 				Class<?> handlerClass = ClassUtils.forName(className, this.classLoader);
@@ -130,8 +131,8 @@ public class DefaultNamespaceHandlerResolver implements NamespaceHandlerResolver
 					throw new FatalBeanException("Class [" + className + "] for namespace [" + namespaceUri +
 							"] does not implement the [" + NamespaceHandler.class.getName() + "] interface");
 				}
-				NamespaceHandler namespaceHandler = (NamespaceHandler) BeanUtils.instantiateClass(handlerClass);
-				namespaceHandler.init();
+				NamespaceHandler namespaceHandler = (NamespaceHandler) BeanUtils.instantiateClass(handlerClass); // 实例化
+				namespaceHandler.init(); // 处理器进行初始化
 				handlerMappings.put(namespaceUri, namespaceHandler);
 				return namespaceHandler;
 			}

@@ -230,7 +230,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 			setAutowireMode(originalAbd.getAutowireMode());
 			setDependencyCheck(originalAbd.getDependencyCheck());
 			setDependsOn(originalAbd.getDependsOn());
-			setAutowireCandidate(originalAbd.isAutowireCandidate());
+			setAutowireCandidate(originalAbd.isAutowireCandidate()); 
 			setPrimary(originalAbd.isPrimary());
 			copyQualifiersFrom(originalAbd);
 			setNonPublicAccessAllowed(originalAbd.isNonPublicAccessAllowed());
@@ -994,7 +994,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 					"Invalid method override: no method with name '" + mo.getMethodName() +
 					"' on class [" + getBeanClassName() + "]");
 		}
-		else if (count == 1) {
+		else if (count == 1) { // 有且仅有一个匹配到的方法
 			// Mark override as not overloaded, to avoid the overhead of arg type checking.
 			mo.setOverloaded(false);
 		}

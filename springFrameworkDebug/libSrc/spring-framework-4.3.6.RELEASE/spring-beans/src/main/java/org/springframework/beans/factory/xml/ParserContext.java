@@ -86,7 +86,7 @@ public final class ParserContext {
 	}
 
 	public Object extractSource(Object sourceCandidate) {
-		return this.readerContext.extractSource(sourceCandidate);
+		return this.readerContext.extractSource(sourceCandidate); // org.springframework.beans.factory.xml.XmlReaderContext
 	}
 
 	public CompositeComponentDefinition getContainingComponent() {
@@ -107,12 +107,12 @@ public final class ParserContext {
 	}
 
 	public void registerComponent(ComponentDefinition component) {
-		CompositeComponentDefinition containingComponent = getContainingComponent();
-		if (containingComponent != null) {
+		CompositeComponentDefinition containingComponent = getContainingComponent(); // 取最近一个
+		if (containingComponent != null) { // 嵌套关系
 			containingComponent.addNestedComponent(component);
 		}
 		else {
-			this.readerContext.fireComponentRegistered(component);
+			this.readerContext.fireComponentRegistered(component); // org.springframework.beans.factory.xml.XmlReaderContext
 		}
 	}
 

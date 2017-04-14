@@ -80,9 +80,9 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
 							});
 						}
 						else {
-							constructorToUse =	clazz.getDeclaredConstructor((Class[]) null);
+							constructorToUse =	clazz.getDeclaredConstructor((Class[]) null); // 不带参数的构造函数
 						}
-						bd.resolvedConstructorOrFactoryMethod = constructorToUse;
+						bd.resolvedConstructorOrFactoryMethod = constructorToUse;//!!!识别到的构造函数或者工厂方法
 					}
 					catch (Throwable ex) {
 						throw new BeanInstantiationException(clazz, "No default constructor found", ex);
@@ -156,7 +156,7 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
 				});
 			}
 			else {
-				ReflectionUtils.makeAccessible(factoryMethod);
+				ReflectionUtils.makeAccessible(factoryMethod); // 修改成可访问
 			}
 
 			Method priorInvokedFactoryMethod = currentlyInvokedFactoryMethod.get();

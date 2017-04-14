@@ -16,6 +16,7 @@
 
 package org.springframework.beans.factory.support;
 
+import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -411,6 +412,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	 * @param dependentBeanName the name of the dependent bean
 	 */
 	public void registerDependentBean(String beanName, String dependentBeanName) {
+		// 注册   dependentBeanName 依赖  beanName
 		// A quick check for an existing entry upfront, avoiding synchronization...
 		String canonicalName = canonicalName(beanName);
 		Set<String> dependentBeans = this.dependentBeanMap.get(canonicalName);

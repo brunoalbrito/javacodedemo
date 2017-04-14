@@ -245,7 +245,8 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 * for custom entity resolution, for example relative to some specific base path.
 	 */
 	public void setEntityResolver(EntityResolver entityResolver) {
-		this.entityResolver = entityResolver;
+//		org.springframework.context.support.AbstractXmlApplicationContext.loadBeanDefinitions(...)
+		this.entityResolver = entityResolver;//!!!!! org.springframework.beans.factory.xml.ResourceEntityResolver
 	}
 
 	/**

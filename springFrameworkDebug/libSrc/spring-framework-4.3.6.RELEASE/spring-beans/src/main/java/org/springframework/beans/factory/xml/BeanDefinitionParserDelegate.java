@@ -1528,11 +1528,12 @@ public class BeanDefinitionParserDelegate {
 		String namespaceUri = getNamespaceURI(ele);
 		// org.springframework.beans.factory.xml.XmlReaderContext.getNamespaceHandlerResolver().resolve(namespaceUri);
 		// org.springframework.beans.factory.xml.DefaultNamespaceHandlerResolver.resolve(namespaceUri);
-		NamespaceHandler handler = this.readerContext.getNamespaceHandlerResolver().resolve(namespaceUri);
+		NamespaceHandler handler = this.readerContext.getNamespaceHandlerResolver().resolve(namespaceUri); // 获取标签处理器
 		if (handler == null) {
 			error("Unable to locate Spring NamespaceHandler for XML schema namespace [" + namespaceUri + "]", ele);
 			return null;
 		}
+		// handler === org.springframework.aop.config.AopNamespaceHandler 指定命名空间的处理器
 		return handler.parse(ele, new ParserContext(this.readerContext, this, containingBd));
 	}
 

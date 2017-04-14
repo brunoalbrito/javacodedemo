@@ -109,7 +109,7 @@ public abstract class SpringFactoriesLoader {
 	public static List<String> loadFactoryNames(Class<?> factoryClass, ClassLoader classLoader) {
 		String factoryClassName = factoryClass.getName();
 		try {
-			Enumeration<URL> urls = (classLoader != null ? classLoader.getResources(FACTORIES_RESOURCE_LOCATION) :
+			Enumeration<URL> urls = (classLoader != null ? classLoader.getResources(FACTORIES_RESOURCE_LOCATION) : // "META-INF/spring.factories"
 					ClassLoader.getSystemResources(FACTORIES_RESOURCE_LOCATION));
 			List<String> result = new ArrayList<String>();
 			while (urls.hasMoreElements()) {

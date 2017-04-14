@@ -299,7 +299,7 @@ class ConstructorResolver {
 		}
 		factoryClass = ClassUtils.getUserClass(factoryClass);
 
-		Method[] candidates = getCandidateMethods(factoryClass, mbd);
+		Method[] candidates = getCandidateMethods(factoryClass, mbd); // 方法列表
 		Method uniqueCandidate = null;
 		for (Method candidate : candidates) {
 			if (Modifier.isStatic(candidate.getModifiers()) == isStatic && mbd.isFactoryMethod(candidate)) {
@@ -313,7 +313,7 @@ class ConstructorResolver {
 			}
 		}
 		synchronized (mbd.constructorArgumentLock) {
-			mbd.resolvedConstructorOrFactoryMethod = uniqueCandidate;
+			mbd.resolvedConstructorOrFactoryMethod = uniqueCandidate; // 匹配到的工厂方法
 		}
 	}
 
@@ -432,7 +432,7 @@ class ConstructorResolver {
 			AutowireUtils.sortFactoryMethods(candidates);
 
 			ConstructorArgumentValues resolvedValues = null;
-			boolean autowiring = (mbd.getResolvedAutowireMode() == RootBeanDefinition.AUTOWIRE_CONSTRUCTOR);
+			boolean autowiring = (mbd.getResolvedAutowireMode() == RootBeanDefinition.AUTOWIRE_CONSTRUCTOR); // 是否自动装配（关系注入）
 			int minTypeDiffWeight = Integer.MAX_VALUE;
 			Set<Method> ambiguousFactoryMethods = null;
 
@@ -445,27 +445,27 @@ class ConstructorResolver {
 				// arguments specified in the constructor arguments held in the bean definition.
 				ConstructorArgumentValues cargs = mbd.getConstructorArgumentValues();
 				resolvedValues = new ConstructorArgumentValues();
-				minNrOfArgs = resolveConstructorArguments(beanName, mbd, bw, cargs, resolvedValues);
+				minNrOfArgs = resolveConstructorArguments(beanName, mbd, bw, cargs, resolvedValues); // 解析xml定义的"构造函数参数信息"
 			}
 
 			LinkedList<UnsatisfiedDependencyException> causes = null;
 
-			for (Method candidate : candidates) {
-				Class<?>[] paramTypes = candidate.getParameterTypes(); // 工厂方法的参数
+			for (Method candidate : candidates) { // 工厂方法列表
+				Class<?>[] paramTypes = candidate.getParameterTypes(); // 工厂方法的参数信息
 
-				if (paramTypes.length >= minNrOfArgs) {
+				if (paramTypes.length >= minNrOfArgs) { // “xml中定义的构造函数参数数量”小于等于“工厂类中工厂方法的参数数量”
 					ArgumentsHolder argsHolder;
 
-					if (resolvedValues != null) {
+					if (resolvedValues != null) { // 使用有参数的构造函数
 						// Resolved constructor arguments: type conversion and/or autowiring necessary.
 						try {
 							String[] paramNames = null;
 							ParameterNameDiscoverer pnd = this.beanFactory.getParameterNameDiscoverer();
 							if (pnd != null) {
-								paramNames = pnd.getParameterNames(candidate);
+								paramNames = pnd.getParameterNames(candidate); // 解析工厂方法的参数名称数组
 							}
 							argsHolder = createArgumentArray(
-									beanName, mbd, resolvedValues, bw, paramTypes, paramNames, candidate, autowiring);
+									beanName, mbd, resolvedValues, bw, paramTypes, paramNames, candidate, autowiring); // xml中实际传递的参数值
 						}
 						catch (UnsatisfiedDependencyException ex) {
 							if (this.beanFactory.logger.isTraceEnabled()) {
@@ -477,11 +477,11 @@ class ConstructorResolver {
 								causes = new LinkedList<UnsatisfiedDependencyException>();
 							}
 							causes.add(ex);
-							continue;
+							continue;//!!
 						}
 					}
 
-					else {
+					else { // 使用没有参数的构造函数
 						// Explicit arguments given -> arguments length must match exactly.
 						if (paramTypes.length != explicitArgs.length) {
 							continue;
@@ -572,19 +572,21 @@ class ConstructorResolver {
 		try {
 			Object beanInstance;
 
-			if (System.getSecurityManager() != null) {
+			if (System.getSecurityManager() != null) { // 安全创建
 				final Object fb = factoryBean;
 				final Method factoryMethod = factoryMethodToUse;
 				final Object[] args = argsToUse;
 				beanInstance = AccessController.doPrivileged(new PrivilegedAction<Object>() {
 					@Override
 					public Object run() {
+						// org.springframework.beans.factory.support.CglibSubclassingInstantiationStrategy.instantiate(...)
 						return beanFactory.getInstantiationStrategy().instantiate(
 								mbd, beanName, beanFactory, fb, factoryMethod, args);
 					}
 				}, beanFactory.getAccessControlContext());
 			}
 			else {
+				// 使用指定实例化策略，实例化对象
 				// this.beanFactory === org.springframework.beans.factory.support.DefaultListableBeanFactory
 				// this.beanFactory.getInstantiationStrategy() === org.springframework.beans.factory.support.CglibSubclassingInstantiationStrategy
 				beanInstance = this.beanFactory.getInstantiationStrategy().instantiate(
@@ -618,7 +620,7 @@ class ConstructorResolver {
 
 		int minNrOfArgs = cargs.getArgumentCount();
 
-		for (Map.Entry<Integer, ConstructorArgumentValues.ValueHolder> entry : cargs.getIndexedArgumentValues().entrySet()) {
+		for (Map.Entry<Integer, ConstructorArgumentValues.ValueHolder> entry : cargs.getIndexedArgumentValues().entrySet()) { // xml中定义的“构造函数参数信息”
 			int index = entry.getKey();
 			if (index < 0) {
 				throw new BeanCreationException(mbd.getResourceDescription(), beanName,
@@ -629,7 +631,7 @@ class ConstructorResolver {
 			}
 			ConstructorArgumentValues.ValueHolder valueHolder = entry.getValue();
 			if (valueHolder.isConverted()) {
-				resolvedValues.addIndexedArgumentValue(index, valueHolder);
+				resolvedValues.addIndexedArgumentValue(index, valueHolder); // 添加值
 			}
 			else {
 				Object resolvedValue =
@@ -675,12 +677,12 @@ class ConstructorResolver {
 				new HashSet<ConstructorArgumentValues.ValueHolder>(paramTypes.length);
 		Set<String> autowiredBeanNames = new LinkedHashSet<String>(4);
 
-		for (int paramIndex = 0; paramIndex < paramTypes.length; paramIndex++) {
+		for (int paramIndex = 0; paramIndex < paramTypes.length; paramIndex++) { // 工厂方法的参数信息
 			Class<?> paramType = paramTypes[paramIndex];
 			String paramName = (paramNames != null ? paramNames[paramIndex] : "");
 			// Try to find matching constructor argument value, either indexed or generic.
 			ConstructorArgumentValues.ValueHolder valueHolder =
-					resolvedValues.getArgumentValue(paramIndex, paramType, paramName, usedValueHolders);
+					resolvedValues.getArgumentValue(paramIndex, paramType, paramName, usedValueHolders); // xml中配置的构造函数的信息（传递值）
 			// If we couldn't find a direct match and are not supposed to autowire,
 			// let's try the next generic, untyped argument value as fallback:
 			// it could match after type conversion (for example, String -> int).
@@ -903,7 +905,7 @@ class ConstructorResolver {
 
 		public void storeCache(RootBeanDefinition mbd, Object constructorOrFactoryMethod) {
 			synchronized (mbd.constructorArgumentLock) {
-				mbd.resolvedConstructorOrFactoryMethod = constructorOrFactoryMethod;
+				mbd.resolvedConstructorOrFactoryMethod = constructorOrFactoryMethod; // 失败到的构造函数或者工厂方法
 				mbd.constructorArgumentsResolved = true;
 				if (this.resolveNecessary) {
 					mbd.preparedConstructorArguments = this.preparedArguments;

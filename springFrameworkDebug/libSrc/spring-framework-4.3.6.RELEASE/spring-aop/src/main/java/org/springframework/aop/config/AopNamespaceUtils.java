@@ -65,9 +65,9 @@ public abstract class AopNamespaceUtils {
 			ParserContext parserContext, Element sourceElement) {
 
 		BeanDefinition beanDefinition = AopConfigUtils.registerAspectJAutoProxyCreatorIfNecessary(
-				parserContext.getRegistry(), parserContext.extractSource(sourceElement));
-		useClassProxyingIfNecessary(parserContext.getRegistry(), sourceElement);
-		registerComponentIfNecessary(beanDefinition, parserContext);
+				parserContext.getRegistry(), parserContext.extractSource(sourceElement)); // 创建并注册bean定义
+		useClassProxyingIfNecessary(parserContext.getRegistry(), sourceElement); // 使用类代理
+		registerComponentIfNecessary(beanDefinition, parserContext); // 注册成组件
 	}
 
 	public static void registerAspectJAnnotationAutoProxyCreatorIfNecessary(
@@ -96,7 +96,8 @@ public abstract class AopNamespaceUtils {
 		if (beanDefinition != null) {
 			BeanComponentDefinition componentDefinition =
 					new BeanComponentDefinition(beanDefinition, AopConfigUtils.AUTO_PROXY_CREATOR_BEAN_NAME);
-			parserContext.registerComponent(componentDefinition);
+			// org.springframework.beans.factory.xml.ParserContext
+			parserContext.registerComponent(componentDefinition);  // 注册成组件到 ParserContext
 		}
 	}
 

@@ -97,14 +97,39 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 
 	@Override
 	public BeanDefinition parse(Element element, ParserContext parserContext) {
+		/*
+		 	element.getTagName() ===  "aop:config"
+		 	element.getTagName() ===  "aop:aspectj-autoproxy"
+		 	element.getTagName() ===  "aop:scoped-proxy"
+		 	element.getTagName() ===  "aop:spring-configured"
+		 	
+		 */
 		CompositeComponentDefinition compositeDef =
-				new CompositeComponentDefinition(element.getTagName(), parserContext.extractSource(element));
+				new CompositeComponentDefinition(element.getTagName(), parserContext.extractSource(element)); // org.springframework.beans.factory.xml.ParserContext
 		parserContext.pushContainingComponent(compositeDef);
 
-		configureAutoProxyCreator(parserContext, element);
+		configureAutoProxyCreator(parserContext, element); // !!!
 
+		/**
+		 	<aop:config proxy-target-class="false" expose-proxy="false">
+		 		<aop:pointcut id="" expression="" />
+		 		<aop:advisor id="" advice-ref="" pointcut="" pointcut-ref="" order="" />
+		 		<aop:aspect id="" ref="" order="">
+		 			<aop:pointcut id="" expression=""></aop:pointcut>
+		 			<aop:declare-parents types-matching="" implement-interface="" default-impl="" delegate-ref="" />
+		 			<aop:before pointcut="" pointcut-ref="" method="" arg-names="" />
+		 			<aop:after pointcut="" pointcut-ref="" method="" arg-names="" />
+		 			<aop:after-returning pointcut="" pointcut-ref="" method="" arg-names="" />
+		 			<aop:after-throwing   pointcut="" pointcut-ref="" method="" arg-names="" />
+		 			<aop:around pointcut="" pointcut-ref="" method="" arg-names="" ></aop:around>
+		 		</aop:aspect>
+		 	</aop:config>
+		 */
 		List<Element> childElts = DomUtils.getChildElements(element);
 		for (Element elt: childElts) {
+			/**
+			 	getLocalName(elt) === "pointcut"
+			 */
 			String localName = parserContext.getDelegate().getLocalName(elt);
 			if (POINTCUT.equals(localName)) {
 				parsePointcut(elt, parserContext);
@@ -137,14 +162,15 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 	 * with the supplied {@link BeanDefinitionRegistry}.
 	 */
 	private void parseAdvisor(Element advisorElement, ParserContext parserContext) {
-		AbstractBeanDefinition advisorDef = createAdvisorBeanDefinition(advisorElement, parserContext);
+		AbstractBeanDefinition advisorDef = createAdvisorBeanDefinition(advisorElement, parserContext); // 创建bean定义
 		String id = advisorElement.getAttribute(ID);
 
 		try {
 			this.parseState.push(new AdvisorEntry(id));
 			String advisorBeanName = id;
 			if (StringUtils.hasText(advisorBeanName)) {
-				parserContext.getRegistry().registerBeanDefinition(advisorBeanName, advisorDef);
+				// org.springframework.beans.factory.support.DefaultListableBeanFactory.registerBeanDefinition(advisorBeanName, advisorDef);
+				parserContext.getRegistry().registerBeanDefinition(advisorBeanName, advisorDef); // 注册bean定义 
 			}
 			else {
 				advisorBeanName = parserContext.getReaderContext().registerWithGeneratedName(advisorDef);
@@ -154,7 +180,7 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 			if (pointcut instanceof BeanDefinition) {
 				advisorDef.getPropertyValues().add(POINTCUT, pointcut);
 				parserContext.registerComponent(
-						new AdvisorComponentDefinition(advisorBeanName, advisorDef, (BeanDefinition) pointcut));
+						new AdvisorComponentDefinition(advisorBeanName, advisorDef, (BeanDefinition) pointcut)); // 维护和父级标签的关系
 			}
 			else if (pointcut instanceof String) {
 				advisorDef.getPropertyValues().add(POINTCUT, new RuntimeBeanReference((String) pointcut));
@@ -195,7 +221,7 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 
 	private void parseAspect(Element aspectElement, ParserContext parserContext) {
 		String aspectId = aspectElement.getAttribute(ID);
-		String aspectName = aspectElement.getAttribute(REF);
+		String aspectName = aspectElement.getAttribute(REF); // aspectName=== aspect4HelloService0
 
 		try {
 			this.parseState.push(new AspectEntry(aspectId, aspectName));
@@ -205,7 +231,7 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 			List<Element> declareParents = DomUtils.getChildElementsByTagName(aspectElement, DECLARE_PARENTS);
 			for (int i = METHOD_INDEX; i < declareParents.size(); i++) {
 				Element declareParentsElement = declareParents.get(i);
-				beanDefinitions.add(parseDeclareParents(declareParentsElement, parserContext));
+				beanDefinitions.add(parseDeclareParents(declareParentsElement, parserContext)); // 创建bean定义、注册bean定义
 			}
 
 			// We have to parse "advice" and all the advice kinds in one loop, to get the
@@ -214,7 +240,7 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 			boolean adviceFoundAlready = false;
 			for (int i = 0; i < nodeList.getLength(); i++) {
 				Node node = nodeList.item(i);
-				if (isAdviceNode(node, parserContext)) {
+				if (isAdviceNode(node, parserContext)) { // before/after/after-returning/after-throwing/around
 					if (!adviceFoundAlready) {
 						adviceFoundAlready = true;
 						if (!StringUtils.hasText(aspectName)) {
@@ -232,15 +258,15 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 			}
 
 			AspectComponentDefinition aspectComponentDefinition = createAspectComponentDefinition(
-					aspectElement, aspectId, beanDefinitions, beanReferences, parserContext);
-			parserContext.pushContainingComponent(aspectComponentDefinition);
+					aspectElement, aspectId, beanDefinitions, beanReferences, parserContext); // 创建bean定义
+			parserContext.pushContainingComponent(aspectComponentDefinition); // 压入栈
 
 			List<Element> pointcuts = DomUtils.getChildElementsByTagName(aspectElement, POINTCUT);
 			for (Element pointcutElement : pointcuts) {
-				parsePointcut(pointcutElement, parserContext);
+				parsePointcut(pointcutElement, parserContext); // 创建bean定义、注册bean定义
 			}
 
-			parserContext.popAndRegisterContainingComponent();
+			parserContext.popAndRegisterContainingComponent(); // 维护和父级标签的关系
 		}
 		finally {
 			this.parseState.pop();
@@ -267,6 +293,7 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 			return false;
 		}
 		else {
+			// before/after/after-returning/after-throwing/around
 			String name = parserContext.getDelegate().getLocalName(aNode);
 			return (BEFORE.equals(name) || AFTER.equals(name) || AFTER_RETURNING_ELEMENT.equals(name) ||
 					AFTER_THROWING_ELEMENT.equals(name) || AROUND.equals(name));
@@ -279,7 +306,7 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 	 * supplied ParserContext.
 	 */
 	private AbstractBeanDefinition parseDeclareParents(Element declareParentsElement, ParserContext parserContext) {
-		BeanDefinitionBuilder builder = BeanDefinitionBuilder.rootBeanDefinition(DeclareParentsAdvisor.class);
+		BeanDefinitionBuilder builder = BeanDefinitionBuilder.rootBeanDefinition(DeclareParentsAdvisor.class); // 创建"bean定义"构建器
 		builder.addConstructorArgValue(declareParentsElement.getAttribute(IMPLEMENT_INTERFACE));
 		builder.addConstructorArgValue(declareParentsElement.getAttribute(TYPE_PATTERN));
 
@@ -298,9 +325,9 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 					declareParentsElement, this.parseState.snapshot());
 		}
 
-		AbstractBeanDefinition definition = builder.getBeanDefinition();
+		AbstractBeanDefinition definition = builder.getBeanDefinition(); // 创建bean定义
 		definition.setSource(parserContext.extractSource(declareParentsElement));
-		parserContext.getReaderContext().registerWithGeneratedName(definition);
+		parserContext.getReaderContext().registerWithGeneratedName(definition); // 注册bean定义
 		return definition;
 	}
 
@@ -315,11 +342,18 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 			List<BeanDefinition> beanDefinitions, List<BeanReference> beanReferences) {
 
 		try {
+			/*
+				aspectName=== aspect4HelloService0
+				aspectElement === <aop:aspect id="aspectId_0" ref="aspect4HelloService0">;
+				aspectName === "aspect4HelloService0"
+				adviceElement === <aop:before method="aspectMethodBefore" pointcut-ref="pointcutRefId_0" />
+				adviceElement === <aop:after method="aspectMethodAfter" pointcut-ref="pointcutRefId_0" />
+			 */
 			this.parseState.push(new AdviceEntry(parserContext.getDelegate().getLocalName(adviceElement)));
 
 			// create the method factory bean
 			RootBeanDefinition methodDefinition = new RootBeanDefinition(MethodLocatingFactoryBean.class);
-			methodDefinition.getPropertyValues().add("targetBeanName", aspectName);
+			methodDefinition.getPropertyValues().add("targetBeanName", aspectName); // 切面bean对象
 			methodDefinition.getPropertyValues().add("methodName", adviceElement.getAttribute("method"));
 			methodDefinition.setSynthetic(true);
 
@@ -329,13 +363,13 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 			aspectFactoryDef.getPropertyValues().add("aspectBeanName", aspectName);
 			aspectFactoryDef.setSynthetic(true);
 
-			// register the pointcut
+			// register the pointcut  报告接收者
 			AbstractBeanDefinition adviceDef = createAdviceDefinition(
 					adviceElement, parserContext, aspectName, order, methodDefinition, aspectFactoryDef,
 					beanDefinitions, beanReferences);
 
 			// configure the advisor
-			RootBeanDefinition advisorDefinition = new RootBeanDefinition(AspectJPointcutAdvisor.class);
+			RootBeanDefinition advisorDefinition = new RootBeanDefinition(AspectJPointcutAdvisor.class); // 创建bean定义
 			advisorDefinition.setSource(parserContext.extractSource(adviceElement));
 			advisorDefinition.getConstructorArgumentValues().addGenericArgumentValue(adviceDef);
 			if (aspectElement.hasAttribute(ORDER_PROPERTY)) {
@@ -344,7 +378,7 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 			}
 
 			// register the final advisor
-			parserContext.getReaderContext().registerWithGeneratedName(advisorDefinition);
+			parserContext.getReaderContext().registerWithGeneratedName(advisorDefinition); // 注册bean定义
 
 			return advisorDefinition;
 		}
@@ -364,6 +398,11 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 			RootBeanDefinition methodDef, RootBeanDefinition aspectFactoryDef,
 			List<BeanDefinition> beanDefinitions, List<BeanReference> beanReferences) {
 
+		/*
+		 	adviceElement === <aop:before method="aspectMethodBefore" pointcut-ref="pointcutRefId_0" />
+			adviceElement === <aop:after method="aspectMethodAfter" pointcut-ref="pointcutRefId_0" />
+		 */
+		
 		RootBeanDefinition adviceDefinition = new RootBeanDefinition(getAdviceClass(adviceElement, parserContext));
 		adviceDefinition.setSource(parserContext.extractSource(adviceElement));
 
@@ -391,8 +430,8 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 			cav.addIndexedArgumentValue(POINTCUT_INDEX, pointcut);
 			beanDefinitions.add((BeanDefinition) pointcut);
 		}
-		else if (pointcut instanceof String) {
-			RuntimeBeanReference pointcutRef = new RuntimeBeanReference((String) pointcut);
+		else if (pointcut instanceof String) {//!!!
+			RuntimeBeanReference pointcutRef = new RuntimeBeanReference((String) pointcut);//!!! 使用哪个切入点
 			cav.addIndexedArgumentValue(POINTCUT_INDEX, pointcutRef);
 			beanReferences.add(pointcutRef);
 		}
@@ -439,19 +478,21 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 
 		try {
 			this.parseState.push(new PointcutEntry(id));
-			pointcutDefinition = createPointcutDefinition(expression);
+			pointcutDefinition = createPointcutDefinition(expression); // 创建bean定义
 			pointcutDefinition.setSource(parserContext.extractSource(pointcutElement));
 
 			String pointcutBeanName = id;
 			if (StringUtils.hasText(pointcutBeanName)) {
-				parserContext.getRegistry().registerBeanDefinition(pointcutBeanName, pointcutDefinition);
+//				parserContext.getRegistry() === org.springframework.beans.factory.support.DefaultListableBeanFactory
+				parserContext.getRegistry().registerBeanDefinition(pointcutBeanName, pointcutDefinition); // 注册bean定义
 			}
 			else {
+//				parserContext.getReaderContext() === org.springframework.beans.factory.xml.XmlReaderContext
 				pointcutBeanName = parserContext.getReaderContext().registerWithGeneratedName(pointcutDefinition);
 			}
 
 			parserContext.registerComponent(
-					new PointcutComponentDefinition(pointcutBeanName, pointcutDefinition, expression));
+					new PointcutComponentDefinition(pointcutBeanName, pointcutDefinition, expression)); // 维护和父级标签的关系
 		}
 		finally {
 			this.parseState.pop();
@@ -467,6 +508,10 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 	 * and returns its bean name, otherwise returns the bean name of the referred pointcut.
 	 */
 	private Object parsePointcutProperty(Element element, ParserContext parserContext) {
+		/*
+		 	element === <aop:before method="aspectMethodBefore" pointcut-ref="pointcutRefId_0" />
+			element === <aop:after method="aspectMethodAfter" pointcut-ref="pointcutRefId_0" />
+		 */
 		if (element.hasAttribute(POINTCUT) && element.hasAttribute(POINTCUT_REF)) {
 			parserContext.getReaderContext().error(
 					"Cannot define both 'pointcut' and 'pointcut-ref' on <advisor> tag.",

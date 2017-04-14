@@ -38,7 +38,7 @@ import org.springframework.beans.factory.xml.ParserContext;
 class AspectJAutoProxyBeanDefinitionParser implements BeanDefinitionParser {
 
 	@Override
-	public BeanDefinition parse(Element element, ParserContext parserContext) {
+	public BeanDefinition parse(Element element, ParserContext parserContext) { // 解析
 		AopNamespaceUtils.registerAspectJAnnotationAutoProxyCreatorIfNecessary(parserContext, element);
 		extendBeanDefinition(element, parserContext);
 		return null;
@@ -66,7 +66,7 @@ class AspectJAutoProxyBeanDefinitionParser implements BeanDefinitionParser {
 		}
 		if (!includePatterns.isEmpty()) {
 			includePatterns.setSource(parserContext.extractSource(element));
-			beanDef.getPropertyValues().add("includePatterns", includePatterns);
+			beanDef.getPropertyValues().add("includePatterns", includePatterns); // 设置到父类标签的属性中
 		}
 	}
 

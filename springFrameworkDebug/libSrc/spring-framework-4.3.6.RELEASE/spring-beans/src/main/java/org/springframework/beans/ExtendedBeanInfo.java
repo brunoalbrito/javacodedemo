@@ -166,7 +166,7 @@ class ExtendedBeanInfo implements BeanInfo {
 				this.propertyDescriptors.add(new SimplePropertyDescriptor(propertyName, null, method));
 			}
 			else {
-				existingPd.setWriteMethod(method);
+				existingPd.setWriteMethod(method); // 已经存在，那么会覆盖
 			}
 		}
 		else if (nParams == 2) {
@@ -174,7 +174,7 @@ class ExtendedBeanInfo implements BeanInfo {
 				this.propertyDescriptors.add(
 						new SimpleIndexedPropertyDescriptor(propertyName, null, null, null, method));
 			}
-			else if (existingPd instanceof IndexedPropertyDescriptor) {
+			else if (existingPd instanceof IndexedPropertyDescriptor) { // 已经存在，那么会覆盖
 				((IndexedPropertyDescriptor) existingPd).setIndexedWriteMethod(method);
 			}
 			else {

@@ -25,5 +25,10 @@
 	<classpathentry kind="lib" path="lib/kubernetes-client-driver-thirdparty/kubernetes-api-2.2.205/kubernetes-model-1.0.67.jar"/>
 	<classpathentry kind="lib" path="lib/openshift-client-driver-thirdparty/openshift-client-2.2.7.jar"/>
 	<classpathentry kind="lib" path="lib/cglib-3.2.4/cglib-nodep-3.2.4.jar"/>
+	<classpathentry kind="lib" path="lib/apache/commons-io-2.5/commons-io-2.5.jar"/>
+	<classpathentry kind="lib" path="lib/apache/commons-lang3-3.5/commons-lang3-3.5.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-1.7.25/log4j-1.2.17.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-1.7.25/slf4j-api-1.7.25.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-1.7.25/slf4j-log4j12-1.7.25.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

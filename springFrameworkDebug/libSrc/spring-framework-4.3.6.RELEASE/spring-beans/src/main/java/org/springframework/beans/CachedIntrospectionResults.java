@@ -266,8 +266,14 @@ public class CachedIntrospectionResults {
 			}
 
 			BeanInfo beanInfo = null;
-			for (BeanInfoFactory beanInfoFactory : beanInfoFactories) {
-				beanInfo = beanInfoFactory.getBeanInfo(beanClass);
+			/*
+			  	spring-beans.jar!!META-INF/spring.factories
+			  		org.springframework.beans.BeanInfoFactory=org.springframework.beans.ExtendedBeanInfoFactory
+			
+			 */
+			for (BeanInfoFactory beanInfoFactory : beanInfoFactories) { // "META-INF/spring.factories" 文件中配置的bean信息工厂
+				beanInfo = beanInfoFactory.getBeanInfo(beanClass);  
+//				beanInfo == org.springframework.beans.ExtendedBeanInfo
 				if (beanInfo != null) {
 					break;
 				}
@@ -286,7 +292,7 @@ public class CachedIntrospectionResults {
 			this.propertyDescriptorCache = new LinkedHashMap<String, PropertyDescriptor>();
 
 			// This call is slow so we do it once.
-			PropertyDescriptor[] pds = this.beanInfo.getPropertyDescriptors();
+			PropertyDescriptor[] pds = this.beanInfo.getPropertyDescriptors(); // org.springframework.beans.ExtendedBeanInfo.getPropertyDescriptors()
 			for (PropertyDescriptor pd : pds) {
 				if (Class.class == beanClass &&
 						("classLoader".equals(pd.getName()) ||  "protectionDomain".equals(pd.getName()))) {

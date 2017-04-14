@@ -1078,7 +1078,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	@Override
 	public Object getBean(String name) throws BeansException {
 		assertBeanFactoryActive();
-		return getBeanFactory().getBean(name);
+		return getBeanFactory().getBean(name); // org.springframework.beans.factory.support.DefaultListableBeanFactory
 	}
 
 	@Override

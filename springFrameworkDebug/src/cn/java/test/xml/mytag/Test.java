@@ -21,6 +21,28 @@ public class Test {
 	/**
 	 */
 	public static void main(String[] args) throws Exception {
+		/**
+			xmlns:xxx="..." 用来什么一个前缀xxx的命名空间  （在Spring内部识别命名空间处理器会用到，"META-INF/spring.handlers"）
+			xsi:schemaLocation="..." 用来声明命名空间到systemId的映射 （在Spring内部做校验会用到，"META-INF/spring.schemas"）
+			
+			http://www.janchou.org/schema/mytag/spring-mybeanstag-3.0.xsd 这是dom里面的systemId（在Spring内部做校验会用到，"META-INF/spring.schemas"）
+		 	http://www.janchou.org/schema/mybeanstag 这是命名空间（在Spring内部识别命名空间处理器会用到，"META-INF/spring.handlers"）
+			
+			如何开发自己的标签库：
+				1、定义文件 mytag.schemas，cn\java\test\xml\mytag\META-INF\mytag.schemas
+					http\://www.janchou.org/schema/mytag/spring-mybeanstag-3.0.xsd=cn/java/test/xml/mytag/schemas/spring-mybeanstag-3.0.xsd
+					http\://www.janchou.org/schema/mytag/spring-myaoptag-4.2.xsd=cn/java/test/xml/mytag/schemas/spring-myaoptag-4.2.xsd
+				2、编写标签用法的限制文件 cn\java\test\xml\mytag\schemas\spring-myaoptag-4.2.xsd 
+					....
+				3、定义文件 mytag.handlers
+					http\://www.janchou.org/schema/myaoptag=cn.java.test.xml.mytag.namespacehandler.MyAopNamespaceHandler
+				4、标签指定命名空间的处理器
+					class MyAopNamespaceHandler extends NamespaceHandlerSupport {
+						....
+					}
+		 */
+		
+		
 		test();
 	}
 

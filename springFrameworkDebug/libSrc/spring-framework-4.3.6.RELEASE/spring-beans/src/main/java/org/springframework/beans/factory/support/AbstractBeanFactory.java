@@ -194,7 +194,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 	@Override
 	public Object getBean(String name) throws BeansException {
-		return doGetBean(name, null, null, false);
+		return doGetBean(name, null, null, false); // 获取bean对象
 	}
 
 	@Override

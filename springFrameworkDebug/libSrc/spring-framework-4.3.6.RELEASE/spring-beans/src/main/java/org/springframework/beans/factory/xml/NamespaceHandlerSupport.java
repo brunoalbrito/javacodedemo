@@ -71,7 +71,7 @@ public abstract class NamespaceHandlerSupport implements NamespaceHandler {
 	 */
 	@Override
 	public BeanDefinition parse(Element element, ParserContext parserContext) {
-		return findParserForElement(element, parserContext).parse(element, parserContext);
+		return findParserForElement(element, parserContext).parse(element, parserContext); // 查找指定后缀的解析器，并进行解析
 	}
 
 	/**
@@ -79,7 +79,15 @@ public abstract class NamespaceHandlerSupport implements NamespaceHandler {
 	 * the local name of the supplied {@link Element}.
 	 */
 	private BeanDefinitionParser findParserForElement(Element element, ParserContext parserContext) {
-		String localName = parserContext.getDelegate().getLocalName(element);
+		// parserContext.getDelegate() === org.springframework.beans.factory.xml.BeanDefinitionParserDelegate
+		/*
+		 	<aop:config>   ----- getLocalName(element) == "config"
+		 	<aop:aspectj-autoproxy>    ----- getLocalName(element) == "aspectj-autoproxy"
+		 	<aop:scoped-proxy> 
+		 	<aop:spring-configured>
+		 */
+		
+		String localName = parserContext.getDelegate().getLocalName(element); 
 		BeanDefinitionParser parser = this.parsers.get(localName);
 		if (parser == null) {
 			parserContext.getReaderContext().fatal(
