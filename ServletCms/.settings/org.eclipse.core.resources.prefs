@@ -1,0 +1,16 @@
+eclipse.preferences.version=1
+encoding//WebRoot/WEB-INF/servletView/admin/Article-add.jsp=UTF-8
+encoding//WebRoot/WEB-INF/servletView/admin/Article-addOrEditCommon.jsp=UTF-8
+encoding//WebRoot/WEB-INF/servletView/admin/Article-index.jsp=UTF-8
+encoding//WebRoot/WEB-INF/servletView/admin/ArticleCate-add.jsp=UTF-8
+encoding//WebRoot/WEB-INF/servletView/admin/ArticleCate-edit.jsp=UTF-8
+encoding//WebRoot/WEB-INF/servletView/admin/ArticleCate-index.jsp=UTF-8
+encoding//WebRoot/WEB-INF/servletView/admin/Baseinfo-index.jsp=UTF-8
+encoding//WebRoot/WEB-INF/servletView/admin/Common-footer.jsp=UTF-8
+encoding//WebRoot/WEB-INF/servletView/admin/Common-left.jsp=UTF-8
+encoding//WebRoot/WEB-INF/servletView/admin/Friendlink-add.jsp=UTF-8
+encoding//WebRoot/WEB-INF/servletView/admin/Friendlink-edit.jsp=UTF-8
+encoding//WebRoot/WEB-INF/servletView/admin/ProductsCate-index.jsp=UTF-8
+encoding//WebRoot/WEB-INF/servletView/admin/Test-test.jsp=UTF-8
+encoding//WebRoot/WEB-INF/servletView/common/testFetch.jsp=UTF-8
+encoding//WebRoot/WEB-INF/web.xml=UTF-8
