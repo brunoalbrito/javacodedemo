@@ -1,4 +1,4 @@
-package cn.java.note.bean;
+package cn.java.demo.bean;
 public class JspPageBean {
 	private String username;
 	/**

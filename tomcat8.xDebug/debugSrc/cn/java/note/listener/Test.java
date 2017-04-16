@@ -1,4 +1,4 @@
-package cn.java.listener;
+package cn.java.note.listener;
 
 import javax.servlet.ServletRequestAttributeListener;
 

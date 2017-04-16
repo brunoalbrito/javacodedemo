@@ -17,7 +17,7 @@
 	<filter>
 		<display-name>编码过滤器</display-name>
 		<filter-name>characterEncodingFilter</filter-name>
-		<filter-class>cn.java.filter.CharacterEncodingFilter</filter-class>
+		<filter-class>cn.java.demo.filter.CharacterEncodingFilter</filter-class>
 		<init-param>
 			<param-name>filterParam1</param-name>
 			<param-value>filterParam1Value</param-value>
@@ -32,7 +32,7 @@
 	
 	<!-- 监听器 -->
 	<listener>
-		<listener-class>cn.java.listener.event.MyServletRequestAttributeListener</listener-class>
+		<listener-class>cn.java.note.listener.event.MyServletRequestAttributeListener</listener-class>
 	</listener>
 	
 	

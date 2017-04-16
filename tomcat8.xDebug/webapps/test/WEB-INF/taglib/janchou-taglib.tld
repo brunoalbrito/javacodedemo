@@ -13,7 +13,7 @@
   </description>
   <tag>
     <name>echo</name>
-    <tag-class>cn.java.tag.EchoTag</tag-class>
+    <tag-class>cn.java.demo.tag.EchoTag</tag-class>
     <description> echo method </description>
     <attribute>
        <name>str</name>
@@ -23,7 +23,7 @@
   </tag>
   <tag>
     <name>date</name>
-    <tag-class>cn.java.tag.DateTag</tag-class>
+    <tag-class>cn.java.demo.tag.DateTag</tag-class>
     <description> date method </description>
     <attribute>
        <name>timestamp</name>

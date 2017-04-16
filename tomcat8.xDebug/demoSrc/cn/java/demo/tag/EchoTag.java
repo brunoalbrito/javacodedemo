@@ -1,4 +1,4 @@
-package cn.java.tag;
+package cn.java.demo.tag;
 
 import java.io.IOException;
 

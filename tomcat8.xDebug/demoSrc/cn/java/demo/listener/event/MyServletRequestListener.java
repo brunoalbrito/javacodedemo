@@ -1,4 +1,4 @@
-package cn.java.listener.event;
+package cn.java.demo.listener.event;
 
 import javax.servlet.ServletRequestEvent;
 import javax.servlet.ServletRequestListener;

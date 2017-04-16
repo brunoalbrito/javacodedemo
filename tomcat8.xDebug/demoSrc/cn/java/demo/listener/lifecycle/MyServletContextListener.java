@@ -1,4 +1,4 @@
-package cn.java.listener.lifecycle;
+package cn.java.demo.listener.lifecycle;
 
 import javax.servlet.ServletContextEvent;
 

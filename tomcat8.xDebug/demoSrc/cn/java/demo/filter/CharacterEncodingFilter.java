@@ -1,4 +1,4 @@
-package cn.java.filter;
+package cn.java.demo.filter;
 import java.io.IOException;
 
 import javax.servlet.Filter;

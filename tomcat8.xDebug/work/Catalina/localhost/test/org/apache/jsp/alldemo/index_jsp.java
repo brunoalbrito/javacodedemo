@@ -282,7 +282,7 @@ out.write("i am scriptlet ...");
     javax.servlet.jsp.PageContext pageContext = _jspx_page_context;
     javax.servlet.jsp.JspWriter out = _jspx_page_context.getOut();
     //  myprefix:echo
-    cn.java.tag.EchoTag _jspx_th_myprefix_005fecho_005f0 = (cn.java.tag.EchoTag) _005fjspx_005ftagPool_005fmyprefix_005fecho_0026_005fstr_005fnobody.get(cn.java.tag.EchoTag.class);
+    cn.java.demo.tag.EchoTag _jspx_th_myprefix_005fecho_005f0 = (cn.java.demo.tag.EchoTag) _005fjspx_005ftagPool_005fmyprefix_005fecho_0026_005fstr_005fnobody.get(cn.java.demo.tag.EchoTag.class);
     _jspx_th_myprefix_005fecho_005f0.setPageContext(_jspx_page_context);
     _jspx_th_myprefix_005fecho_005f0.setParent(null);
     // /alldemo/index.jsp(103,0) name = str type = null reqTime = true required = true fragment = false deferredValue = false expectedTypeName = null deferredMethod = false methodSignature = null
@@ -301,7 +301,7 @@ out.write("i am scriptlet ...");
     javax.servlet.jsp.PageContext pageContext = _jspx_page_context;
     javax.servlet.jsp.JspWriter out = _jspx_page_context.getOut();
     //  myprefix:date
-    cn.java.tag.DateTag _jspx_th_myprefix_005fdate_005f0 = (cn.java.tag.DateTag) _005fjspx_005ftagPool_005fmyprefix_005fdate_0026_005ftimestamp_005ftimeZone_005fformat_005fnobody.get(cn.java.tag.DateTag.class);
+    cn.java.demo.tag.DateTag _jspx_th_myprefix_005fdate_005f0 = (cn.java.demo.tag.DateTag) _005fjspx_005ftagPool_005fmyprefix_005fdate_0026_005ftimestamp_005ftimeZone_005fformat_005fnobody.get(cn.java.demo.tag.DateTag.class);
     _jspx_th_myprefix_005fdate_005f0.setPageContext(_jspx_page_context);
     _jspx_th_myprefix_005fdate_005f0.setParent(null);
     // /alldemo/index.jsp(104,0) name = timestamp type = null reqTime = true required = true fragment = false deferredValue = false expectedTypeName = null deferredMethod = false methodSignature = null
@@ -324,7 +324,7 @@ out.write("i am scriptlet ...");
     javax.servlet.jsp.PageContext pageContext = _jspx_page_context;
     javax.servlet.jsp.JspWriter out = _jspx_page_context.getOut();
     //  myprefix:date
-    cn.java.tag.DateTag _jspx_th_myprefix_005fdate_005f1 = (cn.java.tag.DateTag) _005fjspx_005ftagPool_005fmyprefix_005fdate_0026_005ftimestamp_005fformat_005fnobody.get(cn.java.tag.DateTag.class);
+    cn.java.demo.tag.DateTag _jspx_th_myprefix_005fdate_005f1 = (cn.java.demo.tag.DateTag) _005fjspx_005ftagPool_005fmyprefix_005fdate_0026_005ftimestamp_005fformat_005fnobody.get(cn.java.demo.tag.DateTag.class);
     _jspx_th_myprefix_005fdate_005f1.setPageContext(_jspx_page_context);
     _jspx_th_myprefix_005fdate_005f1.setParent(null);
     // /alldemo/index.jsp(105,0) name = timestamp type = null reqTime = true required = true fragment = false deferredValue = false expectedTypeName = null deferredMethod = false methodSignature = null
@@ -345,7 +345,7 @@ out.write("i am scriptlet ...");
     javax.servlet.jsp.PageContext pageContext = _jspx_page_context;
     javax.servlet.jsp.JspWriter out = _jspx_page_context.getOut();
     //  myprefix:date
-    cn.java.tag.DateTag _jspx_th_myprefix_005fdate_005f2 = (cn.java.tag.DateTag) _005fjspx_005ftagPool_005fmyprefix_005fdate_0026_005ftimestamp_005fformat_005fnobody.get(cn.java.tag.DateTag.class);
+    cn.java.demo.tag.DateTag _jspx_th_myprefix_005fdate_005f2 = (cn.java.demo.tag.DateTag) _005fjspx_005ftagPool_005fmyprefix_005fdate_0026_005ftimestamp_005fformat_005fnobody.get(cn.java.demo.tag.DateTag.class);
     _jspx_th_myprefix_005fdate_005f2.setPageContext(_jspx_page_context);
     _jspx_th_myprefix_005fdate_005f2.setParent(null);
     // /alldemo/index.jsp(106,0) name = timestamp type = null reqTime = true required = true fragment = false deferredValue = false expectedTypeName = null deferredMethod = false methodSignature = null

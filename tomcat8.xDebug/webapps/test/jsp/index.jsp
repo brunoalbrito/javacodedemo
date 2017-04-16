@@ -148,11 +148,11 @@ ${pageContext.request.method} <br />
 < jsp:getProperty>解析结果为：（检查顺序是：1、pageContext==page 2、request 3、session 4、ApplicationContextFacade==application）
 	out.write(org.apache.jasper.runtime.JspRuntimeLibrary.toString((((cn.java.note.bean.JspPageBean)_jspx_page_context.findAttribute("bean1InRequest")).getUsername())));
 -->
-<jsp:directive.page import="cn.java.note.bean.JspPageBean" />
-<jsp:useBean id="bean1InPage" class="cn.java.note.bean.JspPageBean" scope="page" />
-<jsp:useBean id="bean1InRequest" class="cn.java.note.bean.JspPageBean" scope="request" />
-<jsp:useBean id="bean1InSession" class="cn.java.note.bean.JspPageBean" scope="session" />
-<jsp:useBean id="bean1InApplication" class="cn.java.note.bean.JspPageBean" scope="application" />
+<jsp:directive.page import="cn.java.demo.bean.JspPageBean" />
+<jsp:useBean id="bean1InPage" class="cn.java.demo.bean.JspPageBean" scope="page" />
+<jsp:useBean id="bean1InRequest" class="cn.java.demo.bean.JspPageBean" scope="request" />
+<jsp:useBean id="bean1InSession" class="cn.java.demo.bean.JspPageBean" scope="session" />
+<jsp:useBean id="bean1InApplication" class="cn.java.demo.bean.JspPageBean" scope="application" />
 
 <jsp:setProperty name="bean1InRequest" property="username" value="this is username1" />
 <jsp:getProperty name="bean1InRequest" property="username"/>

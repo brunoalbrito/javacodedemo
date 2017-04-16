@@ -275,7 +275,7 @@ org.apache.jasper.runtime.JspSourceImports {
 		javax.servlet.jsp.PageContext pageContext = _jspx_page_context;
 		javax.servlet.jsp.JspWriter out = _jspx_page_context.getOut();
 		//  myprefix:echo
-		cn.java.tag.EchoTag _jspx_th_myprefix_005fecho_005f0 = (cn.java.tag.EchoTag) _005fjspx_005ftagPool_005fmyprefix_005fecho_0026_005fstr_005fnobody.get(cn.java.tag.EchoTag.class);
+		cn.java.demo.tag.EchoTag _jspx_th_myprefix_005fecho_005f0 = (cn.java.demo.tag.EchoTag) _005fjspx_005ftagPool_005fmyprefix_005fecho_0026_005fstr_005fnobody.get(cn.java.demo.tag.EchoTag.class);
 		_jspx_th_myprefix_005fecho_005f0.setPageContext(_jspx_page_context);
 		_jspx_th_myprefix_005fecho_005f0.setParent(null);
 		// /jsp/index.jsp(103,0) name = str type = null reqTime = true required = true fragment = false deferredValue = false expectedTypeName = null deferredMethod = false methodSignature = null
