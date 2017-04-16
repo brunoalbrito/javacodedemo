@@ -209,16 +209,18 @@ final class ApplicationDispatcher implements AsyncDispatcher, RequestDispatcher 
          String pathInfo, String queryString, Mapping mapping, String name) {
 
         super();
-
+        
+        // path == "/hello?parmam1=value1&param2=value2"
+        
         // Save all of our configuration parameters
         this.wrapper = wrapper;
         this.context = (Context) wrapper.getParent();
-        this.requestURI = requestURI;
-        this.servletPath = servletPath;
-        this.pathInfo = pathInfo;
-        this.queryString = queryString;
+        this.requestURI = requestURI; // "/hello"
+        this.servletPath = servletPath; // "/hello"
+        this.pathInfo = pathInfo; // null
+        this.queryString = queryString; // "parmam1=value1&param2=value2"
         this.mapping = mapping;
-        this.name = name;
+        this.name = name; // null 
     }
 
 
@@ -308,7 +310,7 @@ final class ApplicationDispatcher implements AsyncDispatcher, RequestDispatcher 
                 throw (IOException) e;
             }
         } else {
-            doForward(request,response);//!!!! 跳转
+            doForward(request,response);//!!!! 转发
         }
     }
 
@@ -401,7 +403,7 @@ final class ApplicationDispatcher implements AsyncDispatcher, RequestDispatcher 
 
             //  request == org.apache.catalina.connector.RequestFacade
             //  response == org.apache.catalina.connector.ResponseFacade
-            processRequest(request,response,state); // 处理请求
+            processRequest(request,response,state); // 处理请求!!!
         }
 
         if (request.isAsyncStarted()) {
@@ -483,7 +485,7 @@ final class ApplicationDispatcher implements AsyncDispatcher, RequestDispatcher 
                             DispatcherType.FORWARD);
                     // state.outerRequest ==  org.apache.catalina.connector.RequestFacade
                     // response == org.apache.catalina.connector.ResponseFacade
-                    invoke(state.outerRequest, response, state);
+                    invoke(state.outerRequest, response, state);//!!!
                 } else {
                     invoke(state.outerRequest, response, state);
                 }
@@ -1004,7 +1006,7 @@ final class ApplicationDispatcher implements AsyncDispatcher, RequestDispatcher 
             (current instanceof HttpServletResponse))
             wrapper =
                 new ApplicationHttpResponse((HttpServletResponse) current,
-                        state.including);
+                        state.including);//!!!  current == org.apache.catalina.connector.ResponseFacade
         else
             wrapper = new ApplicationResponse(current, state.including);
         if (previous == null)

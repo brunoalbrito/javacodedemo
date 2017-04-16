@@ -59,7 +59,8 @@ public class HelloServlet extends HttpServlet {
 		// resp == org.apache.catalina.connector.ResponseFacade
 		super.service(req, res);
 	}
-
+	
+	
 
 	/**
 	 * web输出
@@ -87,84 +88,97 @@ public class HelloServlet extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		PrintWriter out = resp.getWriter();
-		out.write("HelloServlet");
+		
+		if(req.getParameter("testinclude")!=null){
+//			http://localhost:8080/test/hello?testinclude=true
+			req.getRequestDispatcher("/WEB-INF/jsp/common/header.jsp").include(req, resp);
+			resp.getWriter().write("this is body <br />");
+			req.getRequestDispatcher("/WEB-INF/jsp/common/footer.jsp").include(req, resp);
+			return;
+		}
+		else{
+			PrintWriter out = resp.getWriter();
+			out.write("HelloServlet");
 
-		// 请求地址是： http://localhost:8080/test/hello?a=value1&b=value2
+			// 请求地址是： http://localhost:8080/test/hello?a=value1&b=value2
 
-		// 读取http的头部信息---
-		String cookieStr = req.getHeader("Cookie"); // H_PS_PSSID=20739_1436_18241_12005; path=/; domain=.baidu.com
-		// Content-Type	multipart/form-data; boundary=---------------------------312511929827998
-		// Content-Type	application/x-www-form-urlencoded; charset=UTF-8
-		// Content-Type	text/html; charset=utf-8
-		String contentType = req.getHeader("Content-Type"); 
-		String acceptEncoding = req.getHeader("Accept-Encoding"); // gzip, deflate
-		this.webWrite(out,"req.getHeader(\"Cookie\")" ,cookieStr);
-		this.webWrite(out,"req.getHeader(\"Content-Type\")" ,contentType);
-		// req.getHeader("Accept-Encoding") = "gzip, deflate"
-		this.webWrite(out,"req.getHeader(\"Accept-Encoding\")" ,acceptEncoding);
+			// 读取http的头部信息---
+			String cookieStr = req.getHeader("Cookie"); // H_PS_PSSID=20739_1436_18241_12005; path=/; domain=.baidu.com
+			// Content-Type	multipart/form-data; boundary=---------------------------312511929827998
+			// Content-Type	application/x-www-form-urlencoded; charset=UTF-8
+			// Content-Type	text/html; charset=utf-8
+			String contentType = req.getHeader("Content-Type"); 
+			String acceptEncoding = req.getHeader("Accept-Encoding"); // gzip, deflate
+			this.webWrite(out,"req.getHeader(\"Cookie\")" ,cookieStr);
+			this.webWrite(out,"req.getHeader(\"Content-Type\")" ,contentType);
+			// req.getHeader("Accept-Encoding") = "gzip, deflate"
+			this.webWrite(out,"req.getHeader(\"Accept-Encoding\")" ,acceptEncoding);
 
-		// 读取和设置编码类型
-		// req.setCharacterEncoding("utf-8"); // 改变编码类型
-		String characterEncoding = req.getCharacterEncoding(); // 头部声明的编码类型，"utf-8"
-		this.webWrite(out,"req.getCharacterEncoding()" ,characterEncoding);
+			// 读取和设置编码类型
+			// req.setCharacterEncoding("utf-8"); // 改变编码类型
+			String characterEncoding = req.getCharacterEncoding(); // 头部声明的编码类型，"utf-8"
+			this.webWrite(out,"req.getCharacterEncoding()" ,characterEncoding);
 
-		// 读取Servlet的路径
-		// <servlet-mapping><url-pattern>/hello/*</url-pattern></servlet-mapping> 
-		// req.getServletPath() = "/hello"
-		String servletPath = req.getServletPath(); 
-		this.webWrite(out,"req.getServletPath()" ,servletPath);
+			// 读取Servlet的路径
+			// <servlet-mapping><url-pattern>/hello/*</url-pattern></servlet-mapping> 
+			// req.getServletPath() = "/hello"
+			String servletPath = req.getServletPath(); 
+			this.webWrite(out,"req.getServletPath()" ,servletPath);
 
-		// 读取查询字符串
-		// req.getQueryString() = "a=value1&b=value2"
-		String queryString = req.getQueryString();
-		this.webWrite(out,"req.getQueryString()" ,queryString);
+			// 读取查询字符串
+			// req.getQueryString() = "a=value1&b=value2"
+			String queryString = req.getQueryString();
+			this.webWrite(out,"req.getQueryString()" ,queryString);
 
-		// 取得参数
-		// req.getQueryString() = "a=value1&b=value2"
-		String username = req.getParameter("username");
-		this.webWrite(out,"req.getParameter(\"username\")" ,username);
+			// 取得参数
+			// req.getQueryString() = "a=value1&b=value2"
+			String username = req.getParameter("username");
+			this.webWrite(out,"req.getParameter(\"username\")" ,username);
 
-		// 读取上下文地址，如：example
-		// req.getContextPath() = "/test"
-		String contextPath = req.getContextPath();
-		this.webWrite(out,"req.getContextPath()" ,contextPath);
+			// 读取上下文地址，如：example
+			// req.getContextPath() = "/test"
+			String contextPath = req.getContextPath();
+			this.webWrite(out,"req.getContextPath()" ,contextPath);
 
-		// 设置属性
-		req.setAttribute("key1", "value1...");
-		String value1 = (String) req.getAttribute("key1");
-		this.webWrite(out,"req.setAttribute(\"key1\",\"value1...\")" ,value1);
+			// 设置属性
+			req.setAttribute("key1", "value1...");
+			String value1 = (String) req.getAttribute("key1");
+			this.webWrite(out,"req.setAttribute(\"key1\",\"value1...\")" ,value1);
 
-		// 应用上下文，生命周期跟服务器一样
-		// servletContext == org.apache.catalina.core.ApplicationContextFacade
-		// req.getServletContext().getContextPath() = "/test"
-		// req.getServletContext().getRealPath("/") = "E:\Repository\EclipseRepository\tomcat8.x\webapps\test\"
-		// req.getServletContext().getServletContextName() = "Welcome to Tomcat"
-		// req.getServletContext().getServerInfo() = "Apache Tomcat/@VERSION@"
-		// req.getServletContext().getResource("/") = "file:/E:/Repository/EclipseRepository/tomcat8.x/webapps/test/"
-		ServletContext servletContext = req.getServletContext();
-		this.webWrite(out,"req.getServletContext().getContextPath()" ,servletContext.getContextPath());
-		this.webWrite(out,"req.getServletContext().getRealPath(\"/\")" ,servletContext.getRealPath("/"));
-		this.webWrite(out,"req.getServletContext().getServletContextName()" ,servletContext.getServletContextName());
-		this.webWrite(out,"req.getServletContext().getServerInfo()" ,servletContext.getServerInfo());
-		this.webWrite(out,"req.getServletContext().getResource(\"/\")" ,servletContext.getResource("/").toString());
+			// 应用上下文，生命周期跟服务器一样
+			// servletContext == org.apache.catalina.core.ApplicationContextFacade
+			// req.getServletContext().getContextPath() = "/test"
+			// req.getServletContext().getRealPath("/") = "E:\Repository\EclipseRepository\tomcat8.x\webapps\test\"
+			// req.getServletContext().getServletContextName() = "Welcome to Tomcat"
+			// req.getServletContext().getServerInfo() = "Apache Tomcat/@VERSION@"
+			// req.getServletContext().getResource("/") = "file:/E:/Repository/EclipseRepository/tomcat8.x/webapps/test/"
+			ServletContext servletContext = req.getServletContext();
+			this.webWrite(out,"req.getServletContext().getContextPath()" ,servletContext.getContextPath());
+			this.webWrite(out,"req.getServletContext().getRealPath(\"/\")" ,servletContext.getRealPath("/"));
+			this.webWrite(out,"req.getServletContext().getServletContextName()" ,servletContext.getServletContextName());
+			this.webWrite(out,"req.getServletContext().getServerInfo()" ,servletContext.getServerInfo());
+			this.webWrite(out,"req.getServletContext().getResource(\"/\")" ,servletContext.getResource("/").toString());
 
 
-		Cookie cookie = new Cookie("cookie1", "value1");
-		cookie.setHttpOnly(true);
-		cookie.setPath("/");
-		cookie.setComment("comment");
-		cookie.setMaxAge(3600);
-		resp.addCookie(cookie);
+			Cookie cookie = new Cookie("cookie1", "value1");
+			cookie.setHttpOnly(true);
+			cookie.setPath("/");
+			cookie.setComment("comment");
+			cookie.setMaxAge(3600);
+			resp.addCookie(cookie);
 
-		resp.addCookie(new Cookie("cookie2", "value2"));
+			resp.addCookie(new Cookie("cookie2", "value2"));
 
-		// org.apache.catalina.core.ApplicationDispatcher.forward(req, resp);
-		//		req.getRequestDispatcher("/hello?parmam1=value1&param2=value2").forward(req, resp);
+			// org.apache.catalina.core.ApplicationDispatcher.forward(req, resp);
+			//		req.getRequestDispatcher("/hello?parmam1=value1&param2=value2").forward(req, resp);
 
-		// 重定向
-		resp.sendRedirect(req.getContextPath()+"/index.html"); 
+			// 重定向
+			resp.sendRedirect(req.getContextPath()+"/index.html"); 
+			return;
+		}
+		
 	}
+
 
 	/**
 	 * 使用实例管理器
@@ -394,5 +408,13 @@ public class HelloServlet extends HttpServlet {
 		// 转发
 		req.getRequestDispatcher("/index.html").forward(req, resp);
 	}
-
+	
+	/**
+	 * 转发器
+	 */
+	public void testApplicationDispatcher(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		resp.sendRedirect(req.getContextPath()+"/index.html"); 
+		req.getRequestDispatcher("/index.html").forward(req, resp);
+		req.getRequestDispatcher("/index.html").include(req, resp);
+	}
 }

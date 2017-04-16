@@ -96,6 +96,7 @@ public class ResponseFacade
      */
     public ResponseFacade(Response response) {
 
+    	 //  response === org.apache.catalina.connector.Response
          this.response = response;
     }
 

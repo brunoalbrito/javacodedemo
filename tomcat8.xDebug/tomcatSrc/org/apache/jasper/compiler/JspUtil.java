@@ -166,7 +166,7 @@ public class JspUtil {
 
         for (int i = 0; i < validAttributes.length; i++) { // 迭代支持的属性列表
             int attrPos;
-            if (validAttributes[i].mandatory) {
+            if (validAttributes[i].mandatory) {// 强制
                 attrPos = temp.indexOf(validAttributes[i].name);
                 if (attrPos != -1) {
                     temp.remove(attrPos); // 如果合法，就移除掉

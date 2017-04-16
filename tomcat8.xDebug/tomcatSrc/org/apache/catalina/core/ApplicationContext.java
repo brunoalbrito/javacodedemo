@@ -114,9 +114,9 @@ public class ApplicationContext implements ServletContext {
     public ApplicationContext(StandardContext context) {
         super();
         this.context = context;
-        // org.apache.catalina.core.StandardHost
-        // org.apache.catalina.core.StandardEngine
-        // org.apache.catalina.core.StandardService
+        // context.getParent() === org.apache.catalina.core.StandardHost
+        // context.getParent().getParent() === org.apache.catalina.core.StandardEngine
+        // service === org.apache.catalina.core.StandardService
         this.service = ((Engine) context.getParent().getParent()).getService();
         this.sessionCookieConfig = new ApplicationSessionCookieConfig(context);
 
@@ -453,6 +453,7 @@ public class ApplicationContext implements ServletContext {
             // uriMB === "/example/a/b/c/file.jsp"
             // uriMB === "/example/a/b/c/HellorvSelet"
             // uriMB === "/test/hello"
+            // service === org.apache.catalina.core.StandardService
             service.getMapper().map(context, uriMB, mappingData);//!!!! 匹配路由
             if (mappingData.wrapper == null) { // 找到包装器
                 return (null);
@@ -484,10 +485,10 @@ public class ApplicationContext implements ServletContext {
 
         mappingData.recycle(); // 回收掉原来映射器的信息
 
-        String encodedUri = URLEncoder.DEFAULT.encode(uriCC.toString()); // 如: "/test/hello"
+        String encodedUri = URLEncoder.DEFAULT.encode(uriCC.toString()); // 如: "/hello"
 
         // Construct a RequestDispatcher to process this request
-        // org.apache.catalina.core.ApplicationDispatcher
+        // !!! org.apache.catalina.core.ApplicationDispatcher
         return new ApplicationDispatcher(wrapper, encodedUri, wrapperPath, pathInfo,
                 queryString, mapping, null);
     }

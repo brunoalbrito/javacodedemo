@@ -200,7 +200,7 @@ class ParserController implements TagConstants {
 
         // inFileName === "/a/b/c/file.jsp"
         String absFileName = resolveFileName(inFileName); // absFileName == "/a/b/c/file.jsp"
-        String jspConfigPageEnc = getJspConfigPageEncoding(absFileName); // 查找指定文件规则的页面编码类型(如：*.jsp)
+        String jspConfigPageEnc = getJspConfigPageEncoding(absFileName); // 查找配置文件中定义的指定文件规则的页面编码类型(如：*.jsp)
 
         // Figure out what type of JSP document and encoding type we are
         // dealing with
@@ -275,7 +275,7 @@ class ParserController implements TagConstants {
 
         JspConfig jspConfig = ctxt.getOptions().getJspConfig();
         JspConfig.JspProperty jspProperty
-            = jspConfig.findJspProperty(absFileName); // 查找指定文件规则的页面编码类型(如：*.jsp)
+            = jspConfig.findJspProperty(absFileName); // 查找配置文件中定义的指定文件规则的页面编码类型(如：*.jsp)
         return jspProperty.getPageEncoding();
     }
 

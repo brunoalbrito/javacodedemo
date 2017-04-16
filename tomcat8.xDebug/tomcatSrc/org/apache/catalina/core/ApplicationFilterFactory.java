@@ -76,7 +76,7 @@ public final class ApplicationFilterFactory {
             filterChain = new ApplicationFilterChain();
         }
 
-        filterChain.setServlet(servlet);
+        filterChain.setServlet(servlet); // 设置Servlet
         filterChain.setServletSupportsAsync(wrapper.isAsyncSupported());
 
         // Acquire the filter mappings for this Context
@@ -104,7 +104,7 @@ public final class ApplicationFilterFactory {
             if (!matchDispatcher(filterMaps[i] ,dispatcher)) {
                 continue;
             }
-            if (!matchFiltersURL(filterMaps[i], requestPath)) // 匹配请求地址
+            if (!matchFiltersURL(filterMaps[i], requestPath)) // 匹配请求地址 requestPath
                 continue;
             // 在org.apache.catalina.core.StandardContext.filterStart() 已经把
             // context === org.apache.catalina.core.StandardContext
@@ -123,7 +123,7 @@ public final class ApplicationFilterFactory {
             if (!matchDispatcher(filterMaps[i] ,dispatcher)) {
                 continue;
             }
-            if (!matchFiltersServlet(filterMaps[i], servletName))  // 匹配Servlet的名称
+            if (!matchFiltersServlet(filterMaps[i], servletName))  // 匹配Servlet的名称 servletName
                 continue;
             ApplicationFilterConfig filterConfig = (ApplicationFilterConfig)
                 context.findFilterConfig(filterMaps[i].getFilterName());

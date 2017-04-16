@@ -220,7 +220,7 @@ public class ApplicationContextFacade implements ServletContext {
                                                     new Object[]{path});
         } else {
         	// context == org.apache.catalina.core.ApplicationContext
-            return context.getRequestDispatcher(path);
+            return context.getRequestDispatcher(path); // org.apache.catalina.core.ApplicationDispatcher
         }
     }
 

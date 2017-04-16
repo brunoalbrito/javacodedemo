@@ -1,0 +1,11 @@
+0:0:0:0:0:0:0:1 - - [15/Apr/2017:22:51:16 +0800] "GET /hello?parmam1=value1&param2=value2 HTTP/1.1" 404 1010
+0:0:0:0:0:0:0:1 - - [15/Apr/2017:22:51:16 +0800] "GET /favicon.ico HTTP/1.1" 200 21630
+0:0:0:0:0:0:0:1 - - [15/Apr/2017:22:51:31 +0800] "GET /test/hello?parmam1=value1&param2=value2 HTTP/1.1" 302 -
+0:0:0:0:0:0:0:1 - - [15/Apr/2017:22:51:31 +0800] "GET /test/index.html HTTP/1.1" 200 459
+0:0:0:0:0:0:0:1 - - [15/Apr/2017:22:54:38 +0800] "GET /test/hello HTTP/1.1" 302 -
+0:0:0:0:0:0:0:1 - - [15/Apr/2017:22:54:39 +0800] "GET /test/index.html HTTP/1.1" 200 485
+0:0:0:0:0:0:0:1 - - [15/Apr/2017:22:54:49 +0800] "POST /test/hello HTTP/1.1" 200 485
+0:0:0:0:0:0:0:1 - - [15/Apr/2017:22:59:45 +0800] "POST /test/hello?urlparma1=urlparma1_value HTTP/1.1" 200 485
+0:0:0:0:0:0:0:1 - - [15/Apr/2017:22:59:56 +0800] "POST /test/hello?urlparma1=urlparma1_value HTTP/1.1" 404 1030
+0:0:0:0:0:0:0:1 - - [15/Apr/2017:23:00:20 +0800] "GET /test/hello HTTP/1.1" 302 -
+0:0:0:0:0:0:0:1 - - [15/Apr/2017:23:00:20 +0800] "GET /test/index.html HTTP/1.1" 200 485

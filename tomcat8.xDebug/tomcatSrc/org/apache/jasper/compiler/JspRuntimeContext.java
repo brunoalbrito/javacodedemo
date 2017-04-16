@@ -91,8 +91,8 @@ public final class JspRuntimeContext {
 
         // Get the parent class loader
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        if (loader == null) {
-            loader = this.getClass().getClassLoader(); // 类加载器
+        if (loader == null) { // 不成立
+            loader = this.getClass().getClassLoader();
         }
 
         if (log.isDebugEnabled()) {

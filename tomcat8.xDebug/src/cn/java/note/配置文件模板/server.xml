@@ -1,0 +1,356 @@
+<Server> <!-- org.apache.catalina.core.StandardServer -->
+	<GlobalNamingResources></GlobalNamingResources>  <!-- org.apache.catalina.deploy.NamingResourcesImpl -->
+	<Listener></Listener>
+	<Listener></Listener>
+	<Service>  <!-- org.apache.catalina.core.StandardService -->
+		<Listener></Listener>
+		<Listener></Listener>
+		<Executor></Executor> <!-- org.apache.catalina.core.StandardThreadExecutor -->
+		<Executor></Executor>
+		<Connector> <!--  org.apache.catalina.connector.Connector / StandardService.addConnector() -->
+			<SSLHostConfig>  <!--  org.apache.tomcat.util.net.SSLHostConfig  / Connector.addSslHostConfig() -->
+				<Certificate></Certificate>
+				<Certificate></Certificate>
+			</SSLHostConfig>
+			<SSLHostConfig>
+				<Certificate></Certificate>
+				<Certificate></Certificate>
+			</SSLHostConfig>
+			<Listener></Listener>
+			<Listener></Listener>
+			<UpgradeProtocol></UpgradeProtocol>
+			<UpgradeProtocol></UpgradeProtocol>
+		</Connector> 
+		<Connector>
+			<SSLHostConfig>
+				<Certificate></Certificate>
+				<Certificate></Certificate>
+			</SSLHostConfig>
+			<SSLHostConfig>
+				<Certificate></Certificate>
+				<Certificate></Certificate>
+			</SSLHostConfig>
+			<Listener></Listener>
+			<Listener></Listener>
+			<UpgradeProtocol></UpgradeProtocol>
+			<UpgradeProtocol></UpgradeProtocol>
+		</Connector> 
+		<Engine>	<!--  org.apache.catalina.core.StandardEngine   / StandardService.setContainer() -->
+			<Cluster>
+				<Manager>
+					<SessionIdGenerator></SessionIdGenerator> <!--  org.apache.catalina.util.StandardSessionIdGenerator   / setSessionIdGenerator() -->
+					<Channel>
+						<Membership></Membership>
+						<MembershipListener></MembershipListener>
+						<MembershipListener></MembershipListener>
+						<Sender>
+							<Transport></Transport>
+						</Sender>
+						<Receiver>
+							<Interceptor>
+								<LocalMember></LocalMember>
+								<Member></Member>
+								<Member></Member>
+							</Interceptor>
+							<Interceptor>
+								<LocalMember></LocalMember>
+								<Member></Member>
+								<Member></Member>
+							</Interceptor>
+						</Receiver>
+						<ChannelListener></ChannelListener>
+						<ChannelListener></ChannelListener>
+					</Channel>
+				</Manager>
+				<Valve></Valve>
+				<Valve></Valve>
+				<Deployer></Deployer>
+				<Listener></Listener>
+				<Listener></Listener>
+				<ClusterListener></ClusterListener>
+				<ClusterListener></ClusterListener>
+			</Cluster>
+			<Listener></Listener>
+			<Listener></Listener>
+			<Realm>
+				<Realm>
+					<Realm></Realm>
+				</Realm>
+			</Realm>
+			<Valve></Valve>
+			<Valve></Valve>
+			<Host> <!--  org.apache.catalina.core.StandardHost / StandardEngine.addChild() -->
+				<Alias></Alias>
+				<Alias></Alias>
+				<Cluster>
+					<Manager>
+						<SessionIdGenerator></SessionIdGenerator> <!--  org.apache.catalina.util.StandardSessionIdGenerator   / setSessionIdGenerator() -->
+						<Channel>
+							<Membership></Membership>
+							<MembershipListener></MembershipListener>
+							<MembershipListener></MembershipListener>
+							<Sender>
+								<Transport></Transport>
+							</Sender>
+							<Receiver>
+								<Interceptor>
+									<LocalMember></LocalMember>
+									<Member></Member>
+									<Member></Member>
+								</Interceptor>
+								<Interceptor>
+									<LocalMember></LocalMember>
+									<Member></Member>
+									<Member></Member>
+								</Interceptor>
+							</Receiver>
+							<ChannelListener></ChannelListener>
+							<ChannelListener></ChannelListener>
+						</Channel>
+					</Manager>
+					<Valve></Valve>
+					<Valve></Valve>
+					<Deployer></Deployer>
+					<Listener></Listener>
+					<Listener></Listener>
+					<ClusterListener></ClusterListener>
+					<ClusterListener></ClusterListener>
+				</Cluster>
+				<Listener></Listener>
+				<Listener></Listener>
+				<Realm>
+					<Realm>
+						<Realm></Realm>
+					</Realm>
+				</Realm>
+				<Valve></Valve>
+				<Valve></Valve>
+				<Context>  <!-- org.apache.catalina.core.StandardContext / StandardHost.addChild() -->
+					<Listener></Listener>
+					<Listener></Listener>
+					<Loader></Loader>
+					<Manager>
+						<Store></Store>
+						<SessionIdGenerator></SessionIdGenerator> <!-- org.apache.catalina.util.StandardSessionIdGenerator -->
+					</Manager>
+					<Parameter></Parameter>  <!-- org.apache.tomcat.util.descriptor.web.ApplicationParameter -->
+					<Parameter></Parameter>
+					<Realm>
+						<Realm>
+							<Realm></Realm>
+						</Realm>
+					</Realm>
+					<Ejb></Ejb>
+					<Ejb></Ejb>
+					<Environment></Environment>
+					<Environment></Environment>
+					<LocalEjb></LocalEjb>
+					<LocalEjb></LocalEjb>
+					<Resource></Resource>
+					<Resource></Resource>
+					<ResourceEnvRef></ResourceEnvRef>
+					<ResourceEnvRef></ResourceEnvRef>
+					<ServiceRef></ServiceRef>
+					<ServiceRef></ServiceRef>
+					<Transaction></Transaction>
+				</Context>
+				<Context>  <!-- org.apache.catalina.core.StandardContext -->
+					<Listener></Listener>
+					<Listener></Listener>
+					<Loader></Loader>
+					<Manager>
+						<Store></Store>
+						<SessionIdGenerator></SessionIdGenerator> <!-- org.apache.catalina.util.StandardSessionIdGenerator -->
+					</Manager>
+					<Parameter></Parameter>  <!-- org.apache.tomcat.util.descriptor.web.ApplicationParameter -->
+					<Parameter></Parameter>
+					<Realm>
+						<Realm>
+							<Realm></Realm>
+						</Realm>
+					</Realm>
+					<Ejb></Ejb>
+					<Ejb></Ejb>
+					<Environment></Environment>
+					<Environment></Environment>
+					<LocalEjb></LocalEjb>
+					<LocalEjb></LocalEjb>
+					<Resource></Resource>  <!-- jndi 资源 -->
+					<Resource></Resource>
+					<ResourceEnvRef></ResourceEnvRef>
+					<ResourceEnvRef></ResourceEnvRef>
+					<ServiceRef></ServiceRef>
+					<ServiceRef></ServiceRef>
+					<Transaction></Transaction>
+				</Context>
+			</Host>
+			<Host> <!--  org.apache.catalina.core.StandardHost -->
+				<Alias></Alias>
+				<Alias></Alias>
+				<Cluster>
+					<Manager>
+						<SessionIdGenerator></SessionIdGenerator> <!--  org.apache.catalina.util.StandardSessionIdGenerator   / setSessionIdGenerator() -->
+						<Channel>
+							<Membership></Membership>
+							<MembershipListener></MembershipListener>
+							<MembershipListener></MembershipListener>
+							<Sender>
+								<Transport></Transport>
+							</Sender>
+							<Receiver>
+								<Interceptor>
+									<LocalMember></LocalMember>
+									<Member></Member>
+									<Member></Member>
+								</Interceptor>
+								<Interceptor>
+									<LocalMember></LocalMember>
+									<Member></Member>
+									<Member></Member>
+								</Interceptor>
+							</Receiver>
+							<ChannelListener></ChannelListener>
+							<ChannelListener></ChannelListener>
+						</Channel>
+					</Manager>
+					<Valve></Valve>
+					<Valve></Valve>
+					<Deployer></Deployer>
+					<Listener></Listener>
+					<Listener></Listener>
+					<ClusterListener></ClusterListener>
+					<ClusterListener></ClusterListener>
+				</Cluster>
+				<Listener></Listener>
+				<Listener></Listener>
+				<Realm>
+					<Realm>
+						<Realm></Realm>
+					</Realm>
+				</Realm>
+				<Valve></Valve>
+				<Valve></Valve>
+				<Context>  <!-- org.apache.catalina.core.StandardContext -->
+					<Listener></Listener>
+					<Listener></Listener>
+					<Loader></Loader>
+					<Manager>
+						<Store></Store>
+						<SessionIdGenerator></SessionIdGenerator> <!-- org.apache.catalina.util.StandardSessionIdGenerator -->
+					</Manager>
+					<Parameter></Parameter>  <!-- org.apache.tomcat.util.descriptor.web.ApplicationParameter -->
+					<Parameter></Parameter>
+					<Realm>
+						<Realm>
+							<Realm></Realm>
+						</Realm>
+					</Realm>
+					<Resources> <!-- org.apache.catalina.webresources.StandardRoot -->
+						<PreResources></PreResources>
+						<PreResources></PreResources>
+						<JarResources></JarResources>
+						<JarResources></JarResources>
+						<PostResources></PostResources>
+						<PostResources></PostResources>
+						<ResourceLink></ResourceLink>
+						<ResourceLink></ResourceLink>
+						<Valve></Valve>
+						<Valve></Valve>
+						<WatchedResource></WatchedResource>
+						<WatchedResource></WatchedResource>
+						<WrapperLifecycle></WrapperLifecycle>
+						<WrapperLifecycle></WrapperLifecycle>
+						<WrapperListener></WrapperListener>
+						<WrapperListener></WrapperListener>
+						<JarScanner>
+							<JarScanFilter></JarScanFilter>
+						</JarScanner>
+						<CookieProcessor></CookieProcessor>
+					</Resources>
+					<Ejb></Ejb>
+					<Ejb></Ejb>
+					<Environment></Environment>
+					<Environment></Environment>
+					<LocalEjb></LocalEjb>
+					<LocalEjb></LocalEjb>
+					<Resource></Resource>
+					<Resource></Resource>
+					<ResourceEnvRef></ResourceEnvRef>
+					<ResourceEnvRef></ResourceEnvRef>
+					<ServiceRef></ServiceRef>
+					<ServiceRef></ServiceRef>
+					<Transaction></Transaction>
+				</Context>
+				<Context>  <!-- org.apache.catalina.core.StandardContext -->
+					<Listener></Listener>
+					<Listener></Listener>
+					<Loader></Loader>
+					<Manager>
+						<Store></Store>
+						<SessionIdGenerator></SessionIdGenerator> <!-- org.apache.catalina.util.StandardSessionIdGenerator -->
+					</Manager>
+					<Parameter></Parameter>  <!-- org.apache.tomcat.util.descriptor.web.ApplicationParameter -->
+					<Parameter></Parameter>
+					<Realm>
+						<Realm>
+							<Realm></Realm>
+						</Realm>
+					</Realm>
+					<Resources> <!-- org.apache.catalina.webresources.StandardRoot -->
+						<PreResources></PreResources>
+						<PreResources></PreResources>
+						<JarResources></JarResources>
+						<JarResources></JarResources>
+						<PostResources></PostResources>
+						<PostResources></PostResources>
+						<ResourceLink></ResourceLink>
+						<ResourceLink></ResourceLink>
+						<Valve></Valve>
+						<Valve></Valve>
+						<WatchedResource></WatchedResource>
+						<WatchedResource></WatchedResource>
+						<WrapperLifecycle></WrapperLifecycle>
+						<WrapperLifecycle></WrapperLifecycle>
+						<WrapperListener></WrapperListener>
+						<WrapperListener></WrapperListener>
+						<JarScanner>
+							<JarScanFilter></JarScanFilter>
+						</JarScanner>
+						<CookieProcessor></CookieProcessor>
+					</Resources>
+					<Ejb></Ejb>   <!-- org.apache.tomcat.util.descriptor.web.ContextEjb / StandardContext.getNamingResources().addEjb() -->
+					<Ejb></Ejb>
+					<Environment></Environment> <!-- org.apache.tomcat.util.descriptor.web.ContextEnvironment / StandardContext.getNamingResources().addEnvironment() -->
+					<Environment></Environment>
+					<LocalEjb></LocalEjb> <!-- org.apache.tomcat.util.descriptor.web.ContextLocalEjb / StandardContext.getNamingResources().addLocalEjb() -->
+					<LocalEjb></LocalEjb>
+					<!-- org.apache.tomcat.util.descriptor.web.ContextResource / StandardContext.getNamingResources().addResource() --> <!-- jndi 资源 -->
+					<Resource></Resource> 
+					<Resource></Resource>
+					<!-- org.apache.tomcat.util.descriptor.web.ContextResourceEnvRef / StandardContext.getNamingResources().addResourceEnvRef() --> 
+					<ResourceEnvRef></ResourceEnvRef> 
+					<ResourceEnvRef></ResourceEnvRef>
+					<ServiceRef></ServiceRef> <!-- org.apache.tomcat.util.descriptor.web.ContextService / StandardContext.getNamingResources().addService() --> 
+					<ServiceRef></ServiceRef>
+					<!-- org.apache.tomcat.util.descriptor.web.ContextTransaction / StandardContext.getNamingResources().setTransaction() --> 
+					<Transaction></Transaction> 
+				</Context>
+			</Host>
+		</Engine> 
+	</Service>
+	<GlobalNamingResources>
+		<Ejb></Ejb> <!-- org.apache.tomcat.util.descriptor.web.ContextEjb / StandardServer.addEjb() -->
+		<Ejb></Ejb>
+		<Environment></Environment>
+		<Environment></Environment>
+		<LocalEjb></LocalEjb>
+		<LocalEjb></LocalEjb>
+		<Resource></Resource> <!-- org.apache.tomcat.util.descriptor.web.ContextResource / StandardServer.addResource() --> <!-- jndi 资源 -->
+		<Resource></Resource>
+		<ResourceEnvRef></ResourceEnvRef>
+		<ResourceEnvRef></ResourceEnvRef>
+		<ServiceRef></ServiceRef>
+		<ServiceRef></ServiceRef>
+		<Transaction></Transaction>
+	</GlobalNamingResources>
+</Server>

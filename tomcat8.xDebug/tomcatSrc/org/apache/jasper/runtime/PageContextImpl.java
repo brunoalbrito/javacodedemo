@@ -483,13 +483,13 @@ public class PageContextImpl extends PageContext {
         if (o != null)
             return o;
 
-        o = request.getAttribute(name);
+        o = request.getAttribute(name); // 尝试获取
         if (o != null)
             return o;
 
         if (session != null) {
             try {
-                o = session.getAttribute(name);
+                o = session.getAttribute(name); // 尝试获取
             } catch(IllegalStateException ise) {
                 // Session has been invalidated.
                 // Ignore and fall through to application scope.
@@ -498,7 +498,7 @@ public class PageContextImpl extends PageContext {
                 return o;
         }
 
-        return context.getAttribute(name);
+        return context.getAttribute(name); // 尝试获取
     }
 
     @Override

@@ -502,12 +502,12 @@ public abstract class Compiler {
         if (!targetFile.exists()) { // 类文件不存在
             return true; //!!!!
         }
-        long targetLastModified = targetFile.lastModified();
-        if (checkClass && jsw != null) {
+        long targetLastModified = targetFile.lastModified(); // class文件的修改时间
+        if (checkClass && jsw != null) { 
             jsw.setServletClassLastModifiedTime(targetLastModified);
         }
 
-        Long jspRealLastModified = ctxt.getLastModified(ctxt.getJspFile());
+        Long jspRealLastModified = ctxt.getLastModified(ctxt.getJspFile()); // jsp文件的修改时间
         if (jspRealLastModified.longValue() < 0) {
             // Something went wrong - assume modification
             return true;

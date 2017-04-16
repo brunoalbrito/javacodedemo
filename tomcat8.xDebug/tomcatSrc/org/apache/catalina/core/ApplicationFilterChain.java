@@ -227,7 +227,7 @@ final class ApplicationFilterChain implements FilterChain {
                                            args,
                                            principal);
             } else {
-                servlet.service(request, response); // 只是Servlet
+                servlet.service(request, response); //  执行 Servlet
             }
         } catch (IOException | ServletException | RuntimeException e) {
             throw e;

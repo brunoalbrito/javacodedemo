@@ -80,10 +80,18 @@
 			<default-content-type>text/html; charset=utf-8</default-content-type><!-- 输出内容的编码类型 -->
 		</jsp-property-group>
 		<jsp-property-group>
-			<url-pattern>/jspurltpl/*</url-pattern>
+			<url-pattern>/jsp/*</url-pattern>
 			<el-ignored>false</el-ignored>
 			<page-encoding>UTF-8</page-encoding><!-- jsp文件的编码类型 -->
-			<include-coda>/WEB-INF/jsp/common/header.jsp</include-coda>
+			<deferred-syntax-allowed-as-literal>true</deferred-syntax-allowed-as-literal> <!-- ==true时，表示 #{} 为el表达式 -->
+			<trim-directive-whitespaces>true</trim-directive-whitespaces>
+			<default-content-type>text/html; charset=utf-8</default-content-type><!-- 输出内容的编码类型 -->
+		</jsp-property-group>
+		<jsp-property-group>
+			<url-pattern>/jsp/autoinclude/*</url-pattern>
+			<page-encoding>UTF-8</page-encoding><!-- jsp文件的编码类型 -->
+			<include-prelude>/WEB-INF/jsp/common/header.jsp</include-prelude><!-- 自动引入头部 -->
+			<include-coda>/WEB-INF/jsp/common/footer.jsp</include-coda> <!-- 自动引入底部 -->
 			<trim-directive-whitespaces>true</trim-directive-whitespaces>
 			<default-content-type>text/html; charset=utf-8</default-content-type><!-- 输出内容的编码类型 -->
 		</jsp-property-group>

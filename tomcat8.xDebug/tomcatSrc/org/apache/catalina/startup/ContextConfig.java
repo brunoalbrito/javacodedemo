@@ -1391,7 +1391,8 @@ public class ContextConfig implements LifecycleListener {
             context.getNamingResources().addService(service);
         }
         for (ServletDef servlet : webxml.getServlets().values()) { // 添加Servlet对象
-//        	org.apache.catalina.core.StandardContext.createWrapper();
+        	// servlet ===  org.apache.tomcat.util.descriptor.web.ServletDef
+        	// org.apache.catalina.core.StandardContext.createWrapper();
         	// 创建org.apache.catalina.core.StandardWrapper对象
         	// 给wrapper添加生命周期监听器
         	// 给wrapper添加容器监听器
@@ -1420,8 +1421,7 @@ public class ContextConfig implements LifecycleListener {
                         roleRef.getName(), roleRef.getLink());
             }
             wrapper.setServletClass(servlet.getServletClass()); // Servlet的类名
-            
-            //servlet ===  org.apache.tomcat.util.descriptor.web.ServletDef
+            // servlet ===  org.apache.tomcat.util.descriptor.web.ServletDef
             // 设置文件上传的配置
 //            <web-app>
 //	        	<servlet>
@@ -1434,7 +1434,7 @@ public class ContextConfig implements LifecycleListener {
 //	        	</servlet>
 //	        </web-app>
             MultipartDef multipartdef = servlet.getMultipartDef();
-            if (multipartdef != null) {
+            if (multipartdef != null) {  // 对文件上传的支持
                 if (multipartdef.getMaxFileSize() != null &&
                         multipartdef.getMaxRequestSize()!= null &&
                         multipartdef.getFileSizeThreshold() != null) {

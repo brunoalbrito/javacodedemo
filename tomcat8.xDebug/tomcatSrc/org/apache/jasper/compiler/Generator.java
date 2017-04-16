@@ -1358,6 +1358,7 @@ class Generator {
             String canonicalName = null; // Canonical name for klass
             if (klass != null) {
                 try {
+                	// ctxt === org.apache.jasper.JspCompilationContext
                     Class<?> bean = ctxt.getClassLoader().loadClass(klass);
                     if (klass.indexOf('$') >= 0) {
                         // Obtain the canonical type name

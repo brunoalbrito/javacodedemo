@@ -27,7 +27,7 @@ public class WebappServiceLoader<T>  {
 		LinkedHashSet<String> servicesFound = new LinkedHashSet<>();
 		
 		// 查找要初始化的类
-		servicesFound = this.checkAndParseFile();
+		servicesFound = this.checkAndParseFile(); // !!!
 
 		// 加载类、创建对象、转成某种类型的引用
 		ClassLoader loader = this.getClass().getClassLoader();

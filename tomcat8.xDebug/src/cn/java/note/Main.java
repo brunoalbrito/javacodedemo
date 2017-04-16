@@ -3,6 +3,10 @@ import org.apache.catalina.startup.Bootstrap;
 public class Main {
 
 	public static void main(String[] args) {
+		/**
+		 	http://localhost:8080/test/jsp/autoinclude/index.jsp
+		 	http://localhost:8080/test/jsp/index.jsp
+		 */
 		Bootstrap.main(args);
 
 //				Bootstrap.main(new String[]{"stop"});

@@ -227,6 +227,7 @@ public class RequestFacade implements HttpServletRequest {
      */
     public RequestFacade(Request request) {
 
+    	// request === org.apache.catalina.connector.Request
         this.request = request;
 
     }
@@ -612,7 +613,7 @@ public class RequestFacade implements HttpServletRequest {
             return AccessController.doPrivileged(
                 new GetRequestDispatcherPrivilegedAction(path));
         } else {
-            return request.getRequestDispatcher(path);//!!!
+            return request.getRequestDispatcher(path);// !!!  org.apache.catalina.core.ApplicationDispatcher
         }
     }
 

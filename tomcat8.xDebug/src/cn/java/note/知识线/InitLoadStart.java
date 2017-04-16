@@ -7,10 +7,15 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.management.ObjectName;
 import javax.naming.Reference;
 import javax.naming.StringRefAddr;
+import javax.servlet.DispatcherType;
+import javax.servlet.Filter;
+import javax.servlet.MultipartConfigElement;
 import javax.servlet.ServletContextAttributeListener;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -21,11 +26,26 @@ import javax.servlet.http.HttpSessionIdListener;
 import javax.servlet.http.HttpSessionListener;
 
 import org.apache.catalina.Context;
+import org.apache.catalina.Globals;
 import org.apache.catalina.Server;
+import org.apache.catalina.Wrapper;
+import org.apache.catalina.connector.Request;
+import org.apache.catalina.core.ApplicationFilterChain;
+import org.apache.catalina.core.ApplicationFilterConfig;
+import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.deploy.NamingResourcesImpl;
+import org.apache.coyote.Response;
+import org.apache.coyote.http11.Http11InputBuffer;
+import org.apache.coyote.http11.Http11OutputBuffer;
+import org.apache.coyote.http11.Http11Processor;
 import org.apache.naming.NamingContext;
 import org.apache.naming.ResourceRef;
 import org.apache.tomcat.util.descriptor.web.ContextResource;
+import org.apache.tomcat.util.descriptor.web.FilterDef;
+import org.apache.tomcat.util.descriptor.web.FilterMap;
+import org.apache.tomcat.util.descriptor.web.MultipartDef;
+import org.apache.tomcat.util.descriptor.web.ServletDef;
+import org.apache.tomcat.util.http.Rfc6265CookieProcessor;
 import org.apache.tomcat.util.modeler.Registry;
 import org.apache.tomcat.util.net.NioSelectorPool;
 
@@ -192,14 +212,16 @@ public class InitLoadStart {
 						 						org.apache.catalina.startup.HostConfig.deployApps(){
 						 							org.apache.catalina.core.StandardContext.start(){ // 根目录下的应用  === /home/tomcat/webapps/webapp1
 						 								//...
-						 								cookieProcessor = new Rfc6265CookieProcessor(); // 定义cookie处理器
+						 								if (cookieProcessor == null) { // cookie处理器
+												            cookieProcessor = new Rfc6265CookieProcessor();//!!! 默认走这里
+												        }
 						 								
 						 								postWorkDirectory(); // 部署工作目录，如  /home/tomcat/work/Catalina/localhost/webapp1
 							 							
 							 							if (getNamingContextListener() == null) { //
 											            	// 创建名称上下文监听器
-											                NamingContextListener ncl = new NamingContextListener();
-											                ncl.setName(getNamingContextName());
+											                NamingContextListener ncl = new NamingContextListener(); // NamingContextListener.lifecycleEvent() 用来创建上下文
+											                ncl.setName(getNamingContextName()); // "/Catalina/localhost/webapp1"
 											                ncl.setExceptionOnFailedWrite(getJndiExceptionOnFailedWrite());
 											                // 把名称上下文监听器注入 org.apache.catalina.core.StandardContext
 											                addLifecycleListener(ncl);
@@ -263,15 +285,67 @@ public class InitLoadStart {
 														            ContextConfig.convertJsps(webXml);
 														            // context === org.apache.catalina.core.StandardContext
 														            // 把解析处理的内容设置到 context = StandardContext中 ，如：context.addFilterMap(filterMap);
-														            ContextConfig.configureContext(webXml) { //!!!!!
+														            ContextConfig.configureContext(webXml) { // !!!!! webXml为解析(全局web.xml文件+默认上下文的web.xml+上下文的web.xml)的临时容器
 														            	...
-														            	读取web.xml解析处理的对象webXml的属性设置到StandardContext对象中
-														            	（中途要把ServletDef对象转成 org.apache.catalina.core.StandardWrapper 对象）
-														            	StandardContext.addChild(wrapper){
-														            		wrapper.start();
+														            	for (FilterDef filter : webxml.getFilters().values()) { // 过滤器
+														            		context.addFilterDef(filter);
+    																	}
+    																	for (FilterMap filterMap : webxml.getFilterMappings()) { // 过滤器映射
+																            context.addFilterMap(filterMap);
+																        }
+																        for (ServletDef servlet : webxml.getServlets().values()) { // 添加Servlet对象
+																        	// org.apache.catalina.core.StandardContext.createWrapper();
+																        	// 创建org.apache.catalina.core.StandardWrapper对象
+																        	// 给wrapper添加生命周期监听器
+																        	// 给wrapper添加容器监听器
+																            Wrapper wrapper = context.createWrapper(); 
+																            if (servlet.getLoadOnStartup() != null) {
+																                wrapper.setLoadOnStartup(servlet.getLoadOnStartup().intValue());
+																            }
+																            wrapper.setName(servlet.getServletName()); // servlet的名称
+																            Map<String,String> params = servlet.getParameterMap(); // Servlet的属性
+																            for (Entry<String, String> entry : params.entrySet()) {
+																                wrapper.addInitParameter(entry.getKey(), entry.getValue());
+																            }
+																            wrapper.setServletClass(servlet.getServletClass()); // Servlet的类名
+																            // servlet ===  org.apache.tomcat.util.descriptor.web.ServletDef
+																            // 设置文件上传的配置
+																//            <web-app>
+																//	        	<servlet>
+																//	        		<multipart-config>
+																//		            <!-- 50MB max -->
+																//		            <max-file-size>52428800</max-file-size>
+																//		            <max-request-size>52428800</max-request-size>
+																//		            <file-size-threshold>0</file-size-threshold>
+																//		          </multipart-config>
+																//	        	</servlet>
+																//	        </web-app>
+																            MultipartDef multipartdef = servlet.getMultipartDef();
+																            if (multipartdef != null) { // 对文件上传的支持，在自定义的Servlet中调用req.getParameter("param0")，这边的配置就会起到作用
+																                if (multipartdef.getMaxFileSize() != null &&
+																                        multipartdef.getMaxRequestSize()!= null &&
+																                        multipartdef.getFileSizeThreshold() != null) {
+																                	// 设置文件上传的配置
+																                    wrapper.setMultipartConfigElement(new MultipartConfigElement(
+																                            multipartdef.getLocation(),
+																                            Long.parseLong(multipartdef.getMaxFileSize()),
+																                            Long.parseLong(multipartdef.getMaxRequestSize()),
+																                            Integer.parseInt(
+																                                    multipartdef.getFileSizeThreshold())));
+																                } else {
+																                	// org.apache.catalina.core.StandardWrapper
+																                    wrapper.setMultipartConfigElement(new MultipartConfigElement(
+																                            multipartdef.getLocation()));
+																                }
+																            }
+																//          context === org.apache.catalina.core.StandardContext
+																//          wrapper ===  org.apache.catalina.core.StandardWrapper
+																            context.addChild(wrapper);
+																            {
+																            	wrapper.start();
+																            }
 														            	}
-														            	触发在org.apache.catalina.core.NamingContextListener事件处理器中，内部调用了createNamingContext()创建 envCtx
-														            } 
+													            	}
 										 							
 										 							if (ok) {
 															        	// org.apache.jasper.servlet.JasperInitializer  jasper.jar
@@ -297,7 +371,6 @@ public class InitLoadStart {
 															                }
 															            }
 															        }
-										 							
 								 								}
 							 								}
 							 								
@@ -398,7 +471,7 @@ public class InitLoadStart {
 											                    }
 											                    Map<String, Map<String, String>> injectionMap = buildInjectionMap(
 											                            getIgnoreAnnotations() ? new NamingResourcesImpl(): getNamingResources());
-											                    // 设置实例管理器 org.apache.catalina.core.DefaultInstanceManager，JNDI资源是通过“注解”注入的
+											                    // !!! 设置实例管理器 org.apache.catalina.core.DefaultInstanceManager，JNDI资源是通过“注解”注入的
 											                    setInstanceManager(new DefaultInstanceManager(context,
 											                            injectionMap, this, this.getClass().getClassLoader()));
 											                }
@@ -411,7 +484,7 @@ public class InitLoadStart {
 											                initializers.entrySet()) { // 调用容器初始化器 ，
 											            	// org.apache.jasper.servlet.JasperInitializer  jasper.jar
 											                // org.apache.tomcat.websocket.server.WsSci    tomcat-websocket.jar
-											            	 org.apache.jasper.servlet.JasperInitializer.onStartup(); { // --- 
+											            	 org.apache.jasper.servlet.JasperInitializer.onStartup(); { // --- 对jsp文件的支持
 											            	 	// 扫描web.xml文件中 <jsp-config> 标签的配置,构造tld文件的对象树
 													        	// 扫描/WEB-INF/tags/implicit.tld文件,构造tld文件的对象树
 													            // 扫描/WEB-INF/中以.tld结尾的文件,构造tld文件的对象树
@@ -429,7 +502,7 @@ public class InitLoadStart {
 														                new TldCache(context, scanner.getUriTldResourcePathMap(),
 														                        scanner.getTldResourcePathTaglibXmlMap()));
 											            	 }
-											            	 org.apache.tomcat.websocket.server.WsSci.onStartup(); { // --- websocket的支持
+											            	 org.apache.tomcat.websocket.server.WsSci.onStartup(); { // --- 对websocket的支持
 											            	 	....
 											            	 	servletContext.addListener(new WsSessionListener(sc));
 											            	 	....
@@ -512,7 +585,7 @@ public class InitLoadStart {
 											
 											            // Configure and call application filters
 											            if (ok) {
-											            	 // 启动过滤器，会把org.apache.tomcat.util.descriptor.web.FilterDef 转成对象 org.apache.catalina.core.ApplicationFilterConfig
+											            	// 启动过滤器，会把org.apache.tomcat.util.descriptor.web.FilterDef 转成对象 org.apache.catalina.core.ApplicationFilterConfig
 											                filterStart(){
 											                    ApplicationFilterConfig filterConfig = new ApplicationFilterConfig(this, entry.getValue());{ // this === StandardContext
 											                    	 getFilter(){
@@ -545,7 +618,7 @@ public class InitLoadStart {
 														            }
 														            list.add(wrapper);
 														        }
-														        // Load the collected "load on startup" servlets
+														        // Load the collected "load on startup" servlets  要在load的时候，就启动的Servlet
 														        for (ArrayList<Wrapper> list : map.values()) {
 														            for (Wrapper wrapper : list) { // org.apache.catalina.core.StandardWrapper
 														                try {
@@ -631,12 +704,12 @@ public class InitLoadStart {
 											            initializeConnectionLatch(); // 初始化连接数量阈值
 											
 														--------------------------------------------
-														---------------Socket连接“处理器”-------------
+														---------------处理Socket的连接-------------
 														--------------------------------------------
 											            // Start poller threads
 											            pollers = new Poller[getPollerThreadCount()]; // 启动pollers
 											            for (int i=0; i<pollers.length; i++) {
-											                pollers[i] = new Poller();
+											                pollers[i] = new Poller(); // org.apache.tomcat.util.net.NioEndpoint.Poller
 											                Thread pollerThread = new Thread(pollers[i], getName() + "-ClientPoller-"+i);
 											                pollerThread.setPriority(threadPriority);
 											                pollerThread.setDaemon(true);
@@ -652,7 +725,7 @@ public class InitLoadStart {
 															                    keyCount > 0 ? selector.selectedKeys().iterator() : null;
 															                while (iterator != null && iterator.hasNext()) {
 															                    SelectionKey sk = iterator.next();
-															                    NioSocketWrapper attachment = (NioSocketWrapper)sk.attachment();
+															                    NioSocketWrapper attachment = (NioSocketWrapper)sk.attachment(); // org.apache.tomcat.util.net.NioEndpoint.NioSocketWrapper
 															                    // Attachment may be null if another thread has called
 															                    // cancelledKey()
 															                    if (attachment == null) {
@@ -679,11 +752,32 @@ public class InitLoadStart {
 																						//                	org.apache.coyote.http11.Http11NioProtocol.createProcessor();
 																						//                	processor = org.apache.coyote.http11.Http11Processor
 																						                    processor = getProtocol().createProcessor();//-----------
+																						                    {
+																							                    Http11Processor processor = new Http11Processor(getMaxHttpHeaderSize(), getEndpoint(),
+																									                getMaxTrailerSize(), allowedTrailerHeaders, getMaxExtensionSize(),
+																									                getMaxSwallowSize(), httpUpgradeProtocols);
+																								                {
+																								               		super(endpoint);//!!!创建 request 和 response
+																								               		{
+																								               			// org.apache.coyote.Request
+																								               			// org.apache.coyote.Response
+																								               			this(endpoint, new Request(), new Response());
+																								               		}
+																								               		inputBuffer = new Http11InputBuffer(request, maxHttpHeaderSize);
+																											        request.setInputBuffer(inputBuffer);
+																											
+																											        outputBuffer = new Http11OutputBuffer(response, maxHttpHeaderSize);
+																											        response.setOutputBuffer(outputBuffer);
+																											        ....
+																								                }
+																									            ....
+																									            return processor;
+																						                    }
 																						                    register(processor); // 把processor注册到MServer服务器
 																						                }
 																						                // !!! org.apache.coyote.http11.Http11Processor.process(wrapper, status)
                     																					state = processor.process(wrapper, status); {
-                    																						state = service(socketWrapper); {　//!!!!处理服务-----
+                    																						state = Http11Processor.service(socketWrapper); {　//!!!!处理服务-----
                     																							// org.apache.coyote.RequestInfo
 																										        RequestInfo rp = request.getRequestProcessor();//!!!
 																										        rp.setStage(org.apache.coyote.Constants.STAGE_PARSE); // 解析
@@ -720,9 +814,9 @@ public class InitLoadStart {
 																												
 																												            // Create objects  是走到这边了！！！
 																												        	// org.apache.catalina.connector.Connector.createRequest();
-																												            request = connector.createRequest(); //!!!!! 
+																												            request = connector.createRequest(); //!!!!!   org.apache.catalina.connector.Request
 																												            request.setCoyoteRequest(req);
-																												            response = connector.createResponse();
+																												            response = connector.createResponse(); // !!! org.apache.catalina.connector.Response
 																												            response.setCoyoteResponse(res);
 																												
 																												            // Link objects 相互关联
@@ -815,6 +909,8 @@ public class InitLoadStart {
 																												            // org.apache.catalina.core.StandardPipeline --- getPipeline()
 																												            // org.apache.catalina.core.StandardEngineValve --- getFirst()
 																												            connector.getService().getContainer().getPipeline().getFirst().invoke(request, response); { //!!!!!! 管道机制是什么？
+																												            	// request === org.apache.catalina.connector.Request
+    																															// response === org.apache.catalina.connector.Response
 																												            	org.apache.catalina.core.StandardEngineValve.invoke(request, response){
 																												            		// org.apache.catalina.core.StandardHostValve.invoke(request, response)
         																															host.getPipeline().getFirst().invoke(request, response){
@@ -892,13 +988,83 @@ public class InitLoadStart {
 																																                        initServlet(instance);
 																																                    }
 																																		        }
+																																		        
+																																		        DispatcherType dispatcherType = DispatcherType.REQUEST;
+																																		        if (request.getDispatcherType()==DispatcherType.ASYNC) dispatcherType = DispatcherType.ASYNC;
+																																		        request.setAttribute(Globals.DISPATCHER_TYPE_ATTR,dispatcherType);
+																																		        request.setAttribute(Globals.DISPATCHER_REQUEST_PATH_ATTR,requestPathMB);
+                
 																																		        // !!! 创建过滤器链条
 																																		        // Create the filter chain for this request
 																																		        ApplicationFilterChain filterChain = ApplicationFilterFactory.createFilterChain(request, wrapper, servlet);
+																																		        {
+																																			        if (request instanceof Request) { // 走这里
+																																			        	filterChain = (ApplicationFilterChain) req.getFilterChain();
+																																		                if (filterChain == null) {
+																																		                    filterChain = new ApplicationFilterChain(); // 创建过滤器链
+																																		                    req.setFilterChain(filterChain);
+																																		                }
+																																	                }
+																																	                filterChain.setServlet(servlet); // 设置Servlet
+																																	        		filterChain.setServletSupportsAsync(wrapper.isAsyncSupported());
+																																	        		// Acquire the filter mappings for this Context
+																																			        StandardContext context = (StandardContext) wrapper.getParent();
+																																			        FilterMap filterMaps[] = context.findFilterMaps(); //上下文的过滤器列表
+																																			        String servletName = wrapper.getName();
+																																			        for (int i = 0; i < filterMaps.length; i++) { // 添加过滤器，根据路径映射
+																																			        	if (!matchDispatcher(filterMaps[i] ,dispatcher)) {
+																																			                continue;
+																																			            }
+																																			            if (!matchFiltersURL(filterMaps[i], requestPath)) // 匹配请求地址 requestPath
+																																			                continue;
+																																	                	// 在org.apache.catalina.core.StandardContext.filterStart() 已经把
+																																			            // context === org.apache.catalina.core.StandardContext
+																																			            // filterConfig === org.apache.catalina.core.ApplicationFilterConfig
+																																			            ApplicationFilterConfig filterConfig = (ApplicationFilterConfig)
+																																			                context.findFilterConfig(filterMaps[i].getFilterName());
+																																			            if (filterConfig == null) {
+																																			                // FIXME - log configuration problem
+																																			                continue;
+																																			            }
+																																			            filterChain.addFilter(filterConfig);
+																																			        }
+																																			        // Add filters that match on servlet name second
+																																	        		for (int i = 0; i < filterMaps.length; i++) { // 添加过滤器，根据Servlet名称
+																																				        if (!matchDispatcher(filterMaps[i] ,dispatcher)) {
+																																			                continue;
+																																			            }
+																																			            if (!matchFiltersServlet(filterMaps[i], servletName))  // 匹配Servlet的名称 servletName
+																																			                continue;
+																																			            ApplicationFilterConfig filterConfig = (ApplicationFilterConfig)
+																																			                context.findFilterConfig(filterMaps[i].getFilterName());
+																																			            if (filterConfig == null) {
+																																			                // FIXME - log configuration problem
+																																			                continue;
+																																			            }
+																																				        filterChain.addFilter(filterConfig);
+																																	                }
+																																	                return filterChain;
+																																		        }
+																																		        
 																																		        // 执行过滤器链!!!! ，Servlet在过滤器链条的末端，过滤器执行后，就调用servlet.service(....)
-																																		    	// org.apache.catalina.connector.RequestFacade
-																																		    	// org.apache.catalina.connector.ResponseFacade
+																																		    	// request.getRequest() === org.apache.catalina.connector.RequestFacade
+																																		    	// response.getResponse() === org.apache.catalina.connector.ResponseFacade
 																																		        filterChain.doFilter(request.getRequest(), response.getResponse());
+																																		        {
+																																		        	internalDoFilter(request,response);//!!!!
+																																		        	{
+																																			        	if (pos < n) {
+																																				            ApplicationFilterConfig filterConfig = filters[pos++];
+																																				            Filter filter = filterConfig.getFilter(); // 创建过滤器，调用过滤器的init方法
+																																				            filter.doFilter(request, response, this);//!!!! 调用过滤器的doFilter方法
+																																				            return;
+																																			            }
+																																			            // 如：servlet === org.apache.jasper.servlet.JspServlet
+																																		            	// 如：servlet === org.apache.catalina.servlets.DefaultServlet
+																																		            	// 如: servlet === cn.java.note.HelloServlet
+																																			            servlet.service(request, response); //  执行 Servlet
+																																		            }
+																																		        }
 																																		        if (filterChain != null) {
 																																		            filterChain.release(); // 释放过滤器链资源
 																																		        }
@@ -936,7 +1102,7 @@ public class InitLoadStart {
 											            }
 											
 														----------------------------------------------------------------
-														-------Socket连接“接收器”，接收后会转给后端的“Socket处理器”处理----
+														-------接受Socket的连接，接收后会转给后端的“处理Socket连接的处理器”处理----
 														----------------------------------------------------------------
 											            startAcceptorThreads(); {　// 启动接受线程
 											            	int count = getAcceptorThreadCount(); // 接受网络请求的线程数量

@@ -1,1 +1,1 @@
-<% out.write("banner..."); %>
+<% out.write("this is banner <br />"); %>

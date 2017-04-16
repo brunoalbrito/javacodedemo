@@ -1360,7 +1360,7 @@ public class Request implements org.apache.catalina.servlet4preview.http.HttpSer
             return null;
         } else if (path.startsWith("/")) {
         	// !!! org.apache.catalina.core.ApplicationContextFacade.getRequestDispatcher("/a/hello-servlet")
-            return (context.getServletContext().getRequestDispatcher(path));
+            return (context.getServletContext().getRequestDispatcher(path)); // org.apache.catalina.core.ApplicationDispatcher
         }
 
         // Convert a request-relative path to a context-relative one

@@ -390,7 +390,7 @@ public class JspServletWrapper {
             servlet = getServlet();
 
             // If a page is to be precompiled only, return.
-            if (precompile) {
+            if (precompile) {  // 是预编译，直接返回
                 return;
             }
 

@@ -5015,7 +5015,7 @@ public class StandardContext extends ContainerBase
         if (ok && isUseNaming()) {
             if (getNamingContextListener() == null) { // 走这里
             	// 创建名称上下文监听器
-                NamingContextListener ncl = new NamingContextListener();
+                NamingContextListener ncl = new NamingContextListener(); // NamingContextListener.lifecycleEvent() 用来创建上下文
                 ncl.setName(getNamingContextName());
                 ncl.setExceptionOnFailedWrite(getJndiExceptionOnFailedWrite());
                 // 把名称上下文监听器注入 org.apache.catalina.core.StandardContext
@@ -5171,7 +5171,7 @@ public class StandardContext extends ContainerBase
                     }
                     Map<String, Map<String, String>> injectionMap = buildInjectionMap(
                             getIgnoreAnnotations() ? new NamingResourcesImpl(): getNamingResources());
-                    // 设置实例管理器 org.apache.catalina.core.DefaultInstanceManager
+                    // !!! 设置实例管理器 org.apache.catalina.core.DefaultInstanceManager，JNDI资源是通过“注解”注入的
                     setInstanceManager(new DefaultInstanceManager(context,
                             injectionMap, this, this.getClass().getClassLoader()));
                 }

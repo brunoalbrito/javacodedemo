@@ -401,7 +401,7 @@ public class Http11InputBuffer implements InputBuffer {
                         // timeout.
                         wrapper.setReadTimeout(wrapper.getEndpoint().getKeepAliveTimeout());
                     }
-                    if (!fill(false)) {
+                    if (!fill(false)) {  // 读取数据到缓冲区
                         // A read is pending, so no longer in initial state
                         parsingRequestLinePhase = 1;
                         return false;
@@ -409,7 +409,7 @@ public class Http11InputBuffer implements InputBuffer {
                     // At least one byte of the request has been received.
                     // Switch to the socket timeout.
                     // !!! wrapper === socketWrapper
-                    wrapper.setReadTimeout(wrapper.getEndpoint().getSoTimeout());
+                    wrapper.setReadTimeout(wrapper.getEndpoint().getSoTimeout()); // 设置超时时间
                 }
                 if (!keptAlive && pos == 0 && lastValid >= CLIENT_PREFACE_START.length - 1) {
                     boolean prefaceMatch = true;
@@ -427,10 +427,10 @@ public class Http11InputBuffer implements InputBuffer {
                 // Set the start time once we start reading data (even if it is
                 // just skipping blank lines)
                 if (request.getStartTime() < 0) {
-                    request.setStartTime(System.currentTimeMillis());
+                    request.setStartTime(System.currentTimeMillis()); // 开始解析时间
                 }
                 chr = buf[pos++];
-            } while ((chr == Constants.CR) || (chr == Constants.LF));
+            } while ((chr == Constants.CR) || (chr == Constants.LF)); // 
             pos--;
 
             parsingRequestLineStart = pos;
@@ -442,7 +442,7 @@ public class Http11InputBuffer implements InputBuffer {
                         + "]");
             }
         }
-        if ( parsingRequestLinePhase == 2 ) {
+        if ( parsingRequestLinePhase == 2 ) { // 请求方式
             //
             // Reading the method name
             // Method name is a token
@@ -451,7 +451,7 @@ public class Http11InputBuffer implements InputBuffer {
             while (!space) {
                 // Read new bytes if needed
                 if (pos >= lastValid) {
-                    if (!fill(false)) //request line parsing
+                    if (!fill(false)) //request line parsing 读取数据到缓冲区
                         return false;
                 }
                 // Spec says method name is a token followed by a single SP but
@@ -466,7 +466,7 @@ public class Http11InputBuffer implements InputBuffer {
             }
             parsingRequestLinePhase = 3;
         }
-        if ( parsingRequestLinePhase == 3 ) {
+        if ( parsingRequestLinePhase == 3 ) { // 
             // Spec says single SP but also be tolerant of multiple SP and/or HT
             boolean space = true;
             while (space) {
@@ -495,7 +495,7 @@ public class Http11InputBuffer implements InputBuffer {
             while (!space) {
                 // Read new bytes if needed
                 if (pos >= lastValid) {
-                    if (!fill(false)) //request line parsing
+                    if (!fill(false)) //request line parsing 读取数据到缓冲区
                         return false;
                 }
                 if (buf[pos] == Constants.SP || buf[pos] == Constants.HT) {
@@ -528,7 +528,7 @@ public class Http11InputBuffer implements InputBuffer {
             while (space) {
                 // Read new bytes if needed
                 if (pos >= lastValid) {
-                    if (!fill(false)) //request line parsing
+                    if (!fill(false)) //request line parsing 读取数据到缓冲区
                         return false;
                 }
                 if (buf[pos] == Constants.SP || buf[pos] == Constants.HT) {
@@ -551,7 +551,7 @@ public class Http11InputBuffer implements InputBuffer {
             while (!parsingRequestLineEol) {
                 // Read new bytes if needed
                 if (pos >= lastValid) {
-                    if (!fill(false)) //request line parsing
+                    if (!fill(false)) //request line parsing 读取数据到缓冲区
                         return false;
                 }
 
@@ -741,7 +741,7 @@ public class Http11InputBuffer implements InputBuffer {
             lastValid = pos = end;
         }
 
-        int nRead = wrapper.read(block, buf, pos, buf.length - pos);
+        int nRead = wrapper.read(block, buf, pos, buf.length - pos); // 读取数据到缓冲区
         if (nRead > 0) {
             lastValid = pos + nRead;
             return true;
