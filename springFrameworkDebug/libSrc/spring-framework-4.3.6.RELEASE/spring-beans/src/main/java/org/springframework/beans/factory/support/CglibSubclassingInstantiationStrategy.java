@@ -286,7 +286,7 @@ public class CglibSubclassingInstantiationStrategy extends SimpleInstantiationSt
 			LookupOverride lo = (LookupOverride) getBeanDefinition().getMethodOverrides().getOverride(method);
 			Object[] argsToUse = (args.length > 0 ? args : null);  // if no-arg, don't insist on args at all
 			if (StringUtils.hasText(lo.getBeanName())) {
-				return this.owner.getBean(lo.getBeanName(), argsToUse);
+				return this.owner.getBean(lo.getBeanName(), argsToUse);  // 调用带参数的构造函数，创建对象
 			}
 			else {
 				return this.owner.getBean(method.getReturnType(), argsToUse);

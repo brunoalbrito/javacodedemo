@@ -53,7 +53,7 @@ class ScopedProxyBeanDefinitionDecorator implements BeanDefinitionDecorator {
 		// and is relevant for tooling (validation, navigation).
 		BeanDefinitionHolder holder =
 				ScopedProxyUtils.createScopedProxy(definition, parserContext.getRegistry(), proxyTargetClass);
-		String targetBeanName = ScopedProxyUtils.getTargetBeanName(definition.getBeanName());
+		String targetBeanName = ScopedProxyUtils.getTargetBeanName(definition.getBeanName()); // “scopedTarget.beanName0”
 		parserContext.getReaderContext().fireComponentRegistered(
 				new BeanComponentDefinition(definition.getBeanDefinition(), targetBeanName));
 		return holder;

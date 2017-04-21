@@ -186,7 +186,7 @@ public class AspectJExpressionPointcut extends AbstractExpressionPointcut
 			throw new IllegalStateException("Must set property 'expression' before attempting to match");
 		}
 		if (this.pointcutExpression == null) {
-			this.pointcutClassLoader = determinePointcutClassLoader();
+			this.pointcutClassLoader = determinePointcutClassLoader(); // !!!
 			this.pointcutExpression = buildPointcutExpression(this.pointcutClassLoader);
 		}
 	}
@@ -209,11 +209,12 @@ public class AspectJExpressionPointcut extends AbstractExpressionPointcut
 	 */
 	private PointcutExpression buildPointcutExpression(ClassLoader classLoader) {
 		PointcutParser parser = initializePointcutParser(classLoader);
-		PointcutParameter[] pointcutParameters = new PointcutParameter[this.pointcutParameterNames.length];
+		PointcutParameter[] pointcutParameters = new PointcutParameter[this.pointcutParameterNames.length]; // 参数名
 		for (int i = 0; i < pointcutParameters.length; i++) {
 			pointcutParameters[i] = parser.createPointcutParameter(
 					this.pointcutParameterNames[i], this.pointcutParameterTypes[i]);
 		}
+		// getExpression() == "execution(public void cn.java.demo.aoptag.bean.HelloServiceImpl2.method1(..)) || execution(public void cn.java.demo.aoptag.bean.HelloServiceImpl2.method1(..))" 
 		return parser.parsePointcutExpression(replaceBooleanOperators(getExpression()),
 				this.pointcutDeclarationScope, pointcutParameters);
 	}
@@ -257,6 +258,7 @@ public class AspectJExpressionPointcut extends AbstractExpressionPointcut
 		checkReadyToMatch();
 		try {
 			try {
+				// org.aspectj.weaver.internal.tools.PointcutExpressionImpl
 				return this.pointcutExpression.couldMatchJoinPointsInType(targetClass);
 			}
 			catch (ReflectionWorldException ex) {

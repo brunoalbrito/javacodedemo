@@ -85,9 +85,12 @@ public class AopNamespaceHandler extends NamespaceHandlerSupport {
 		 		<aop:include name="" />
 		 	</aop:aspectj-autoproxy>
 		 	
-		 	<aop:scoped-proxy  proxy-target-class="true" />
+		 	<bean>
+		 		<aop:scoped-proxy  proxy-target-class="true" />
+		 	</bean>
 		 	
 		 	<aop:spring-configured 废弃/>
+		 	
 		 	
 		 */
 		// In 2.0 XSD as well as in 2.1 XSD.

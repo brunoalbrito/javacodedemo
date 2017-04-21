@@ -370,7 +370,7 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 					"Illegal position " + pos + " in advisor list with size " + this.advisors.size());
 		}
 		this.advisors.add(pos, advisor);
-		updateAdvisorArray();
+		updateAdvisorArray();  // !!!
 		adviceChanged();
 	}
 
@@ -486,6 +486,7 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 		MethodCacheKey cacheKey = new MethodCacheKey(method);
 		List<Object> cached = this.methodCache.get(cacheKey);
 		if (cached == null) {
+			// org.springframework.aop.framework.DefaultAdvisorChainFactory
 			cached = this.advisorChainFactory.getInterceptorsAndDynamicInterceptionAdvice(
 					this, method, targetClass);
 			this.methodCache.put(cacheKey, cached);

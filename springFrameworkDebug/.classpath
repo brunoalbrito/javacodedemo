@@ -7,6 +7,9 @@
 	<classpathentry kind="src" path="libSrc/spring-framework-4.3.6.RELEASE/spring-core/src/main/java"/>
 	<classpathentry kind="src" path="libSrc/spring-framework-4.3.6.RELEASE/spring-context/src/main/java"/>
 	<classpathentry kind="src" path="libSrc/spring-framework-4.3.6.RELEASE/spring-aop/src/main/java"/>
+	<classpathentry kind="src" path="demoSrc"/>
+	<classpathentry kind="src" path="myNsDemoSrc"/>
+	<classpathentry kind="src" path="libSrc/spring-framework-4.3.6.RELEASE/spring-aspects/src/main/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="lib" path="lib/spring-beans-4.3.6.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/spring-core-4.3.6.RELEASE.jar"/>
@@ -17,5 +20,6 @@
 	<classpathentry kind="lib" path="lib/spring-web-4.3.6.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/spring-context-4.3.6.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/aspectjweaver-1.8.10.jar"/>
+	<classpathentry kind="lib" path="lib/spring-aspects-4.3.6/spring-aspects-4.3.6.RELEASE.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

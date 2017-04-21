@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:myns1="http://www.janchou.org/schema/myns1"
+	xmlns:myns2="http://www.janchou.org/schema/myns2"
+	xsi:schemaLocation="    
+    http://www.springframework.org/schema/beans        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd    
+    http://www.janchou.org/schema/myns1                http://www.janchou.org/schema/myns1/spring-myns1-1.0.xsd
+    http://www.janchou.org/schema/myns2                http://www.janchou.org/schema/myns2/spring-myns2-1.0.xsd
+    ">
+
+	<bean id="helloService" class="cn.java.demo.beantag.bean.HelloServiceImpl">
+	    <myns1:tag3 attr1="helloMyNs1Tag3_attr1" attr2="helloMyNs1Tag3_attr2" />
+	</bean>
+	
+	<myns1:tag1 attr1="helloMyNs1Tag1_attr1" attr2="helloMyNs1Tag1_attr2" />
+	<myns1:tag2 attr1="helloMyNs1Tag2_attr1" attr2="helloMyNs1Tag2_attr2" />
+	
+	<myns2:tag1 attr1="helloMyNs2Tag1_attr1" attr2="helloMyNs2Tag1_attr2" />
+	<myns2:tag2 attr1="helloMyNs2Tag2_attr1" attr2="helloMyNs2Tag2_attr2" />
+	
+</beans>  

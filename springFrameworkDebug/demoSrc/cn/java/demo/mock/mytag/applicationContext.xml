@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.janchou.org/schema/mock/mybeanstag" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:myaoptag="http://www.janchou.org/schema/mock/myaoptag"
+	xsi:schemaLocation="http://www.janchou.org/schema/mock/mybeanstag http://www.janchou.org/schema/mock/mytag/spring-mybeanstag-3.0.xsd
+		http://www.janchou.org/schema/mock/myaoptag http://www.janchou.org/schema/mock/mytag/spring-myaoptag-4.2.xsd
+		">
+
+    <!-- 使用默认命名空间处理器，处理如下标签-->
+	<bean id="hello1" class="cn.java.demo.mytag.bean.Bean1" />
+	
+	<!-- 使用自定义命名空间处理器，处理如下标签 -->
+	<myaoptag:tag1 attr1="hello2" attr2="cn.java.demo.mytag.bean.Bean1" />
+	<myaoptag:tag2 attr1="hello2" attr2="cn.java.demo.mytag.bean.Bean1" />
+
+</beans>  

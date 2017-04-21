@@ -56,7 +56,7 @@ public abstract class AbstractAdvisorAutoProxyCreator extends AbstractAutoProxyC
 		if (!(beanFactory instanceof ConfigurableListableBeanFactory)) {
 			throw new IllegalStateException("Cannot use AdvisorAutoProxyCreator without a ConfigurableListableBeanFactory");
 		}
-		initBeanFactory((ConfigurableListableBeanFactory) beanFactory);
+		initBeanFactory((ConfigurableListableBeanFactory) beanFactory);//!!!
 	}
 
 	protected void initBeanFactory(ConfigurableListableBeanFactory beanFactory) {
@@ -66,7 +66,7 @@ public abstract class AbstractAdvisorAutoProxyCreator extends AbstractAutoProxyC
 
 	@Override
 	protected Object[] getAdvicesAndAdvisorsForBean(Class<?> beanClass, String beanName, TargetSource targetSource) {
-		List<Advisor> advisors = findEligibleAdvisors(beanClass, beanName);
+		List<Advisor> advisors = findEligibleAdvisors(beanClass, beanName); // 获取符合条件的“通知接受者”列表
 		if (advisors.isEmpty()) {
 			return DO_NOT_PROXY;
 		}
@@ -84,9 +84,9 @@ public abstract class AbstractAdvisorAutoProxyCreator extends AbstractAutoProxyC
 	 * @see #extendAdvisors
 	 */
 	protected List<Advisor> findEligibleAdvisors(Class<?> beanClass, String beanName) {
-		List<Advisor> candidateAdvisors = findCandidateAdvisors();
-		List<Advisor> eligibleAdvisors = findAdvisorsThatCanApply(candidateAdvisors, beanClass, beanName);
-		extendAdvisors(eligibleAdvisors);
+		List<Advisor> candidateAdvisors = findCandidateAdvisors(); // 扫描所有“通知接受者”列表
+		List<Advisor> eligibleAdvisors = findAdvisorsThatCanApply(candidateAdvisors, beanClass, beanName); // 匹配“通知接受者”列表
+		extendAdvisors(eligibleAdvisors); // 空方法
 		if (!eligibleAdvisors.isEmpty()) {
 			eligibleAdvisors = sortAdvisors(eligibleAdvisors);
 		}

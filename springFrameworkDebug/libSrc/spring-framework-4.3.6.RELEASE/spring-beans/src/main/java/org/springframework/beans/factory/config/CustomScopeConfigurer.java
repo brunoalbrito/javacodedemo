@@ -98,7 +98,7 @@ public class CustomScopeConfigurer implements BeanFactoryPostProcessor, BeanClas
 				String scopeKey = entry.getKey();
 				Object value = entry.getValue();
 				if (value instanceof Scope) {
-					beanFactory.registerScope(scopeKey, (Scope) value);
+					beanFactory.registerScope(scopeKey, (Scope) value); // 注册自己的scope，被保留的scope是：singleton、prototype
 				}
 				else if (value instanceof Class) {
 					Class<?> scopeClass = (Class<?>) value;

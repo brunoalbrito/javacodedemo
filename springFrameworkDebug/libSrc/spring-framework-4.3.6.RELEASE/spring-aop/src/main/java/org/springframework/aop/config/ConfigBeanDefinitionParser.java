@@ -108,7 +108,7 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 				new CompositeComponentDefinition(element.getTagName(), parserContext.extractSource(element)); // org.springframework.beans.factory.xml.ParserContext
 		parserContext.pushContainingComponent(compositeDef);
 
-		configureAutoProxyCreator(parserContext, element); // !!!
+		configureAutoProxyCreator(parserContext, element); // !!! 注册bean到全局
 
 		/**
 		 	<aop:config proxy-target-class="false" expose-proxy="false">
@@ -251,7 +251,7 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 						}
 						beanReferences.add(new RuntimeBeanReference(aspectName));
 					}
-					AbstractBeanDefinition advisorDefinition = parseAdvice(
+					AbstractBeanDefinition advisorDefinition = parseAdvice( // !!!
 							aspectName, i, aspectElement, (Element) node, parserContext, beanDefinitions, beanReferences);
 					beanDefinitions.add(advisorDefinition);
 				}
@@ -353,7 +353,7 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 
 			// create the method factory bean
 			RootBeanDefinition methodDefinition = new RootBeanDefinition(MethodLocatingFactoryBean.class);
-			methodDefinition.getPropertyValues().add("targetBeanName", aspectName); // 切面bean对象
+			methodDefinition.getPropertyValues().add("targetBeanName", aspectName); // 要“接受报告的bean对象”
 			methodDefinition.getPropertyValues().add("methodName", adviceElement.getAttribute("method"));
 			methodDefinition.setSynthetic(true);
 
@@ -366,7 +366,7 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 			// register the pointcut  报告接收者
 			AbstractBeanDefinition adviceDef = createAdviceDefinition(
 					adviceElement, parserContext, aspectName, order, methodDefinition, aspectFactoryDef,
-					beanDefinitions, beanReferences);
+					beanDefinitions, beanReferences); // 报告接受者的定义信息
 
 			// configure the advisor
 			RootBeanDefinition advisorDefinition = new RootBeanDefinition(AspectJPointcutAdvisor.class); // 创建bean定义
@@ -378,7 +378,7 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 			}
 
 			// register the final advisor
-			parserContext.getReaderContext().registerWithGeneratedName(advisorDefinition); // 注册bean定义
+			parserContext.getReaderContext().registerWithGeneratedName(advisorDefinition); // 注册bean定义，bean的名称是自动生成的
 
 			return advisorDefinition;
 		}
@@ -403,10 +403,17 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 			adviceElement === <aop:after method="aspectMethodAfter" pointcut-ref="pointcutRefId_0" />
 		 */
 		
+		/*
+			<before ...> == org.springframework.aop.aspectj.AspectJMethodBeforeAdvice
+			<after ...> === org.springframework.aop.aspectj.AspectJAfterAdvice
+			<after-returning ...> === org.springframework.aop.aspectj.AspectJAfterReturningAdvice
+			<after-throwing ...> === org.springframework.aop.aspectj.AspectJAfterThrowingAdvice
+			<around ...> === org.springframework.aop.aspectj.AspectJAfterThrowingAdvice
+		 */
 		RootBeanDefinition adviceDefinition = new RootBeanDefinition(getAdviceClass(adviceElement, parserContext));
 		adviceDefinition.setSource(parserContext.extractSource(adviceElement));
 
-		adviceDefinition.getPropertyValues().add(ASPECT_NAME_PROPERTY, aspectName);
+		adviceDefinition.getPropertyValues().add(ASPECT_NAME_PROPERTY, aspectName);  // 要“接受报告的bean对象”
 		adviceDefinition.getPropertyValues().add(DECLARATION_ORDER_PROPERTY, order);
 
 		if (adviceElement.hasAttribute(RETURNING)) {
@@ -423,7 +430,7 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 		}
 
 		ConstructorArgumentValues cav = adviceDefinition.getConstructorArgumentValues();
-		cav.addIndexedArgumentValue(METHOD_INDEX, methodDef);
+		cav.addIndexedArgumentValue(METHOD_INDEX, methodDef); // 构造函数的bean信息
 
 		Object pointcut = parsePointcutProperty(adviceElement, parserContext);
 		if (pointcut instanceof BeanDefinition) {
@@ -445,6 +452,13 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 	 * Gets the advice implementation class corresponding to the supplied {@link Element}.
 	 */
 	private Class<?> getAdviceClass(Element adviceElement, ParserContext parserContext) {
+		/*
+			before == org.springframework.aop.aspectj.AspectJMethodBeforeAdvice
+			after === org.springframework.aop.aspectj.AspectJAfterAdvice
+			after-returning === org.springframework.aop.aspectj.AspectJAfterReturningAdvice
+			after-throwing === org.springframework.aop.aspectj.AspectJAfterThrowingAdvice
+			around === org.springframework.aop.aspectj.AspectJAfterThrowingAdvice
+		 */
 		String elementName = parserContext.getDelegate().getLocalName(adviceElement);
 		if (BEFORE.equals(elementName)) {
 			return AspectJMethodBeforeAdvice.class;

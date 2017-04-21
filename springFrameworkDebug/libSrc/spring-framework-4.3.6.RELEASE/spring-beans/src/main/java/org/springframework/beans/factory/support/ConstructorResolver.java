@@ -137,7 +137,7 @@ class ConstructorResolver {
 
 			int minNrOfArgs;
 			if (explicitArgs != null) {
-				minNrOfArgs = explicitArgs.length;
+				minNrOfArgs = explicitArgs.length; // 传递进来的构造函数参数
 			}
 			else {
 				ConstructorArgumentValues cargs = mbd.getConstructorArgumentValues();
@@ -151,7 +151,7 @@ class ConstructorResolver {
 				Class<?> beanClass = mbd.getBeanClass();
 				try {
 					candidates = (mbd.isNonPublicAccessAllowed() ?
-							beanClass.getDeclaredConstructors() : beanClass.getConstructors());
+							beanClass.getDeclaredConstructors() : beanClass.getConstructors());  // 构造函数列表
 				}
 				catch (Throwable ex) {
 					throw new BeanCreationException(mbd.getResourceDescription(), beanName,
@@ -164,7 +164,7 @@ class ConstructorResolver {
 			Set<Constructor<?>> ambiguousConstructors = null;
 			LinkedList<UnsatisfiedDependencyException> causes = null;
 
-			for (Constructor<?> candidate : candidates) {
+			for (Constructor<?> candidate : candidates) { // 迭代所有构造函数
 				Class<?>[] paramTypes = candidate.getParameterTypes();
 
 				if (constructorToUse != null && argsToUse.length > paramTypes.length) {
@@ -207,16 +207,16 @@ class ConstructorResolver {
 					if (paramTypes.length != explicitArgs.length) {
 						continue;
 					}
-					argsHolder = new ArgumentsHolder(explicitArgs);
+					argsHolder = new ArgumentsHolder(explicitArgs); // 传递进来的参数
 				}
 
 				int typeDiffWeight = (mbd.isLenientConstructorResolution() ?
 						argsHolder.getTypeDifferenceWeight(paramTypes) : argsHolder.getAssignabilityWeight(paramTypes));
 				// Choose this constructor if it represents the closest match.
 				if (typeDiffWeight < minTypeDiffWeight) {
-					constructorToUse = candidate;
+					constructorToUse = candidate; // 使用哪个构造函数创建对象
 					argsHolderToUse = argsHolder;
-					argsToUse = argsHolder.arguments;
+					argsToUse = argsHolder.arguments; // 传递进来的参数，即：传递给构造函数的参数
 					minTypeDiffWeight = typeDiffWeight;
 					ambiguousConstructors = null;
 				}

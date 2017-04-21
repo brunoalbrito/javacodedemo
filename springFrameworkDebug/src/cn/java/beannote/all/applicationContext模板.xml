@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- xmlns，指定的是默认命名空间 
+	xsi:schemaLocation 指定键值对： publicId  systemId
+-->
+
+<!-- ------------------aop自定义标签-------------------------- -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	default-lazy-init="false" 
+	default-merge="default" 
+	default-autowire="no"
+	default-dependency-check="" 
+	default-autowire-candidates=""
+	default-init-method="" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd    
+	    http://www.springframework.org/schema/context	http://www.springframework.org/schema/context/spring-context-3.0.xsd
+">
+
+    <!-- ------------------默认标签：import、alias、bean、beans-------------------------- -->
+	<import resource="/WEB-INF/applicationContext.xml" />
+	<import resource="/WEB-INF/application*.xml" />
+	<alias name="bean1" alias="bean1Alias" /> <!-- 别名，通过bean1Alias能获取bean1对象 -->
+	<alias name="bean2" alias="bean2Alias" />
+	
+	<!-- beanName的选择，如果没有指定ID，那么选择name中的第一个作为beanName  -->
+	<bean id="beanid1" name="beanid1_0,beanid1_1,beanid1_2" class=""> <!-- 使用beanid1作为beanName -->
+	<bean name="beanid2_0,beanid2_1,beanid2_2"> <!-- 使用beanid2_0作为beanName -->
+	<bean name="beanid3_0"> <!-- 使用beanid3_0作为beanName -->
+	    
+	<bean name="beanid4_0" class="" />
+	<bean name="beanid4_0" class="" parent="" scope="singleton或者prototype" abstract="false" lazy-init="default" autowire="byName、byType、constructor、none中的一个"
+	    dependency-check="all、objects、simple、none中的一个"
+	    depends-on="depend1,depend2"
+	    autowire-candidate="true"
+	    primary="false"
+	    init-method="initMethod1"
+	    destroy-method="destroyMethod1"
+	    factory-method="factoryMethod1" 
+	    factory-bean="factoryBean1"
+	    > <!-- GenericBeanDefinition --> 
+		<xxx:meta key="key1" value="key1Value" /> <!-- GenericBeanDefinition.addMetadataAttribute(attribute) -->
+		<xxx:meta key="key2" value="key2Value" />
+		<description>this is description...</description> <!-- GenericBeanDefinition.setDescription(...) -->
+		<lookup-method name="" bean="" />   <!--  GenericBeanDefinition.getMethodOverrides().addOverride(override); -->
+		<lookup-method name="" bean="" /> 
+		<replaced-method name="" replacer="" /> <!--  GenericBeanDefinition.getMethodOverrides().addOverride(replaceOverride); -->
+	 		<arg-type match="" />
+	 		<arg-type match="" />
+	 	</replaced-method>
+		<replaced-method name="" replacer="" />
+	 		<arg-type match="" />
+	 		<arg-type match="" />
+	 	</replaced-method>
+	 	<constructor-arg index="0" type="" name="" ref="" /><!-- GenericBeanDefinition.getConstructorArgumentValues().addIndexedArgumentValue(index, valueHolder);   ref ==org.springframework.beans.factory.config.RuntimeBeanReference -->
+		<constructor-arg index="1" type="" name="" value="" /><!-- value = org.springframework.beans.factory.config.TypedStringValue -->
+		<constructor-arg index="2"  type="" name="" >
+		    <bean> .... </bean>
+		 	<ref bean=""></ref>
+		 	<idref bean="" />
+		 	<value type="" />
+		 	<null />
+		 	<array value-type="" merge="false">
+			 	<bean> ..recurse.. </bean>
+			 	 ...
+			 	<props> ..recurse.. </props>
+		 	</array>
+		 	<list value-type="" merge="false">
+		 		<bean> ..recurse.. </bean>
+			 	 ...
+			 	<props> ..recurse.. </props>
+		 	</list>
+		 	<set value-type="" merge="false">
+		 		<bean> ..recurse.. </bean>
+			 	 ...
+			 	<props> ..recurse.. </props>
+		 	</set>
+		 	<map key-type="" value-type="">
+		 		<entry>
+		 			<key></key>
+		 			<value></value>
+		 		</entry>
+		 		<entry key="" value="" />
+		 		<entry key-ref="" value-type="" value="" />
+		 		<entry key-ref="" value-ref="" />
+		 	</map>
+		 	<map key-type="" value-type="">
+		 		<entry>
+		 			<key></key>
+		 			<value></value>
+		 		</entry>
+		 		<entry key="" value="" />
+		 		<entry key-ref="" value-type="" value="" />
+		 		<entry key-ref="" value-ref="" />
+		 	</map>
+		 	<map key-type="" value-type="">
+		 		<entry>
+		 		    <key></key>
+		 			<value></value>
+		 		</entry>
+		 		<entry key="" value="" />
+		 		<entry key-ref="" value-type="" value="" />
+		 		<entry key-ref="" value-ref="" />
+		 	</map>
+		 	<props>
+		 		<prop key="" />
+		 		<prop key="" />
+		 	</props>
+		</constructor-arg>
+	 	<property  name="" ref="" /><!-- GenericBeanDefinition.getPropertyValues().addPropertyValue(pv);   ref ==org.springframework.beans.factory.config.RuntimeBeanReference -->
+		<property  name="" value="" /><!-- value = org.springframework.beans.factory.config.TypedStringValue -->
+		<property  name="" >
+		    <bean> .... </bean>
+		 	<ref bean=""></ref>
+		 	<idref bean="" />
+		 	<value type="" />
+		 	<null />
+		 	<array value-type="" merge="false">
+			 	<bean> ..recurse.. </bean>
+			 	 ...
+			 	<props> ..recurse.. </props>
+		 	</array>
+		 	<list value-type="" merge="false">
+		 		<bean> ..recurse.. </bean>
+			 	 ...
+			 	<props> ..recurse.. </props>
+		 	</list>
+		 	<set value-type="" merge="false">
+		 		<bean> ..recurse.. </bean>
+			 	 ...
+			 	<props> ..recurse.. </props>
+		 	</set>
+		 	<map key-type="" value-type="">
+		 		<entry>
+		 			<key></key>
+		 			<value></value>
+		 		</entry>
+		 		<entry key="" value="" />
+		 		<entry key-ref="" value-type="" value="" />
+		 		<entry key-ref="" value-ref="" />
+		 	</map>
+		 	<map key-type="" value-type="">
+		 		<entry>
+		 			<key></key>
+		 			<value></value>
+		 		</entry>
+		 		<entry key="" value="" />
+		 		<entry key-ref="" value-type="" value="" />
+		 		<entry key-ref="" value-ref="" />
+		 	</map>
+		 	<map key-type="" value-type="">
+		 		<entry>
+		 			<key></key>
+		 			<value></value>
+		 		</entry>
+		 		<entry key="" value="" />
+		 		<entry key-ref="" value-type="" value="" />
+		 		<entry key-ref="" value-ref="" />
+		 	</map>
+		 	<props>
+		 		<prop key="" />
+		 		<prop key="" />
+		 	</props>
+		</property>
+		<qualifier type="" value=""> <!-- GenericBeanDefinition.addQualifier(qualifier); -->
+		    <attribute key="" value="" />
+		    <attribute key="" value="" />
+		</qualifier>
+	</bean>
+	
+	<!-- ------------------自定义标签：aop-------------------------- -->
+	<aop:config proxy-target-class="false" expose-proxy="false">
+ 		<aop:pointcut id="" expression="" />
+ 		<aop:advisor id="" advice-ref="" pointcut="" pointcut-ref="" order="" />
+ 		<aop:aspect id="" ref="要被接受报告的对象" order="">
+ 			<aop:pointcut id="" expression=""></aop:pointcut><!-- 定义切入点 -->
+ 			<aop:declare-parents types-matching="" implement-interface="" default-impl="" delegate-ref="" />
+ 			
+ 			<!-- 以下定义“接受报告的对象” -->
+ 			<aop:before pointcut="" pointcut-ref="" method="" arg-names="" /><!-- 定义报告接受者 -->
+ 			<aop:after pointcut="" pointcut-ref="" method="" arg-names="" /><!-- 定义报告接受者 -->
+ 			<aop:after-returning pointcut="" pointcut-ref="" method="" arg-names="" />
+ 			<aop:after-throwing   pointcut="" pointcut-ref="" method="" arg-names="" />
+ 			<aop:around pointcut="" pointcut-ref="" method="" arg-names="" ></aop:around>
+ 		</aop:aspect>
+ 	</aop:config>
+ 	<aop:aspectj-autoproxy proxy-target-class="false" expose-proxy="false">
+ 		<aop:include name="" />
+ 	</aop:aspectj-autoproxy>
+ 	<aop:scoped-proxy  proxy-target-class="true" />
+ 	<!-- <aop:spring-configured 废弃/> -->
+ 	
+ 	<!-- ------------------自定义标签：.-------------------------- -->
+</beans>  

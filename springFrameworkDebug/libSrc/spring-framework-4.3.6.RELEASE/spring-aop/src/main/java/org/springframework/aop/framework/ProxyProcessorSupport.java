@@ -101,7 +101,7 @@ public class ProxyProcessorSupport extends ProxyConfig implements Ordered, BeanC
 		boolean hasReasonableProxyInterface = false;
 		for (Class<?> ifc : targetInterfaces) {
 			if (!isConfigurationCallbackInterface(ifc) && !isInternalLanguageInterface(ifc) &&
-					ifc.getMethods().length > 0) {
+					ifc.getMethods().length > 0) { // 没有实现感知接口、没有实现内部语言的接口
 				hasReasonableProxyInterface = true;
 				break;
 			}
@@ -109,7 +109,7 @@ public class ProxyProcessorSupport extends ProxyConfig implements Ordered, BeanC
 		if (hasReasonableProxyInterface) {
 			// Must allow for introductions; can't just set interfaces to the target's interfaces only.
 			for (Class<?> ifc : targetInterfaces) {
-				proxyFactory.addInterface(ifc);
+				proxyFactory.addInterface(ifc); // 添加接口信息
 			}
 		}
 		else {

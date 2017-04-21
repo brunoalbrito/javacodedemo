@@ -102,6 +102,7 @@ public class ProxyCreatorSupport extends AdvisedSupport {
 		if (!this.active) {
 			activate();
 		}
+		// org.springframework.aop.framework.DefaultAopProxyFactory
 		return getAopProxyFactory().createAopProxy(this);
 	}
 

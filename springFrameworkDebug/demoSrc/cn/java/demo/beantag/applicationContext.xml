@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="    
+    http://www.springframework.org/schema/beans        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd    
+    http://www.springframework.org/schema/context                http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	<!-- id 表示你这个组件的名字，class表示组件类 -->
+	<bean id="helloService" class="cn.java.demo.beantag.bean.HelloServiceImpl" />
+	
+	<!-- 标准bean -->
+	<bean id="fooBean" name="fooBeanAlias0" class="cn.java.demo.beantag.bean.FooBean" autowire="constructor"/>
+	
+	<!-- 别名使用 -->
+	<bean id="aliasTestBean" name="aliasTestBeanAlias0,aliasTestBeanAlias1" class="cn.java.demo.beantag.bean.AliasTestBean" />
+	
+	<!-- 使用工厂方法创建 -->
+	<bean id="beanRefByConstructorParam" class="cn.java.demo.beantag.bean.FooBean" />
+	<bean id="factoryBean0" class="cn.java.demo.beantag.bean.CreatedByFactoryBeanFactory" autowire="no"/>
+	<bean id="createdByFactoryBean0" factory-bean="factoryBean0" factory-method="getCreatedByFactoryBean"/>
+	<bean id="createdByFactoryBean1" factory-bean="factoryBean0" factory-method="getCreatedByFactoryBean">
+    	<constructor-arg index="0" type="java.lang.Integer" name="userid"  value="1"/>
+    	<constructor-arg index="1" type="java.lang.String"  name="username"  value="username1"/>
+    </bean> 
+	<bean id="createdByFactoryBean2" factory-bean="factoryBean0" factory-method="getCreatedByFactoryBean">
+    	<constructor-arg index="0" type="java.lang.Integer" name="userid"   value="2"/>
+    	<constructor-arg index="1" type="java.lang.String"  name="username" value="username2" />
+    	<constructor-arg index="2" type="cn.java.demo.beantag.bean.FooBean" name="fooBean" ref="beanRefByConstructorParam" />
+    </bean>
+    
+	<!-- 属性注入(自动装配) - 根据setter的属性名byName -->
+	<bean id="beanRefByAutowireByNameBean" class="cn.java.demo.beantag.bean.FooBean" />
+	<bean id="autowireByNameBean" class="cn.java.demo.beantag.bean.AutowireByNameBean" autowire="byName">
+	    <property  name="fooBean" ref="beanRefByAutowireByNameBean" />
+	 	<property  name="username" value="username is assign in xml  - AutowireByNameBean" />
+	 	<!-- .. 其他，根据setter的属性名byName注入 -->
+    </bean>
+    
+	<!-- 属性注入(自动装配) - 根据“构造函数”的参数 -->
+	<!-- case.0 在配置文件中指定传值内容，此时scope=""，在预创建的时候，就会实例化本类 -->
+	<bean id="autowireByConstructor0" class="cn.java.demo.beantag.bean.AutowireByConstructor" autowire="constructor">
+	    <constructor-arg index="0" type="java.lang.Integer" value="1" />
+	   	<constructor-arg index="1" type="java.lang.String" value="username is assign in xml - AutowireByConstructor" />
+    </bean>
+    <!-- case.1 不在配置文件中指定传值内容，此时必须scope="prototype"，在预创建的时候，不会实例化本类 -->
+	<bean id="autowireByConstructor1" class="cn.java.demo.beantag.bean.AutowireByConstructor" autowire="constructor" scope="prototype" />
+    
+    <!-- 
+    	属性注入(自动装配) - 根据“成员方法”的参数类型byType
+    	org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(....)
+     -->
+	<bean id="autowireByTypeInjectedBean0" class="cn.java.demo.beantag.bean.AutowireByTypeToBeInjectedBean" primary="true"> <!-- primary="true"，在使用类型识别注入的时候，会被选中注入 -->
+		<constructor-arg index="0" type="java.lang.Integer" value="1" />
+	   	<constructor-arg index="1" type="java.lang.String" value="username is assign in xml - AutowireByTypeToBeInjectedBean autowireByTypeInjectedBean0" />
+	</bean>   
+	<bean id="autowireByTypeInjectedBean1" class="cn.java.demo.beantag.bean.AutowireByTypeToBeInjectedBean" primary="false"><!-- primary="false"，在使用类型识别注入的时候，不会被选中注入 -->
+		<constructor-arg index="0" type="java.lang.Integer" value="1" />
+	   	<constructor-arg index="1" type="java.lang.String" value="username is assign in xml - AutowireByTypeToBeInjectedBean autowireByTypeInjectedBean1" />
+	</bean> 
+	<bean id="fooBeanFactory" class="cn.java.demo.beantag.bean.autowirebytype.FooBeanFactory" /> <!-- 会自动注入  -->
+	<bean id="fooBeanProvider" class="cn.java.demo.beantag.bean.autowirebytype.FooBeanProvider" /> <!-- 会自动注入  -->
+    <bean id="beanRefByAutowireByTypeBean" class="cn.java.demo.beantag.bean.FooBean" />
+	<bean id="autowireByTypeBean0" class="cn.java.demo.beantag.bean.AutowireByTypeBean" autowire="byType">
+	 	<property  name="username" value="username is assign in xml  - AutowireByNameBean" />
+	    <property  name="fooBean" ref="beanRefByAutowireByTypeBean" />
+	 	<!-- 
+	 		.. 其他，根据“成员方法”的参数类型byType注入，如果命中的bean有多个的时候，决策方案是：
+	 			1、检查有配置primary的bean，有且只能有一个设置为primary的bean； 
+		  		2、根据bean优先权，不能有两个一样优先权的bean   
+		  		3、根据参数名获取到bean
+	 	 -->
+    </bean>
+	
+	<!-- 劫持getter方法 - 这个会使用cglib生成子类 -->
+	<!-- 没有“带参数的构造函数”，必须设置scope="prototype"，不然spring对没有配置scope="prototype"的bean，默认为是单例的bean，在预创建的时候，会使用“不带参数的构造函数”实例化，会出错 -->
+	<bean id="lookupMethodBeanId" class="cn.java.demo.beantag.bean.lookupmethod.Property1LookupMethod"  autowire="constructor" scope="prototype" />
+	<bean id="configuredLookupMethodBean" class="cn.java.demo.beantag.bean.ConfiguredLookupMethodBean">
+	    <lookup-method name="getProperty1" bean="lookupMethodBeanId" /><!-- 配置getProperty1方法被劫持 -->
+	 	<property name="myName" value="configuredLookupMethodBean" />
+	</bean>
+	
+	<!-- 劫持setter方法 - 这个会使用cglib生成子类 -->
+	<bean id="methodReplacerBeanNameId" class="cn.java.demo.beantag.bean.methodreplacer.MethodReplacerImpl" />
+	<bean id="configuredReplacedMethodBean" class="cn.java.demo.beantag.bean.ConfiguredReplacedMethodBean">
+	    <replaced-method name="setProperty1" replacer="methodReplacerBeanNameId"><!-- 配置setProperty1方法被劫持 -->
+	 		<arg-type match="java.lang.Integer" />
+	 		<arg-type match="java.lang.String" />
+	 	</replaced-method>
+	 	<property name="myName" value="configuredReplacedMethodBean" />
+	</bean>
+	
+	<!-- bean指定初始化方法 -->
+	<bean id="defineInitMethodBean"  class="cn.java.demo.beantag.bean.DefineInitMethodBean" init-method="initMethod" />
+	
+	<!-- bean实现感知接口 -->
+	<bean id="needAwareBean"  class="cn.java.demo.beantag.bean.NeedAwareBean" />
+	
+	<!-- 实现自己的scope，使用自己的scope对象创建bean -->
+	<bean id="mySingletonScope0"  class="cn.java.demo.beantag.customscope.MySingletonScope">
+	    <constructor-arg index="0" type="java.lang.String"  name="scopeNameX" value="MySingletonScope0" />
+    </bean>
+	<bean id="instancePoolScope0"  class="cn.java.demo.beantag.customscope.InstancePoolScope">
+	    <constructor-arg index="0" type="java.lang.String"  name="scopeNameX" value="InstancePoolScope0" />
+	    <property name="maxObjectsCountPerBeanName" value="2" />
+    </bean>
+	<bean id="customScopeConfigurer"  class="org.springframework.beans.factory.config.CustomScopeConfigurer"> <!-- Spring会自动扫描：实现了BeanFactoryPostProcessor接口 -->
+	    <property  name="scopes">
+	        <map key-type="java.lang.String" value-type="java.lang.Object">
+		 		<entry key="singletonScope0" value="cn.java.demo.beantag.customscope.MySingletonScope" /> <!-- 自己的scope -->
+		 		<entry key="singletonScope1" value-ref="mySingletonScope0" /> <!-- 引用单例的scope -->
+		 		<entry key="instancePoolScope0" value-ref="instancePoolScope0" /> <!-- 引用单例的scope -->
+		 	</map>
+        </property>
+    </bean>
+	<bean id="useCustomScopeBean0" scope="singletonScope0" class="cn.java.demo.beantag.bean.UseCustomScopeBean" />  <!-- 使用 singletonScope0 获取bean -->
+	<bean id="useCustomScopeBean1" scope="singletonScope1" class="cn.java.demo.beantag.bean.UseCustomScopeBean" />  <!-- 使用 singletonScope1 获取bean -->
+	<bean id="useInstancePoolScopeBean0" scope="instancePoolScope0" class="cn.java.demo.beantag.bean.UseInstancePoolScopeBean" />  <!-- 使用 instancePoolScope0  获取bean -->
+	
+	<!-- 定义自己的 BeanPostProcessor -->
+	<!-- 机制：实例化后的bean对象，传给MyBeanPostProcessorImpl（在感知注入后，在初始化方法被调用前后），像AOP就是在里面的postProcessAfterInitialization做的篡改 -->
+	<!-- <bean id="myBeanPostProcessorImpl0"  class="cn.java.demo.beantag.bean.beanpostprocessor.MyBeanPostProcessorImpl" /> --> <!-- Spring会自动扫描，实现BeanPostProcessor接口的bean -->
+    
+</beans>  

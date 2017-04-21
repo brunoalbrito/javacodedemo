@@ -1,0 +1,3 @@
+# 这个文件的固定名称是spring.schemas，Spring内部会自动发现
+http\://www.janchou.org/schema/myns1/spring-myns1-1.0.xsd=cn/java/ns/myns1/schemas/spring-myns1-1.0.xsd
+http\://www.janchou.org/schema/myns2/spring-myns2-1.0.xsd=cn/java/ns/myns2/schemas/spring-myns2-1.0.xsd
