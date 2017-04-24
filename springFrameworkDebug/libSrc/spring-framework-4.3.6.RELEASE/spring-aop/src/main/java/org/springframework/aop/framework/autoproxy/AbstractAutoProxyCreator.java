@@ -237,6 +237,9 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		return wrapIfNecessary(bean, beanName, cacheKey);
 	}
 
+	/**
+	 * 实例化前
+	 */
 	@Override
 	public Object postProcessBeforeInstantiation(Class<?> beanClass, String beanName) throws BeansException {
 		Object cacheKey = getCacheKey(beanClass, beanName);
@@ -245,7 +248,9 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 			if (this.advisedBeans.containsKey(cacheKey)) {
 				return null;
 			}
-			if (isInfrastructureClass(beanClass) || shouldSkip(beanClass, beanName)) {
+			// 扩展内建的类：isInfrastructureClass
+			// 要创建的是“接受通知的对象”，那么就要跳过了，不然陷入死循环
+			if (isInfrastructureClass(beanClass) || shouldSkip(beanClass, beanName)) { // 是否需要放过，
 				this.advisedBeans.put(cacheKey, Boolean.FALSE);
 				return null;
 			}
@@ -268,11 +273,17 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		return null;
 	}
 
+	/**
+	 * 实例化后
+	 */
 	@Override
 	public boolean postProcessAfterInstantiation(Object bean, String beanName) {
 		return true;
 	}
 
+	/**
+	 * 识别出属性后
+	 */
 	@Override
 	public PropertyValues postProcessPropertyValues(
 			PropertyValues pvs, PropertyDescriptor[] pds, Object bean, String beanName) {
@@ -280,6 +291,9 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		return pvs;
 	}
 
+	/**
+	 * 调用初始化方法前
+	 */
 	@Override
 	public Object postProcessBeforeInitialization(Object bean, String beanName) {
 		return bean;
@@ -289,6 +303,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	 * Create a proxy with the configured interceptors if the bean is
 	 * identified as one to proxy by the subclass.
 	 * @see #getAdvicesAndAdvisorsForBean
+	 * 调用初始化方法后
 	 */
 	@Override
 	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
@@ -337,16 +352,19 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		if (Boolean.FALSE.equals(this.advisedBeans.get(cacheKey))) {
 			return bean;
 		}
+		
+		// 扩展内建的类：isInfrastructureClass
+		// 要创建的是“接受通知的对象”，那么就要跳过了，不然陷入死循环
 		if (isInfrastructureClass(bean.getClass()) || shouldSkip(bean.getClass(), beanName)) {
 			this.advisedBeans.put(cacheKey, Boolean.FALSE);
 			return bean;
 		}
 
 		// Create proxy if we have advice.
-		Object[] specificInterceptors = getAdvicesAndAdvisorsForBean(bean.getClass(), beanName, null);
+		Object[] specificInterceptors = getAdvicesAndAdvisorsForBean(bean.getClass(), beanName, null); // 获取指定类的“接受通知者”
 		if (specificInterceptors != DO_NOT_PROXY) {
 			this.advisedBeans.put(cacheKey, Boolean.TRUE);
-			Object proxy = createProxy(
+			Object proxy = createProxy( // 创建代理
 					bean.getClass(), beanName, specificInterceptors, new SingletonTargetSource(bean));
 			this.proxyTypes.put(cacheKey, proxy.getClass());
 			return proxy;
@@ -445,15 +463,15 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		proxyFactory.copyFrom(this);
 
 		if (!proxyFactory.isProxyTargetClass()) {
-			if (shouldProxyTargetClass(beanClass, beanName)) {
+			if (shouldProxyTargetClass(beanClass, beanName)) { // bean定义的属性 "org.springframework.aop.framework.autoproxy.AutoProxyUtils.preserveTargetClass" == true
 				proxyFactory.setProxyTargetClass(true);
 			}
 			else {
-				evaluateProxyInterfaces(beanClass, proxyFactory);
+				evaluateProxyInterfaces(beanClass, proxyFactory); // 添加接口信息
 			}
 		}
 
-		Advisor[] advisors = buildAdvisors(beanName, specificInterceptors);
+		Advisor[] advisors = buildAdvisors(beanName, specificInterceptors); // 通用“通知接收器”列表 + 特殊“通知接收器”列表
 		for (Advisor advisor : advisors) {
 			proxyFactory.addAdvisor(advisor);
 		}
@@ -507,8 +525,8 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	 */
 	protected Advisor[] buildAdvisors(String beanName, Object[] specificInterceptors) {
 		// Handle prototypes correctly...
-		Advisor[] commonInterceptors = resolveInterceptorNames();
-
+		Advisor[] commonInterceptors = resolveInterceptorNames(); // 通用拦截器列表
+		
 		List<Object> allInterceptors = new ArrayList<Object>();
 		if (specificInterceptors != null) {
 			allInterceptors.addAll(Arrays.asList(specificInterceptors));
@@ -545,7 +563,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		List<Advisor> advisors = new ArrayList<Advisor>();
 		for (String beanName : this.interceptorNames) {
 			if (cbf == null || !cbf.isCurrentlyInCreation(beanName)) {
-				Object next = this.beanFactory.getBean(beanName);
+				Object next = this.beanFactory.getBean(beanName); // 拦截器对象
 				advisors.add(this.advisorAdapterRegistry.wrap(next));
 			}
 		}

@@ -293,12 +293,12 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 									"Circular depends-on relationship between '" + beanName + "' and '" + dep + "'");
 						}
 						registerDependentBean(dep, beanName);
-						getBean(dep);
+						getBean(dep); // 实例化依赖对象
 					}
 				}
 
 				// Create bean instance.
-				if (mbd.isSingleton()) { // scope="singleton"
+				if (mbd.isSingleton()) { // scope="singleton"  或者  scope="" 
 					sharedInstance = getSingleton(beanName, new ObjectFactory<Object>() {
 						@Override
 						public Object getObject() throws BeansException {
@@ -331,12 +331,12 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 				else {
 					String scopeName = mbd.getScope();
-					final Scope scope = this.scopes.get(scopeName); 
+					final Scope scope = this.scopes.get(scopeName);  // 自定义的scope
 					if (scope == null) {
 						throw new IllegalStateException("No Scope registered for scope name '" + scopeName + "'");
 					}
 					try {
-						Object scopedInstance = scope.get(beanName, new ObjectFactory<Object>() {
+						Object scopedInstance = scope.get(beanName, new ObjectFactory<Object>() { // 使用自定义的scope创建对象
 							@Override
 							public Object getObject() throws BeansException {
 								beforePrototypeCreation(beanName);
@@ -731,7 +731,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 	@Override
 	public void setBeanExpressionResolver(BeanExpressionResolver resolver) {
-		this.beanExpressionResolver = resolver;
+		this.beanExpressionResolver = resolver; // org.springframework.context.expression.StandardBeanExpressionResolver
 	}
 
 	@Override
@@ -1238,8 +1238,8 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			RootBeanDefinition mbd = null;
 
 			// Check with full lock now in order to enforce the same merged instance.
-			if (containingBd == null) {
-				mbd = this.mergedBeanDefinitions.get(beanName);
+			if (containingBd == null) { // 如果没有containingBd配置，那么通过beanName获取
+				mbd = this.mergedBeanDefinitions.get(beanName); // 
 			}
 
 			if (mbd == null) {
@@ -1440,7 +1440,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	 * @see #setBeanExpressionResolver
 	 */
 	protected Object evaluateBeanDefinitionString(String value, BeanDefinition beanDefinition) {
-		if (this.beanExpressionResolver == null) {
+		if (this.beanExpressionResolver == null) { // beanExpressionResolver === org.springframework.context.expression.StandardBeanExpressionResolver
 			return value;
 		}
 		Scope scope = (beanDefinition != null ? getRegisteredScope(beanDefinition.getScope()) : null);

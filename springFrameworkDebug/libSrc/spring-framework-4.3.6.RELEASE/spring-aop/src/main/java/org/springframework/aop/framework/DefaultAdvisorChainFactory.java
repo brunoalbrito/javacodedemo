@@ -49,22 +49,27 @@ public class DefaultAdvisorChainFactory implements AdvisorChainFactory, Serializ
 	@Override
 	public List<Object> getInterceptorsAndDynamicInterceptionAdvice(
 			Advised config, Method method, Class<?> targetClass) {
-
+		
+		//!! config === org.springframework.aop.framework.ProxyFactory
+		
 		// This is somewhat tricky... We have to process introductions first,
 		// but we need to preserve order in the ultimate list.
-		List<Object> interceptorList = new ArrayList<Object>(config.getAdvisors().length);
+		List<Object> interceptorList = new ArrayList<Object>(config.getAdvisors().length); // “通知接受者”列表
 		Class<?> actualClass = (targetClass != null ? targetClass : method.getDeclaringClass());
 		boolean hasIntroductions = hasMatchingIntroductions(config, actualClass);
-		AdvisorAdapterRegistry registry = GlobalAdvisorAdapterRegistry.getInstance();
+		// registry == org.springframework.aop.framework.adapter.DefaultAdvisorAdapterRegistry
+		AdvisorAdapterRegistry registry = GlobalAdvisorAdapterRegistry.getInstance(); 
 
-		for (Advisor advisor : config.getAdvisors()) {
+		for (Advisor advisor : config.getAdvisors()) { 
 			if (advisor instanceof PointcutAdvisor) {
 				// Add it conditionally.
 				PointcutAdvisor pointcutAdvisor = (PointcutAdvisor) advisor;
-				if (config.isPreFiltered() || pointcutAdvisor.getPointcut().getClassFilter().matches(actualClass)) {
+				if (config.isPreFiltered() || pointcutAdvisor.getPointcut().getClassFilter().matches(actualClass)) { // 类匹配成功
 					MethodInterceptor[] interceptors = registry.getInterceptors(advisor);
-					MethodMatcher mm = pointcutAdvisor.getPointcut().getMethodMatcher();
-					if (MethodMatchers.matches(mm, method, actualClass, hasIntroductions)) {
+					// org.springframework.aop.support.ComposablePointcut.getMethodMatcher();
+					// mm === org.springframework.aop.support.MethodMatchers.IntersectionMethodMatcher 
+					MethodMatcher mm = pointcutAdvisor.getPointcut().getMethodMatcher(); 
+					if (MethodMatchers.matches(mm, method, actualClass, hasIntroductions)) { // 方法匹配成功
 						if (mm.isRuntime()) {
 							// Creating a new object instance in the getInterceptors() method
 							// isn't a problem as we normally cache created chains.

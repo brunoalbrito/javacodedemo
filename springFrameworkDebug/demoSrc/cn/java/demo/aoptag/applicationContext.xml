@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop-4.2.xsd">
+        
+   	 	<!-- 被拦截的bean -->
+        <bean id="helloServiceImpl1" class="cn.java.demo.aoptag.bean.HelloServiceImpl1" />
+        <bean id="helloServiceImpl2" class="cn.java.demo.aoptag.bean.HelloServiceImpl2" />
+        
+        <bean id="helloServiceImpl4" class="cn.java.demo.aoptag.bean.HelloServiceImpl4">
+        	<!-- <aop:scoped-proxy proxy-target-class="true" /> 这个标签会劫持 BeanDefinition 的信息 -->
+        </bean>
+        
+        <!-- 通知接受者 -->
+        <bean id="aspect4HelloService0" class="cn.java.demo.aoptag.aspect.Aspect4HelloService1" />
+        <bean id="aspect4HelloService1" class="cn.java.demo.aoptag.aspect.Aspect4HelloService2" />
+        
+        <aop:config>
+            
+            <aop:aspect id="aspectId_0" ref="aspect4HelloService0">
+                <aop:pointcut id="pointcutRefId_0" expression="execution(* cn.java.demo.aoptag.bean.HelloServiceImpl1*.*(..))" /><!-- 定义切入点 -->
+                <aop:before method="aspectMethodBefore" pointcut-ref="pointcutRefId_0" /> <!-- 定义报告接收者：符合pointcutRefId_0定义的条件，就通知aspect4HelloService0的aspectMethodBefore方法-->
+                <aop:after method="aspectMethodAfter" pointcut-ref="pointcutRefId_0" />
+            </aop:aspect>
+            
+            <aop:aspect id="aspectId_1" ref="aspect4HelloService1">
+                <aop:pointcut id="pointcutRefId_1" expression="execution(public void cn.java.demo.aoptag.bean.HelloServiceImpl2.method1(..))" />
+                <aop:before method="aspectMethodBefore" pointcut-ref="pointcutRefId_1" />
+                <aop:after method="aspectMethodAfter" pointcut-ref="pointcutRefId_1" />
+            </aop:aspect>
+            
+        </aop:config>
+</beans>

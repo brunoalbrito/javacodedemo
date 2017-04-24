@@ -85,6 +85,7 @@ public class XmlReaderContext extends ReaderContext {
 
 
 	public String generateBeanName(BeanDefinition beanDefinition) {
+		// org.springframework.beans.factory.support.DefaultBeanNameGenerator.generateBeanName(beanDefinition, getRegistry());
 		return this.reader.getBeanNameGenerator().generateBeanName(beanDefinition, getRegistry());
 	}
 

@@ -47,7 +47,7 @@ public class AspectJPointcutAdvisor implements PointcutAdvisor, Ordered {
 	 */
 	public AspectJPointcutAdvisor(AbstractAspectJAdvice advice) {
 		Assert.notNull(advice, "Advice must not be null");
-		this.advice = advice;
+		this.advice = advice; // org.springframework.aop.aspectj.AspectJAfterAdvice
 		this.pointcut = advice.buildSafePointcut();
 	}
 

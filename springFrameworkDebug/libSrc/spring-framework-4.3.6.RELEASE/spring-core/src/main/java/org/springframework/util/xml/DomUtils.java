@@ -148,7 +148,7 @@ public abstract class DomUtils {
 		NodeList nl = valueEle.getChildNodes();
 		for (int i = 0; i < nl.getLength(); i++) {
 			Node item = nl.item(i);
-			if ((item instanceof CharacterData && !(item instanceof Comment)) || item instanceof EntityReference) {
+			if ((item instanceof CharacterData && !(item instanceof Comment)) || item instanceof EntityReference) { // 文本节点、或实例引用
 				sb.append(item.getNodeValue());
 			}
 		}

@@ -161,10 +161,10 @@ public abstract class AbstractAspectJAdvice implements Advice, AspectJPrecedence
 			Method aspectJAdviceMethod, AspectJExpressionPointcut pointcut, AspectInstanceFactory aspectInstanceFactory) {
 
 		Assert.notNull(aspectJAdviceMethod, "Advice method must not be null");
-		this.declaringClass = aspectJAdviceMethod.getDeclaringClass();
-		this.methodName = aspectJAdviceMethod.getName();
-		this.parameterTypes = aspectJAdviceMethod.getParameterTypes();
-		this.aspectJAdviceMethod = aspectJAdviceMethod;
+		this.declaringClass = aspectJAdviceMethod.getDeclaringClass(); // “接受通知的方法”在哪个类定义
+		this.methodName = aspectJAdviceMethod.getName(); // “接受通知的方法”的名称
+		this.parameterTypes = aspectJAdviceMethod.getParameterTypes(); //　“接受通知的方法”参数信息
+		this.aspectJAdviceMethod = aspectJAdviceMethod; // “接受通知的方法”引用
 		this.pointcut = pointcut;
 		this.aspectInstanceFactory = aspectInstanceFactory;
 	}
@@ -181,7 +181,7 @@ public abstract class AbstractAspectJAdvice implements Advice, AspectJPrecedence
 	 * Return the AspectJ expression pointcut.
 	 */
 	public final AspectJExpressionPointcut getPointcut() {
-		calculateArgumentBindings();
+		calculateArgumentBindings();//!!!
 		return this.pointcut;
 	}
 
@@ -190,8 +190,8 @@ public abstract class AbstractAspectJAdvice implements Advice, AspectJPrecedence
 	 * @return a composable pointcut that builds on the original AspectJ expression pointcut
 	 * @see #getPointcut()
 	 */
-	public final Pointcut buildSafePointcut() {
-		Pointcut pc = getPointcut();
+	public final Pointcut buildSafePointcut() {//!!!
+		Pointcut pc = getPointcut(); // org.springframework.aop.aspectj.AspectJExpressionPointcut 对象会注册到全局bean容器中
 		MethodMatcher safeMethodMatcher = MethodMatchers.intersection(
 				new AdviceExcludingMethodMatcher(this.aspectJAdviceMethod), pc.getMethodMatcher());
 		return new ComposablePointcut(pc.getClassFilter(), safeMethodMatcher);
@@ -373,7 +373,7 @@ public abstract class AbstractAspectJAdvice implements Advice, AspectJPrecedence
 		}
 
 		int numUnboundArgs = this.parameterTypes.length;
-		Class<?>[] parameterTypes = this.aspectJAdviceMethod.getParameterTypes();
+		Class<?>[] parameterTypes = this.aspectJAdviceMethod.getParameterTypes(); // aspectJAdviceMethod == “接受通知的方法”引用
 		if (maybeBindJoinPoint(parameterTypes[0]) || maybeBindProceedingJoinPoint(parameterTypes[0])) {
 			numUnboundArgs--;
 		}
@@ -698,7 +698,7 @@ public abstract class AbstractAspectJAdvice implements Advice, AspectJPrecedence
 
 		@Override
 		public boolean matches(Method method, Class<?> targetClass) {
-			return !this.adviceMethod.equals(method);
+			return !this.adviceMethod.equals(method); // 命中就返回false，即方法不能是“接受通知的方法”
 		}
 
 		@Override

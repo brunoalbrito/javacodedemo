@@ -103,14 +103,14 @@ class BeanDefinitionValueResolver {
 	public Object resolveValueIfNecessary(Object argName, Object value) {
 		// We must check each value to see whether it requires a runtime reference
 		// to another bean to be resolved.
-		if (value instanceof RuntimeBeanReference) {
+		if (value instanceof RuntimeBeanReference) { // 是运行时引用，获取bean对象
 			RuntimeBeanReference ref = (RuntimeBeanReference) value;
 			return resolveReference(argName, ref);
 		}
 		else if (value instanceof RuntimeBeanNameReference) {
 			String refName = ((RuntimeBeanNameReference) value).getBeanName();
 			refName = String.valueOf(doEvaluate(refName));
-			if (!this.beanFactory.containsBean(refName)) {
+			if (!this.beanFactory.containsBean(refName)) { // 不存在bean名称就出错
 				throw new BeanDefinitionStoreException(
 						"Invalid bean name '" + refName + "' in bean reference for " + argName);
 			}
@@ -252,6 +252,7 @@ class BeanDefinitionValueResolver {
 	 * @return the resolved value if necessary, or the original String value
 	 */
 	private Object doEvaluate(String value) {
+//		org.springframework.beans.factory.support.DefaultListableBeanFactory.evaluateBeanDefinitionString(value, this.beanDefinition);
 		return this.beanFactory.evaluateBeanDefinitionString(value, this.beanDefinition);
 	}
 
@@ -283,7 +284,7 @@ class BeanDefinitionValueResolver {
 			// Check given bean name whether it is unique. If not already unique,
 			// add counter - increasing the counter until the name is unique.
 			String actualInnerBeanName = innerBeanName;
-			if (mbd.isSingleton()) {
+			if (mbd.isSingleton()) { // 传递进来的BeanDefinition声明是单例
 				actualInnerBeanName = adaptInnerBeanName(innerBeanName);
 			}
 			this.beanFactory.registerContainedBean(actualInnerBeanName, this.beanName);
@@ -348,7 +349,7 @@ class BeanDefinitionValueResolver {
 				return this.beanFactory.getParentBeanFactory().getBean(refName);
 			}
 			else {
-				Object bean = this.beanFactory.getBean(refName);
+				Object bean = this.beanFactory.getBean(refName); // 获取bean
 				this.beanFactory.registerDependentBean(refName, this.beanName);
 				return bean;
 			}

@@ -50,7 +50,7 @@ public abstract class ScopedProxyUtils {
 
 		String originalBeanName = definition.getBeanName();
 		BeanDefinition targetDefinition = definition.getBeanDefinition();
-		String targetBeanName = getTargetBeanName(originalBeanName);
+		String targetBeanName = getTargetBeanName(originalBeanName); // “scopedTarget.beanName0”
 
 		// Create a scoped proxy definition for the original bean name,
 		// "hiding" the target bean in an internal target definition.

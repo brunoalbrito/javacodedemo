@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema xmlns="http://www.janchou.org/schema/myns2"
+		xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+		targetNamespace="http://www.janchou.org/schema/myns2">
+
+	<xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+
+	<xsd:annotation>
+		<xsd:documentation><![CDATA[...说明...	]]></xsd:documentation>
+	</xsd:annotation>
+	<xsd:element name="tag1">
+		<xsd:annotation>
+			<xsd:documentation><![CDATA[...说明...]]></xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:restriction base="xsd:anyType">
+					<xsd:attribute name="attr1" type="xsd:string" use="required">
+						<xsd:annotation>
+							<xsd:documentation><![CDATA[...说明...]]></xsd:documentation>
+						</xsd:annotation>
+					</xsd:attribute>
+					<xsd:attribute name="attr2" type="xsd:string" use="required">
+						<xsd:annotation>
+							<xsd:documentation><![CDATA[...说明...]]></xsd:documentation>
+						</xsd:annotation>
+					</xsd:attribute>
+				</xsd:restriction>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="tag2">
+		<xsd:annotation>
+			<xsd:documentation><![CDATA[...说明...]]></xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:restriction base="xsd:anyType">
+					<xsd:attribute name="attr1" type="xsd:string" use="required">
+						<xsd:annotation>
+							<xsd:documentation><![CDATA[...说明...]]></xsd:documentation>
+						</xsd:annotation>
+					</xsd:attribute>
+					<xsd:attribute name="attr2" type="xsd:string" use="required">
+						<xsd:annotation>
+							<xsd:documentation><![CDATA[...说明...]]></xsd:documentation>
+						</xsd:annotation>
+					</xsd:attribute>
+				</xsd:restriction>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+
+
+</xsd:schema>

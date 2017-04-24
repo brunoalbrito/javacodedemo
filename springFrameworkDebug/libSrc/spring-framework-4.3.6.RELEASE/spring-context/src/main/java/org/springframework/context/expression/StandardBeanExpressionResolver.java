@@ -94,7 +94,7 @@ public class StandardBeanExpressionResolver implements BeanExpressionResolver {
 	 * using it as the basis for expression compilation.
 	 * @param beanClassLoader the factory's bean class loader
 	 */
-	public StandardBeanExpressionResolver(ClassLoader beanClassLoader) {
+	public StandardBeanExpressionResolver(ClassLoader beanClassLoader) { //!!!
 		this.expressionParser = new SpelExpressionParser(new SpelParserConfiguration(null, beanClassLoader));
 	}
 
@@ -138,6 +138,7 @@ public class StandardBeanExpressionResolver implements BeanExpressionResolver {
 		try {
 			Expression expr = this.expressionCache.get(value);
 			if (expr == null) {
+				// expressionParser === org.springframework.expression.spel.standard.SpelExpressionParser
 				expr = this.expressionParser.parseExpression(value, this.beanExpressionParserContext);
 				this.expressionCache.put(value, expr);
 			}
@@ -149,7 +150,7 @@ public class StandardBeanExpressionResolver implements BeanExpressionResolver {
 				sec.addPropertyAccessor(new BeanFactoryAccessor());
 				sec.addPropertyAccessor(new MapAccessor());
 				sec.addPropertyAccessor(new EnvironmentAccessor());
-				sec.setBeanResolver(new BeanFactoryResolver(evalContext.getBeanFactory()));
+				sec.setBeanResolver(new BeanFactoryResolver(evalContext.getBeanFactory())); // org.springframework.beans.factory.support.DefaultListableBeanFactory
 				sec.setTypeLocator(new StandardTypeLocator(evalContext.getBeanFactory().getBeanClassLoader()));
 				ConversionService conversionService = evalContext.getBeanFactory().getConversionService();
 				if (conversionService != null) {
@@ -158,6 +159,7 @@ public class StandardBeanExpressionResolver implements BeanExpressionResolver {
 				customizeEvaluationContext(sec);
 				this.evaluationCache.put(evalContext, sec);
 			}
+			// org.springframework.expression.common.CompositeStringExpression
 			return expr.getValue(sec);
 		}
 		catch (Exception ex) {

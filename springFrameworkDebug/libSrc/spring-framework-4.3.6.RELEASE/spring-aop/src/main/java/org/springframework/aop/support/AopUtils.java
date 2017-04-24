@@ -217,11 +217,14 @@ public abstract class AopUtils {
 	 */
 	public static boolean canApply(Pointcut pc, Class<?> targetClass, boolean hasIntroductions) {
 		Assert.notNull(pc, "Pointcut must not be null");
+		// pc === org.springframework.aop.support.ComposablePointcut
+		// pc.getClassFilter() === org.springframework.aop.aspectj.AspectJExpressionPointcut 匹配类
 		if (!pc.getClassFilter().matches(targetClass)) {
 			return false;
 		}
 
-		MethodMatcher methodMatcher = pc.getMethodMatcher();
+		// methodMatcher === org.springframework.aop.support.MethodMatchers.IntersectionMethodMatcher
+		MethodMatcher methodMatcher = pc.getMethodMatcher(); 
 		if (methodMatcher == MethodMatcher.TRUE) {
 			// No need to iterate the methods if we're matching any method anyway...
 			return true;
@@ -232,14 +235,14 @@ public abstract class AopUtils {
 			introductionAwareMethodMatcher = (IntroductionAwareMethodMatcher) methodMatcher;
 		}
 
-		Set<Class<?>> classes = new LinkedHashSet<Class<?>>(ClassUtils.getAllInterfacesForClassAsSet(targetClass));
+		Set<Class<?>> classes = new LinkedHashSet<Class<?>>(ClassUtils.getAllInterfacesForClassAsSet(targetClass)); // 取得目标类的所有接口
 		classes.add(targetClass);
 		for (Class<?> clazz : classes) {
-			Method[] methods = ReflectionUtils.getAllDeclaredMethods(clazz);
+			Method[] methods = ReflectionUtils.getAllDeclaredMethods(clazz); // 获取所有类的成员方法
 			for (Method method : methods) {
 				if ((introductionAwareMethodMatcher != null &&
 						introductionAwareMethodMatcher.matches(method, targetClass, hasIntroductions)) ||
-						methodMatcher.matches(method, targetClass)) {
+						methodMatcher.matches(method, targetClass)) { // 进行方法的匹配  org.springframework.aop.support.MethodMatchers.IntersectionMethodMatcher
 					return true;
 				}
 			}
@@ -274,8 +277,8 @@ public abstract class AopUtils {
 		if (advisor instanceof IntroductionAdvisor) {
 			return ((IntroductionAdvisor) advisor).getClassFilter().matches(targetClass);
 		}
-		else if (advisor instanceof PointcutAdvisor) {
-			PointcutAdvisor pca = (PointcutAdvisor) advisor;
+		else if (advisor instanceof PointcutAdvisor) {//!!!
+			PointcutAdvisor pca = (PointcutAdvisor) advisor; // org.springframework.aop.aspectj.AspectJPointcutAdvisor
 			return canApply(pca.getPointcut(), targetClass, hasIntroductions);
 		}
 		else {
@@ -308,7 +311,7 @@ public abstract class AopUtils {
 				// already processed
 				continue;
 			}
-			if (canApply(candidate, clazz, hasIntroductions)) {
+			if (canApply(candidate, clazz, hasIntroductions)) {//!!!
 				eligibleAdvisors.add(candidate);
 			}
 		}

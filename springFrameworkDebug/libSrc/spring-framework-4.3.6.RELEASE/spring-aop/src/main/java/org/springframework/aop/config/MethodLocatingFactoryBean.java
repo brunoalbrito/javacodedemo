@@ -45,7 +45,7 @@ public class MethodLocatingFactoryBean implements FactoryBean<Method>, BeanFacto
 	 * @param targetBeanName the name of the bean to locate the {@link Method} on
 	 */
 	public void setTargetBeanName(String targetBeanName) {
-		this.targetBeanName = targetBeanName;
+		this.targetBeanName = targetBeanName; // 要“接受报告的bean对象”，由 <aop:aspect ref="aspect4HelloService1">决定
 	}
 
 	/**
@@ -54,7 +54,7 @@ public class MethodLocatingFactoryBean implements FactoryBean<Method>, BeanFacto
 	 * @param methodName the name of the {@link Method} to locate
 	 */
 	public void setMethodName(String methodName) {
-		this.methodName = methodName;
+		this.methodName = methodName; // 要通知的方法, <aop:before method="aspectMethodBefore" /> 决定
 	}
 
 	@Override
@@ -66,11 +66,11 @@ public class MethodLocatingFactoryBean implements FactoryBean<Method>, BeanFacto
 			throw new IllegalArgumentException("Property 'methodName' is required");
 		}
 
-		Class<?> beanClass = beanFactory.getType(this.targetBeanName);
+		Class<?> beanClass = beanFactory.getType(this.targetBeanName); // “接受报告的bean对象”类型
 		if (beanClass == null) {
 			throw new IllegalArgumentException("Can't determine type of bean with name '" + this.targetBeanName + "'");
 		}
-		this.method = BeanUtils.resolveSignature(this.methodName, beanClass);
+		this.method = BeanUtils.resolveSignature(this.methodName, beanClass); // 反射出方法
 
 		if (this.method == null) {
 			throw new IllegalArgumentException("Unable to locate method [" + this.methodName +

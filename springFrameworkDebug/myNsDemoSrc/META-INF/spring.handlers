@@ -1,0 +1,3 @@
+# 这个文件的固定名称是spring.handlers，Spring内部会自动发现
+http\://www.janchou.org/schema/myns1=cn.java.ns.myns1.handlers.MyNs1NamespaceHandler
+http\://www.janchou.org/schema/myns2=cn.java.ns.myns2.handlers.MyNs2NamespaceHandler

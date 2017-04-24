@@ -224,8 +224,8 @@ public abstract class MethodMatchers {
 		public IntersectionMethodMatcher(MethodMatcher mm1, MethodMatcher mm2) {
 			Assert.notNull(mm1, "First MethodMatcher must not be null");
 			Assert.notNull(mm2, "Second MethodMatcher must not be null");
-			this.mm1 = mm1;
-			this.mm2 = mm2;
+			this.mm1 = mm1; // org.springframework.aop.aspectj.AbstractAspectJAdvice.AdviceExcludingMethodMatcher
+			this.mm2 = mm2; // org.springframework.aop.aspectj.AspectJExpressionPointcut
 		}
 
 		@Override

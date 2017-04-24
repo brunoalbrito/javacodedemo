@@ -106,6 +106,10 @@ public class ProxyFactory extends ProxyCreatorSupport {
 	 * @return the proxy object
 	 */
 	public Object getProxy(ClassLoader classLoader) {
+		/*
+		 	org.springframework.aop.framework.JdkDynamicAopProxy
+		 	org.springframework.aop.framework.ObjenesisCglibAopProxy
+		 */
 		return createAopProxy().getProxy(classLoader);
 	}
 
