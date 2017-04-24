@@ -1,3 +1,7 @@
+入口：com.jfinal.core.JFinal
+
+
+
 1：jfinal-1.9-bin.jar
   开发 jfinal 项目唯一必须的 jar 包，其它所有 jar 包都不是必须的
 

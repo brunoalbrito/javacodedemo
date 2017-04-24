@@ -23,17 +23,17 @@ public class Main {
 	
 	public static void serverLink() {
 //				org.apache.catalina.core.StandardServer;
-//				org.apache.catalina.core.StandardService;
-//					org.apache.catalina.connector.Connector;
-//					org.apache.catalina.core.StandardEngine;
-//					org.apache.catalina.startup.EngineConfig;
-//						org.apache.catalina.core.StandardHost;
-//						org.apache.catalina.startup.HostConfig;
-//							org.apache.catalina.core.StandardContext;
-//							org.apache.catalina.startup.ContextConfig;
-//		 						org.apache.catalina.core.StandardWrapper
-//									org.apache.jasper.servlet.JspServlet
-//									cn.java.note.HelloServlet
+//					org.apache.catalina.core.StandardService;
+//						org.apache.catalina.connector.Connector;
+//						org.apache.catalina.core.StandardEngine;
+//						org.apache.catalina.startup.EngineConfig;
+//							org.apache.catalina.core.StandardHost;
+//							org.apache.catalina.startup.HostConfig;
+//								org.apache.catalina.core.StandardContext;
+//								org.apache.catalina.startup.ContextConfig;
+//			 						org.apache.catalina.core.StandardWrapper
+//										org.apache.jasper.servlet.JspServlet
+//										cn.java.note.HelloServlet
 
 	}
 

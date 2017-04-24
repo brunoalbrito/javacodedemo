@@ -805,7 +805,7 @@ public class StandardWrapper extends ContainerBase
                         }
                     }
                     if (!instanceInitialized) {
-                        initServlet(instance);
+                        initServlet(instance); // !!!
                     }
                 }
             }

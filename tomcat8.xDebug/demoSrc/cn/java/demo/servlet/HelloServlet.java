@@ -35,6 +35,7 @@ public class HelloServlet extends HttpServlet {
 	 * 这个方法在“过滤器链”执行前调用，进行初始化
 	 */
 	public void init(ServletConfig config) throws ServletException {
+		
 		// config === org.apache.catalina.core.StandardWrapperFacade
 		// config.getServletContext() === org.apache.catalina.core.ApplicationContextFacade
 
@@ -85,9 +86,32 @@ public class HelloServlet extends HttpServlet {
 			out.println(keyName + " = null" + "");
 		}
 	}
-
+	
+	/**
+	 * 测试变量的作用域，验证结果：Servlet是共享实例，不能随便用成员变量，会有同步的问题。
+	 */
+	private static long nanoTimeMillisInClassScope= 0;
+	private long nanoTimeMillisInObjectScope = 0;
+	private void testVariableScope(){
+		System.out.println("-------testVariableScope----------");
+		if(nanoTimeMillisInClassScope==0){
+			nanoTimeMillisInClassScope = System.nanoTime();
+		}
+		if(nanoTimeMillisInObjectScope==0){
+			nanoTimeMillisInObjectScope = System.nanoTime();
+		}
+		System.out.println("nanoTime = " + System.nanoTime() +",nanoTimeMillisInClassScope = "+nanoTimeMillisInClassScope+",nanoTimeMillisInObjectScope = "+nanoTimeMillisInObjectScope);
+		try {
+			Thread.sleep(10*1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		
+		testVariableScope();
 		
 		if(req.getParameter("testinclude")!=null){
 //			http://localhost:8080/test/hello?testinclude=true

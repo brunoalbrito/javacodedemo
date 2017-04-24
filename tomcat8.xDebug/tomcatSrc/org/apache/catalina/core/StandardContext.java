@@ -4893,7 +4893,7 @@ public class StandardContext extends ContainerBase
             int loadOnStartup = wrapper.getLoadOnStartup();
             if (loadOnStartup < 0)
                 continue;
-            Integer key = Integer.valueOf(loadOnStartup);
+            Integer key = Integer.valueOf(loadOnStartup); // 级别
             ArrayList<Wrapper> list = map.get(key);
             if (list == null) {
                 list = new ArrayList<>();

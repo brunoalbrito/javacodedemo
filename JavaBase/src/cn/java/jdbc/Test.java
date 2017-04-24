@@ -1,5 +1,6 @@
 package cn.java.jdbc;
 
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -9,6 +10,14 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+
+import org.hibernate.engine.jdbc.cursor.internal.StandardRefCursorSupport;
+import org.hibernate.engine.jdbc.spi.TypeInfo;
+import org.hibernate.engine.jdbc.spi.TypeNullability;
+import org.hibernate.engine.jdbc.spi.TypeSearchability;
+import org.hibernate.internal.util.collections.ArrayHelper;
 
 public class Test {
 
@@ -37,7 +46,9 @@ public class Test {
 		 */
 		try {
 			Connection connection = ConnectionUtil.getConnection();
-
+			ConnectionUtil.printConnectionMetaData(connection);
+			ConnectionUtil.printConnectionInfo(connection);
+			
 			System.out.println("------------StatementTest--------------------");
 			StatementTest.insert(connection, new HashMap() {
 				{
@@ -98,8 +109,6 @@ public class Test {
 				String password = "123456";
 				try {
 					connection = DriverManager.getConnection(url, username, password);
-					ConnectionUtil.printConnectionMetaData(connection);
-					ConnectionUtil.printConnectionInfo(connection);
 				} catch (SQLException se) {
 					System.out.println("数据库连接失败！");
 					se.printStackTrace();
@@ -122,14 +131,161 @@ public class Test {
 		public static void printConnectionMetaData(Connection connection) throws SQLException{
 			System.out.println("   <<<   printConnectionMetaData bof   >>>   ");
 			DatabaseMetaData metaData = connection.getMetaData();
-			System.out.println("getDatabaseProductName : " + metaData.getDatabaseProductName());
-			System.out.println("getDatabaseMajorVersion : " + metaData.getDatabaseMajorVersion());
-			System.out.println("getDatabaseMinorVersion : " + metaData.getDatabaseMinorVersion());
-			System.out.println("getDriverVersion : " + metaData.getDriverVersion());
-			System.out.println("getMaxConnections : " + metaData.getMaxConnections());
 			
+			{
+				System.out.println("----Database info------");
+				System.out.println("getDatabaseProductName : " + metaData.getDatabaseProductName());
+				System.out.println("getDatabaseProductVersion : " + metaData.getDatabaseProductVersion());
+				System.out.println("getDatabaseMajorVersion : " + metaData.getDatabaseMajorVersion());
+				System.out.println("getDatabaseMinorVersion : " + metaData.getDatabaseMinorVersion());
+				System.out.println("getMaxConnections : " + metaData.getMaxConnections());
+			}
+			
+			{
+				System.out.println("----Driver info------");
+				System.out.println("getDriverName : " + metaData.getDriverName());
+				System.out.println("getDriverVersion : " + metaData.getDriverVersion());
+				System.out.println("getDriverMajorVersion : " + metaData.getDriverMajorVersion());
+				System.out.println("getDriverMinorVersion : " + metaData.getDriverMinorVersion());
+			}
+			
+			{
+				System.out.println("----JDBC version  info------");
+				System.out.println("getJDBCMajorVersion : " + metaData.getJDBCMajorVersion());
+				System.out.println("getJDBCMinorVersion : " + metaData.getJDBCMinorVersion());
+			}
+			
+			{
+				boolean metaSupportsRefCursors = ConnectionMetaDataUtil.supportsRefCursors( metaData );
+				boolean metaSupportsNamedParams = metaData.supportsNamedParameters();
+				boolean metaSupportsScrollable = metaData.supportsResultSetType( ResultSet.TYPE_SCROLL_INSENSITIVE );
+				boolean metaSupportsBatchUpdates = metaData.supportsBatchUpdates();
+				boolean metaReportsDDLCausesTxnCommit = metaData.dataDefinitionCausesTransactionCommit();
+				boolean metaReportsDDLInTxnSupported = !metaData.dataDefinitionIgnoredInTransactions();
+				boolean metaSupportsGetGeneratedKeys = metaData.supportsGetGeneratedKeys();
+				String extraKeywordsString = metaData.getSQLKeywords();
+				int sqlStateType = metaData.getSQLStateType();
+				boolean lobLocatorUpdateCopy = metaData.locatorsUpdateCopy();
+			}
+			
+			
+			
+			{
+				ResultSet resultSet = metaData.getTypeInfo();
+				String strTemp = "";
+				while ( resultSet.next() ) {
+						strTemp = "";
+						strTemp = strTemp + ", TYPE_NAME = " + resultSet.getString( "TYPE_NAME" );
+						strTemp = strTemp + ", DATA_TYPE = " + resultSet.getInt( "DATA_TYPE" );
+						strTemp = strTemp + ", CREATE_PARAMS = " + ConnectionMetaDataUtil.interpretCreateParams( resultSet.getString( "CREATE_PARAMS" ) );
+						strTemp = strTemp + ", UNSIGNED_ATTRIBUTE = " + resultSet.getBoolean( "UNSIGNED_ATTRIBUTE" );
+						strTemp = strTemp + ", PRECISION = " + resultSet.getInt( "PRECISION" );
+						strTemp = strTemp + ", MINIMUM_SCALE = " + resultSet.getShort( "MINIMUM_SCALE" );
+						strTemp = strTemp + ", MAXIMUM_SCALE = " + resultSet.getShort( "MAXIMUM_SCALE" );
+						strTemp = strTemp + ", FIXED_PREC_SCALE = " + resultSet.getBoolean( "FIXED_PREC_SCALE" );
+						strTemp = strTemp + ", LITERAL_PREFIX = " + resultSet.getString( "LITERAL_PREFIX" );
+						strTemp = strTemp + ", LITERAL_SUFFIX = " + resultSet.getString( "LITERAL_SUFFIX" );
+						strTemp = strTemp + ", CASE_SENSITIVE = " + resultSet.getBoolean( "CASE_SENSITIVE" );
+						strTemp = strTemp + ", SEARCHABLE = " + ConnectionMetaDataUtil.typeSearchabilityInterpret( resultSet.getShort( "SEARCHABLE" ) );
+						strTemp = strTemp + ", NULLABLE = " + ConnectionMetaDataUtil.typeNullabilityInterpret( resultSet.getShort( "NULLABLE" ) );
+						System.out.println("getTypeInfo ---> " + strTemp);
+				}
+				
+				{
+					String catalogName = connection.getCatalog(); // 数据库名
+					boolean useContextualLobCreation = ConnectionMetaDataUtil.useContextualLobCreation(connection);
+					
+				}
+			}
 			System.out.println("   <<<   printConnectionMetaData eof   >>>   ");
 		}
+		
+
+		private static class ConnectionMetaDataUtil {
+			private static boolean useContextualLobCreation(Connection connection) {
+				final DatabaseMetaData metaData = connection.getMetaData();
+				if ( metaData.getJDBCMajorVersion() < 4 ) {
+					return false;
+				}
+				Class connectionClass = Connection.class;
+				Method createClobMethod = connectionClass.getMethod( "createClob", new Class[0] );
+				if ( createClobMethod.getDeclaringClass().equals( Connection.class ) ) {
+					try {
+						Object clob = createClobMethod.invoke( connection, new Object[0] );
+						try {
+							Method freeMethod = clob.getClass().getMethod( "free", new Class[0] );
+							freeMethod.invoke( clob, new Object[0] );
+						}
+						catch ( Throwable ignore ) {
+							
+						}
+						return true;
+					}
+					catch ( Throwable ignore ) {
+						
+					}
+				}
+				return false;
+			}
+			public static String typeNullabilityInterpret(short code) {
+				switch ( code ) {
+					case DatabaseMetaData.typeNullable: {
+						return "NULLABLE";
+					}
+					case DatabaseMetaData.typeNoNulls: {
+						return "NON_NULLABLE";
+					}
+					case DatabaseMetaData.typeNullableUnknown: {
+						return "UNKNOWN";
+					}
+					default: {
+						throw new IllegalArgumentException( "Unknown type nullability code [" + code + "] enountered" );
+					}
+				}
+			}
+			
+			public static String typeSearchabilityInterpret(short code) {
+				switch ( code ) {
+					case DatabaseMetaData.typeSearchable: {
+						return "FULL";
+					}
+					case DatabaseMetaData.typePredNone: {
+						return "NONE";
+					}
+					case DatabaseMetaData.typePredBasic: {
+						return "BASIC";
+					}
+					case DatabaseMetaData.typePredChar: {
+						return "CHAR";
+					}
+					default: {
+						throw new IllegalArgumentException( "Unknown type searchability code [" + code + "] enountered" );
+					}
+				}
+			}
+			
+			public static final String[] EMPTY_STRING_ARRAY = {};
+			private static String[] interpretCreateParams(String value) {
+				if ( value == null || value.length() == 0 ) {
+					return EMPTY_STRING_ARRAY;
+				}
+				return value.split( "," );
+			}
+			
+			public static boolean supportsRefCursors(DatabaseMetaData meta) {
+				// Standard JDBC REF_CURSOR support was not added until Java 8, so we need to use reflection to attempt to
+				// access these fields/methods...
+				try {
+					return (Boolean) meta.getClass().getMethod( "supportsRefCursors" ).invoke( null );
+				}
+				catch (NoSuchMethodException e) {
+				}
+				catch (Exception e) {
+				}
+				return false;
+			}
+		}
+		
 		
 		/**
 		 * 打印结果集的原信息
@@ -176,6 +332,8 @@ public class Test {
 		}
 		
 	}
+	
+	
 
 	/**
 	 * statement
