@@ -1,0 +1,32 @@
+html,body {position: relative; width: 100%; height: 100%;}
+.layer_thickness div,
+.layer_thicknessp h1,
+.layer_thickness p {font-family: 'Microsoft YaHei';}
+.layer_thickness {position: absolute; top: 0; left: 50%; width: 100%; height: 100%; margin-left: -50%; background: rgba(0,0,0,0.5); z-index: 9999; }
+.layer_window {position: absolute; top: 100px; left: 50%; width: 504px; min-height: 300px; padding-bottom: 28px; margin: 0 0 0 -252px; border: 1px solid #267fcd; background: #fff; }
+.layer_window h1 {height: 66px; margin: 0 3px; line-height: 66px; font-size: 26px; color: #383838; border-bottom: 1px solid #d6d6d6; }
+.layer_window h1 i {float: left; width: 40px; height: 40px; margin: 13px 14px; background: url(../images/bg_A.png) -1px -612px no-repeat; }
+.layer_window h1 span {float: left; }
+.layer_window .list_1 {height: 155px; line-height: 155px; text-align: center; color: #686868;font-size: 18px; }
+.layer_btn {text-align: center;}
+.layer_btn .leftBtn,
+.layer_btn .rightBtn {display: inline-block; width: 139px; line-height: 45px; margin: 0 15px; color: #fff; border: 0; background: #999; cursor: pointer;}
+.layer_btn a.ck_btn, .layer_btn a:hover {background: #267fcd; }
+.layer_window h1 a.layer_shut {width: 28px; height: 28px; margin: 13px 14px; background-position: -58px -610px;}
+
+.lauer_classification {padding: 38px 0; text-align: center;}
+.lauer_classification li {line-height: 52px; font-family: 'Microsoft YaHei'; }
+.lauer_classification input {width: 200px; height: 30px; padding: 0 5px;line-height: 30px;}
+.lauer_classification label {float: left;width: 100%;height: 20px;margin: 0;padding: 0;line-height: 20px;text-align: center;font-style: inherit !important;color: red} 
+.lauer_classification select {width: 214px; height: 36px; font-style: inherit; }
+/*错误提示*/
+.lauer_classification strong {display: none;font-size: 14px;}
+.red {color: #f80202}
+.lauer_classification .layer_error_top {height: 20px;line-height: 20px;display: none}
+.layer_error_top span {display:inline-block;width: 100%;height: 100%;font-size: 14px}
+/*安装完成弹层*/
+.layer_bg {position: absolute;top: 0;left: 0;width: 100%;height: 100%;background-color: #000;opacity: 0.5;filter:alpha(opacity=50);}
+.layer_ins_prompt {padding: 5px 30px;font-size: 18px;}
+.layer_ins_prompt span {float: left;}
+.layer_ins_prompt i {float: left;width: 24px;height: 24px; margin: 0 10px;background-position: -136px -606px;}
+.layer_ins_prompt i.complete {background-position: -135px -628px;}

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	version="2.5">
+	<description>
+      	cms系统
+    </description>
+	<display-name>cms系统</display-name>
+
+	<!-- 后台首页 -->
+	<servlet>
+		<servlet-name>admin_IndexSerlvet</servlet-name>
+		<servlet-class>cn.java.admin.servlets.IndexSerlvet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>admin_IndexSerlvet</servlet-name>
+		<url-pattern>/admin/index/*</url-pattern>
+	</servlet-mapping>
+
+	<!-- 基础设置 -->
+	<servlet>
+		<servlet-name>admin_BaseinfoSerlvet</servlet-name>
+		<servlet-class>cn.java.admin.servlets.BaseinfoSerlvet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>admin_BaseinfoSerlvet</servlet-name>
+		<url-pattern>/admin/baseinfo/*</url-pattern>
+	</servlet-mapping>
+
+	<!-- 登录 -->
+	<servlet>
+		<servlet-name>admin_PassportSerlvet</servlet-name>
+		<servlet-class>cn.java.admin.servlets.PassportSerlvet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>admin_PassportSerlvet</servlet-name>
+		<url-pattern>/admin/passport/*</url-pattern>
+	</servlet-mapping>
+	
+	<!-- 友情链接 -->
+	<servlet>
+		<servlet-name>admin_FriendlinkSerlvet</servlet-name>
+		<servlet-class>cn.java.admin.servlets.FriendlinkSerlvet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>admin_FriendlinkSerlvet</servlet-name>
+		<url-pattern>/admin/friendlink/*</url-pattern>
+	</servlet-mapping>
+	
+	<!-- 文章分类 -->
+	<servlet>
+		<servlet-name>admin_ArticleCateSerlvet</servlet-name>
+		<servlet-class>cn.java.admin.servlets.ArticleCateSerlvet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>admin_ArticleCateSerlvet</servlet-name>
+		<url-pattern>/admin/article-cate/*</url-pattern>
+	</servlet-mapping>
+
+	<!-- 文章 -->
+	<servlet>
+		<servlet-name>admin_ArticleSerlvet</servlet-name>
+		<servlet-class>cn.java.admin.servlets.ArticleSerlvet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>admin_ArticleSerlvet</servlet-name>
+		<url-pattern>/admin/article/*</url-pattern>
+	</servlet-mapping>
+	
+	<!-- 产品分类 -->
+	<servlet>
+		<servlet-name>admin_ProductsCateSerlvet</servlet-name>
+		<servlet-class>cn.java.admin.servlets.ProductsCateSerlvet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>admin_ProductsCateSerlvet</servlet-name>
+		<url-pattern>/admin/products-cate/*</url-pattern>
+	</servlet-mapping>
+
+	<!-- 产品 -->
+	<servlet>
+		<servlet-name>admin_ProductsSerlvet</servlet-name>
+		<servlet-class>cn.java.admin.servlets.ProductsSerlvet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>admin_ProductsSerlvet</servlet-name>
+		<url-pattern>/admin/products/*</url-pattern>
+	</servlet-mapping>
+	
+	<!-- 固定文章分类 -->
+	<servlet>
+		<servlet-name>admin_ArticleStaticCateSerlvet</servlet-name>
+		<servlet-class>cn.java.admin.servlets.ArticleStaticCateSerlvet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>admin_ArticleStaticCateSerlvet</servlet-name>
+		<url-pattern>/admin/article-static-cate/*</url-pattern>
+	</servlet-mapping>
+
+	<!-- 固定文章 -->
+	<servlet>
+		<servlet-name>admin_ArticleStaticSerlvet</servlet-name>
+		<servlet-class>cn.java.admin.servlets.ArticleStaticSerlvet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>admin_ArticleStaticSerlvet</servlet-name>
+		<url-pattern>/admin/article-static/*</url-pattern>
+	</servlet-mapping>
+
+	<!-- 测试 -->
+	<servlet>
+		<servlet-name>admin_TestSerlvet</servlet-name>
+		<servlet-class>cn.java.admin.servlets.TestSerlvet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>admin_TestSerlvet</servlet-name>
+		<url-pattern>/admin/test/*</url-pattern>
+	</servlet-mapping>
+</web-app>

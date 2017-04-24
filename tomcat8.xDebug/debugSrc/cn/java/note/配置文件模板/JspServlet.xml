@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+                      http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+	version="3.1" metadata-complete="true">
+
+	<display-name>Welcome to Tomcat</display-name>
+	<description> Welcome to Tomcat</description>
+	
+	<!-- 上下文参数 -->
+	<context-param>
+		<param-name>servletContextParam1</param-name>
+		<param-value>servletContextParam1Value</param-value>
+	</context-param>
+	
+	<!-- 过滤器 -->
+	<filter>
+		<display-name>编码过滤器</display-name>
+		<filter-name>characterEncodingFilter</filter-name>
+		<filter-class>cn.java.demo.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>filterParam1</param-name>
+			<param-value>filterParam1Value</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>characterEncodingFilter</filter-name>
+		<url-pattern>/*</url-pattern><!-- 第二匹配条件 -->
+		<servlet-name>HelloServlet</servlet-name><!-- 第三匹配条件 -->
+		<dispatcher>REQUEST</dispatcher><!-- 第一匹配条件 -->
+	</filter-mapping>
+	
+	<!-- 监听器 -->
+	<listener>
+		<listener-class>cn.java.note.listener.event.MyServletRequestAttributeListener</listener-class>
+	</listener>
+	
+	
+	<!-- Servlet -->
+	<servlet>
+		<servlet-name>HelloServlet</servlet-name>
+		<servlet-class>cn.java.note.HelloServlet</servlet-class>
+		<init-param>
+			<param-name>debug</param-name>
+			<param-value>2</param-value>
+		</init-param>
+		<init-param>
+			<param-name>servletInitParam1</param-name>
+			<param-value>servletInitParam1Value</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>HelloServlet</servlet-name>
+		<url-pattern>/hello/*</url-pattern>
+	</servlet-mapping>
+	<!-- 处理JSP后缀的Servlet -->
+	<servlet>
+        <servlet-name>jsp</servlet-name>
+        <servlet-class>org.apache.jasper.servlet.JspServlet</servlet-class>
+        <init-param>
+            <param-name>fork</param-name>
+            <param-value>false</param-value>
+        </init-param>
+        <init-param>
+            <param-name>xpoweredBy</param-name>
+            <param-value>false</param-value>
+        </init-param>
+        <!-- 比较内部的配置 bof  -->
+        <init-param>
+            <param-name>engineOptionsClass</param-name>
+            <param-value>org.apache.jasper.EmbeddedServletOptions</param-value>
+        </init-param>
+        <init-param>
+            <param-name>keepgenerated</param-name> 
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>trimSpaces</param-name> 
+            <param-value>false</param-value>
+        </init-param>
+        <init-param>
+            <param-name>enablePooling</param-name> 
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>mappedfile</param-name> 
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>classdebuginfo</param-name> 
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>checkInterval</param-name> 
+            <param-value>0</param-value>
+        </init-param>
+        <init-param>
+            <param-name>modificationTestInterval</param-name> <!-- 四秒过期一次 -->
+            <param-value>4</param-value>
+        </init-param>
+        <init-param>
+            <param-name>recompileOnFail</param-name> 
+            <param-value>false</param-value>
+        </init-param>
+        <init-param>
+            <param-name>development</param-name> <!-- 开发模式，会每次都进行重新编译 -->
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>suppressSmap</param-name> <!-- 是否生成 jsp文件和java文件行号的映射信息  -->
+            <param-value>false</param-value>
+        </init-param>
+        <init-param>
+            <param-name>dumpSmap</param-name> 
+            <param-value>false</param-value>
+        </init-param>
+        <init-param>
+            <param-name>genStringAsCharArray</param-name> 
+            <param-value>false</param-value>
+        </init-param>
+        <init-param>
+            <param-name>errorOnUseBeanInvalidClassAttribute</param-name> 
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>ieClassId</param-name> 
+            <param-value>clsid:8AD9C840-044E-11D1-B3E9-00805F499D93</param-value>
+        </init-param>
+        <init-param>
+            <param-name>scratchdir</param-name>  <!-- 当前上下文，JSP编译后的Servlet.class放到临时目录 -->
+            <param-value>/a/b/tomcat/work/Catalina/dir/</param-value>
+        </init-param>
+        <init-param>
+            <param-name>compiler</param-name>
+            <param-value>/a/b/tomcat/tmpdir</param-value>
+        </init-param>
+        <init-param>
+            <param-name>compilerTargetVM</param-name>
+            <param-value>1.7</param-value>
+        </init-param>
+        <init-param>
+            <param-name>compilerSourceVM</param-name>
+            <param-value>1.7</param-value>
+        </init-param>
+        <init-param>
+            <param-name>javaEncoding</param-name>
+            <param-value>UTF8</param-value>
+        </init-param>
+        <init-param>
+            <param-name>compilerClassName</param-name><!-- 使用的编译器类 -->
+            <param-value>org.apache.jasper.compiler.JDTCompiler</param-value>
+        </init-param>
+        <init-param>
+            <param-name>fork</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>displaySourceFragment</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>maxLoadedJsps</param-name>
+            <param-value>-1</param-value>
+        </init-param>
+        <init-param>
+            <param-name>jspIdleTimeout</param-name>
+            <param-value>-1</param-value>
+        </init-param>
+        <init-param>
+            <param-name>strictQuoteEscaping</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>quoteAttributeEL</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <!-- 比较内部的配置 eof  -->
+        <load-on-startup>3</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>jsp</servlet-name>
+        <url-pattern>*.jsp</url-pattern>
+        <url-pattern>*.jspx</url-pattern>
+    </servlet-mapping>
+
+	<!-- SESSION 的配置 -->
+	<session-config>
+		<session-timeout>0</session-timeout>
+		<cookie-config>
+			<name>sessid</name>
+			<!-- <domain>sessid</domain> -->
+			<path>/</path>
+			<http-only>true</http-only>
+			<secure>true</secure>
+		</cookie-config>
+	</session-config>
+
+	<!-- JSP页面的相关配置 -->
+	<jsp-config>
+		<taglib>
+			<taglib-uri>http://cn.java.janchou/jsp/core</taglib-uri>
+			<taglib-location>/WEB-INF/taglib/janchou-taglib.tld</taglib-location>
+		</taglib>
+		<!-- JSP访问URL地址的配置 -->
+		<jsp-property-group>
+			<url-pattern>/*</url-pattern>
+			<page-encoding>UTF-8</page-encoding><!-- jsp文件的编码类型 -->
+			<trim-directive-whitespaces>true</trim-directive-whitespaces>
+			<default-content-type>text/html; charset=utf-8</default-content-type><!-- 输出内容的编码类型 -->
+		</jsp-property-group>
+		<jsp-property-group>
+			<url-pattern>/jspurltpl/*</url-pattern>
+			<el-ignored>false</el-ignored>
+			<page-encoding>UTF-8</page-encoding><!-- jsp文件的编码类型 -->
+			<include-coda>/WEB-INF/jsp/common/header.jsp</include-coda>
+			<trim-directive-whitespaces>true</trim-directive-whitespaces>
+			<default-content-type>text/html; charset=utf-8</default-content-type><!-- 输出内容的编码类型 -->
+		</jsp-property-group>
+	</jsp-config>
+</web-app>
