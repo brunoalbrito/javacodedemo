@@ -67,26 +67,39 @@ public class CoreSerlvet extends HttpServlet {
 			response.sendError(404);//禁止访问的方法
 			response.getWriter().write("miss action...");
 		} else {
-			Method[] methods = this.getClass().getMethods();
-			boolean isHit = false;
-			for (Method method : methods) {
-				//System.out.println(method.getName());
-				if (method.getName().equals(actionName)) {
-					//System.out.println(method.getName() + "---" + actionName + "\n");
-					if (method.getModifiers() == Modifier.PUBLIC) {
-						try {
-							method.invoke(this, null);
-							isHit = true;
-							break;
-						} catch (Exception e) {
-							e.printStackTrace();
+			
+			if(true){
+				Method[] methods = this.getClass().getMethods();
+				boolean isHit = false;
+				for (Method method : methods) {
+					//System.out.println(method.getName());
+					if (method.getName().equals(actionName)) {
+						//System.out.println(method.getName() + "---" + actionName + "\n");
+						if (method.getModifiers() == Modifier.PUBLIC) {
+							try {
+								method.invoke(this, null);
+								isHit = true;
+								break;
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
 						}
 					}
 				}
+				if (!isHit) {
+					response.sendError(404);//禁止访问的方法
+					response.getWriter().write("miss action...");
+				}
 			}
-			if (!isHit) {
-				response.sendError(404);//禁止访问的方法
-				response.getWriter().write("miss action...");
+			else{
+				Method method = this.getClass().getMethod(actionName, null);
+				if(method==null){
+					response.sendError(404);//禁止访问的方法
+					response.getWriter().write("miss action...");
+				}
+				else{
+					method.invoke(this, null);
+				}
 			}
 		}
 	}

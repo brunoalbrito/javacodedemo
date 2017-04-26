@@ -1,4 +1,4 @@
-package cn.java.beannote.cglib.enhancer;
+package cn.java.beannote.cglib.生成子类;
 
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.support.CglibSubclassingInstantiationStrategy;

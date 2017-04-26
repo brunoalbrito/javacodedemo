@@ -1,10 +1,14 @@
-package cn.java.mvcnote;
+package cn.java.webmvcnote;
 
 public class 关于SpringMvcDebug {
 	public static void doPost() {
 //		在Servlet中可以获取 XmlWebApplicationContext 对象
 //		ServletContext servletContext;
 //		org.springframework.web.context.support.XmlWebApplicationContext context = servletContext.getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);
+		/*
+		 	org.springframework.context.support.AbstractRefreshableApplicationContext
+		 	
+		 */
 	}
 	
 	public static void webDotXml(String[] args){
@@ -47,8 +51,22 @@ public class 关于SpringMvcDebug {
 		        <servlet-name>dispatcherServlet</servlet-name>
 		        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
 		        <load-on-startup>1</load-on-startup>
-		        <param-name>contextConfigLocation</param-name>
-        		<param-value>/WEB-INF/classes/applicationContextConfig.xml</param-value>
+		        <init-param>
+			        <param-name>contextConfigLocation</param-name>
+	        		<param-value>/WEB-INF/classes/applicationContextConfig.xml</param-value>
+        		</init-param>
+		        <init-param>
+			        <param-name>contextId</param-name>
+	        		<param-value>contextId_001</param-value>
+        		</init-param>
+		        <init-param>
+			        <param-name>namespace</param-name>
+	        		<param-value>namespace_001</param-value>
+        		</init-param>
+		        <init-param>
+			        <param-name>contextAttribute</param-name>
+	        		<param-value>org.springframework.web.context.WebApplicationContext.ROOT</param-value>
+        		</init-param>
 		    </servlet>
 		    <servlet-mapping>
 		        <servlet-name>dispatcherServlet</servlet-name>

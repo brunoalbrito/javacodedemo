@@ -1,4 +1,4 @@
-package cn.java.demo.aoptag.debug;
+package cn.java.aopnote;
 
 import java.util.ArrayList;
 import java.util.List;

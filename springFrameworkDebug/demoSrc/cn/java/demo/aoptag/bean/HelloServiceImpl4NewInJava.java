@@ -2,7 +2,7 @@ package cn.java.demo.aoptag.bean;
 
 import cn.java.demo.aoptag.api.HelloService;
 
-public class HelloServiceImpl3 implements HelloService {
+public class HelloServiceImpl4NewInJava implements HelloService {
 
 	@Override
 	public void method1() {

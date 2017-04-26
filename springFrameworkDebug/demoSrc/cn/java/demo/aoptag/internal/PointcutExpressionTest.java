@@ -4,7 +4,6 @@ import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.aspectj.weaver.ast.Test;
 import org.aspectj.weaver.patterns.NamePattern;
 import org.aspectj.weaver.reflect.ShadowMatchImpl;
 import org.aspectj.weaver.tools.ContextBasedMatcher;
@@ -21,11 +20,97 @@ import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.FactoryBean;
-import org.springframework.util.ReflectionUtils;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.context.support.AbstractRefreshableConfigApplicationContext;
 import org.springframework.util.StringUtils;
 
-public class PointcutParserTest {
+import cn.java.demo.util.ApplicationContextUtil;
 
+public class PointcutExpressionTest {
+
+	public void test(AbstractRefreshableConfigApplicationContext context) {
+		System.out.println("-----"+this.getClass().getSimpleName()+"------");
+		
+		ConfigurableListableBeanFactory beanFactory = ApplicationContextUtil.tryCastTypeToConfigurableListableBeanFactory(context);
+		if(beanFactory==null){
+			return;
+		}
+		this.beanFactory = beanFactory;
+		
+		// ---------创建表达式匹配器-----------
+		PointcutExpression pointcutExpression = null;
+		{ // org.springframework.aop.aspectj.AspectJExpressionPointcut.checkReadyToMatch()
+			// ---定义表达式解析器---
+			ClassLoader cl = PointcutExpressionTest.class.getClassLoader();
+			PointcutParser parser = PointcutParser
+					.getPointcutParserSupportingSpecifiedPrimitivesAndUsingSpecifiedClassLoaderForResolution(
+							SUPPORTED_PRIMITIVES, cl);
+			parser.registerPointcutDesignatorHandler(new BeanNamePointcutDesignatorHandler());
+			
+			// ---解析表达式，并创建表达式匹配器---
+			PointcutParameter[] pointcutParameters = new PointcutParameter[this.pointcutParameterNames.length]; // 参数名
+			for (int i = 0; i < pointcutParameters.length; i++) {
+				pointcutParameters[i] = parser.createPointcutParameter(
+						this.pointcutParameterNames[i], this.pointcutParameterTypes[i]);
+			}
+			pointcutExpression = parser.parsePointcutExpression(replaceBooleanOperators(getExpression()),
+					this.pointcutDeclarationScope, pointcutParameters); // org.aspectj.weaver.internal.tools.PointcutExpressionImpl
+		}
+		
+		// ---------进行匹配-----------
+		// 被拦截的对象信息
+		FooService service = new FooService();
+		Class targetClass = service.getClass();
+		Method method;
+		try {
+			method = targetClass.getMethod("method1");
+		} catch (NoSuchMethodException | SecurityException e) {
+			throw new RuntimeException(e);
+		}
+		
+		// 匹配指定类
+		{ // org.springframework.aop.aspectj.AspectJExpressionPointcut.matches(Class<?> targetClass)
+			boolean result = pointcutExpression.couldMatchJoinPointsInType(targetClass);
+			if(result){
+				System.out.println("class is match.");
+			}
+		}
+		
+		// 匹配方法
+		{ // org.springframework.aop.aspectj.AspectJExpressionPointcut.matches(Method method, Class<?> targetClass)
+			Method targetMethod = AopUtils.getMostSpecificMethod(method, targetClass);
+			Method originalMethod = method;
+			Method methodToMatch = targetMethod;
+			ShadowMatch shadowMatch = pointcutExpression.matchesMethodExecution(methodToMatch);
+			if (shadowMatch == null && targetMethod != originalMethod) {
+				methodToMatch = originalMethod;
+				shadowMatch = pointcutExpression.matchesMethodExecution(methodToMatch);
+			}
+			if (shadowMatch == null) {
+				shadowMatch = new ShadowMatchImpl(org.aspectj.util.FuzzyBoolean.NO, null, null, null);
+			}
+			if (shadowMatch.alwaysMatches()) {
+				System.out.println("return true.");
+			}
+			else if (shadowMatch.neverMatches()) {
+				System.out.println("return false.");
+			}
+			else {
+				/*
+				RuntimeTestWalker walker = null;
+				if (shadowMatch instanceof DefensiveShadowMatch) {
+					walker = new RuntimeTestWalker(((DefensiveShadowMatch) shadowMatch).primary);
+				}
+				else{
+					walker = new RuntimeTestWalker(shadowMatch);
+				}
+				return (!walker.testsSubtypeSensitiveVars() || walker.testTargetInstanceOfResidue(targetClass));
+				*/
+			}
+		}
+	}
+	
+	
 	private static final Set<PointcutPrimitive> SUPPORTED_PRIMITIVES = new HashSet<PointcutPrimitive>();
 	private String[] pointcutParameterNames = new String[0];
 	private Class<?>[] pointcutParameterTypes = new Class<?>[0];
@@ -44,87 +129,10 @@ public class PointcutParserTest {
 		SUPPORTED_PRIMITIVES.add(PointcutPrimitive.AT_TARGET);
 	}
 	
-	public void test(BeanFactory beanFactory) {
-		this.beanFactory = beanFactory;
-		ClassLoader cl = PointcutParserTest.class.getClassLoader();
-		
-		
-		// 
-		PointcutParser parser = PointcutParser
-				.getPointcutParserSupportingSpecifiedPrimitivesAndUsingSpecifiedClassLoaderForResolution(
-						SUPPORTED_PRIMITIVES, cl);
-		parser.registerPointcutDesignatorHandler(new BeanNamePointcutDesignatorHandler());
-		
-		// -------------------------
-		PointcutParameter[] pointcutParameters = new PointcutParameter[this.pointcutParameterNames.length]; // 参数名
-		for (int i = 0; i < pointcutParameters.length; i++) {
-			pointcutParameters[i] = parser.createPointcutParameter(
-					this.pointcutParameterNames[i], this.pointcutParameterTypes[i]);
-		}
-		// getExpression() == "execution(public void cn.java.demo.aoptag.bean.HelloServiceImpl2.method1(..)) || execution(public void cn.java.demo.aoptag.bean.HelloServiceImpl2.method1(..))" 
-		PointcutExpression pointcutExpression = parser.parsePointcutExpression(replaceBooleanOperators(getExpression()),
-				this.pointcutDeclarationScope, pointcutParameters); // org.aspectj.weaver.internal.tools.PointcutExpressionImpl
-		
-		// 被拦截的对象信息
-		FooService service = new FooService();
-		Class targetClass = service.getClass();
-		Method method;
-		try {
-			method = targetClass.getMethod("getId");
-		} catch (NoSuchMethodException | SecurityException e) {
-			throw new RuntimeException(e);
-		}
-		
-		// 匹配指定类
-		{
-			boolean result = pointcutExpression.couldMatchJoinPointsInType(targetClass);
-		}
-		
-		// 匹配方法
-		{
-			Method targetMethod = AopUtils.getMostSpecificMethod(method, targetClass);
-			Method originalMethod = method;
-			Method methodToMatch = targetMethod;
-			ShadowMatch shadowMatch = pointcutExpression.matchesMethodExecution(methodToMatch);
-			if (shadowMatch == null && targetMethod != originalMethod) {
-				methodToMatch = originalMethod;
-				shadowMatch = pointcutExpression.matchesMethodExecution(methodToMatch);
-			}
-			if (shadowMatch == null) {
-				shadowMatch = new ShadowMatchImpl(org.aspectj.util.FuzzyBoolean.NO, null, null, null);
-			}
-			if (shadowMatch.alwaysMatches()) {
-				System.out.println("return true");
-			}
-			else if (shadowMatch.neverMatches()) {
-				System.out.println("return false");
-			}
-			else {
-				/*
-				RuntimeTestWalker walker = null;
-				if (shadowMatch instanceof DefensiveShadowMatch) {
-					walker = new RuntimeTestWalker(((DefensiveShadowMatch) shadowMatch).primary);
-				}
-				else{
-					walker = new RuntimeTestWalker(shadowMatch);
-				}
-				return (!walker.testsSubtypeSensitiveVars() || walker.testTargetInstanceOfResidue(targetClass));
-				*/
-			}
-		}
-	}
-	
-
-	
 	private static class FooService {
-		private int id;
 
-		public int getId() {
-			return id;
-		}
-
-		public void setId(int id) {
-			this.id = id;
+		public void method1() {
+			System.out.println(this.getClass().getName() + ":method1()");
 		}
 		
 	}
@@ -141,7 +149,7 @@ public class PointcutParserTest {
 	}
 
 	public String getExpression() {
-		return "execution(public void cn.java.demo.aoptag.bean.HelloServiceImpl2.method1(..)) || execution(public void cn.java.demo.aoptag.bean.HelloServiceImpl2.method1(..))";
+		return "execution(public void cn.java.demo.aoptag.internal.PointcutExpressionTest.FooService.method1(..)) || execution(public void cn.java.demo.aoptag.bean.HelloServiceImpl2.method1(..))";
 	}
 
 	private class BeanNamePointcutDesignatorHandler implements PointcutDesignatorHandler {
