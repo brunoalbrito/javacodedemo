@@ -78,8 +78,10 @@ public class DefaultAdvisorAdapterRegistry implements AdvisorAdapterRegistry, Se
 	@Override
 	public MethodInterceptor[] getInterceptors(Advisor advisor) throws UnknownAdviceTypeException {
 		List<MethodInterceptor> interceptors = new ArrayList<MethodInterceptor>(3);
-		Advice advice = advisor.getAdvice();
+		// advisor === org.springframework.aop.aspectj.AspectJPointcutAdvisor 
+		Advice advice = advisor.getAdvice();//!!!
 		if (advice instanceof MethodInterceptor) {
+			// advice === org.springframework.aop.aspectj.AspectJAfterAdvice   <aop:after>
 			interceptors.add((MethodInterceptor) advice);
 		}
 		/*
@@ -92,7 +94,9 @@ public class DefaultAdvisorAdapterRegistry implements AdvisorAdapterRegistry, Se
 		 */
 		for (AdvisorAdapter adapter : this.adapters) {
 			if (adapter.supportsAdvice(advice)) { // !!!
+//				advisor === org.springframework.aop.aspectj.AspectJMethodBeforeAdvice   <aop:before>
 				interceptors.add(adapter.getInterceptor(advisor));
+//				interceptors.add(new org.springframework.aop.framework.adapter.MethodBeforeAdviceInterceptor(advisor.getAdvice()));
 			}
 		}
 		if (interceptors.isEmpty()) {

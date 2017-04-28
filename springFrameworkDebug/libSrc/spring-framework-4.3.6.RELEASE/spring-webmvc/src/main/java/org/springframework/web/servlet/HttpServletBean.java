@@ -121,11 +121,11 @@ public abstract class HttpServletBean extends HttpServlet
 		// Set bean properties from init parameters.
 		try {
 			PropertyValues pvs = new ServletConfigPropertyValues(getServletConfig(), this.requiredProperties);
-			BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(this);
+			BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(this); // org.springframework.beans.BeanWrapperImpl
 			ResourceLoader resourceLoader = new ServletContextResourceLoader(getServletContext());
-			bw.registerCustomEditor(Resource.class, new ResourceEditor(resourceLoader, getEnvironment()));
-			initBeanWrapper(bw);
-			bw.setPropertyValues(pvs, true);
+			bw.registerCustomEditor(Resource.class, new ResourceEditor(resourceLoader, getEnvironment())); // customEditors[Resource.class]
+			initBeanWrapper(bw); // 空方法
+			bw.setPropertyValues(pvs, true); // 把web.xml中的配置设置到 org.springframework.web.servlet.DispatcherServlet
 		}
 		catch (BeansException ex) {
 			logger.error("Failed to set bean properties on servlet '" + getServletName() + "'", ex);
@@ -133,7 +133,7 @@ public abstract class HttpServletBean extends HttpServlet
 		}
 
 		// Let subclasses do whatever initialization they like.
-		initServletBean();
+		initServletBean(); // !!!! 获取在ContextLoaderListener初始化的 XmlWebApplicationContext
 
 		if (logger.isDebugEnabled()) {
 			logger.debug("Servlet '" + getServletName() + "' configured successfully");

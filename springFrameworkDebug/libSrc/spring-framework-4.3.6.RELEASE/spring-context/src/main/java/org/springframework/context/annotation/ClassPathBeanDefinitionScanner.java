@@ -269,23 +269,24 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 		Assert.notEmpty(basePackages, "At least one base package must be specified");
 		Set<BeanDefinitionHolder> beanDefinitions = new LinkedHashSet<BeanDefinitionHolder>();
 		for (String basePackage : basePackages) {
-			Set<BeanDefinition> candidates = findCandidateComponents(basePackage);
-			for (BeanDefinition candidate : candidates) {
-				ScopeMetadata scopeMetadata = this.scopeMetadataResolver.resolveScopeMetadata(candidate);
-				candidate.setScope(scopeMetadata.getScopeName());
-				String beanName = this.beanNameGenerator.generateBeanName(candidate, this.registry);
-				if (candidate instanceof AbstractBeanDefinition) {
-					postProcessBeanDefinition((AbstractBeanDefinition) candidate, beanName);
+			Set<BeanDefinition> candidates = findCandidateComponents(basePackage);  // 符合包含条件和不包含条件的Component
+			for (BeanDefinition candidate : candidates) { 
+				// candidate == org.springframework.context.annotation.ScannedGenericBeanDefinition
+				ScopeMetadata scopeMetadata = this.scopeMetadataResolver.resolveScopeMetadata(candidate);  // org.springframework.context.annotation.AnnotationScopeMetadataResolver
+				candidate.setScope(scopeMetadata.getScopeName()); // Scope名
+				String beanName = this.beanNameGenerator.generateBeanName(candidate, this.registry);  // 生成beanName名  org.springframework.context.annotation.AnnotationBeanNameGenerator
+				if (candidate instanceof AbstractBeanDefinition) { 
+					postProcessBeanDefinition((AbstractBeanDefinition) candidate, beanName); // !!!  是否启用自动装配
 				}
 				if (candidate instanceof AnnotatedBeanDefinition) {
-					AnnotationConfigUtils.processCommonDefinitionAnnotations((AnnotatedBeanDefinition) candidate);
+					AnnotationConfigUtils.processCommonDefinitionAnnotations((AnnotatedBeanDefinition) candidate); // !!!
 				}
-				if (checkCandidate(beanName, candidate)) {
+				if (checkCandidate(beanName, candidate)) { // beanName没被定义过
 					BeanDefinitionHolder definitionHolder = new BeanDefinitionHolder(candidate, beanName);
 					definitionHolder =
 							AnnotationConfigUtils.applyScopedProxyMode(scopeMetadata, definitionHolder, this.registry);
 					beanDefinitions.add(definitionHolder);
-					registerBeanDefinition(definitionHolder, this.registry);
+					registerBeanDefinition(definitionHolder, this.registry); // 注册beanName
 				}
 			}
 		}
@@ -300,7 +301,7 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 	 */
 	protected void postProcessBeanDefinition(AbstractBeanDefinition beanDefinition, String beanName) {
 		beanDefinition.applyDefaults(this.beanDefinitionDefaults);
-		if (this.autowireCandidatePatterns != null) {
+		if (this.autowireCandidatePatterns != null) { // 是否启用自动装配
 			beanDefinition.setAutowireCandidate(PatternMatchUtils.simpleMatch(this.autowireCandidatePatterns, beanName));
 		}
 	}
@@ -329,7 +330,7 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 	 * bean definition has been found for the specified name
 	 */
 	protected boolean checkCandidate(String beanName, BeanDefinition beanDefinition) throws IllegalStateException {
-		if (!this.registry.containsBeanDefinition(beanName)) {
+		if (!this.registry.containsBeanDefinition(beanName)) { // 不存在bean的定义
 			return true;
 		}
 		BeanDefinition existingDef = this.registry.getBeanDefinition(beanName);

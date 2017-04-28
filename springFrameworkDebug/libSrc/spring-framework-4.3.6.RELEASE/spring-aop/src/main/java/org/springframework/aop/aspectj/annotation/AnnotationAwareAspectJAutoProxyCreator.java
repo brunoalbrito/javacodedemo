@@ -62,7 +62,7 @@ public class AnnotationAwareAspectJAutoProxyCreator extends AspectJAwareAdvisorA
 	public void setIncludePatterns(List<String> patterns) {
 		this.includePatterns = new ArrayList<Pattern>(patterns.size());
 		for (String patternText : patterns) {
-			this.includePatterns.add(Pattern.compile(patternText));
+			this.includePatterns.add(Pattern.compile(patternText)); // 正则表达式
 		}
 	}
 
@@ -85,9 +85,9 @@ public class AnnotationAwareAspectJAutoProxyCreator extends AspectJAwareAdvisorA
 	@Override
 	protected List<Advisor> findCandidateAdvisors() {
 		// Add all the Spring advisors found according to superclass rules.
-		List<Advisor> advisors = super.findCandidateAdvisors();
+		List<Advisor> advisors = super.findCandidateAdvisors(); // 扫描bean容器，找出实现Advisor接口的bean列表，如果没实例化，就进行实例化
 		// Build Advisors for all AspectJ aspects in the bean factory.
-		advisors.addAll(this.aspectJAdvisorsBuilder.buildAspectJAdvisors());
+		advisors.addAll(this.aspectJAdvisorsBuilder.buildAspectJAdvisors());  // 在类中使用注解的配置方式
 		return advisors;
 	}
 

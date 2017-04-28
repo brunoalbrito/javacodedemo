@@ -164,7 +164,7 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 	}
 
 	@Override
-	public Class<?> getTargetClass() {
+	public Class<?> getTargetClass() { // org.springframework.aop.target.SimpleBeanTargetSource
 		return this.targetSource.getTargetClass();
 	}
 

@@ -250,14 +250,18 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 	public void setPropertyValue(String propertyName, Object value) throws BeansException {
 		AbstractNestablePropertyAccessor nestedPa;
 		try {
-			nestedPa = getPropertyAccessorForPropertyPath(propertyName);
+			// !!!! 从org.springframework.web.servlet.DispatcherServlet的属性开始嵌套下去的属性值
+			// propertyName == "actualName0['key0']['key1'].property0.property1"
+			// 如 DispatcherServlet存在属性getActualName0(),并且此方法返回 二维数组,从返回值获取 actualName0['key0']['key1']
+			// 然后获取值 result.property0.property1
+			nestedPa = getPropertyAccessorForPropertyPath(propertyName); 
 		}
 		catch (NotReadablePropertyException ex) {
 			throw new NotWritablePropertyException(getRootClass(), this.nestedPath + propertyName,
 					"Nested property in path '" + propertyName + "' does not exist", ex);
 		}
-		PropertyTokenHolder tokens = getPropertyNameTokens(getFinalPath(nestedPa, propertyName));
-		nestedPa.setPropertyValue(tokens, new PropertyValue(propertyName, value));
+		PropertyTokenHolder tokens = getPropertyNameTokens(getFinalPath(nestedPa, propertyName)); // 最后一级的key名
+		nestedPa.setPropertyValue(tokens, new PropertyValue(propertyName, value)); // 设置值
 	}
 
 	@Override
@@ -626,14 +630,24 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 
 	@SuppressWarnings("unchecked")
 	protected Object getPropertyValue(PropertyTokenHolder tokens) throws BeansException {
+		/*
+		 	// propertyName === "actualName0['key0']['key1']"
+			tokens = {
+				actualName : "actualName0"
+				keys : [key0,key1]
+				canonicalName : "actualName0[key0][key1]"
+			}
+		 */
 		String propertyName = tokens.canonicalName;
 		String actualName = tokens.actualName;
-		PropertyHandler ph = getLocalPropertyHandler(actualName);
+		// 获取 actualName0 在org.springframework.web.servlet.DispatcherServlet 的getter方法
+		// ph == org.springframework.beans.BeanWrapperImpl.BeanPropertyHandler
+		PropertyHandler ph = getLocalPropertyHandler(actualName); 
 		if (ph == null || !ph.isReadable()) {
 			throw new NotReadablePropertyException(getRootClass(), this.nestedPath + propertyName);
 		}
 		try {
-			Object value = ph.getValue();
+			Object value = ph.getValue(); 
 			if (tokens.keys != null) {
 				if (value == null) {
 					if (isAutoGrowNestedPaths()) {
@@ -821,10 +835,11 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 	protected AbstractNestablePropertyAccessor getPropertyAccessorForPropertyPath(String propertyPath) {
 		int pos = PropertyAccessorUtils.getFirstNestedPropertySeparatorIndex(propertyPath);
 		// Handle nested properties recursively.
-		if (pos > -1) {
+		if (pos > -1) { // propertyPath == "actualName0['key0']['key1'].property0.property1"
 			String nestedProperty = propertyPath.substring(0, pos);
 			String nestedPath = propertyPath.substring(pos + 1);
-			AbstractNestablePropertyAccessor nestedPa = getNestedPropertyAccessor(nestedProperty);
+			AbstractNestablePropertyAccessor nestedPa = getNestedPropertyAccessor(nestedProperty); // nestedPa == actualName0['key0']['key1'] 的值wrap
+			// nestedPa === org.springframework.beans.BeanWrapperImpl
 			return nestedPa.getPropertyAccessorForPropertyPath(nestedPath);
 		}
 		else {
@@ -845,9 +860,18 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 			this.nestedPropertyAccessors = new HashMap<String, AbstractNestablePropertyAccessor>();
 		}
 		// Get value of bean property.
-		PropertyTokenHolder tokens = getPropertyNameTokens(nestedProperty);
+		
+		/*
+		 	// propertyName === "actualName0['key0']['key1']"
+			tokens = {
+				actualName : "actualName0"
+				keys : [key0,key1]
+				canonicalName : "actualName0[key0][key1]"
+			}
+		 */
+		PropertyTokenHolder tokens = getPropertyNameTokens(nestedProperty); //　
 		String canonicalName = tokens.canonicalName;
-		Object value = getPropertyValue(tokens);
+		Object value = getPropertyValue(tokens); // !!!! 获取 actualName0 在org.springframework.web.servlet.DispatcherServlet 的getter方法，并获取值
 		if (value == null || (value.getClass() == javaUtilOptionalClass && OptionalUnwrapper.isEmpty(value))) {
 			if (isAutoGrowNestedPaths()) {
 				value = setDefaultValue(tokens);
@@ -864,7 +888,7 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 			if (logger.isTraceEnabled()) {
 				logger.trace("Creating new nested " + getClass().getSimpleName() + " for property '" + canonicalName + "'");
 			}
-			nestedPa = newNestedPropertyAccessor(value, this.nestedPath + canonicalName + NESTED_PROPERTY_SEPARATOR);
+			nestedPa = newNestedPropertyAccessor(value, this.nestedPath + canonicalName + NESTED_PROPERTY_SEPARATOR); // actualName0.
 			// Inherit all type-specific PropertyEditors.
 			copyDefaultEditorsTo(nestedPa);
 			copyCustomEditorsTo(nestedPa, canonicalName);
@@ -944,7 +968,7 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 		String actualName = null;
 		List<String> keys = new ArrayList<String>(2);
 		int searchIndex = 0;
-		while (searchIndex != -1) {
+		while (searchIndex != -1) { // actualName0['key0']['key1']
 			int keyStart = propertyName.indexOf(PROPERTY_KEY_PREFIX, searchIndex);
 			searchIndex = -1;
 			if (keyStart != -1) {
@@ -966,11 +990,21 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 		tokens.actualName = (actualName != null ? actualName : propertyName);
 		tokens.canonicalName = tokens.actualName;
 		if (!keys.isEmpty()) {
+			// actualName[key0][key1]
 			tokens.canonicalName += PROPERTY_KEY_PREFIX +
 					StringUtils.collectionToDelimitedString(keys, PROPERTY_KEY_SUFFIX + PROPERTY_KEY_PREFIX) +
 					PROPERTY_KEY_SUFFIX;
 			tokens.keys = StringUtils.toStringArray(keys);
 		}
+		/*
+		 	// propertyName === "actualName0['key0']['key1']"
+			tokens = {
+				actualName : "actualName0"
+				keys : [key0,key1]
+				canonicalName : "actualName0[key0][key1]"
+			}
+		 */
+
 		return tokens;
 	}
 

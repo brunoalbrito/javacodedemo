@@ -165,8 +165,8 @@ public abstract class AbstractAspectJAdvice implements Advice, AspectJPrecedence
 		this.methodName = aspectJAdviceMethod.getName(); // “接受通知的方法”的名称
 		this.parameterTypes = aspectJAdviceMethod.getParameterTypes(); //　“接受通知的方法”参数信息
 		this.aspectJAdviceMethod = aspectJAdviceMethod; // “接受通知的方法”引用
-		this.pointcut = pointcut;
-		this.aspectInstanceFactory = aspectInstanceFactory;
+		this.pointcut = pointcut; // org.springframework.aop.aspectj.AspectJExpressionPointcut表达式 
+		this.aspectInstanceFactory = aspectInstanceFactory; // org.springframework.aop.config.SimpleBeanFactoryAwareAspectInstanceFactory
 	}
 
 
@@ -550,9 +550,11 @@ public abstract class AbstractAspectJAdvice implements Advice, AspectJPrecedence
 	 */
 	protected Object[] argBinding(JoinPoint jp, JoinPointMatch jpMatch, Object returnValue, Throwable ex) {
 		calculateArgumentBindings();
-
+		
+//		jp === org.springframework.aop.aspectj.MethodInvocationProceedingJoinPoint
+		
 		// AMC start
-		Object[] adviceInvocationArgs = new Object[this.parameterTypes.length];
+		Object[] adviceInvocationArgs = new Object[this.parameterTypes.length]; //　“接受通知的方法”参数信息
 		int numBound = 0;
 
 		if (this.joinPointArgumentIndex != -1) {
@@ -624,7 +626,8 @@ public abstract class AbstractAspectJAdvice implements Advice, AspectJPrecedence
 			actualArgs = null;
 		}
 		try {
-			ReflectionUtils.makeAccessible(this.aspectJAdviceMethod);
+			ReflectionUtils.makeAccessible(this.aspectJAdviceMethod); // “接受通知的方法”引用
+			// org.springframework.aop.config.SimpleBeanFactoryAwareAspectInstanceFactory.getAspectInstance()
 			// TODO AopUtils.invokeJoinpointUsingReflection
 			return this.aspectJAdviceMethod.invoke(this.aspectInstanceFactory.getAspectInstance(), actualArgs);
 		}
@@ -663,6 +666,8 @@ public abstract class AbstractAspectJAdvice implements Advice, AspectJPrecedence
 	// Using the expression is guaranteed to be safe, since 2 identical expressions
 	// are guaranteed to bind in exactly the same way.
 	protected JoinPointMatch getJoinPointMatch(ProxyMethodInvocation pmi) {
+		// pmi === org.springframework.aop.framework.ReflectiveMethodInvocation
+		// pmi === org.springframework.aop.framework.CglibAopProxy.CglibMethodInvocation
 		return (JoinPointMatch) pmi.getUserAttribute(this.pointcut.getExpression());
 	}
 

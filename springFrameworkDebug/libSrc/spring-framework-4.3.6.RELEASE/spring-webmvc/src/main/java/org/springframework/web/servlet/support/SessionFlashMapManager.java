@@ -32,7 +32,7 @@ import org.springframework.web.util.WebUtils;
  * @since 3.1.1
  */
 public class SessionFlashMapManager extends AbstractFlashMapManager {
-
+	
 	private static final String FLASH_MAPS_SESSION_ATTRIBUTE = SessionFlashMapManager.class.getName() + ".FLASH_MAPS";
 
 

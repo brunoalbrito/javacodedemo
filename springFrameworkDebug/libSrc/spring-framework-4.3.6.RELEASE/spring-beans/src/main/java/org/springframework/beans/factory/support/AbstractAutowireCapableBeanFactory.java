@@ -1637,7 +1637,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 //		System.out.println("applyBeanPostProcessorsAfterInitialization before : " + wrappedBean.getClass().getName());
-		if (mbd == null || !mbd.isSynthetic()) {
+		if (mbd == null || !mbd.isSynthetic()) { // 不是合成的bean才会应用 BeanPostProcessors
 			wrappedBean = applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName); // wrappedBean在这边被aop做了代理的劫持
 		}
 //		System.out.println("applyBeanPostProcessorsAfterInitialization after : " + wrappedBean.getClass().getName());

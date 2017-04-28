@@ -174,9 +174,9 @@ public class UrlPathHelper {
 	 * @return the path within the servlet mapping, or ""
 	 */
 	public String getPathWithinServletMapping(HttpServletRequest request) {
-		String pathWithinApp = getPathWithinApplication(request);
-		String servletPath = getServletPath(request);
-		String sanitizedPathWithinApp = getSanitizedPath(pathWithinApp);
+		String pathWithinApp = getPathWithinApplication(request); // pathWithinApp == requestUri
+		String servletPath = getServletPath(request); // servletPath == servletPath
+		String sanitizedPathWithinApp = getSanitizedPath(pathWithinApp); // sanitizedPathWithinApp == requestUri
 		String path;
 
 		// If the app container sanitized the servletPath, check against the sanitized version
@@ -221,8 +221,8 @@ public class UrlPathHelper {
 	 * @return the path within the web application
 	 */
 	public String getPathWithinApplication(HttpServletRequest request) {
-		String contextPath = getContextPath(request);
-		String requestUri = getRequestUri(request);
+		String contextPath = getContextPath(request); // 上下文地址   webapp0
+		String requestUri = getRequestUri(request); // 请求地址 webapp0/dir1/index.jsp
 		String path = getRemainingPath(requestUri, contextPath, true);
 		if (path != null) {
 			// Normal case: URI contains context path.
@@ -246,7 +246,7 @@ public class UrlPathHelper {
 			char c1 = requestUri.charAt(index1);
 			char c2 = mapping.charAt(index2);
 			if (c1 == ';') {
-				index1 = requestUri.indexOf('/', index1);
+				index1 = requestUri.indexOf('/', index1); // webapp0/dir1;/dir2/dir3
 				if (index1 == -1) {
 					return null;
 				}

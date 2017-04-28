@@ -8,12 +8,16 @@ public class 关于aop_config标签的数据结构 {
 		 	
 		 	------------------------------
 		 	org.springframework.aop.framework.autoproxy.InfrastructureAdvisorAutoProxyCreator 权重最低
-		 	org.springframework.aop.framework.autoproxy.AspectJAwareAdvisorAutoProxyCreator    <config>、<aspectj-autoproxy>
-		 	org.springframework.aop.framework.autoproxy.AnnotationAwareAspectJAutoProxyCreator 权重最高
+		 	org.springframework.aop.framework.autoproxy.AspectJAwareAdvisorAutoProxyCreator    <config>
+		 	org.springframework.aop.framework.autoproxy.AnnotationAwareAspectJAutoProxyCreator 权重最高 <aspectj-autoproxy>
 		 	------------------------------
-		 	
-		 	org.springframework.aop.config.AopNamespaceHandler.parse(..)
-		 		org.springframework.aop.config.ConfigBeanDefinitionParser.parse(Element element, ParserContext parserContext)
+		 	org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader.parseBeanDefinitions(...)
+		 		org.springframework.beans.factory.xml.BeanDefinitionParserDelegate.parseCustomElement(...) 自定义标签
+				 	org.springframework.aop.config.AopNamespaceHandler.parse(..) 解析
+				 		org.springframework.aop.config.ConfigBeanDefinitionParser.parse(Element element, ParserContext parserContext)
+				org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader.parseDefaultElement(...) 默认标签
+					org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader.processBeanDefinition(...) 装饰器
+						org.springframework.beans.factory.xml.BeanDefinitionParserDelegate.decorateBeanDefinitionIfRequired(...)
 		 	---------------
 		 	
 		 	org.springframework.beans.factory.parsing.CompositeComponentDefinition { 

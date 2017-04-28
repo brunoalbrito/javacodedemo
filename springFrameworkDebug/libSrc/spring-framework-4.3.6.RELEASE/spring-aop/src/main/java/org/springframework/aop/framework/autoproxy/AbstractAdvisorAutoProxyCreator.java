@@ -88,7 +88,7 @@ public abstract class AbstractAdvisorAutoProxyCreator extends AbstractAutoProxyC
 		List<Advisor> eligibleAdvisors = findAdvisorsThatCanApply(candidateAdvisors, beanClass, beanName); // 匹配“通知接受者”列表
 		extendAdvisors(eligibleAdvisors); // 空方法
 		if (!eligibleAdvisors.isEmpty()) {
-			eligibleAdvisors = sortAdvisors(eligibleAdvisors);
+			eligibleAdvisors = sortAdvisors(eligibleAdvisors); // 对结果进行排序
 		}
 		return eligibleAdvisors;
 	}
@@ -98,7 +98,7 @@ public abstract class AbstractAdvisorAutoProxyCreator extends AbstractAutoProxyC
 	 * @return the List of candidate Advisors
 	 */
 	protected List<Advisor> findCandidateAdvisors() {
-		return this.advisorRetrievalHelper.findAdvisorBeans();
+		return this.advisorRetrievalHelper.findAdvisorBeans(); // 扫描bean容器，找出实现Advisor接口的bean列表，如果没实例化，就进行实例化
 	}
 
 	/**

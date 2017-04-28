@@ -235,6 +235,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	 */
 	@Override
 	public void setResourceLoader(ResourceLoader resourceLoader) {
+		
 		this.resourcePatternResolver = ResourcePatternUtils.getResourcePatternResolver(resourceLoader);
 		this.metadataReaderFactory = new CachingMetadataReaderFactory(resourceLoader);
 	}
@@ -274,8 +275,8 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 		Set<BeanDefinition> candidates = new LinkedHashSet<BeanDefinition>();
 		try {
 			String packageSearchPath = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX +
-					resolveBasePackage(basePackage) + '/' + this.resourcePattern;
-			Resource[] resources = this.resourcePatternResolver.getResources(packageSearchPath);
+					resolveBasePackage(basePackage) + '/' + this.resourcePattern; // classpath*:cn/java/demo/contexttag/[A-Z][a-z0-9A-Z]*Component
+			Resource[] resources = this.resourcePatternResolver.getResources(packageSearchPath); // 查找所有资源
 			boolean traceEnabled = logger.isTraceEnabled();
 			boolean debugEnabled = logger.isDebugEnabled();
 			for (Resource resource : resources) {
@@ -284,9 +285,10 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 				}
 				if (resource.isReadable()) {
 					try {
-						MetadataReader metadataReader = this.metadataReaderFactory.getMetadataReader(resource);
-						if (isCandidateComponent(metadataReader)) {
-							ScannedGenericBeanDefinition sbd = new ScannedGenericBeanDefinition(metadataReader);
+						//　类元信息读取器　org.springframework.core.type.classreading.SimpleMetadataReader
+						MetadataReader metadataReader = this.metadataReaderFactory.getMetadataReader(resource); // org.springframework.core.type.classreading.CachingMetadataReaderFactory
+						if (isCandidateComponent(metadataReader)) { // 符合包含条件和不包含条件
+							ScannedGenericBeanDefinition sbd = new ScannedGenericBeanDefinition(metadataReader); // org.springframework.context.annotation.ScannedGenericBeanDefinition
 							sbd.setResource(resource);
 							sbd.setSource(resource);
 							if (isCandidateComponent(sbd)) {
@@ -335,7 +337,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	 * @return the pattern specification to be used for package searching
 	 */
 	protected String resolveBasePackage(String basePackage) {
-		return ClassUtils.convertClassNameToResourcePath(this.environment.resolveRequiredPlaceholders(basePackage));
+		return ClassUtils.convertClassNameToResourcePath(this.environment.resolveRequiredPlaceholders(basePackage)); // 转换路径
 	}
 
 	/**

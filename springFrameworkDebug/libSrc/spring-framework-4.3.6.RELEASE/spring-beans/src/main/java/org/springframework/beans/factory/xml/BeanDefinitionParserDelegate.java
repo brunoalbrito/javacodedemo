@@ -426,6 +426,7 @@ public class BeanDefinitionParserDelegate {
 	 * attribute of the top-level {@code <beans/>} element.
 	 */
 	public String[] getAutowireCandidatePatterns() {
+		//defaults == org.springframework.beans.factory.xml.DocumentDefaultsDefinition
 		String candidatePattern = this.defaults.getAutowireCandidates();
 		return (candidatePattern != null ? StringUtils.commaDelimitedListToStringArray(candidatePattern) : null);
 	}

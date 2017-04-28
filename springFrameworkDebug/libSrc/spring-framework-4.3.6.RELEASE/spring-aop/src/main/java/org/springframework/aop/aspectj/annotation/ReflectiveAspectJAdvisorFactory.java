@@ -122,7 +122,9 @@ public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFacto
 
 	@Override
 	public List<Advisor> getAdvisors(MetadataAwareAspectInstanceFactory aspectInstanceFactory) {
-		Class<?> aspectClass = aspectInstanceFactory.getAspectMetadata().getAspectClass();
+		// aspectInstanceFactory === org.springframework.aop.aspectj.annotation.PrototypeAspectInstanceFactory
+		// aspectInstanceFactory.getAspectMetadata() === org.springframework.aop.aspectj.annotation.AspectMetadata
+		Class<?> aspectClass = aspectInstanceFactory.getAspectMetadata().getAspectClass(); // 接受通知的类名cn.java.demo.aoptag.aspect.Aspect4AspectJAutoProxyTag
 		String aspectName = aspectInstanceFactory.getAspectMetadata().getAspectName();
 		validate(aspectClass);
 
@@ -132,7 +134,8 @@ public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFacto
 				new LazySingletonAspectInstanceFactoryDecorator(aspectInstanceFactory);
 
 		List<Advisor> advisors = new LinkedList<Advisor>();
-		for (Method method : getAdvisorMethods(aspectClass)) {
+		for (Method method : getAdvisorMethods(aspectClass)) { // 反射类的所有方法
+			// advisor === org.springframework.aop.aspectj.annotation.InstantiationModelAwarePointcutAdvisorImpl
 			Advisor advisor = getAdvisor(method, lazySingletonAspectInstanceFactory, advisors.size(), aspectName);
 			if (advisor != null) {
 				advisors.add(advisor);
@@ -147,7 +150,7 @@ public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFacto
 
 		// Find introduction fields.
 		for (Field field : aspectClass.getDeclaredFields()) {
-			Advisor advisor = getDeclareParentsAdvisor(field);
+			Advisor advisor = getDeclareParentsAdvisor(field); // 检查字段上的声明
 			if (advisor != null) {
 				advisors.add(advisor);
 			}
@@ -201,7 +204,7 @@ public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFacto
 		validate(aspectInstanceFactory.getAspectMetadata().getAspectClass());
 
 		AspectJExpressionPointcut expressionPointcut = getPointcut(
-				candidateAdviceMethod, aspectInstanceFactory.getAspectMetadata().getAspectClass());
+				candidateAdviceMethod, aspectInstanceFactory.getAspectMetadata().getAspectClass());//!!!
 		if (expressionPointcut == null) {
 			return null;
 		}
@@ -213,13 +216,13 @@ public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFacto
 	private AspectJExpressionPointcut getPointcut(Method candidateAdviceMethod, Class<?> candidateAspectClass) {
 		AspectJAnnotation<?> aspectJAnnotation =
 				AbstractAspectJAdvisorFactory.findAspectJAnnotationOnMethod(candidateAdviceMethod);
-		if (aspectJAnnotation == null) {
+		if (aspectJAnnotation == null) { // aspectJAnnotation === org.springframework.aop.aspectj.annotation.AbstractAspectJAdvisorFactory.AspectJAnnotation
 			return null;
 		}
 
 		AspectJExpressionPointcut ajexp =
 				new AspectJExpressionPointcut(candidateAspectClass, new String[0], new Class<?>[0]);
-		ajexp.setExpression(aspectJAnnotation.getPointcutExpression());
+		ajexp.setExpression(aspectJAnnotation.getPointcutExpression()); // 方法上的@Before(..)注解中的表达式
 		ajexp.setBeanFactory(this.beanFactory);
 		return ajexp;
 	}

@@ -79,7 +79,7 @@ class InstantiationModelAwarePointcutAdvisorImpl
 
 		this.declaredPointcut = declaredPointcut;
 		this.declaringClass = aspectJAdviceMethod.getDeclaringClass();
-		this.methodName = aspectJAdviceMethod.getName();
+		this.methodName = aspectJAdviceMethod.getName(); // 接受通知的方法名
 		this.parameterTypes = aspectJAdviceMethod.getParameterTypes();
 		this.aspectJAdviceMethod = aspectJAdviceMethod;
 		this.aspectJAdvisorFactory = aspectJAdvisorFactory;
@@ -87,16 +87,18 @@ class InstantiationModelAwarePointcutAdvisorImpl
 		this.declarationOrder = declarationOrder;
 		this.aspectName = aspectName;
 
-		if (aspectInstanceFactory.getAspectMetadata().isLazilyInstantiated()) {
+		// aspectInstanceFactory === org.springframework.aop.aspectj.annotation.LazySingletonAspectInstanceFactoryDecorator
+		// org.springframework.aop.aspectj.annotation.AspectMetadata
+		if (aspectInstanceFactory.getAspectMetadata().isLazilyInstantiated()) { 
 			// Static part of the pointcut is a lazy type.
 			Pointcut preInstantiationPointcut = Pointcuts.union(
-					aspectInstanceFactory.getAspectMetadata().getPerClausePointcut(), this.declaredPointcut);
+					aspectInstanceFactory.getAspectMetadata().getPerClausePointcut(), this.declaredPointcut); // 合并
 
 			// Make it dynamic: must mutate from pre-instantiation to post-instantiation state.
 			// If it's not a dynamic pointcut, it may be optimized out
 			// by the Spring AOP infrastructure after the first evaluation.
 			this.pointcut = new PerTargetInstantiationModelPointcut(
-					this.declaredPointcut, preInstantiationPointcut, aspectInstanceFactory);
+					this.declaredPointcut, preInstantiationPointcut, aspectInstanceFactory); // !!!
 			this.lazy = true;
 		}
 		else {
@@ -278,6 +280,10 @@ class InstantiationModelAwarePointcutAdvisorImpl
 			// We're either instantiated and matching on declared pointcut, or uninstantiated matching on either pointcut
 			return (isAspectMaterialized() && this.declaredPointcut.matches(method, targetClass)) ||
 					this.preInstantiationPointcut.getMethodMatcher().matches(method, targetClass);
+			
+			
+			// preInstantiationPointcut === org.springframework.aop.support.ComposablePointcut
+			// this.preInstantiationPointcut.getMethodMatcher() === org.springframework.aop.support.MethodMatchers.ClassFilterAwareUnionMethodMatcher
 		}
 
 		@Override
@@ -287,6 +293,7 @@ class InstantiationModelAwarePointcutAdvisorImpl
 		}
 
 		private boolean isAspectMaterialized() {
+			// org.springframework.aop.aspectj.annotation.LazySingletonAspectInstanceFactoryDecorator
 			return (this.aspectInstanceFactory == null || this.aspectInstanceFactory.isMaterialized());
 		}
 	}

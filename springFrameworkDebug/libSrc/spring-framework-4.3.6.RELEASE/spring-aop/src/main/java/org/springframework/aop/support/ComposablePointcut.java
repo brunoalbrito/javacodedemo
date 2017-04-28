@@ -62,6 +62,7 @@ public class ComposablePointcut implements Pointcut, Serializable {
 	 * @param pointcut the original Pointcut
 	 */
 	public ComposablePointcut(Pointcut pointcut) {
+		// org.springframework.aop.aspectj.AspectJExpressionPointcut
 		Assert.notNull(pointcut, "Pointcut must not be null");
 		this.classFilter = pointcut.getClassFilter();
 		this.methodMatcher = pointcut.getMethodMatcher();

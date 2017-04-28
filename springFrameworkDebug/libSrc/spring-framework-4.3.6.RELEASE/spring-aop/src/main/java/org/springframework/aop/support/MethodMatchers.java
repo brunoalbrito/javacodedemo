@@ -120,6 +120,7 @@ public abstract class MethodMatchers {
 
 		@Override
 		public boolean matches(Method method, Class<?> targetClass) {
+			// org.springframework.aop.aspectj.AspectJExpressionPointcut
 			return (matchesClass1(targetClass) && this.mm1.matches(method, targetClass)) ||
 					(matchesClass2(targetClass) && this.mm2.matches(method, targetClass));
 		}

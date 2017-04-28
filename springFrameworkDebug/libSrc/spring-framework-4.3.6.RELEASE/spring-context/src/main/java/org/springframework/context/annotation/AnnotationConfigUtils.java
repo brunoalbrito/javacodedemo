@@ -277,6 +277,7 @@ public class AnnotationConfigUtils {
 	}
 
 	static AnnotationAttributes attributesFor(AnnotatedTypeMetadata metadata, String annotationClassName) {
+		// metadataReader === org.springframework.core.type.classreading.SimpleMetadataReader.getAnnotationMetadata(); 
 		return AnnotationAttributes.fromMap(metadata.getAnnotationAttributes(annotationClassName, false));
 	}
 

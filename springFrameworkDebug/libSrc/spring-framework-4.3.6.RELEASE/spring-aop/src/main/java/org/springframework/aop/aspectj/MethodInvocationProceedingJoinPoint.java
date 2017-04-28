@@ -72,7 +72,7 @@ public class MethodInvocationProceedingJoinPoint implements ProceedingJoinPoint,
 	 */
 	public MethodInvocationProceedingJoinPoint(ProxyMethodInvocation methodInvocation) {
 		Assert.notNull(methodInvocation, "MethodInvocation must not be null");
-		this.methodInvocation = methodInvocation;
+		this.methodInvocation = methodInvocation; // org.springframework.aop.framework.ReflectiveMethodInvocation
 	}
 
 	@Override
@@ -82,6 +82,8 @@ public class MethodInvocationProceedingJoinPoint implements ProceedingJoinPoint,
 
 	@Override
 	public Object proceed() throws Throwable {
+//		methodInvocation == org.springframework.aop.framework.ReflectiveMethodInvocation    proxy模式
+//		methodInvocation == org.springframework.aop.framework.CglibAopProxy.CglibMethodInvocation   cglib模式
 		return this.methodInvocation.invocableClone().proceed();
 	}
 

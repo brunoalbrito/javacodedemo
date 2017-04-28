@@ -8,31 +8,126 @@
         http://www.springframework.org/schema/aop
         http://www.springframework.org/schema/aop/spring-aop-4.2.xsd">
         
+        <bean id="aspect4AopConfigTagGlobal" class="cn.java.demo.aoptag.aspect.Aspect4AopConfigTag"><!-- 接受通知的bean -->
+            <constructor-arg index="0"  name="name" value="aspect4AopConfigTagGlobal..." />
+        </bean>
+        <!--   1./////////  使用aop:config 标签的使用  （在xml文件中配置“要拦截的特征+通知的对象”）  /////////  -->
+        <!--  /////////   1.0 使用aop:config + aop:aspect + aop:pointcut + aop:before 标签的使用  eof   /////////  -->
    	 	<!-- 被拦截的bean -->
         <bean id="helloServiceImpl1" class="cn.java.demo.aoptag.bean.HelloServiceImpl1" />
         <bean id="helloServiceImpl2" class="cn.java.demo.aoptag.bean.HelloServiceImpl2" />
-        
-        <bean id="helloServiceImpl4" class="cn.java.demo.aoptag.bean.HelloServiceImpl4">
-        	<!-- <aop:scoped-proxy proxy-target-class="true" /> 这个标签会劫持 BeanDefinition 的信息 -->
-        </bean>
-        
         <!-- 通知接受者 -->
-        <bean id="aspect4HelloService0" class="cn.java.demo.aoptag.aspect.Aspect4HelloService1" />
-        <bean id="aspect4HelloService1" class="cn.java.demo.aoptag.aspect.Aspect4HelloService2" />
-        
+        <alias name="aspect4AopConfigTagGlobal" alias="aspect4AopConfigTag0"/><!-- 接受通知的bean -->
+        <alias name="aspect4AopConfigTag0" alias="aspect4AopConfigTag1"/><!-- 接受通知的bean -->
+        <!-- 关于匹配规则的定义、匹配规则+接受者的关系定义 -->
         <aop:config>
-            
-            <aop:aspect id="aspectId_0" ref="aspect4HelloService0">
+            <aop:aspect id="aspectId_0" ref="aspect4AopConfigTag0">  <!-- 以Poxy的方式实现AOP，不会用CGLIB生成子类 -->
                 <aop:pointcut id="pointcutRefId_0" expression="execution(* cn.java.demo.aoptag.bean.HelloServiceImpl1*.*(..))" /><!-- 定义切入点 -->
                 <aop:before method="aspectMethodBefore" pointcut-ref="pointcutRefId_0" /> <!-- 定义报告接收者：符合pointcutRefId_0定义的条件，就通知aspect4HelloService0的aspectMethodBefore方法-->
                 <aop:after method="aspectMethodAfter" pointcut-ref="pointcutRefId_0" />
             </aop:aspect>
             
-            <aop:aspect id="aspectId_1" ref="aspect4HelloService1">
+            <aop:aspect id="aspectId_1" ref="aspect4AopConfigTag1">  <!-- 以Poxy的方式实现AOP，不会用CGLIB生成子类 -->
                 <aop:pointcut id="pointcutRefId_1" expression="execution(public void cn.java.demo.aoptag.bean.HelloServiceImpl2.method1(..))" />
                 <aop:before method="aspectMethodBefore" pointcut-ref="pointcutRefId_1" />
                 <aop:after method="aspectMethodAfter" pointcut-ref="pointcutRefId_1" />
             </aop:aspect>
-            
         </aop:config>
+        <!--  /////////   1.0 使用aop:config + aop:aspect + aop:pointcut + aop:before 标签的使用   eof   /////////  -->
+        <!--  /////////   1.1使用aop:config + aop:advisor + aop:pointcut 标签的使用   bof   /////////  -->
+        <!-- 被拦截的bean -->
+        <bean id="helloServiceImpl4ConfigAopWithAdvisorTag" class="cn.java.demo.aoptag.bean.HelloServiceImpl4ConfigAopWithAdvisorTag" />
+        <!-- 关于Advice的定义 -->
+        <bean id="aspectJMethodBeforeAdviceMock" class="cn.java.demo.aoptag.advice.AspectJMethodBeforeAdviceMock" />
+        <bean id="aspectJAfterAdviceMock" class="cn.java.demo.aoptag.advice.AspectJAfterAdviceMock" />
+        <bean id="aspectJAfterReturningAdviceMock" class="cn.java.demo.aoptag.advice.AspectJAfterReturningAdviceMock" />
+        <bean id="aspectJAfterThrowingAdviceMock" class="cn.java.demo.aoptag.advice.AspectJAfterThrowingAdviceMock" />
+        <bean id="aspectJAroundAdviceMock" class="cn.java.demo.aoptag.advice.AspectJAroundAdviceMock" />
+        <!-- 关于匹配规则的定义、匹配规则+切入点处理器的关系定义 -->
+        <aop:config>
+            <!-- 匹配规则的定义 -->
+            <aop:pointcut id="aspectJExpressionPointcut01" expression="execution(* cn.java.demo.aoptag.bean.HelloServiceImpl4ConfigAopWithAdvisorTag.method1(..))" />
+            <aop:pointcut id="aspectJExpressionPointcut02" expression="execution(* cn.java.demo.aoptag.bean.HelloServiceImpl4ConfigAopWithAdvisorTag.method2(..))" />
+            <!-- 匹配规则和切入点的关系 -->
+            <aop:advisor id="aspectJPointcutAdvisor00" pointcut-ref="aspectJExpressionPointcut01" advice-ref="aspectJMethodBeforeAdviceMock"  order="1" />
+            <aop:advisor id="aspectJPointcutAdvisor01" pointcut-ref="aspectJExpressionPointcut01" advice-ref="aspectJAfterAdviceMock"  order="3" />
+            <aop:advisor id="aspectJPointcutAdvisor02" pointcut-ref="aspectJExpressionPointcut01" advice-ref="aspectJAfterReturningAdviceMock"  order="5" />
+            <aop:advisor id="aspectJPointcutAdvisor03" pointcut-ref="aspectJExpressionPointcut01" advice-ref="aspectJAfterThrowingAdviceMock"  order="7" />
+            <aop:advisor id="aspectJPointcutAdvisor04" pointcut-ref="aspectJExpressionPointcut01" advice-ref="aspectJAroundAdviceMock"  order="0" />
+            
+            <aop:advisor id="aspectJPointcutAdvisor08" pointcut-ref="aspectJExpressionPointcut02" advice-ref="aspectJMethodBeforeAdviceMock"  order="0" />
+            <aop:advisor id="aspectJPointcutAdvisor09" pointcut-ref="aspectJExpressionPointcut02" advice-ref="aspectJAfterAdviceMock"  order="1" />
+            <aop:advisor id="aspectJPointcutAdvisor010" pointcut-ref="aspectJExpressionPointcut02" advice-ref="aspectJAfterReturningAdviceMock"  order="2" />
+            <aop:advisor id="aspectJPointcutAdvisor011" pointcut-ref="aspectJExpressionPointcut02" advice-ref="aspectJAfterThrowingAdviceMock"  order="3" />
+        </aop:config>
+        <!--  /////////   1.1使用aop:config + aop:advisor + aop:pointcut 标签的使用  eof   /////////  -->
+        <!--  /////////   1.2使用aop:config + aop:aspect + aop:pointcut + aop:before 标签的使用   bof   /////////  -->
+        <!-- 接受通知的bean -->
+        <bean id="aspect4AopConfigAllTag12" class="cn.java.demo.aoptag.aspect.Aspect4AopConfigAllTag">
+            <constructor-arg index="0"  name="name" value="aspect4AopConfigTagGlobal..." />
+        </bean>
+        <!-- 被拦截的bean -->
+        <bean id="helloServiceImpl4ConfigAopWithAdvisorTag1" class="cn.java.demo.aoptag.bean.HelloServiceImpl4ConfigAopWithAdvisorTag1" />
+        <!-- 关于匹配规则的定义、匹配规则+切入点处理器的关系定义 -->
+        <aop:config>
+            <aop:aspect id="aspectId_12_aspectMethodAround" ref="aspect4AopConfigAllTag12" order="1">  <!-- 以Poxy的方式实现AOP，不会用CGLIB生成子类 -->
+                <aop:pointcut id="pointcutRefId_12_aspectMethodAround" expression="execution(public String cn.java.demo.aoptag.bean.HelloServiceImpl4ConfigAopWithAdvisorTag1.method3(..))" />
+                <aop:around method="aspectMethodAround" pointcut-ref="pointcutRefId_12_aspectMethodAround"  />
+            </aop:aspect>
+            <aop:aspect id="aspectId_12_aspectMethodBefore" ref="aspect4AopConfigAllTag12" order="3"> 
+                <aop:pointcut id="pointcutRefId_12_aspectMethodBefore" expression="execution(public String cn.java.demo.aoptag.bean.HelloServiceImpl4ConfigAopWithAdvisorTag1.method3(..))" />
+                <aop:before method="aspectMethodBefore" pointcut-ref="pointcutRefId_12_aspectMethodBefore"   />
+                <!-- <aop:before method="aspectMethodBefore" pointcut-ref="pointcutRefId_12"   /> -->
+            </aop:aspect>
+            <aop:aspect id="aspectId_12_aspectMethodAfter" ref="aspect4AopConfigAllTag12" order="5">  
+                <aop:pointcut id="pointcutRefId_12_aspectMethodAfter" expression="execution(public String cn.java.demo.aoptag.bean.HelloServiceImpl4ConfigAopWithAdvisorTag1.method3(..))" />
+                <aop:after method="aspectMethodAfter" pointcut-ref="pointcutRefId_12_aspectMethodAfter"  />
+            </aop:aspect>
+            <aop:aspect id="aspectId_12_aspectMethodAfterReturning" ref="aspect4AopConfigAllTag12" order="6"> 
+                <aop:pointcut id="pointcutRefId_12_aspectMethodAfterReturning" expression="execution(public String cn.java.demo.aoptag.bean.HelloServiceImpl4ConfigAopWithAdvisorTag1.method3(..))" />
+                <aop:after-returning method="aspectMethodAfterReturning" pointcut-ref="pointcutRefId_12_aspectMethodAfterReturning"  />
+            </aop:aspect>
+            <aop:aspect id="aspectId_12_aspectMethodAfterThrowing" ref="aspect4AopConfigAllTag12" order="7"> 
+                <aop:pointcut id="pointcutRefId_12_aspectMethodAfterThrowing" expression="execution(public String cn.java.demo.aoptag.bean.HelloServiceImpl4ConfigAopWithAdvisorTag1.method3(..))" />
+                <aop:after-throwing method="aspectMethodAfterThrowing" pointcut-ref="pointcutRefId_12_aspectMethodAfterThrowing"  />
+            </aop:aspect>
+        </aop:config>
+        <!--  /////////   1.2使用aop:config + aop:aspect + aop:pointcut + aop:before 标签的使用  eof   /////////  -->
+        
+        <!--   2./////////  在java模拟postProcessAfterInitialization的机制  bof（在xml文件中配置“要拦截的特征+通知的对象”）   /////////  -->
+        <bean id="helloServiceImpl4NewInJava" class="cn.java.demo.aoptag.bean.HelloServiceImpl4NewInJava" />
+        <alias name="aspect4AopConfigTag0" alias="aspect4AopConfigTag2"/><!-- 接受通知的bean -->
+        <aop:config>
+            <aop:aspect id="aspectId_2" ref="aspect4AopConfigTag2">  <!-- 以Poxy的方式实现AOP，不会用CGLIB生成子类 -->
+                <aop:pointcut id="pointcutRefId_2" expression="execution(public void cn.java.demo.aoptag.bean.HelloServiceImpl4NewInJava.method1(..))" />
+                <aop:before method="aspectMethodBefore" pointcut-ref="pointcutRefId_2" />
+                <aop:after method="aspectMethodAfter" pointcut-ref="pointcutRefId_2" />
+            </aop:aspect>
+        </aop:config>
+        <!--   /////////  在java模拟postProcessAfterInitialization的机制  eof   /////////  -->
+        
+        <!--  3./////////  使用aop:scoped-proxy 标签的使用  bof （在xml文件中配置“要拦截的特征+通知的对象”） /////////  -->
+        <bean id="helloServiceImpl4AopScopedProxy" class="cn.java.demo.aoptag.bean.HelloServiceImpl4AopScopedProxy">
+        	<aop:scoped-proxy proxy-target-class="true" /><!--  这个标签会劫持 BeanDefinition 的信息，以CGLIB生成子类 -->
+        </bean>
+        <alias name="aspect4AopConfigTag0" alias="aspect4AopConfigTag3"/>
+        <aop:config>
+            <aop:aspect id="aspectId_3" ref="aspect4AopConfigTag3"> <!-- 以Poxy的方式实现AOP，会用CGLIB生成子类 -->
+                <aop:pointcut id="pointcutRefId_3" expression="execution(public void cn.java.demo.aoptag.bean.HelloServiceImpl4AopScopedProxy.method1(..))" />
+                <aop:before method="aspectMethodBefore" pointcut-ref="pointcutRefId_3" />
+                <aop:after method="aspectMethodAfter" pointcut-ref="pointcutRefId_3" />
+            </aop:aspect>
+        </aop:config>
+        <!--  /////////   使用aop:scoped-proxy 标签的使用  eof   /////////  -->
+        
+        <!--  4./////////   使用aop:aspectj-autoproxy标签  bof （在java文件中配置注解“要拦截的特征+通知的对象”）  /////////  -->
+        <bean id="aspect4AspectJAutoProxyTag0" class="cn.java.demo.aoptag.aspect.Aspect4AspectJAutoProxyTag" scope="prototype" />
+        <bean id="helloServiceImpl4AspectJAutoProxyTag0" class="cn.java.demo.aoptag.bean.HelloServiceImpl4AspectJAutoProxyTag"  />
+        <aop:aspectj-autoproxy> <!-- proxy-target-class="false" expose-proxy="false" -->
+	 		<aop:include name="aspect4AspectJAutoProxyTag[0-9]" /> <!-- 正则表达式，用来匹配通知者的beanName，bean的必须scope="prototype"-->
+	 	</aop:aspectj-autoproxy>
+	 	<!--  /////////   使用aop:aspectj-autoproxy标签 eof   /////////  -->
+	 	
+	 	
+	 	
 </beans>

@@ -94,7 +94,7 @@ public class StandardMultipartHttpServletRequest extends AbstractMultipartHttpSe
 			MultiValueMap<String, MultipartFile> files = new LinkedMultiValueMap<String, MultipartFile>(parts.size());
 			for (Part part : parts) {
 				String disposition = part.getHeader(CONTENT_DISPOSITION);
-				String filename = extractFilename(disposition);
+				String filename = extractFilename(disposition); // 文件名
 				if (filename == null) {
 					filename = extractFilenameWithCharset(disposition);
 				}
@@ -116,7 +116,7 @@ public class StandardMultipartHttpServletRequest extends AbstractMultipartHttpSe
 		if (contentDisposition == null) {
 			return null;
 		}
-		int startIndex = contentDisposition.indexOf(key);
+		int startIndex = contentDisposition.indexOf(key); // key === "filename="
 		if (startIndex == -1) {
 			return null;
 		}

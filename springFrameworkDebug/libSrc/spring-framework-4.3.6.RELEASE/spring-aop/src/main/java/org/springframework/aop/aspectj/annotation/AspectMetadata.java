@@ -84,8 +84,8 @@ public class AspectMetadata implements Serializable {
 		Class<?> currClass = aspectClass;
 		AjType<?> ajType = null;
 		while (currClass != Object.class) {
-			AjType<?> ajTypeToCheck = AjTypeSystem.getAjType(currClass);
-			if (ajTypeToCheck.isAspect()) {
+			AjType<?> ajTypeToCheck = AjTypeSystem.getAjType(currClass); // org.aspectj.internal.lang.reflect.AjTypeImpl
+			if (ajTypeToCheck.isAspect()) { // 类包含 @Aspect 注解
 				ajType = ajTypeToCheck;
 				break;
 			}
@@ -97,22 +97,22 @@ public class AspectMetadata implements Serializable {
 		if (ajType.getDeclarePrecedence().length > 0) {
 			throw new IllegalArgumentException("DeclarePrecendence not presently supported in Spring AOP");
 		}
-		this.aspectClass = ajType.getJavaClass();
-		this.ajType = ajType;
+		this.aspectClass = ajType.getJavaClass(); // 
+		this.ajType = ajType; // “接受通知的类名”包装成AjTypeImpl对象
 
 		switch (this.ajType.getPerClause().getKind()) {
-			case SINGLETON:
+			case SINGLETON: //  @Aspect()
 				this.perClausePointcut = Pointcut.TRUE;
 				return;
-			case PERTARGET:
-			case PERTHIS:
+			case PERTARGET:  //  @Aspect(value="pertarget()")  
+			case PERTHIS:  // @Aspect(value="perthis()")
 				AspectJExpressionPointcut ajexp = new AspectJExpressionPointcut();
 				ajexp.setLocation(aspectClass.getName());
-				ajexp.setExpression(findPerClause(aspectClass));
+				ajexp.setExpression(findPerClause(aspectClass)); //  @Aspect(value="pertarget(execution(* cn.java.demo.aoptag.bean.HelloServiceImpl4MockAopInJava.method2(..)))") 
 				ajexp.setPointcutDeclarationScope(aspectClass);
 				this.perClausePointcut = ajexp;
 				return;
-			case PERTYPEWITHIN:
+			case PERTYPEWITHIN: //  @Aspect(value="pertypewithin()")
 				// Works with a type pattern
 				this.perClausePointcut = new ComposablePointcut(new TypePatternClassFilter(findPerClause(aspectClass)));
 				return;
@@ -166,6 +166,7 @@ public class AspectMetadata implements Serializable {
 	 * Return whether the aspect is defined as "perthis" or "pertarget".
 	 */
 	public boolean isPerThisOrPerTarget() {
+		// org.aspectj.internal.lang.reflect.AjTypeImpl
 		PerClauseKind kind = getAjType().getPerClause().getKind();
 		return (kind == PerClauseKind.PERTARGET || kind == PerClauseKind.PERTHIS);
 	}

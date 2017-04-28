@@ -188,7 +188,7 @@
  	<aop:aspectj-autoproxy proxy-target-class="false" expose-proxy="false">
  		<aop:include name="" />
  	</aop:aspectj-autoproxy>
- 	<aop:scoped-proxy  proxy-target-class="true" />
+ 	<!-- 装饰器 ，只能应用在bean标签上，<aop:scoped-proxy  proxy-target-class="true" /> -->
  	<!-- <aop:spring-configured 废弃/> -->
  	
  	<!-- ------------------自定义标签：.-------------------------- -->

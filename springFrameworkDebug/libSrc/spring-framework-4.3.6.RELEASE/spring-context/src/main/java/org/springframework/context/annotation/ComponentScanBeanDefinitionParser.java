@@ -78,19 +78,24 @@ public class ComponentScanBeanDefinitionParser implements BeanDefinitionParser {
 	@Override
 	public BeanDefinition parse(Element element, ParserContext parserContext) {
 		String basePackage = element.getAttribute(BASE_PACKAGE_ATTRIBUTE);
+		// parserContext.getReaderContext() == org.springframework.beans.factory.xml.XmlReaderContext
+		// parserContext.getReaderContext().getEnvironment()org.springframework.web.context.support.StandardServletEnvironment
 		basePackage = parserContext.getReaderContext().getEnvironment().resolvePlaceholders(basePackage);
 		String[] basePackages = StringUtils.tokenizeToStringArray(basePackage,
-				ConfigurableApplicationContext.CONFIG_LOCATION_DELIMITERS);
+				ConfigurableApplicationContext.CONFIG_LOCATION_DELIMITERS); // 要扫描的包路径
 
 		// Actually scan for bean definitions and register them.
-		ClassPathBeanDefinitionScanner scanner = configureScanner(parserContext, element);
-		Set<BeanDefinitionHolder> beanDefinitions = scanner.doScan(basePackages);
+		ClassPathBeanDefinitionScanner scanner = configureScanner(parserContext, element); // !!! 创建扫描器 org.springframework.context.annotation.ClassPathBeanDefinitionScanner
+		Set<BeanDefinitionHolder> beanDefinitions = scanner.doScan(basePackages); // 扫描bean的定义
 		registerComponents(parserContext.getReaderContext(), beanDefinitions, element);
 
 		return null;
 	}
 
 	protected ClassPathBeanDefinitionScanner configureScanner(ParserContext parserContext, Element element) {
+		
+		// parserContext === org.springframework.beans.factory.xml.XmlReaderContext
+		// parserContext.getDelegate() === org.springframework.beans.factory.xml.BeanDefinitionParserDelegate
 		boolean useDefaultFilters = true;
 		if (element.hasAttribute(USE_DEFAULT_FILTERS_ATTRIBUTE)) {
 			useDefaultFilters = Boolean.valueOf(element.getAttribute(USE_DEFAULT_FILTERS_ATTRIBUTE));
@@ -106,20 +111,20 @@ public class ComponentScanBeanDefinitionParser implements BeanDefinitionParser {
 		}
 
 		try {
-			parseBeanNameGenerator(element, scanner);
+			parseBeanNameGenerator(element, scanner); // 设置beanName生成器
 		}
 		catch (Exception ex) {
 			parserContext.getReaderContext().error(ex.getMessage(), parserContext.extractSource(element), ex.getCause());
 		}
 
 		try {
-			parseScope(element, scanner);
+			parseScope(element, scanner); // 设置Scope解析器
 		}
 		catch (Exception ex) {
 			parserContext.getReaderContext().error(ex.getMessage(), parserContext.extractSource(element), ex.getCause());
 		}
 
-		parseTypeFilters(element, scanner, parserContext);
+		parseTypeFilters(element, scanner, parserContext); // 过滤类型
 
 		return scanner;
 	}
@@ -203,11 +208,11 @@ public class ComponentScanBeanDefinitionParser implements BeanDefinitionParser {
 			if (node.getNodeType() == Node.ELEMENT_NODE) {
 				String localName = parserContext.getDelegate().getLocalName(node);
 				try {
-					if (INCLUDE_FILTER_ELEMENT.equals(localName)) {
+					if (INCLUDE_FILTER_ELEMENT.equals(localName)) { // <context:include-filter>
 						TypeFilter typeFilter = createTypeFilter((Element) node, classLoader, parserContext);
 						scanner.addIncludeFilter(typeFilter);
 					}
-					else if (EXCLUDE_FILTER_ELEMENT.equals(localName)) {
+					else if (EXCLUDE_FILTER_ELEMENT.equals(localName)) { // <context:exclude-filter>
 						TypeFilter typeFilter = createTypeFilter((Element) node, classLoader, parserContext);
 						scanner.addExcludeFilter(typeFilter);
 					}

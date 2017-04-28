@@ -223,6 +223,7 @@ public class BeanWrapperImpl extends AbstractNestablePropertyAccessor implements
 
 	@Override
 	protected BeanPropertyHandler getLocalPropertyHandler(String propertyName) {
+		// getCachedIntrospectionResults() === org.springframework.web.servlet.DispatcherServlet 的属性反射
 		PropertyDescriptor pd = getCachedIntrospectionResults().getPropertyDescriptor(propertyName);
 		if (pd != null) {
 			return new BeanPropertyHandler(pd);

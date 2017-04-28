@@ -32,7 +32,7 @@ public class 关于bean后置处理器_埋点_获取bean的过程 {
 		 	org.springframework.beans.factory.support.MergedBeanDefinitionPostProcessor 合并 BeanDefinition
 		 	org.springframework.beans.factory.config.BeanPostProcessor 调用初始化方法前后
 		 	
-		埋点信息：
+		埋点信息：（不是合成（!mbd.isSynthetic()）的bean才会应用 BeanPostProcessors）
 			// org.springframework.beans.factory.support.DefaultListableBeanFactory
 			org.springframework.beans.factory.support.AbstractBeanFactory.getBean(String name, Class<T> requiredType)
 			{

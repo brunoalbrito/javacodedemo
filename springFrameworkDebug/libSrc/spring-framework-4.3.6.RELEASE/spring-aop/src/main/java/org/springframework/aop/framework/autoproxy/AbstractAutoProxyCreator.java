@@ -484,7 +484,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 			proxyFactory.setPreFiltered(true);
 		}
 
-		return proxyFactory.getProxy(getProxyClassLoader());
+		return proxyFactory.getProxy(getProxyClassLoader()); // !!!
 	}
 
 	/**

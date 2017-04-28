@@ -64,12 +64,12 @@ public class DefaultAdvisorChainFactory implements AdvisorChainFactory, Serializ
 			if (advisor instanceof PointcutAdvisor) {
 				// Add it conditionally.
 				PointcutAdvisor pointcutAdvisor = (PointcutAdvisor) advisor;
-				if (config.isPreFiltered() || pointcutAdvisor.getPointcut().getClassFilter().matches(actualClass)) { // 类匹配成功
-					MethodInterceptor[] interceptors = registry.getInterceptors(advisor);
+				if (config.isPreFiltered() || pointcutAdvisor.getPointcut().getClassFilter().matches(actualClass)) { // 《类匹配》成功
+					MethodInterceptor[] interceptors = registry.getInterceptors(advisor); // !!!! 获取 Advisor的拦截器列表
 					// org.springframework.aop.support.ComposablePointcut.getMethodMatcher();
 					// mm === org.springframework.aop.support.MethodMatchers.IntersectionMethodMatcher 
 					MethodMatcher mm = pointcutAdvisor.getPointcut().getMethodMatcher(); 
-					if (MethodMatchers.matches(mm, method, actualClass, hasIntroductions)) { // 方法匹配成功
+					if (MethodMatchers.matches(mm, method, actualClass, hasIntroductions)) { // 《方法匹配》成功
 						if (mm.isRuntime()) {
 							// Creating a new object instance in the getInterceptors() method
 							// isn't a problem as we normally cache created chains.

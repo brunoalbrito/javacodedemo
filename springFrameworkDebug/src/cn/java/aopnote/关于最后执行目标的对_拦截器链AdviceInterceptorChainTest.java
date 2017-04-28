@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.aopalliance.aop.Advice;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.logging.Log;
@@ -20,12 +21,17 @@ import org.springframework.aop.AfterReturningAdvice;
 import org.springframework.aop.MethodBeforeAdvice;
 import org.springframework.aop.MethodMatcher;
 import org.springframework.aop.ProxyMethodInvocation;
-import org.springframework.aop.framework.InterceptorAndDynamicMethodMatcher;
-import org.springframework.aop.framework.ReflectiveMethodInvocation;
+import org.springframework.aop.ThrowsAdvice;
+import org.springframework.aop.aspectj.AspectJAfterAdvice;
+import org.springframework.aop.aspectj.AspectJExpressionPointcut;
+import org.springframework.aop.aspectj.AspectJMethodBeforeAdvice;
+import org.springframework.aop.aspectj.AspectJPointcutAdvisor;
+import org.springframework.aop.config.MethodLocatingFactoryBean;
+import org.springframework.aop.config.SimpleBeanFactoryAwareAspectInstanceFactory;
+import org.springframework.aop.framework.adapter.AdvisorAdapter;
 import org.springframework.aop.framework.adapter.AdvisorAdapterRegistry;
-import org.springframework.aop.framework.adapter.GlobalAdvisorAdapterRegistry;
+import org.springframework.aop.framework.adapter.UnknownAdviceTypeException;
 import org.springframework.aop.support.AopUtils;
-import org.springframework.aop.support.MethodMatchers;
 import org.springframework.core.BridgeMethodResolver;
 import org.springframework.util.Assert;
 
@@ -39,14 +45,18 @@ public class 关于最后执行目标的对_拦截器链AdviceInterceptorChainTe
 	 */
 	public static void main(String[] args) throws Throwable {
 		/*
+		 	在里面开始执行链条
+		 	org.springframework.aop.framework.JdkDynamicAopProxy.invoke(...) 
+		 	org.springframework.aop.framework.ObjenesisCglibAopProxy.invoke(...) 
+		 	
 		 	org.springframework.aop.framework.JdkDynamicAopProxy.invoke(Object proxy, Method method, Object[] args)
 		 		org.springframework.aop.framework.AdvisedSupport.getInterceptorsAndDynamicInterceptionAdvice(Method method, Class<?> targetClass)
 		 			org.springframework.aop.framework.DefaultAdvisorChainFactory.getInterceptorsAndDynamicInterceptionAdvice(Advised config, Method method, Class<?> targetClass)
 		 			{
 		 				//!! config === org.springframework.aop.framework.ProxyFactory
-		 				
+
 		 				List<Object> interceptorList = new ArrayList<Object>(config.getAdvisors().length); // “通知接受者”列表
-		 				 
+
 		 				// registry == org.springframework.aop.framework.adapter.DefaultAdvisorAdapterRegistry
 						AdvisorAdapterRegistry registry = GlobalAdvisorAdapterRegistry.getInstance(); 
 		 				for (Advisor advisor : config.getAdvisors()) 
@@ -74,12 +84,16 @@ public class 关于最后执行目标的对_拦截器链AdviceInterceptorChainTe
 		 				return interceptorList;
 		 			}
 		 */
+
+	}
+
+	public static void test1() throws Throwable {
 		// 拦截器列表
 		List interceptors = new ArrayList<MethodInterceptor>(3);
 		interceptors.add(new MethodBeforeAdviceInterceptor(null));
 		interceptors.add(new AfterReturningAdviceInterceptor(null));
 		interceptors.add(new ThrowsAdviceInterceptor(null));
-		
+
 		Object proxy = null; // 代理对象
 		Object target = null; // 目标对象
 		Method method = null; // 被调用的方法
@@ -89,6 +103,158 @@ public class 关于最后执行目标的对_拦截器链AdviceInterceptorChainTe
 		Object retVal = invocation.proceed(); // 执行结果
 	}
 	
+	public static void test2() throws Throwable {
+		// 拦截器列表
+		List<Advisor> advisorList  = new ArrayList();
+		{
+			// 模拟1
+			{
+				MethodLocatingFactoryBean methodLocatingFactoryBean = new MethodLocatingFactoryBean();
+				methodLocatingFactoryBean.setTargetBeanName("aspectBeanName0"); // 要“接受报告的bean对象”
+				methodLocatingFactoryBean.setMethodName("aspectMethodBefore");
+				
+				SimpleBeanFactoryAwareAspectInstanceFactory aspectFactory = new SimpleBeanFactoryAwareAspectInstanceFactory();
+				aspectFactory.setAspectBeanName("aspectBeanName0");
+				
+				AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
+				pointcut.setExpression("execution(* cn.java.demo.aoptag.bean.HelloServiceImpl4MockAopInJava.method2(..))");
+				
+				AspectJMethodBeforeAdvice aspectJMethodBeforeAdvice = new AspectJMethodBeforeAdvice(methodLocatingFactoryBean.getObject(),pointcut,aspectFactory);
+				aspectJMethodBeforeAdvice.setAspectName("aspectBeanName0");
+				
+				AspectJPointcutAdvisor aspectJPointcutAdvisor = new AspectJPointcutAdvisor(aspectJMethodBeforeAdvice);
+				advisorList.add(aspectJPointcutAdvisor);
+			}
+			
+			// 模拟2
+			{
+				MethodLocatingFactoryBean methodLocatingFactoryBean = new MethodLocatingFactoryBean();
+				methodLocatingFactoryBean.setTargetBeanName("aspectBeanName0"); // 要“接受报告的bean对象”
+				methodLocatingFactoryBean.setMethodName("aspectMethodAfter");
+				
+				SimpleBeanFactoryAwareAspectInstanceFactory aspectFactory = new SimpleBeanFactoryAwareAspectInstanceFactory();
+				aspectFactory.setAspectBeanName("aspectBeanName0");
+				
+				AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
+				pointcut.setExpression("execution(* cn.java.demo.aoptag.bean.HelloServiceImpl4MockAopInJava.method2(..))");
+				
+				AspectJAfterAdvice aspectJAfterAdvice = new AspectJAfterAdvice(methodLocatingFactoryBean.getObject(),pointcut,aspectFactory);
+				aspectJAfterAdvice.setAspectName("aspectBeanName0");
+				
+				AspectJPointcutAdvisor aspectJPointcutAdvisor = new AspectJPointcutAdvisor(aspectJAfterAdvice);
+				advisorList.add(aspectJPointcutAdvisor);
+			}
+		}
+		DefaultAdvisorAdapterRegistry registry = new DefaultAdvisorAdapterRegistry();
+		List<Object> interceptorList = new ArrayList<Object>(advisorList.size());
+		for (Advisor advisor : advisorList) {
+			MethodInterceptor[] interceptors = registry.getInterceptors(advisor);
+			interceptorList.addAll(Arrays.asList(interceptors));
+		}
+		List<Object> chain = interceptorList;
+		Object proxy = null; // 代理对象
+		Object target = null; // 目标对象
+		Method method = null; // 被调用的方法
+		Object[] arguments= null; // 被调用的方法的参数值
+		Class<?> targetClass = null; // 实际对象的类
+		MethodInvocation invocation = new ReflectiveMethodInvocation(proxy,target,method, arguments,targetClass, chain);
+		Object retVal = invocation.proceed(); // 执行结果
+	}
+
+
+	private static class DefaultAdvisorAdapterRegistry {
+		private final List<AdvisorAdapter> adapters = new ArrayList<AdvisorAdapter>(3);
+		/**
+		 * Create a new DefaultAdvisorAdapterRegistry, registering well-known adapters.
+		 */
+		public DefaultAdvisorAdapterRegistry() {
+			registerAdvisorAdapter(new MethodBeforeAdviceAdapter());
+			registerAdvisorAdapter(new AfterReturningAdviceAdapter());
+			registerAdvisorAdapter(new ThrowsAdviceAdapter());
+		}
+
+		public void registerAdvisorAdapter(AdvisorAdapter adapter) {
+			this.adapters.add(adapter);
+		}
+
+		public MethodInterceptor[] getInterceptors(Advisor advisor) {
+			List<MethodInterceptor> interceptors = new ArrayList<MethodInterceptor>(3);
+			// advisor === org.springframework.aop.aspectj.AspectJPointcutAdvisor 
+			Advice advice = advisor.getAdvice();//!!!
+			if (advice instanceof MethodInterceptor) {
+				// advice === org.springframework.aop.aspectj.AspectJAfterAdvice   <aop:after>
+				interceptors.add((MethodInterceptor) advice);
+			}
+			/*
+			 	
+			 	如下三种适配器：
+			 	adapters = {
+			 		org.springframework.aop.framework.adapter.MethodBeforeAdviceAdapter,
+			 		org.springframework.aop.framework.adapter.AfterReturningAdviceAdapter,
+			 		org.springframework.aop.framework.adapter.ThrowsAdviceAdapter,
+			 	}
+			 */
+			for (AdvisorAdapter adapter : this.adapters) {
+				if (adapter.supportsAdvice(advice)) { // !!!
+					// advisor === org.springframework.aop.aspectj.AspectJMethodBeforeAdvice   <aop:before>
+					interceptors.add(adapter.getInterceptor(advisor));
+					// interceptors.add(new org.springframework.aop.framework.adapter.MethodBeforeAdviceInterceptor(advisor.getAdvice()));
+				}
+			}
+			if (interceptors.isEmpty()) {
+				throw new UnknownAdviceTypeException(advisor.getAdvice());
+			}
+			return interceptors.toArray(new MethodInterceptor[interceptors.size()]);
+		}
+
+		class MethodBeforeAdviceAdapter implements AdvisorAdapter, Serializable {
+
+			@Override
+			public boolean supportsAdvice(Advice advice) {
+				return (advice instanceof MethodBeforeAdvice);
+			}
+
+			@Override
+			public MethodInterceptor getInterceptor(Advisor advisor) {
+				MethodBeforeAdvice advice = (MethodBeforeAdvice) advisor.getAdvice();
+				return new MethodBeforeAdviceInterceptor(advice);
+			}
+
+		}
+
+		class AfterReturningAdviceAdapter implements AdvisorAdapter, Serializable {
+
+			@Override
+			public boolean supportsAdvice(Advice advice) {
+				return (advice instanceof AfterReturningAdvice);
+			}
+
+			@Override
+			public MethodInterceptor getInterceptor(Advisor advisor) {
+				AfterReturningAdvice advice = (AfterReturningAdvice) advisor.getAdvice();
+				return new AfterReturningAdviceInterceptor(advice);
+			}
+
+		}
+
+		class ThrowsAdviceAdapter implements AdvisorAdapter, Serializable {
+
+			@Override
+			public boolean supportsAdvice(Advice advice) {
+				return (advice instanceof ThrowsAdvice);
+			}
+
+			@Override
+			public MethodInterceptor getInterceptor(Advisor advisor) {
+				return new ThrowsAdviceInterceptor(advisor.getAdvice());
+			}
+
+		}
+
+	}
+
+
+
 	public static class ReflectiveMethodInvocation implements ProxyMethodInvocation, Cloneable {
 
 		protected final Object proxy;
@@ -96,7 +262,7 @@ public class 关于最后执行目标的对_拦截器链AdviceInterceptorChainTe
 		protected final Method method;
 		protected Object[] arguments;
 		private final Class<?> targetClass;
-		
+
 		/**
 		 * List of MethodInterceptor and InterceptorAndDynamicMethodMatcher
 		 * that need dynamic checks.
@@ -116,10 +282,10 @@ public class 关于最后执行目标的对_拦截器链AdviceInterceptorChainTe
 			this.target = target;
 			this.targetClass = targetClass;
 			this.method = BridgeMethodResolver.findBridgedMethod(method);
-//			this.arguments = AopProxyUtils.adaptArgumentsIfNecessary(method, arguments);
+			//			this.arguments = AopProxyUtils.adaptArgumentsIfNecessary(method, arguments);
 			this.interceptorsAndDynamicMethodMatchers = interceptorsAndDynamicMethodMatchers;
 		}
-		
+
 		/**
 		 * Invoke the joinpoint using reflection.
 		 * Subclasses can override this to use custom invocation.
@@ -129,7 +295,7 @@ public class 关于最后执行目标的对_拦截器链AdviceInterceptorChainTe
 		protected Object invokeJoinpoint() throws Throwable {
 			return AopUtils.invokeJoinpointUsingReflection(this.target, this.method, this.arguments);
 		}
-		
+
 		/**
 		 * 这个方法会被递归执行
 		 */
@@ -208,13 +374,13 @@ public class 关于最后执行目标的对_拦截器链AdviceInterceptorChainTe
 		@Override
 		public void setArguments(Object... arguments) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
 		public void setUserAttribute(String key, Object value) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
@@ -236,7 +402,7 @@ public class 关于最后执行目标的对_拦截器链AdviceInterceptorChainTe
 		}
 
 	}
-	
+
 	/**
 	 * 目标方法执行前 - 执行
 	 * @author zhouzhian
@@ -253,14 +419,14 @@ public class 关于最后执行目标的对_拦截器链AdviceInterceptorChainTe
 			this.advice = advice;
 		}
 
-		
+
 		@Override
 		public Object invoke(MethodInvocation mi) throws Throwable {
 			this.advice.before(mi.getMethod(), mi.getArguments(), mi.getThis() );
 			return mi.proceed();
 		}
 	}
-	
+
 	public static class AfterReturningAdviceInterceptor implements MethodInterceptor, AfterAdvice, Serializable {
 
 		private final AfterReturningAdvice advice;
@@ -282,7 +448,7 @@ public class 关于最后执行目标的对_拦截器链AdviceInterceptorChainTe
 			return retVal;
 		}
 	}
-	
+
 	public static class ThrowsAdviceInterceptor implements MethodInterceptor, AfterAdvice {
 		private static final String AFTER_THROWING = "afterThrowing";
 
@@ -303,7 +469,7 @@ public class 关于最后执行目标的对_拦截器链AdviceInterceptorChainTe
 				if (method.getName().equals(AFTER_THROWING) &&
 						(method.getParameterTypes().length == 1 || method.getParameterTypes().length == 4) &&
 						Throwable.class.isAssignableFrom(method.getParameterTypes()[method.getParameterTypes().length - 1])
-					) {
+						) {
 					// Have an exception handler
 					this.exceptionHandlerMap.put(method.getParameterTypes()[method.getParameterTypes().length - 1], method);
 					if (logger.isDebugEnabled()) {
@@ -317,7 +483,7 @@ public class 关于最后执行目标的对_拦截器链AdviceInterceptorChainTe
 						"At least one handler method must be found in class [" + throwsAdvice.getClass() + "]");
 			}
 		}
-		
+
 		@Override
 		public Object invoke(MethodInvocation mi) throws Throwable {
 			try {
@@ -331,7 +497,7 @@ public class 关于最后执行目标的对_拦截器链AdviceInterceptorChainTe
 				throw ex;
 			}
 		}
-		
+
 		private void invokeHandlerMethod(MethodInvocation mi, Throwable ex, Method method) throws Throwable {
 			Object[] handlerArgs;
 			if (method.getParameterTypes().length == 1) {
@@ -347,7 +513,7 @@ public class 关于最后执行目标的对_拦截器链AdviceInterceptorChainTe
 				throw targetEx.getTargetException();
 			}
 		}
-		
+
 		public int getHandlerMethodCount() {
 			return this.exceptionHandlerMap.size();
 		}
@@ -373,5 +539,5 @@ public class 关于最后执行目标的对_拦截器链AdviceInterceptorChainTe
 			return handler;
 		}
 	}
-	
+
 }

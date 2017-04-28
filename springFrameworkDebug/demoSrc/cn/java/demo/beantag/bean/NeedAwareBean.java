@@ -14,7 +14,8 @@ public class NeedAwareBean implements BeanNameAware,BeanClassLoaderAware,BeanFac
 	
 	@Override
 	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
-		// org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.this
+		// beanFactory === org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.this
+		// beanFactory === org.springframework.beans.factory.support.DefaultListableBeanFactory
 		this.beanFactory = beanFactory;
 	}
 

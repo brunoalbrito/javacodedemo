@@ -251,7 +251,7 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 						}
 						beanReferences.add(new RuntimeBeanReference(aspectName));
 					}
-					AbstractBeanDefinition advisorDefinition = parseAdvice( // !!!
+					AbstractBeanDefinition advisorDefinition = parseAdvice( // !!! 创建bean定义、生成beanName注册bean定义
 							aspectName, i, aspectElement, (Element) node, parserContext, beanDefinitions, beanReferences);
 					beanDefinitions.add(advisorDefinition);
 				}
@@ -355,7 +355,7 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 			RootBeanDefinition methodDefinition = new RootBeanDefinition(MethodLocatingFactoryBean.class);
 			methodDefinition.getPropertyValues().add("targetBeanName", aspectName); // 要“接受报告的bean对象”
 			methodDefinition.getPropertyValues().add("methodName", adviceElement.getAttribute("method"));
-			methodDefinition.setSynthetic(true);
+			methodDefinition.setSynthetic(true); // 是合成的，可以逃过应用钩子
 
 			// create instance factory definition
 			RootBeanDefinition aspectFactoryDef =
@@ -408,7 +408,7 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 			<after ...> === org.springframework.aop.aspectj.AspectJAfterAdvice
 			<after-returning ...> === org.springframework.aop.aspectj.AspectJAfterReturningAdvice
 			<after-throwing ...> === org.springframework.aop.aspectj.AspectJAfterThrowingAdvice
-			<around ...> === org.springframework.aop.aspectj.AspectJAfterThrowingAdvice
+			<around ...> === org.springframework.aop.aspectj.AspectJAroundAdvice
 		 */
 		RootBeanDefinition adviceDefinition = new RootBeanDefinition(getAdviceClass(adviceElement, parserContext));
 		adviceDefinition.setSource(parserContext.extractSource(adviceElement));

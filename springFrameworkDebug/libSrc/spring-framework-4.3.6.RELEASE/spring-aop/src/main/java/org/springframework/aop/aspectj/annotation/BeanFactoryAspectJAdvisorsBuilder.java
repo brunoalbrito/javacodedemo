@@ -89,21 +89,21 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 					List<Advisor> advisors = new LinkedList<Advisor>();
 					aspectNames = new LinkedList<String>();
 					String[] beanNames = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(
-							this.beanFactory, Object.class, true, false);
+							this.beanFactory, Object.class, true, false); // 扫描出实现Object接口的类
 					for (String beanName : beanNames) {
-						if (!isEligibleBean(beanName)) {
+						if (!isEligibleBean(beanName)) { // beanName符合特征
 							continue;
 						}
 						// We must be careful not to instantiate beans eagerly as in this case they
 						// would be cached by the Spring container but would not have been weaved.
-						Class<?> beanType = this.beanFactory.getType(beanName);
+						Class<?> beanType = this.beanFactory.getType(beanName); // 指定bean名的类名
 						if (beanType == null) {
 							continue;
 						}
-						if (this.advisorFactory.isAspect(beanType)) {
+						if (this.advisorFactory.isAspect(beanType)) { // 是Aspect类， org.springframework.aop.aspectj.annotation.ReflectiveAspectJAdvisorFactory
 							aspectNames.add(beanName);
-							AspectMetadata amd = new AspectMetadata(beanType, beanName);
-							if (amd.getAjType().getPerClause().getKind() == PerClauseKind.SINGLETON) {
+							AspectMetadata amd = new AspectMetadata(beanType, beanName); // !!!!
+							if (amd.getAjType().getPerClause().getKind() == PerClauseKind.SINGLETON) { // org.aspectj.internal.lang.reflect.AjTypeImpl.getPerClause().getKind()
 								MetadataAwareAspectInstanceFactory factory =
 										new BeanFactoryAspectInstanceFactory(this.beanFactory, beanName);
 								List<Advisor> classAdvisors = this.advisorFactory.getAdvisors(factory);
@@ -124,7 +124,7 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 								MetadataAwareAspectInstanceFactory factory =
 										new PrototypeAspectInstanceFactory(this.beanFactory, beanName);
 								this.aspectFactoryCache.put(beanName, factory);
-								advisors.addAll(this.advisorFactory.getAdvisors(factory));
+								advisors.addAll(this.advisorFactory.getAdvisors(factory)); // org.springframework.aop.aspectj.annotation.ReflectiveAspectJAdvisorFactory.getAdvisors(factory)
 							}
 						}
 					}

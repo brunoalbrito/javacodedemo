@@ -126,7 +126,7 @@ class CglibAopProxy implements AopProxy, Serializable {
 		if (config.getAdvisors().length == 0 && config.getTargetSource() == AdvisedSupport.EMPTY_TARGET_SOURCE) {
 			throw new AopConfigException("No advisors and no TargetSource specified");
 		}
-		this.advised = config;
+		this.advised = config; // org.springframework.aop.framework.ProxyCreatorSupport
 		this.advisedDispatcher = new AdvisedDispatcher(this.advised);
 	}
 
@@ -160,11 +160,11 @@ class CglibAopProxy implements AopProxy, Serializable {
 		}
 
 		try {
-			Class<?> rootClass = this.advised.getTargetClass();
+			Class<?> rootClass = this.advised.getTargetClass(); // cn.java.bean.FooService
 			Assert.state(rootClass != null, "Target class must be available for creating a CGLIB proxy");
 
 			Class<?> proxySuperClass = rootClass;
-			if (ClassUtils.isCglibProxyClass(rootClass)) {
+			if (ClassUtils.isCglibProxyClass(rootClass)) { // 是cglib生成的类
 				proxySuperClass = rootClass.getSuperclass();
 				Class<?>[] additionalInterfaces = rootClass.getInterfaces();
 				for (Class<?> additionalInterface : additionalInterfaces) {
@@ -175,7 +175,7 @@ class CglibAopProxy implements AopProxy, Serializable {
 			// Validate the class, writing log messages as necessary.
 			validateClassIfNecessary(proxySuperClass, classLoader);
 
-			// Configure CGLIB Enhancer...
+			// Configure CGLIB Enhancer... 生成子类
 			Enhancer enhancer = createEnhancer();
 			if (classLoader != null) {
 				enhancer.setClassLoader(classLoader);
@@ -284,7 +284,7 @@ class CglibAopProxy implements AopProxy, Serializable {
 		boolean isStatic = this.advised.getTargetSource().isStatic();
 
 		// Choose an "aop" interceptor (used for AOP calls).
-		Callback aopInterceptor = new DynamicAdvisedInterceptor(this.advised);
+		Callback aopInterceptor = new DynamicAdvisedInterceptor(this.advised); // !!! 
 
 		// Choose a "straight to target" interceptor. (used for calls that are
 		// unadvised but can return this). May be required to expose the proxy.
@@ -326,7 +326,7 @@ class CglibAopProxy implements AopProxy, Serializable {
 
 			// TODO: small memory optimisation here (can skip creation for methods with no advice)
 			for (int x = 0; x < methods.length; x++) {
-				List<Object> chain = this.advised.getInterceptorsAndDynamicInterceptionAdvice(methods[x], rootClass);
+				List<Object> chain = this.advised.getInterceptorsAndDynamicInterceptionAdvice(methods[x], rootClass); // !!!! 
 				fixedCallbacks[x] = new FixedChainStaticTargetInterceptor(
 						chain, this.advised.getTargetSource().getTarget(), this.advised.getTargetClass());
 				this.fixedInterceptorMap.put(methods[x].toString(), x);
@@ -639,7 +639,7 @@ class CglibAopProxy implements AopProxy, Serializable {
 				if (target != null) {
 					targetClass = target.getClass();
 				}
-				List<Object> chain = this.advised.getInterceptorsAndDynamicInterceptionAdvice(method, targetClass);
+				List<Object> chain = this.advised.getInterceptorsAndDynamicInterceptionAdvice(method, targetClass); //!!!!
 				Object retVal;
 				// Check whether we only have one InvokerInterceptor: that is,
 				// no real advice, but just reflective invocation of the target.
@@ -805,7 +805,7 @@ class CglibAopProxy implements AopProxy, Serializable {
 			}
 			Class<?> targetClass = this.advised.getTargetClass();
 			// Proxy is not yet available, but that shouldn't matter.
-			List<?> chain = this.advised.getInterceptorsAndDynamicInterceptionAdvice(method, targetClass);
+			List<?> chain = this.advised.getInterceptorsAndDynamicInterceptionAdvice(method, targetClass); // !!!
 			boolean haveAdvice = !chain.isEmpty();
 			boolean exposeProxy = this.advised.isExposeProxy();
 			boolean isStatic = this.advised.getTargetSource().isStatic();

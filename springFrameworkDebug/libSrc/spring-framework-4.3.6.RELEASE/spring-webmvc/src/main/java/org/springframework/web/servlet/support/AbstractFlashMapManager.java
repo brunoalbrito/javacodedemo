@@ -90,7 +90,7 @@ public abstract class AbstractFlashMapManager implements FlashMapManager {
 
 	@Override
 	public final FlashMap retrieveAndUpdate(HttpServletRequest request, HttpServletResponse response) {
-		List<FlashMap> allFlashMaps = retrieveFlashMaps(request);
+		List<FlashMap> allFlashMaps = retrieveFlashMaps(request); // request中存在属性"org.springframework.web.servlet.support.SessionFlashMapManager.FLASH_MAPS"
 		if (CollectionUtils.isEmpty(allFlashMaps)) {
 			return null;
 		}
@@ -98,7 +98,7 @@ public abstract class AbstractFlashMapManager implements FlashMapManager {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Retrieved FlashMap(s): " + allFlashMaps);
 		}
-		List<FlashMap> mapsToRemove = getExpiredFlashMaps(allFlashMaps);
+		List<FlashMap> mapsToRemove = getExpiredFlashMaps(allFlashMaps); // 过期的
 		FlashMap match = getMatchingFlashMap(allFlashMaps, request);
 		if (match != null) {
 			mapsToRemove.add(match);
@@ -114,7 +114,7 @@ public abstract class AbstractFlashMapManager implements FlashMapManager {
 					allFlashMaps = retrieveFlashMaps(request);
 					if (allFlashMaps != null) {
 						allFlashMaps.removeAll(mapsToRemove);
-						updateFlashMaps(allFlashMaps, request, response);
+						updateFlashMaps(allFlashMaps, request, response); // 删除过期的
 					}
 				}
 			}

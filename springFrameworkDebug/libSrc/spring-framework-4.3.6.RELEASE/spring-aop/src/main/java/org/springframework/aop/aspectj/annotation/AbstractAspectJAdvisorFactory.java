@@ -131,7 +131,7 @@ public abstract class AbstractAspectJAdvisorFactory implements AspectJAdvisorFac
 		for (Class<?> c : classesToLookFor) {
 			AspectJAnnotation<?> foundAnnotation = findAnnotation(method, (Class<Annotation>) c);
 			if (foundAnnotation != null) {
-				return foundAnnotation;
+				return foundAnnotation; // org.springframework.aop.aspectj.annotation.AbstractAspectJAdvisorFactory.AspectJAnnotation
 			}
 		}
 		return null;
@@ -189,7 +189,7 @@ public abstract class AbstractAspectJAdvisorFactory implements AspectJAdvisorFac
 
 		public AspectJAnnotation(A annotation) {
 			this.annotation = annotation;
-			this.annotationType = determineAnnotationType(annotation);
+			this.annotationType = determineAnnotationType(annotation); // AspectJAnnotationType.AtAfter
 			// We know these methods exist with the same name on each object,
 			// but need to invoke them reflectively as there isn't a common interface.
 			try {
@@ -212,7 +212,7 @@ public abstract class AbstractAspectJAdvisorFactory implements AspectJAdvisorFac
 
 		private String resolveExpression(A annotation) throws Exception {
 			String expression = null;
-			for (String methodName : EXPRESSION_PROPERTIES) {
+			for (String methodName : EXPRESSION_PROPERTIES) { // 表达式
 				Method method;
 				try {
 					method = annotation.getClass().getDeclaredMethod(methodName);

@@ -44,10 +44,10 @@ public class AspectJAfterAdvice extends AbstractAspectJAdvice
 	@Override
 	public Object invoke(MethodInvocation mi) throws Throwable {
 		try {
-			return mi.proceed();
+			return mi.proceed(); // 让拦截器链往下走
 		}
 		finally {
-			invokeAdviceMethod(getJoinPointMatch(), null, null);
+			invokeAdviceMethod(getJoinPointMatch(), null, null); // 先走再处理
 		}
 	}
 
