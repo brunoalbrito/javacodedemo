@@ -24,8 +24,8 @@ public class AspectJAutoProxyTagMockInJavaTest {
 
 	public void test(AbstractRefreshableConfigApplicationContext context) {
 		System.out.println("-----"+this.getClass().getSimpleName()+"------");
-		BeanDefinitionRegistry registry = ApplicationContextUtil.tryCastTypeToBeanDefinitionRegistry(context);
-		ConfigurableListableBeanFactory beanFactory = ApplicationContextUtil.tryCastTypeToConfigurableListableBeanFactory(context);
+		BeanDefinitionRegistry registry = ApplicationContextUtil.getBeanFactoryAndTryCastTypeToBeanDefinitionRegistry(context);
+		ConfigurableListableBeanFactory beanFactory = ApplicationContextUtil.getBeanFactoryAndTryCastTypeToConfigurableListableBeanFactory(context);
 		if(registry==null || beanFactory==null){
 			return;
 		}
@@ -38,8 +38,8 @@ public class AspectJAutoProxyTagMockInJavaTest {
 	 * @param context
 	 */
 	private void addIncludePatterns(AbstractRefreshableConfigApplicationContext context) {
-		BeanDefinitionRegistry registry = ApplicationContextUtil.tryCastTypeToBeanDefinitionRegistry(context);
-		ConfigurableListableBeanFactory beanFactory = ApplicationContextUtil.tryCastTypeToConfigurableListableBeanFactory(context);
+		BeanDefinitionRegistry registry = ApplicationContextUtil.getBeanFactoryAndTryCastTypeToBeanDefinitionRegistry(context);
+		ConfigurableListableBeanFactory beanFactory = ApplicationContextUtil.getBeanFactoryAndTryCastTypeToConfigurableListableBeanFactory(context);
 		if(registry==null || beanFactory==null){
 			return;
 		}
@@ -63,8 +63,8 @@ public class AspectJAutoProxyTagMockInJavaTest {
 	private static final String EXPOSE_PROXY_ATTRIBUTE = "expose-proxy";
 	private void registerBeanPostProcessorAliasHook(AbstractRefreshableConfigApplicationContext context) {
 
-		BeanDefinitionRegistry registry = ApplicationContextUtil.tryCastTypeToBeanDefinitionRegistry(context);
-		ConfigurableListableBeanFactory beanFactory = ApplicationContextUtil.tryCastTypeToConfigurableListableBeanFactory(context);
+		BeanDefinitionRegistry registry = ApplicationContextUtil.getBeanFactoryAndTryCastTypeToBeanDefinitionRegistry(context);
+		ConfigurableListableBeanFactory beanFactory = ApplicationContextUtil.getBeanFactoryAndTryCastTypeToConfigurableListableBeanFactory(context);
 		if(registry==null || beanFactory==null){
 			return;
 		}

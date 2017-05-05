@@ -40,7 +40,7 @@ public class ExpressionParserTest {
 	public static void testStandardBeanExpressionResolverResultString(
 			AbstractRefreshableConfigApplicationContext context) {
 		System.out.println("--------------testStandardBeanExpressionResolverResultString----------------");
-		ConfigurableListableBeanFactory beanFactory = ApplicationContextUtil.tryCastTypeToConfigurableListableBeanFactory(context);
+		ConfigurableListableBeanFactory beanFactory = ApplicationContextUtil.getBeanFactoryAndTryCastTypeToConfigurableListableBeanFactory(context);
 		if (beanFactory == null) {
 			return;
 		}
@@ -58,8 +58,8 @@ public class ExpressionParserTest {
 	public static void testStandardBeanExpressionResolverResultBeanObject(
 			AbstractRefreshableConfigApplicationContext context) {
 		System.out.println("--------------testStandardBeanExpressionResolverResultBeanObject----------------");
-		BeanDefinitionRegistry registry = ApplicationContextUtil.tryCastTypeToBeanDefinitionRegistry(context);
-		ConfigurableListableBeanFactory beanFactory = ApplicationContextUtil.tryCastTypeToConfigurableListableBeanFactory(context);
+		BeanDefinitionRegistry registry = ApplicationContextUtil.getBeanFactoryAndTryCastTypeToBeanDefinitionRegistry(context);
+		ConfigurableListableBeanFactory beanFactory = ApplicationContextUtil.getBeanFactoryAndTryCastTypeToConfigurableListableBeanFactory(context);
 
 		if (registry == null || beanFactory == null) {
 			return;

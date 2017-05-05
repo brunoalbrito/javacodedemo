@@ -93,7 +93,7 @@ abstract class ConfigurationClassUtils {
 			// Check already loaded Class if present...
 			// since we possibly can't even load the class file for this Class.
 			Class<?> beanClass = ((AbstractBeanDefinition) beanDef).getBeanClass();
-			metadata = new StandardAnnotationMetadata(beanClass, true);
+			metadata = new StandardAnnotationMetadata(beanClass, true); //!!!
 		}
 		else {
 			try {

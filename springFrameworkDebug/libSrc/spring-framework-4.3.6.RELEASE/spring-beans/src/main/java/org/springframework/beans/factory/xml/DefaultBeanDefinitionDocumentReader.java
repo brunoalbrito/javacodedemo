@@ -311,7 +311,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 		// org.springframework.beans.factory.xml.BeanDefinitionParserDelegate
 		BeanDefinitionHolder bdHolder = delegate.parseBeanDefinitionElement(ele); // 解析bean标签
 		if (bdHolder != null) {
-			bdHolder = delegate.decorateBeanDefinitionIfRequired(ele, bdHolder); 
+			bdHolder = delegate.decorateBeanDefinitionIfRequired(ele, bdHolder);  // 应用装饰器
 			try {
 				// Register the final decorated instance.
 				BeanDefinitionReaderUtils.registerBeanDefinition(bdHolder, getReaderContext().getRegistry()); // bean信息添加到注册表中

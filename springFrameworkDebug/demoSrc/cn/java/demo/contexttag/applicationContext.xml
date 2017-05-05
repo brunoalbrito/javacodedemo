@@ -5,27 +5,23 @@
     http://www.springframework.org/schema/beans        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd    
     http://www.springframework.org/schema/context                http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
+     <!-- resource-pattern不是正则表达式 -->
     <context:component-scan 
         use-default-filters="true" 
-        resource-pattern="[A-Z][a-z0-9A-Z]*Component"
-        base-package="cn.java.note.contexttag.bean,cn.java.note.contexttag.bean"
-        scope-resolver="cn.java.demo.contexttag.annotation.FooScopeMetadataResolver"
-        name-generator="cn.java.demo.contexttag.annotation.FooBeanNameGenerator">
+        resource-pattern="*Component.class"
+        base-package="cn.java.demo.contexttag.bean,cn.java.demo.contexttag.component.impl"
+        scope-resolver="org.springframework.context.annotation.AnnotationScopeMetadataResolver"
+        name-generator="org.springframework.context.annotation.AnnotationBeanNameGenerator">
         
-        <!-- 过滤器 - 包含过滤-->
-        <context:include-filter type="annotation" expression="org.springframework.stereotype.Component" />
-        <context:include-filter type="assignable" expression="cn.java.demo.bean.api.Service" /> <!-- 实现此接口 -->
-        <context:include-filter type="aspectj" expression="..." />
-        <context:include-filter type="regex" expression="[A-Z][a-z0-9A-Z]*Component" /> <!-- 符合这个特征 -->
-        <context:include-filter type="custom" expression="cn.java.demo.contexttag.annotation.FooTypeFilter" />  <!-- 符合这个特征 -->
+        <!-- 过滤器 - 包含过滤(只要符合其中一个就会被收录)-->
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Component" /><!-- 包含@Component注解 -->
+        <context:include-filter type="assignable" expression="cn.java.demo.contexttag.component.api.FooComponent" /> <!-- 实现此接口 -->
+        <!-- <context:include-filter type="aspectj" expression="..." /> --> <!-- "类名"符合这个条件 -->
+        <context:include-filter type="regex" expression="[A-Z][a-z0-9A-Z]*Component" /> <!-- "类名"符合这个正则表达式 -->
+        <context:include-filter type="custom" expression="cn.java.demo.contexttag.filter.FooIncludeTypeFilter" />  <!-- 自定义过滤器 -->
         
-        <!-- 过滤器 - 不包含过滤 -->
-        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Component" />
-        <context:exclude-filter type="assignable" expression="cn.java.demo.bean.api.Service" /> 
-        <context:exclude-filter type="aspectj" expression="..." />
-        <context:exclude-filter type="regex" expression="[A-Z][a-z0-9A-Z]*Component" /> 
-        <context:exclude-filter type="custom" expression="cn.java.demo.contexttag.annotation.FooTypeFilter" />  
-        
+        <!-- 过滤器 - 不包含过滤(只要符合其中一个就会被排除) -->
+        <context:include-filter type="custom" expression="cn.java.demo.contexttag.filter.FooExcludeTypeFilter" />  <!-- 自定义过滤器 -->
     </context:component-scan>
     
     

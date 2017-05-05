@@ -169,7 +169,7 @@
 		</qualifier>
 	</bean>
 	
-	<!-- ------------------自定义标签：aop-------------------------- -->
+	<!-- ------------------命名空间：aop-------------------------- -->
 	<aop:config proxy-target-class="false" expose-proxy="false">
  		<aop:pointcut id="" expression="" />
  		<aop:advisor id="" advice-ref="" pointcut="" pointcut-ref="" order="" />
@@ -191,5 +191,29 @@
  	<!-- 装饰器 ，只能应用在bean标签上，<aop:scoped-proxy  proxy-target-class="true" /> -->
  	<!-- <aop:spring-configured 废弃/> -->
  	
- 	<!-- ------------------自定义标签：.-------------------------- -->
+ 	<!-- ------------------自定义命名空间：.-------------------------- -->
+ 	
+ 	<!-- ------------------命名空间：context-------------------------- -->
+ 	 <!-- resource-pattern不是正则表达式 -->
+ 	 <context:component-scan 
+        use-default-filters="true" 
+        resource-pattern="*Component"
+        base-package="cn.java.note.contexttag.bean,cn.java.note.contexttag.bean"
+        scope-resolver="cn.java.demo.contexttag.annotation.FooScopeMetadataResolver"
+        name-generator="cn.java.demo.contexttag.annotation.FooBeanNameGenerator">
+        
+        <!-- 过滤器 - 包含过滤-->
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Component" />
+        <context:include-filter type="assignable" expression="cn.java.demo.bean.api.Service" /> <!-- 实现此接口 -->
+        <context:include-filter type="aspectj" expression="..." />
+        <context:include-filter type="regex" expression="[A-Z][a-z0-9A-Z]*Component" /> <!-- 符合这个特征 -->
+        <context:include-filter type="custom" expression="cn.java.demo.contexttag.annotation.FooTypeFilter" />  <!-- 符合这个特征 -->
+        
+        <!-- 过滤器 - 不包含过滤 -->
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Component" />
+        <context:exclude-filter type="assignable" expression="cn.java.demo.bean.api.Service" /> 
+        <context:exclude-filter type="aspectj" expression="..." />
+        <context:exclude-filter type="regex" expression="[A-Z][a-z0-9A-Z]*Component" /> 
+        <context:exclude-filter type="custom" expression="cn.java.demo.contexttag.annotation.FooTypeFilter" />  
+    </context:component-scan>
 </beans>  

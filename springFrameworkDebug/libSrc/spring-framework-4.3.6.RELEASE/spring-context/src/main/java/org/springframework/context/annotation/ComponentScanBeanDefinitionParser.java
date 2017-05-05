@@ -86,8 +86,8 @@ public class ComponentScanBeanDefinitionParser implements BeanDefinitionParser {
 
 		// Actually scan for bean definitions and register them.
 		ClassPathBeanDefinitionScanner scanner = configureScanner(parserContext, element); // !!! 创建扫描器 org.springframework.context.annotation.ClassPathBeanDefinitionScanner
-		Set<BeanDefinitionHolder> beanDefinitions = scanner.doScan(basePackages); // 扫描bean的定义
-		registerComponents(parserContext.getReaderContext(), beanDefinitions, element);
+		Set<BeanDefinitionHolder> beanDefinitions = scanner.doScan(basePackages); // 扫描bean的定义，并注册bean的定义
+		registerComponents(parserContext.getReaderContext(), beanDefinitions, element); // 注册bean的定义
 
 		return null;
 	}
@@ -102,12 +102,12 @@ public class ComponentScanBeanDefinitionParser implements BeanDefinitionParser {
 		}
 
 		// Delegate bean definition registration to scanner class.
-		ClassPathBeanDefinitionScanner scanner = createScanner(parserContext.getReaderContext(), useDefaultFilters);
-		scanner.setBeanDefinitionDefaults(parserContext.getDelegate().getBeanDefinitionDefaults());
+		ClassPathBeanDefinitionScanner scanner = createScanner(parserContext.getReaderContext(), useDefaultFilters); // 创建扫描器
+		scanner.setBeanDefinitionDefaults(parserContext.getDelegate().getBeanDefinitionDefaults()); // 获取BeanDefinition的默认配置
 		scanner.setAutowireCandidatePatterns(parserContext.getDelegate().getAutowireCandidatePatterns());
 
 		if (element.hasAttribute(RESOURCE_PATTERN_ATTRIBUTE)) {
-			scanner.setResourcePattern(element.getAttribute(RESOURCE_PATTERN_ATTRIBUTE));
+			scanner.setResourcePattern(element.getAttribute(RESOURCE_PATTERN_ATTRIBUTE)); // 匹配表达式
 		}
 
 		try {
@@ -146,12 +146,12 @@ public class ComponentScanBeanDefinitionParser implements BeanDefinitionParser {
 
 		// Register annotation config processors, if necessary.
 		boolean annotationConfig = true;
-		if (element.hasAttribute(ANNOTATION_CONFIG_ATTRIBUTE)) {
+		if (element.hasAttribute(ANNOTATION_CONFIG_ATTRIBUTE)) { // annotation-config
 			annotationConfig = Boolean.valueOf(element.getAttribute(ANNOTATION_CONFIG_ATTRIBUTE));
 		}
 		if (annotationConfig) {
 			Set<BeanDefinitionHolder> processorDefinitions =
-					AnnotationConfigUtils.registerAnnotationConfigProcessors(readerContext.getRegistry(), source);
+					AnnotationConfigUtils.registerAnnotationConfigProcessors(readerContext.getRegistry(), source); // !!!!
 			for (BeanDefinitionHolder processorDefinition : processorDefinitions) {
 				compositeDef.addNestedComponent(new BeanComponentDefinition(processorDefinition));
 			}

@@ -1,4 +1,4 @@
-package cn.java.demo.contexttag.annotation;
+package cn.java.demo.contexttag.scanner;
 
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.AnnotationScopeMetadataResolver;

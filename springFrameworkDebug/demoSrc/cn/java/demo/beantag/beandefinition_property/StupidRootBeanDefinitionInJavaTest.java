@@ -27,8 +27,8 @@ public class StupidRootBeanDefinitionInJavaTest {
 	 */
 	public void testHelloWorld(AbstractRefreshableConfigApplicationContext context){
 		
-		BeanDefinitionRegistry registry = ApplicationContextUtil.tryCastTypeToBeanDefinitionRegistry(context);
-		ConfigurableListableBeanFactory beanFactory = ApplicationContextUtil.tryCastTypeToConfigurableListableBeanFactory(context);
+		BeanDefinitionRegistry registry = ApplicationContextUtil.getBeanFactoryAndTryCastTypeToBeanDefinitionRegistry(context);
+		ConfigurableListableBeanFactory beanFactory = ApplicationContextUtil.getBeanFactoryAndTryCastTypeToConfigurableListableBeanFactory(context);
 		
 		if(registry==null || beanFactory==null ){
 			return;
@@ -76,8 +76,8 @@ public class StupidRootBeanDefinitionInJavaTest {
 	 */
 	public void testRuntimeBeanReferenceX(AbstractRefreshableConfigApplicationContext context){
 		
-		BeanDefinitionRegistry registry = ApplicationContextUtil.tryCastTypeToBeanDefinitionRegistry(context);
-		ConfigurableListableBeanFactory beanFactory = ApplicationContextUtil.tryCastTypeToConfigurableListableBeanFactory(context);
+		BeanDefinitionRegistry registry = ApplicationContextUtil.getBeanFactoryAndTryCastTypeToBeanDefinitionRegistry(context);
+		ConfigurableListableBeanFactory beanFactory = ApplicationContextUtil.getBeanFactoryAndTryCastTypeToConfigurableListableBeanFactory(context);
 		
 		if(registry==null || beanFactory==null ){
 			return;
@@ -125,8 +125,8 @@ public class StupidRootBeanDefinitionInJavaTest {
 	 */
 	public void testRuntimeBeanNameReferenceX(AbstractRefreshableConfigApplicationContext context){
 		
-		BeanDefinitionRegistry registry = ApplicationContextUtil.tryCastTypeToBeanDefinitionRegistry(context);
-		ConfigurableListableBeanFactory beanFactory = ApplicationContextUtil.tryCastTypeToConfigurableListableBeanFactory(context);
+		BeanDefinitionRegistry registry = ApplicationContextUtil.getBeanFactoryAndTryCastTypeToBeanDefinitionRegistry(context);
+		ConfigurableListableBeanFactory beanFactory = ApplicationContextUtil.getBeanFactoryAndTryCastTypeToConfigurableListableBeanFactory(context);
 		
 		if(registry==null || beanFactory==null ){
 			return;
@@ -190,8 +190,8 @@ public class StupidRootBeanDefinitionInJavaTest {
 	 */
 	public void testBeanDefinitionHoldertX(AbstractRefreshableConfigApplicationContext context){
 		
-		BeanDefinitionRegistry registry = ApplicationContextUtil.tryCastTypeToBeanDefinitionRegistry(context);
-		ConfigurableListableBeanFactory beanFactory = ApplicationContextUtil.tryCastTypeToConfigurableListableBeanFactory(context);
+		BeanDefinitionRegistry registry = ApplicationContextUtil.getBeanFactoryAndTryCastTypeToBeanDefinitionRegistry(context);
+		ConfigurableListableBeanFactory beanFactory = ApplicationContextUtil.getBeanFactoryAndTryCastTypeToConfigurableListableBeanFactory(context);
 		
 		if(registry==null || beanFactory==null ){
 			return;
@@ -241,8 +241,8 @@ public class StupidRootBeanDefinitionInJavaTest {
 	 */
 	public void testBeanDefinitionX(AbstractRefreshableConfigApplicationContext context){
 		
-		BeanDefinitionRegistry registry = ApplicationContextUtil.tryCastTypeToBeanDefinitionRegistry(context);
-		ConfigurableListableBeanFactory beanFactory = ApplicationContextUtil.tryCastTypeToConfigurableListableBeanFactory(context);
+		BeanDefinitionRegistry registry = ApplicationContextUtil.getBeanFactoryAndTryCastTypeToBeanDefinitionRegistry(context);
+		ConfigurableListableBeanFactory beanFactory = ApplicationContextUtil.getBeanFactoryAndTryCastTypeToConfigurableListableBeanFactory(context);
 		
 		if(registry==null || beanFactory==null ){
 			return;

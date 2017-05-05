@@ -22,6 +22,7 @@ import cn.java.demo.beantag.bean.methodreplacer.MethodReplacerImpl;
 import cn.java.demo.beantag.beandefinition_property.StupidRootBeanDefinitionInJavaTest;
 import cn.java.demo.internal.ExpressionParserTest;
 import cn.java.demo.internal.StandardTypeConverterTest;
+import cn.java.demo.util.ApplicationContextUtil;
 
 
 public class Test {
@@ -36,6 +37,13 @@ public class Test {
 		ApplicationContext context = new ClassPathXmlApplicationContext("classpath:cn/java/demo/beantag/applicationContext.xml");
 	
 		System.out.println("################################################################################################");
+		
+		{ // 一些钩子bean
+			ApplicationContextUtil.printBeanDefinitionInRegistry((AbstractRefreshableConfigApplicationContext) context);
+			ApplicationContextUtil.printBeanFactoryPostProcessorsInBeanFactory((AbstractRefreshableConfigApplicationContext) context);
+			ApplicationContextUtil.printBeanPostProcessorInBeanFactory((AbstractRefreshableConfigApplicationContext) context);
+		}
+		
 		System.out.println("-------------bean的使用-------------------");
 		HelloService helloService = context.getBean("helloService", HelloService.class);
 		helloService.sayHello();
@@ -134,9 +142,9 @@ public class Test {
 			UseInstancePoolScopeBean useInstancePoolScopeBean0 = context.getBean("useInstancePoolScopeBean0", UseInstancePoolScopeBean.class);
 			System.out.println(useInstancePoolScopeBean0.getScope().getInstanceCounter("useInstancePoolScopeBean0"));
 			UseInstancePoolScopeBean useInstancePoolScopeBean1 = context.getBean("useInstancePoolScopeBean0", UseInstancePoolScopeBean.class);
-			System.out.println(useInstancePoolScopeBean0.getScope().getInstanceCounter("useInstancePoolScopeBean0"));
-			UseInstancePoolScopeBean useInstancePoolScopeBean2 = context.getBean("useInstancePoolScopeBean0", UseInstancePoolScopeBean.class);
 			System.out.println(useInstancePoolScopeBean1.getScope().getInstanceCounter("useInstancePoolScopeBean0"));
+			UseInstancePoolScopeBean useInstancePoolScopeBean2 = context.getBean("useInstancePoolScopeBean0", UseInstancePoolScopeBean.class);
+			System.out.println(useInstancePoolScopeBean2.getScope().getInstanceCounter("useInstancePoolScopeBean0"));
 		}
 		
 		System.out.println("-------------定义自己的 BeanPostProcessor（Hook钩子机制）-------------------");

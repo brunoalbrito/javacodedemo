@@ -276,6 +276,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 		try {
 			String packageSearchPath = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX +
 					resolveBasePackage(basePackage) + '/' + this.resourcePattern; // classpath*:cn/java/demo/contexttag/[A-Z][a-z0-9A-Z]*Component
+//			resourcePatternResolver === org.springframework.context.support.AbstractApplicationContext
 			Resource[] resources = this.resourcePatternResolver.getResources(packageSearchPath); // 查找所有资源
 			boolean traceEnabled = logger.isTraceEnabled();
 			boolean debugEnabled = logger.isDebugEnabled();
@@ -287,7 +288,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 					try {
 						//　类元信息读取器　org.springframework.core.type.classreading.SimpleMetadataReader
 						MetadataReader metadataReader = this.metadataReaderFactory.getMetadataReader(resource); // org.springframework.core.type.classreading.CachingMetadataReaderFactory
-						if (isCandidateComponent(metadataReader)) { // 符合包含条件和不包含条件
+						if (isCandidateComponent(metadataReader)) { // 符合"包含条件"和"不包含条件"
 							ScannedGenericBeanDefinition sbd = new ScannedGenericBeanDefinition(metadataReader); // org.springframework.context.annotation.ScannedGenericBeanDefinition
 							sbd.setResource(resource);
 							sbd.setSource(resource);

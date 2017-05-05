@@ -31,7 +31,7 @@ public class PointcutExpressionTest {
 	public void test(AbstractRefreshableConfigApplicationContext context) {
 		System.out.println("-----"+this.getClass().getSimpleName()+"------");
 		
-		ConfigurableListableBeanFactory beanFactory = ApplicationContextUtil.tryCastTypeToConfigurableListableBeanFactory(context);
+		ConfigurableListableBeanFactory beanFactory = ApplicationContextUtil.getBeanFactoryAndTryCastTypeToConfigurableListableBeanFactory(context);
 		if(beanFactory==null){
 			return;
 		}

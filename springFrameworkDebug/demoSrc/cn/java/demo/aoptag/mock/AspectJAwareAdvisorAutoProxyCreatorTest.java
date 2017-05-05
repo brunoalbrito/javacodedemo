@@ -22,7 +22,7 @@ public class AspectJAwareAdvisorAutoProxyCreatorTest {
 	 */
 	public static void testAspectJAwareAdvisorAutoProxyCreator(AbstractRefreshableConfigApplicationContext context) {
 		
-		BeanFactory beanFactory  = ApplicationContextUtil.tryCastTypeToConfigurableListableBeanFactory(context);
+		BeanFactory beanFactory  = ApplicationContextUtil.getBeanFactoryAndTryCastTypeToConfigurableListableBeanFactory(context);
 		
 		AspectJAwareAdvisorAutoProxyCreator aspectJAwareAdvisorAutoProxyCreator = new AspectJAwareAdvisorAutoProxyCreator();
 		aspectJAwareAdvisorAutoProxyCreator.setBeanFactory(beanFactory);
