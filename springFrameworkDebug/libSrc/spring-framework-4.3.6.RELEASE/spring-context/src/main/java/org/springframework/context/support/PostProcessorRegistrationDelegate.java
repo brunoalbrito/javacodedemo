@@ -78,7 +78,7 @@ class PostProcessorRegistrationDelegate {
 			// Separate between BeanDefinitionRegistryPostProcessors that implement
 			// PriorityOrdered, Ordered, and the rest.
 			String[] postProcessorNames =
-					beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false); // 用户在applicationContext.xml配置的 BeanDefinitionRegistryPostProcessor类型的bean列表
+					beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false); // 扫描 - 用户在applicationContext.xml配置的 BeanDefinitionRegistryPostProcessor类型的bean列表
 
 			// First, invoke the BeanDefinitionRegistryPostProcessors that implement PriorityOrdered.
 			List<BeanDefinitionRegistryPostProcessor> priorityOrderedPostProcessors = new ArrayList<BeanDefinitionRegistryPostProcessor>();

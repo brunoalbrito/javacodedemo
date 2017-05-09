@@ -502,10 +502,10 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
 		int prefixEnd = location.indexOf(":") + 1;
 		int rootDirEnd = location.length();
 		while (rootDirEnd > prefixEnd && getPathMatcher().isPattern(location.substring(prefixEnd, rootDirEnd))) {
-			rootDirEnd = location.lastIndexOf('/', rootDirEnd - 2) + 1;
+			rootDirEnd = location.lastIndexOf('/', rootDirEnd - 2) + 1; // 以 "/" 结尾
 		}
 		if (rootDirEnd == 0) {
-			rootDirEnd = prefixEnd;
+			rootDirEnd = prefixEnd; // 不以 "/" 结尾
 		}
 		return location.substring(0, rootDirEnd);
 	}
@@ -711,7 +711,7 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
 		if (logger.isDebugEnabled()) {
 			logger.debug("Looking for matching resources in directory tree [" + rootDir.getPath() + "]");
 		}
-		Set<File> matchingFiles = retrieveMatchingFiles(rootDir, subPattern);
+		Set<File> matchingFiles = retrieveMatchingFiles(rootDir, subPattern);//!!!
 		Set<Resource> result = new LinkedHashSet<Resource>(matchingFiles.size());
 		for (File file : matchingFiles) {
 			result.add(new FileSystemResource(file)); // org.springframework.core.io.FileSystemResource
@@ -756,7 +756,7 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
 		}
 		fullPattern = fullPattern + StringUtils.replace(pattern, File.separator, "/");
 		Set<File> result = new LinkedHashSet<File>(8);
-		doRetrieveMatchingFiles(fullPattern, rootDir, result);
+		doRetrieveMatchingFiles(fullPattern, rootDir, result); //!!!
 		return result;
 	}
 

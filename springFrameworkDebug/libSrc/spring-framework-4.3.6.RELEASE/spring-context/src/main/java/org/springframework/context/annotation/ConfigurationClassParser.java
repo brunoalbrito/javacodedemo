@@ -160,13 +160,13 @@ class ConfigurationClassParser {
 		this.deferredImportSelectors = new LinkedList<DeferredImportSelectorHolder>();
 
 		for (BeanDefinitionHolder holder : configCandidates) {
-			BeanDefinition bd = holder.getBeanDefinition();
+			BeanDefinition bd = holder.getBeanDefinition(); // bean的BeanDefinition
 			try {
 				if (bd instanceof AnnotatedBeanDefinition) {
 					parse(((AnnotatedBeanDefinition) bd).getMetadata(), holder.getBeanName());
 				}
 				else if (bd instanceof AbstractBeanDefinition && ((AbstractBeanDefinition) bd).hasBeanClass()) {
-					parse(((AbstractBeanDefinition) bd).getBeanClass(), holder.getBeanName());
+					parse(((AbstractBeanDefinition) bd).getBeanClass(), holder.getBeanName()); // <bean>标签定义的bean
 				}
 				else {
 					parse(bd.getBeanClassName(), holder.getBeanName());
@@ -190,7 +190,7 @@ class ConfigurationClassParser {
 	}
 
 	protected final void parse(Class<?> clazz, String beanName) throws IOException {
-		processConfigurationClass(new ConfigurationClass(clazz, beanName));
+		processConfigurationClass(new ConfigurationClass(clazz, beanName)); // !!!
 	}
 
 	protected final void parse(AnnotationMetadata metadata, String beanName) throws IOException {

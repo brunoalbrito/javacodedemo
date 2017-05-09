@@ -22,8 +22,8 @@ public class AopScopedProxyTagMockInJavaTest {
 	
 	public void test(AbstractRefreshableConfigApplicationContext context) {
 		System.out.println("-----AopScopedProxyTagMockInJavaTest------");
-		BeanDefinitionRegistry registry = ApplicationContextUtil.tryCastTypeToBeanDefinitionRegistry(context);
-		ConfigurableListableBeanFactory beanFactory = ApplicationContextUtil.tryCastTypeToConfigurableListableBeanFactory(context);
+		BeanDefinitionRegistry registry = ApplicationContextUtil.getBeanFactoryAndTryCastTypeToBeanDefinitionRegistry(context);
+		ConfigurableListableBeanFactory beanFactory = ApplicationContextUtil.getBeanFactoryAndTryCastTypeToConfigurableListableBeanFactory(context);
 		if(registry==null || beanFactory==null){
 			return;
 		}

@@ -15,13 +15,15 @@ public class 关于主配置文件解析Debug {
 //		有如下bean类型：工厂类型的bean、
 		
 		/*
-		 	org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader.parseBeanDefinitions(...)
-		 		org.springframework.beans.factory.xml.BeanDefinitionParserDelegate.parseCustomElement(...) 自定义标签
-				 	org.springframework.aop.config.AopNamespaceHandler.parse(..) 解析
-				 		org.springframework.aop.config.ConfigBeanDefinitionParser.parse(Element element, ParserContext parserContext)
-				org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader.parseDefaultElement(...) 默认标签
-					org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader.processBeanDefinition(...) 装饰器
-						org.springframework.beans.factory.xml.BeanDefinitionParserDelegate.decorateBeanDefinitionIfRequired(...)
+		 	org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader.registerBeanDefinitions(...)
+			 	org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader.doRegisterBeanDefinitions(...)
+				 	org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader.parseBeanDefinitions(...)
+				 		org.springframework.beans.factory.xml.BeanDefinitionParserDelegate.parseCustomElement(...) 自定义标签
+						 	org.springframework.aop.config.AopNamespaceHandler.parse(..) 解析
+						 		org.springframework.aop.config.ConfigBeanDefinitionParser.parse(Element element, ParserContext parserContext)
+						org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader.parseDefaultElement(...) 默认标签
+							org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader.processBeanDefinition(...) 装饰器
+								org.springframework.beans.factory.xml.BeanDefinitionParserDelegate.decorateBeanDefinitionIfRequired(...)
 		 */
 		
 	}

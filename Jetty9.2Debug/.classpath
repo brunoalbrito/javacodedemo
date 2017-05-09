@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="demoSrc"/>
+	<classpathentry kind="src" path="debugSrc"/>
+	<classpathentry kind="src" path="libSrc/jetty.project-jetty-9.2.21.v20170120/jetty-server/src/main/java"/>
+	<classpathentry kind="src" path="libSrc/jetty.project-jetty-9.2.21.v20170120/jetty-http/src/main/java"/>
+	<classpathentry kind="src" path="libSrc/jetty.project-jetty-9.2.21.v20170120/jetty-util/src/main/java"/>
+	<classpathentry kind="src" path="libSrc/jetty.project-jetty-9.2.21.v20170120/jetty-xml/src/main/java"/>
+	<classpathentry kind="src" path="libSrc/jetty.project-jetty-9.2.21.v20170120/jetty-webapp/src/main/java"/>
+	<classpathentry kind="src" path="libSrc/jetty.project-jetty-9.2.21.v20170120/jetty-servlet/src/main/java"/>
+	<classpathentry kind="src" path="libSrc/jetty.project-jetty-9.2.21.v20170120/jetty-security/src/main/java"/>
+	<classpathentry kind="src" path="libSrc/jetty.project-jetty-9.2.21.v20170120/jetty-io/src/main/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="lib" path="lib/javaweb/servlet-api.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

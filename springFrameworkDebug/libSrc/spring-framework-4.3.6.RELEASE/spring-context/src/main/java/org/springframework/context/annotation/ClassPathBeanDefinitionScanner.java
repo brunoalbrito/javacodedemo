@@ -272,21 +272,23 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 			Set<BeanDefinition> candidates = findCandidateComponents(basePackage);  // 符合包含条件和不包含条件的Component
 			for (BeanDefinition candidate : candidates) { 
 				// candidate == org.springframework.context.annotation.ScannedGenericBeanDefinition
-				ScopeMetadata scopeMetadata = this.scopeMetadataResolver.resolveScopeMetadata(candidate);  // org.springframework.context.annotation.AnnotationScopeMetadataResolver
+				// scopeMetadataResolver == org.springframework.context.annotation.AnnotationScopeMetadataResolver
+				ScopeMetadata scopeMetadata = this.scopeMetadataResolver.resolveScopeMetadata(candidate);  
+				
 				candidate.setScope(scopeMetadata.getScopeName()); // Scope名
 				String beanName = this.beanNameGenerator.generateBeanName(candidate, this.registry);  // 生成beanName名  org.springframework.context.annotation.AnnotationBeanNameGenerator
 				if (candidate instanceof AbstractBeanDefinition) { 
 					postProcessBeanDefinition((AbstractBeanDefinition) candidate, beanName); // !!!  是否启用自动装配
 				}
 				if (candidate instanceof AnnotatedBeanDefinition) {
-					AnnotationConfigUtils.processCommonDefinitionAnnotations((AnnotatedBeanDefinition) candidate); // !!!
+					AnnotationConfigUtils.processCommonDefinitionAnnotations((AnnotatedBeanDefinition) candidate); // !!! BeanDefinition的属性
 				}
 				if (checkCandidate(beanName, candidate)) { // beanName没被定义过
 					BeanDefinitionHolder definitionHolder = new BeanDefinitionHolder(candidate, beanName);
 					definitionHolder =
-							AnnotationConfigUtils.applyScopedProxyMode(scopeMetadata, definitionHolder, this.registry);
+							AnnotationConfigUtils.applyScopedProxyMode(scopeMetadata, definitionHolder, this.registry); // 是否BeanDefinition被代理
 					beanDefinitions.add(definitionHolder);
-					registerBeanDefinition(definitionHolder, this.registry); // 注册beanName
+					registerBeanDefinition(definitionHolder, this.registry); // 注册BeanDefinition，命名为beanName
 				}
 			}
 		}
