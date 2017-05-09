@@ -1,5 +1,6 @@
 package cn.java.note;
 import org.apache.catalina.startup.Bootstrap;
+import org.apache.catalina.util.ServerInfo;
 public class Main {
 
 	public static void main(String[] args) {
@@ -12,6 +13,9 @@ public class Main {
 //				Bootstrap.main(new String[]{"stop"});
 	}
 
+	public static void getServerInfo() {
+//		ServerInfo.getServerInfo();
+	}
 	public static void pipeLink() {
 //		org.apache.catalina.connector.CoyoteAdapter;
 //			org.apache.catalina.core.StandardEngineValve;
