@@ -9,3 +9,6 @@
 /ServletCms/WebRoot/WEB-INF/classes
 /tomcat8.xDebug/bin
 /tomcat8.xDebug/work/Catalina
+/tomcat6.xDebug/bin
+/HibernateORM4.3.8Debug/bin
+/tomcat6.xDebug/work/Catalina/localhost

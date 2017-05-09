@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping  package="" schema="" catalog="" default-cascade="" default-access="" default-lazy="" auto-import="" package="">
+	<meta inherit="true" attribute="name0">
+	<meta inherit="true" attribute="name1">
+	
+	<filter-def name="name" condition="defaultCondition">
+		<filter-param name="paramName0" type="paramType0" />
+		<filter-param name="paramName1" type="paramType1" />
+	</filter-def>
+	
+	<fetch-profile name="profileName">
+ 		<fetch association="association" style="style" entity="entityName"></fetch>
+ 	</fetch-profile>
+ 	
+ 	<identifier-generator name="strategy" class="generatorClassName" />
+ 	
+ 	<typedef name="typeName" class="typeClass">
+ 		<param name=""></param>
+ 		<param name=""></param>
+ 	</typedef>
+	
+	
+ 	<class lazy="false" name="cn.java.demo.entity.Student" proxy="bindPojoRepresentationX" node="bindDom4jRepresentationX" 
+	 		discriminator-value="getEntityName" dynamic-update="true" dynamic-insert="true"
+	 		batch-size="10" select-before-update="false" optimistic-lock="version" persister=""
+	 		abstract="false"
+	 		schema="" catalog="" table="student" mutable="true" where="" check="" polymorphism="explicit" rowid=""
+	 		>
+ 		<tuplizer entity-mode="pojo" class="" />
+ 		<tuplizer entity-mode="dynamic-map" class="" />
+ 		<fetch-profile name="profileName">
+	 		<fetch association="association" style="style" entity="entityName"></fetch>
+	 	</fetch-profile>
+	 	
+ 		<sql-insert check="rowcount">insert table1(field1,field2) VALUES("field1_value0","field2_value0"),("field1_value1","field2_value1")</sql-insert>
+ 		<sql-delete check="rowcount">delete form table where id=?</sql-delete>
+ 		<sql-update check="rowcount">update table1 set field1="field1_value_new"</sql-update>
+ 		<loader query-ref="" />
+ 		
+ 		<synchronize table=""></synchronize>
+ 		
+ 		<meta inherit="true" attribute="name0">
+		<meta inherit="true" attribute="name1">
+
+		<subselect></subselect>
+ 		<comment>注释</comment>
+ 		<id name="userid">
+			<generator class="native" />
+		</id>
+ 		<composite-id name=""></composite-id>
+ 		<version name=""></version>
+ 		<timestamp name="" source="no_db"></timestamp>
+ 		<discriminator></discriminator>
+ 		<cache usage="" region="" include="non-lazy" />
+ 		
+ 		<many-to-one name="" />
+ 		<any name="" />
+ 		<one-to-one />
+ 		<property name="name" />
+		<property name="age" />
+ 		<component />
+ 		<dynamic-component />
+ 		<properties />
+ 		<join />
+ 		<subclass name="cn.java.demo.entity.SubClazz"></subclass>
+		<joined-subclass name="cn.java.demo.entity.JoinedClazz"></joined-subclass>
+		<union-subclass name="cn.java.demo.entity.UnionClazz"></union-subclass>
+		<filter />
+		<natural-id />
+		<subclass />
+		<query />
+		<sql-query />
+		<resultset />
+ 	</class>
+	
+	
+	<subclass name="cn.java.demo.entity.SubClazz" extends></subclass>
+	<joined-subclass name="cn.java.demo.entity.JoinedClazz"></joined-subclass>
+	<union-subclass name="cn.java.demo.entity.UnionClazz"></union-subclass>
+	<query></query>
+	<sql-query />
+	<resultset />
+	<import />
+	<database-object />
+</hibernate-mapping>

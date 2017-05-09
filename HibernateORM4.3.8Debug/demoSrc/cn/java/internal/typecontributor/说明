@@ -1,0 +1,10 @@
+添加类型的方式有两种：
+方式一：
+	创建一个实现org.hibernate.metamodel.spi.TypeContributor接口的类
+		public void contribute(TypeContributions typeContributions, ServiceRegistry serviceRegistry) {
+			typeContributions.contributeType(BasicType type);
+		}
+方式二：
+	通过Configure对象直接注入
+		TypeResolver typeResolver = configuration.getTypeResolver();
+		typeResolver.registerTypeOverride(BasicType type);
