@@ -280,13 +280,15 @@ public abstract class AbstractServiceRegistryImpl
 		/**
 		 * 取得服务
 		 */
-		R service = serviceBinding.getService();// !!!!!!!!!!!
+		R service = serviceBinding.getService();// !!!!!!!!!!! 
 		if ( service == null ) {// 如果“服务”未实例化
 			//!!!!!! 
-			//创建服务对象 
-			//给服务对象，反射注解注入依赖 injectServices(...)
-			//给服务对象注入配置 configure(...)
-			//启动服务对象 .start(...);
+			// 创建服务对象 
+			// 如果服务的成员方法声明了@InjectService注解，那么根据注解信息注入相关依赖
+			// 如果服务实现了ServiceRegistryAwareService接口，那么调用服务的 injectServices(...)方法，并传递相关参数进去
+			// 如果服务实现了Configurable接口，那么调用服务的 configure(...)方法，并传递相关参数进去
+			// 如果服务实现了Startable接口，那么调用服务的 start()方法
+			// 如果服务实现了JmxService接口，那么把服务注册到jmx服务器中
 			service = initializeService( serviceBinding );
 		}
 
@@ -321,7 +323,7 @@ public abstract class AbstractServiceRegistryImpl
 		serviceBinding.getLifecycleOwner().injectDependencies( serviceBinding ); // 依赖注入
 
 		// PHASE 3 : configure service   StandardServiceRegistryImpl.configureService( serviceBinding );
-		serviceBinding.getLifecycleOwner().configureService( serviceBinding ); // 注入属性
+		serviceBinding.getLifecycleOwner().configureService( serviceBinding ); // 注入配置
 
 		// PHASE 4 : Start service  ......
 		serviceBinding.getLifecycleOwner().startService( serviceBinding ); // 启动服务
@@ -346,7 +348,7 @@ public abstract class AbstractServiceRegistryImpl
 			 	R service === org.hibernate.engine.jdbc.internal.JdbcServicesImpl
 			 	
 			 */
-			R service = serviceBinding.getLifecycleOwner().initiateService( serviceInitiator );
+			R service = serviceBinding.getLifecycleOwner().initiateService( serviceInitiator ); // 返回创建出来的对象
 			// IMPL NOTE : the register call here is important to avoid potential stack overflow issues
 			//		from recursive calls through #configureService
 			registerService( serviceBinding, service );
@@ -384,7 +386,7 @@ public abstract class AbstractServiceRegistryImpl
 				if ( injectService == null ) {
 					continue;
 				}
-
+				
 				processInjection( service, method, injectService );
 			}
 		}

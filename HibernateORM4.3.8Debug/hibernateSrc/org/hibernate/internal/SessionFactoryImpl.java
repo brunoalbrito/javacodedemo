@@ -268,15 +268,15 @@ public final class SessionFactoryImpl
 				this,
 				cfg
 		);
-        this.jdbcServices = this.serviceRegistry.getService( JdbcServices.class );
-        this.dialect = this.jdbcServices.getDialect();
+        this.jdbcServices = this.serviceRegistry.getService( JdbcServices.class ); // org.hibernate.engine.jdbc.internal.JdbcServicesImpl
+        this.dialect = this.jdbcServices.getDialect(); // org.hibernate.dialect.MySQL5Dialect
 		this.cacheAccess = this.serviceRegistry.getService( CacheImplementor.class );
 		this.sqlFunctionRegistry = new SQLFunctionRegistry( getDialect(), cfg.getSqlFunctions() );
 		if ( observer != null ) {
 			this.observer.addObserver( observer );
 		}
 
-		this.typeResolver = cfg.getTypeResolver().scope( this );
+		this.typeResolver = cfg.getTypeResolver().scope( this ); // org.hibernate.type.TypeResolver
 		this.typeHelper = new TypeLocatorImpl( typeResolver );
 
 		this.filters = new HashMap<String, FilterDefinition>();

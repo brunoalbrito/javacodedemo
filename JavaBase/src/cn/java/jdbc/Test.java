@@ -9,11 +9,15 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.hibernate.engine.jdbc.cursor.internal.StandardRefCursorSupport;
+import org.hibernate.engine.jdbc.spi.ExtractedDatabaseMetaData;
 import org.hibernate.engine.jdbc.spi.TypeInfo;
 import org.hibernate.engine.jdbc.spi.TypeNullability;
 import org.hibernate.engine.jdbc.spi.TypeSearchability;
@@ -163,12 +167,33 @@ public class Test {
 				boolean metaReportsDDLCausesTxnCommit = metaData.dataDefinitionCausesTransactionCommit();
 				boolean metaReportsDDLInTxnSupported = !metaData.dataDefinitionIgnoredInTransactions();
 				boolean metaSupportsGetGeneratedKeys = metaData.supportsGetGeneratedKeys();
-				String extraKeywordsString = metaData.getSQLKeywords();
+				String extraKeywordsString = metaData.getSQLKeywords(); // 数据库关键词
 				int sqlStateType = metaData.getSQLStateType();
 				boolean lobLocatorUpdateCopy = metaData.locatorsUpdateCopy();
+				
+				// 数据库关键词
+				{
+					Set<String> keywordSet = new HashSet<String>();
+					keywordSet.addAll( Arrays.asList( extraKeywordsString.split( "," ) ) );
+				}
+				
+				{
+					switch ( sqlStateType ) {
+						case DatabaseMetaData.sqlStateSQL99 : {
+							System.out.println("sqlStateSQL99");
+							break;
+						}
+						case DatabaseMetaData.sqlStateXOpen : {
+							System.out.println("sqlStateXOpen");
+							break;
+						}
+						default : {
+							System.out.println("default");
+							break;
+						}
+					}
+				}
 			}
-			
-			
 			
 			{
 				ResultSet resultSet = metaData.getTypeInfo();

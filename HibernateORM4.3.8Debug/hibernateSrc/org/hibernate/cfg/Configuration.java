@@ -577,12 +577,75 @@ public class Configuration implements Serializable {
 			metadataSourceQueue.add( metadataXml );//把student.hbm.xml文件的DOM对象添加进去
 		}
 		else {
+			
+			/*
+			 	<entity-mappings>
+				 	<persistence-unit-metadata>
+				 		<xml-mapping-metadata-complete />
+				 		<persistence-unit-defaults>
+				 			<schema></schema>
+				 			<catalog></catalog>
+				 			<access>FIELD</access>
+				 			<cascade-persist />
+				 			<delimited-identifiers />
+				 			<entity-listeners>
+								<entity-listener class="" />
+								<entity-listener class="" />
+							</entity-listeners>
+				 		</persistence-unit-defaults>
+				 	</persistence-unit-metadata>
+				 	<package />
+				 	<schema></schema>
+		 			<catalog></catalog>
+				 	<access>FIELD</access>
+				 	<converter class="" auto-apply="" />
+				 	<converter class="" auto-apply="" />
+				 	<entity class="" metadata-complete="" access="">
+				 		<entity-listeners>
+							<entity-listener class="" />
+							<entity-listener class="" />
+						</entity-listeners>
+				 	</entity>
+				 	<entity class="" metadata-complete="" access="">
+				 		<entity-listeners>
+							<entity-listener class="" />
+							<entity-listener class="" />
+						</entity-listeners>
+				 	</entity>
+				 	<mapped-superclass class="" metadata-complete="" access="">
+				 		<entity-listeners>
+							<entity-listener class="" />
+							<entity-listener class="" />
+						</entity-listeners>
+				 	</mapped-superclass>
+				 	<mapped-superclass class="" metadata-complete="" access="">
+				 		<entity-listeners>
+							<entity-listener class="" />
+							<entity-listener class="" />
+						</entity-listeners>
+				 	</mapped-superclass>
+				 	<embeddable class="" metadata-complete="" access="">
+				 		<entity-listeners>
+							<entity-listener class="" />
+							<entity-listener class="" />
+						</entity-listeners>
+				 	</embeddable>
+				 	<embeddable class="" metadata-complete="" access="">
+				 		<entity-listeners>
+							<entity-listener class="" />
+							<entity-listener class="" />
+						</entity-listeners>
+				 	</embeddable>
+			 	</entity-mappings>
+			 */
+			
 			// reflectionManager === org.hibernate.annotations.common.reflection.java.JavaReflectionManager
 			// metadataProvider === org.hibernate.cfg.annotations.reflection.JPAMetadataProvider
 			// jpaMetadataProvider.getXMLContext() === org.hibernate.cfg.annotations.reflection.XMLContext
+			
 			final MetadataProvider metadataProvider = ( (MetadataProviderInjector) reflectionManager ).getMetadataProvider();
 			JPAMetadataProvider jpaMetadataProvider = ( JPAMetadataProvider ) metadataProvider;
-			List<String> classNames = jpaMetadataProvider.getXMLContext().addDocument( metadataXml.getDocumentTree() );
+			List<String> classNames = jpaMetadataProvider.getXMLContext().addDocument( metadataXml.getDocumentTree() ); //!!!!
 			for ( String className : classNames ) {
 				try {
 					metadataSourceQueue.add( reflectionManager.classForName( className, this.getClass() ) );
@@ -1468,9 +1531,10 @@ public class Configuration implements Serializable {
 			if ( !isDefaultProcessed ) {
 				
 				/*
+				 	<entity-mappings>标签的配置
+				 	
 				 	org.hibernate.annotations.common.reflection.java.JavaReflectionManager.getDefaults();
 				 */
-				
 				//use global delimiters if orm.xml declare it
 				Map defaults = reflectionManager.getDefaults(); // org.hibernate.cfg.annotations.reflection.XMLContext.Default 中配置的属性
 				final Object isDelimited = defaults.get( "delimited-identifier" );
@@ -1488,18 +1552,16 @@ public class Configuration implements Serializable {
 					getProperties().put( Environment.DEFAULT_CATALOG, catalog );
 				}
 
-				AnnotationBinder.bindDefaults( createMappings() );
+				AnnotationBinder.bindDefaults( createMappings() ); // 创建新的MappingsImpl
 				isDefaultProcessed = true;
 			}
 		}
 
 		// process metadata queue
 		{
-			/**
-			 	student.hbm.xml配置文件信息
-			 */
-			metadataSourceQueue.syncAnnotatedClasses(); // 注解类 @Entity(name="FooEntity")
-			metadataSourceQueue.processMetadata( determineMetadataSourcePrecedence() );
+			metadataSourceQueue.syncAnnotatedClasses(); // 使用  @Entity(name="FooEntity") 注解的类
+			// !!!!
+			metadataSourceQueue.processMetadata( determineMetadataSourcePrecedence() ); // 处理*.hbm.xml 和 class 文件
 		}
 
 
@@ -1941,20 +2003,19 @@ public class Configuration implements Serializable {
 		buildTypeRegistrations( serviceRegistry );
 		
 		/**
-			
 		 */
 		secondPassCompile();
 		if ( !metadataSourceQueue.isEmpty() ) {
 			LOG.incompleteMappingMetadataCacheProcessing();
 		}
 
-		validate();
+		validate(); // 校验
 
 		Environment.verifyProperties( properties );
 		Properties copy = new Properties();
 		copy.putAll( properties );
 		ConfigurationHelper.resolvePlaceHolders( copy );
-		Settings settings = buildSettings( copy, serviceRegistry );
+		Settings settings = buildSettings( copy, serviceRegistry ); // 识别配置和数据库信息，合并成settings值
 
 		return new SessionFactoryImpl(
 				this,
@@ -2687,7 +2748,9 @@ public class Configuration implements Serializable {
 	}
 
 	private Settings buildSettingsInternal(Properties props, ServiceRegistry serviceRegistry) {
-		final Settings settings = settingsFactory.buildSettings( props, serviceRegistry );
+		// settingsFactory === org.hibernate.cfg.SettingsFactory
+		final Settings settings = settingsFactory.buildSettings( props, serviceRegistry ); // jia
+		// org.hibernate.tuple.entity.EntityTuplizerFactory
 		settings.setEntityTuplizerFactory( this.getEntityTuplizerFactory() );
 //		settings.setComponentTuplizerFactory( this.getComponentTuplizerFactory() );
 		return settings;
@@ -3994,7 +4057,7 @@ public class Configuration implements Serializable {
 			/**
 			 	
 			 */
-			findClassNames( defaultPackage, hmNode, entityNames );
+			findClassNames( defaultPackage, hmNode, entityNames ); // !!!!
 			for ( String entity : entityNames ) {//entityNames = array("cn.java.hibernate.entity.Student","cn.java.hibernate.entity.Student2");
 				hbmMetadataByEntityNameXRef.put( entity, metadataXml );
 			}
@@ -4034,7 +4097,7 @@ public class Configuration implements Serializable {
 					entityName = getClassName( element.attribute( "name" ), defaultPackage );//
 				}
 				names.add( entityName );//cn.java.hibernate.entity.Student
-				findClassNames( defaultPackage, element, names );
+				findClassNames( defaultPackage, element, names ); // 嵌套解析
 			}
 		}
 
@@ -4079,14 +4142,14 @@ public class Configuration implements Serializable {
 			}
 		}
 
-		protected void processMetadata(List<MetadataSourceType> order) {
+		protected void processMetadata(List<MetadataSourceType> order) { // !!!!
 			syncAnnotatedClasses();
 
 			for ( MetadataSourceType type : order ) {
-				if ( MetadataSourceType.HBM.equals( type ) ) {
-					processHbmXmlQueue();
+				if ( MetadataSourceType.HBM.equals( type ) ) { // 使用hbm定义
+					processHbmXmlQueue(); // !!!
 				}
-				else if ( MetadataSourceType.CLASS.equals( type ) ) {
+				else if ( MetadataSourceType.CLASS.equals( type ) ) { // 使用注解定义
 					processAnnotatedClassesQueue();
 				}
 			}
@@ -4096,7 +4159,7 @@ public class Configuration implements Serializable {
 			LOG.debug( "Processing hbm.xml files" );
 			for ( Map.Entry<XmlDocument, Set<String>> entry : hbmMetadataToEntityNamesMap.entrySet() ) {
 				// Unfortunately we have to create a Mappings instance for each iteration here
-				processHbmXml( entry.getKey(), entry.getValue() );
+				processHbmXml( entry.getKey(), entry.getValue() ); // !!!!
 			}
 			hbmMetadataToEntityNamesMap.clear();
 			hbmMetadataByEntityNameXRef.clear();

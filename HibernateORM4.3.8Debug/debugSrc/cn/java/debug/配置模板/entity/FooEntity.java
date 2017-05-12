@@ -1,4 +1,4 @@
-package cn.java.debug.配置模板;
+package cn.java.debug.配置模板.entity;
 
 import javax.persistence.Entity;
 

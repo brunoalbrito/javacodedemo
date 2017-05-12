@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping package="cn.java.demo.entity">
+	<meta inherit="true" attribute="name0" />
+	<meta inherit="true" attribute="name1" />
+ 	<class name="cn.java.demo.entity.Student" > </class>
+	<subclass name="cn.java.demo.entity.SubClazz" ></subclass>
+	<joined-subclass name="cn.java.demo.entity.JoinedClazz"></joined-subclass>
+	<union-subclass name="cn.java.demo.entity.UnionClazz"></union-subclass>
+</hibernate-mapping>

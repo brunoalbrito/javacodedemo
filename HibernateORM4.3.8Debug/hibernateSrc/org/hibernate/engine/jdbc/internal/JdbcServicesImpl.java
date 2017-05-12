@@ -212,7 +212,7 @@ public class JdbcServicesImpl implements JdbcServices, ServiceRegistryAwareServi
 				}
 				finally {
 					if ( connection != null ) {
-						//!!!!!!释放数据库连接
+						//!!!!!!释放连接回数据库连接池
 						jdbcConnectionAccess.releaseConnection( connection );
 					}
 				}
@@ -262,7 +262,7 @@ public class JdbcServicesImpl implements JdbcServices, ServiceRegistryAwareServi
 
 		SQLExceptionConverter sqlExceptionConverter = dialect.buildSQLExceptionConverter(); // org.hibernate.dialect.MySQL5Dialect
 		if ( sqlExceptionConverter == null ) {
-			final StandardSQLExceptionConverter converter = new StandardSQLExceptionConverter();
+			final StandardSQLExceptionConverter converter = new StandardSQLExceptionConverter(); // !!!!
 			sqlExceptionConverter = converter;
 			converter.addDelegate( dialect.buildSQLExceptionConversionDelegate() );
 			converter.addDelegate( new SQLExceptionTypeDelegate( dialect ) );
@@ -276,7 +276,7 @@ public class JdbcServicesImpl implements JdbcServices, ServiceRegistryAwareServi
 		final MultiTenancyStrategy multiTenancyStrategy = MultiTenancyStrategy.determineMultiTenancyStrategy( configValues );
 
 		if ( MultiTenancyStrategy.NONE == multiTenancyStrategy ) {
-			//DriverManagerConnectionProviderImpl 内部有连接池
+			// DriverManagerConnectionProviderImpl 内部有连接池
 			// connectionProvider === org.hibernate.engine.jdbc.connections.internal.ConnectionProviderInitiator.initiateService(...)
 			// connectionProvider === org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl
 			connectionProvider = serviceRegistry.getService( ConnectionProvider.class );

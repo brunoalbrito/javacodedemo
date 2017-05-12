@@ -50,6 +50,9 @@ public class Test {
 			individualClassLoaders = orderedClassLoaderSet.toArray(new ClassLoader[orderedClassLoaderSet.size()]);
 		}
 
+		/**
+		 * name === "META-INF/services/cn.java.serviceloader.FooService"
+		 */
 		@Override
 		public Enumeration<URL> getResources(String name) throws IOException {
 			final LinkedHashSet<URL> resourceUrls = new LinkedHashSet<URL>();

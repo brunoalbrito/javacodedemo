@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
-<hibernate-mapping  package="" schema="" catalog="" default-cascade="" default-access="" default-lazy="" auto-import="" package="">
+<hibernate-mapping  package="" schema="" catalog="" default-cascade="" default-access="" default-lazy="" auto-import="">
 	<meta inherit="true" attribute="name0">
 	<meta inherit="true" attribute="name1">
 	
@@ -20,13 +20,14 @@
  		<param name=""></param>
  	</typedef>
 	
-	
- 	<class lazy="false" name="cn.java.demo.entity.Student" proxy="bindPojoRepresentationX" node="bindDom4jRepresentationX" 
+	<!-- 1 -->
+ 	<class lazy="false" name="cn.java.demo.entity.Student" entity-name="cn.java.demo.entity.Student" 
+ 			proxy="bindPojoRepresentationX" node="bindDom4jRepresentationX" 
 	 		discriminator-value="getEntityName" dynamic-update="true" dynamic-insert="true"
 	 		batch-size="10" select-before-update="false" optimistic-lock="version" persister=""
 	 		abstract="false"
-	 		schema="" catalog="" table="student" mutable="true" where="" check="" polymorphism="explicit" rowid=""
-	 		>
+	 		schema="" catalog="" table="student" mutable="true" 
+ 			where="" check="" polymorphism="explicit" rowid="">
  		<tuplizer entity-mode="pojo" class="" />
  		<tuplizer entity-mode="dynamic-map" class="" />
  		<fetch-profile name="profileName">
@@ -63,9 +64,14 @@
  		<dynamic-component />
  		<properties />
  		<join />
+ 		
+ 		<!-- 四个标签bof -->
+ 		<class></class>
  		<subclass name="cn.java.demo.entity.SubClazz"></subclass>
 		<joined-subclass name="cn.java.demo.entity.JoinedClazz"></joined-subclass>
 		<union-subclass name="cn.java.demo.entity.UnionClazz"></union-subclass>
+		<!-- 四个标签eof -->
+		
 		<filter />
 		<natural-id />
 		<subclass />
@@ -74,10 +80,10 @@
 		<resultset />
  	</class>
 	
+	<subclass name="cn.java.demo.entity.SubClazz" extends="" ></subclass>
+	<joined-subclass name="cn.java.demo.entity.JoinedClazz" extends="" ></joined-subclass>
+	<union-subclass name="cn.java.demo.entity.UnionClazz" extends="" ></union-subclass>
 	
-	<subclass name="cn.java.demo.entity.SubClazz" extends></subclass>
-	<joined-subclass name="cn.java.demo.entity.JoinedClazz"></joined-subclass>
-	<union-subclass name="cn.java.demo.entity.UnionClazz"></union-subclass>
 	<query></query>
 	<sql-query />
 	<resultset />

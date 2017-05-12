@@ -99,8 +99,14 @@ public class JPAMetadataProvider implements MetadataProvider, Serializable {
 					throw new IllegalStateException( "Default entity listener class not found: " + className );
 				}
 			}
+			/*
+			 	
+			 */
 			defaults.put( EntityListeners.class, entityListeners );
 			for ( Element element : xmlContext.getAllDocuments() ) {
+				/*
+				 	<sequence-generator name="" sequence-name="" initial-value="" allocation-size="" />
+				 */
 				@SuppressWarnings( "unchecked" )
 				List<Element> elements = element.elements( "sequence-generator" );
 				List<SequenceGenerator> sequenceGenerators = ( List<SequenceGenerator> ) defaults.get( SequenceGenerator.class );
@@ -112,6 +118,9 @@ public class JPAMetadataProvider implements MetadataProvider, Serializable {
 					sequenceGenerators.add( JPAOverriddenAnnotationReader.buildSequenceGeneratorAnnotation( subelement ) );
 				}
 
+				/*
+				 	<table-generator name="" table="" catalog="" schema="" pk-column-name="" value-column-name="" pk-column-value="" initial-value="" allocation-size="" />
+				 */
 				elements = element.elements( "table-generator" );
 				List<TableGenerator> tableGenerators = ( List<TableGenerator> ) defaults.get( TableGenerator.class );
 				if ( tableGenerators == null ) {
@@ -126,6 +135,13 @@ public class JPAMetadataProvider implements MetadataProvider, Serializable {
 					);
 				}
 
+				/*
+				 	<named-query name="" result-class="" result-set-mapping="">
+				 		<query></query>
+				 		<hint></hint>
+				 		<hint></hint>
+				 	</named-query>
+				 */
 				List<NamedQuery> namedQueries = ( List<NamedQuery> ) defaults.get( NamedQuery.class );
 				if ( namedQueries == null ) {
 					namedQueries = new ArrayList<NamedQuery>();
@@ -136,6 +152,13 @@ public class JPAMetadataProvider implements MetadataProvider, Serializable {
 				);
 				namedQueries.addAll( currentNamedQueries );
 
+				/*
+				 	<named-native-query name="" result-class="" result-set-mapping="">
+				 		<query></query>
+				 		<hint></hint>
+				 		<hint></hint>
+				 	</named-native-query>
+				 */
 				List<NamedNativeQuery> namedNativeQueries = ( List<NamedNativeQuery> ) defaults.get( NamedNativeQuery.class );
 				if ( namedNativeQueries == null ) {
 					namedNativeQueries = new ArrayList<NamedNativeQuery>();
@@ -146,6 +169,20 @@ public class JPAMetadataProvider implements MetadataProvider, Serializable {
 				);
 				namedNativeQueries.addAll( currentNamedNativeQueries );
 
+				/*
+				 	<sql-result-set-mapping name="">
+				 		<entity-result entity-class="" discriminator-column="">
+					 		<field-result name="" column="" />
+					 		<field-result name="" column="" />
+					 		<field-result name="" column="" />
+					 	</entity-result>
+					 	<column-result name="" class="" />
+					 	<constructor-result target-class="">
+					 		<column name="" class="" />
+					 		<column name="" class="" />
+					 	</constructor-result>
+				 	</sql-result-set-mapping>
+				 */
 				List<SqlResultSetMapping> sqlResultSetMappings = ( List<SqlResultSetMapping> ) defaults.get(
 						SqlResultSetMapping.class
 				);
@@ -158,6 +195,18 @@ public class JPAMetadataProvider implements MetadataProvider, Serializable {
 				);
 				sqlResultSetMappings.addAll( currentSqlResultSetMappings );
 
+				/*
+				 	<named-stored-procedure-query name="" procedure-name="">
+				 		<parameter name="" mode="IN" class="" /> 
+				 		<parameter name="" mode="IN" class="" /> 
+				 		<result-class></result-class>
+					 	<result-class></result-class>
+					 	<result-set-mapping></result-set-mapping>
+					 	<result-set-mapping></result-set-mapping>
+					 	<hint></hint>
+					 	<hint></hint>
+				 	</named-stored-procedure-query>
+				 */
 				List<NamedStoredProcedureQuery> namedStoredProcedureQueries = (List<NamedStoredProcedureQuery>)defaults.get( NamedStoredProcedureQuery.class );
 				if(namedStoredProcedureQueries==null){
 					namedStoredProcedureQueries = new ArrayList<NamedStoredProcedureQuery>(  );

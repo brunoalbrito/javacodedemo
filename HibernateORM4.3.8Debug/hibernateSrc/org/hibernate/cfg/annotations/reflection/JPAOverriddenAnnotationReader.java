@@ -1961,6 +1961,18 @@ public class JPAOverriddenAnnotationReader implements AnnotationReader {
 		if ( element == null ) {
 			return new ArrayList<NamedStoredProcedureQuery>();
 		}
+		/*
+		 	<named-stored-procedure-query name="" procedure-name="">
+		 		<parameter name="" mode="IN" class="" /> 
+		 		<parameter name="" mode="IN" class="" /> 
+		 		<result-class></result-class>
+			 	<result-class></result-class>
+			 	<result-set-mapping></result-set-mapping>
+			 	<result-set-mapping></result-set-mapping>
+			 	<hint></hint>
+			 	<hint></hint>
+		 	</named-stored-procedure-query>
+		 */
 		List namedStoredProcedureElements = element.elements( "named-stored-procedure-query" );
 		List<NamedStoredProcedureQuery> namedStoredProcedureQueries = new ArrayList<NamedStoredProcedureQuery>();
 		for ( Object obj : namedStoredProcedureElements ) {
@@ -2002,6 +2014,9 @@ public class JPAOverriddenAnnotationReader implements AnnotationReader {
 					storedProcedureParameters.toArray( new StoredProcedureParameter[storedProcedureParameters.size()] )
 			);
 
+			/*
+			 	
+			 */
 			elements = subElement.elements( "result-class" );
 			List<Class> returnClasses = new ArrayList<Class>();
 			for ( Element classElement : elements ) {
@@ -2041,6 +2056,20 @@ public class JPAOverriddenAnnotationReader implements AnnotationReader {
 			return builtResultSetMappings;
 		}
 
+		/*
+		 	<sql-result-set-mapping name="">
+		 		<entity-result entity-class="" discriminator-column="">
+			 		<field-result name="" column="" />
+			 		<field-result name="" column="" />
+			 		<field-result name="" column="" />
+			 	</entity-result>
+			 	<column-result name="" class="" />
+			 	<constructor-result target-class="">
+			 		<column name="" class="" />
+			 		<column name="" class="" />
+			 	</constructor-result>
+		 	</sql-result-set-mapping>
+		 */
 		// iterate over each <sql-result-set-mapping/> element
 		for ( Object resultSetMappingElementObject : element.elements( "sql-result-set-mapping" ) ) {
 			final Element resultSetMappingElement = (Element) resultSetMappingElementObject;
@@ -2061,6 +2090,13 @@ public class JPAOverriddenAnnotationReader implements AnnotationReader {
 				final Element resultElement = (Element) resultElementObject;
 
 				if ( "entity-result".equals( resultElement.getName() ) ) {
+					/*
+					 	<entity-result entity-class="" discriminator-column="">
+					 		<field-result name="" column="" />
+					 		<field-result name="" column="" />
+					 		<field-result name="" column="" />
+					 	</entity-result>
+					 */
 					if ( entityResultAnnotations == null ) {
 						entityResultAnnotations = new ArrayList<EntityResult>();
 					}
@@ -2068,12 +2104,21 @@ public class JPAOverriddenAnnotationReader implements AnnotationReader {
 					entityResultAnnotations.add( buildEntityResult( resultElement, defaults ) );
 				}
 				else if ( "column-result".equals( resultElement.getName() ) ) {
+					/*
+					 	<column-result name="" class="" />
+					 */
 					if ( columnResultAnnotations == null ) {
 						columnResultAnnotations = new ArrayList<ColumnResult>();
 					}
 					columnResultAnnotations.add( buildColumnResult( resultElement, defaults ) );
 				}
 				else if ( "constructor-result".equals( resultElement.getName() ) ) {
+					/*
+					 	<constructor-result target-class="">
+					 		<column name="" class="" />
+					 		<column name="" class="" />
+					 	</constructor-result>
+					 */
 					if ( constructorResultAnnotations == null ) {
 						constructorResultAnnotations = new ArrayList<ConstructorResult>();
 					}
@@ -2132,7 +2177,13 @@ public class JPAOverriddenAnnotationReader implements AnnotationReader {
 
 	private static EntityResult buildEntityResult(Element entityResultElement, XMLContext.Default defaults) {
 		final AnnotationDescriptor entityResultDescriptor = new AnnotationDescriptor( EntityResult.class );
-
+		/*
+		 	<entity-result entity-class="" discriminator-column="">
+		 		<field-result name="" column="" />
+		 		<field-result name="" column="" />
+		 		<field-result name="" column="" />
+		 	</entity-result>
+		 */
 		final Class entityClass = resolveClassReference( entityResultElement.attributeValue( "entity-class" ), defaults );
 		entityResultDescriptor.setValue( "entityClass", entityClass );
 
@@ -2183,7 +2234,12 @@ public class JPAOverriddenAnnotationReader implements AnnotationReader {
 
 	private static ConstructorResult buildConstructorResult(Element constructorResultElement, XMLContext.Default defaults) {
 		AnnotationDescriptor constructorResultDescriptor = new AnnotationDescriptor( ConstructorResult.class );
-
+		/*
+		 	<constructor-result target-class="">
+		 		<column name="" class="" />
+		 		<column name="" class="" />
+		 	</constructor-result>
+		 */
 		final Class entityClass = resolveClassReference( constructorResultElement.attributeValue( "target-class" ), defaults );
 		constructorResultDescriptor.setValue( "targetClass", entityClass );
 
@@ -2393,6 +2449,13 @@ public class JPAOverriddenAnnotationReader implements AnnotationReader {
 		if ( element == null ) {
 			return new ArrayList();
 		}
+		/*
+		 	<named-query name="" result-class="" result-set-mapping="">
+		 		<query></query>
+		 		<hint></hint>
+		 		<hint></hint>
+		 	</named-query>
+		 */
 		List namedQueryElementList = isNative ?
 				element.elements( "named-native-query" ) :
 				element.elements( "named-query" );
@@ -2471,6 +2534,9 @@ public class JPAOverriddenAnnotationReader implements AnnotationReader {
 	}
 
 	public static TableGenerator buildTableGeneratorAnnotation(Element element, XMLContext.Default defaults) {
+		/*
+		 	<table-generator name="" table="" catalog="" schema="" pk-column-name="" value-column-name="" pk-column-value="" initial-value="" allocation-size="" />
+		 */
 		AnnotationDescriptor ad = new AnnotationDescriptor( TableGenerator.class );
 		copyStringAttribute( ad, element, "name", false );
 		copyStringAttribute( ad, element, "table", false );
@@ -2507,6 +2573,7 @@ public class JPAOverriddenAnnotationReader implements AnnotationReader {
 	}
 
 	public static SequenceGenerator buildSequenceGeneratorAnnotation(Element element) {
+		
 		if ( element != null ) {
 			AnnotationDescriptor ad = new AnnotationDescriptor( SequenceGenerator.class );
 			copyStringAttribute( ad, element, "name", false );

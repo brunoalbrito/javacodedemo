@@ -70,6 +70,7 @@ public class XMLContext implements Serializable {
 		//global defaults
 		Element metadata = root.element( "persistence-unit-metadata" );
 		if ( metadata != null ) {
+			
 			if ( globalDefaults == null ) {
 				globalDefaults = new Default();
 				globalDefaults.setMetadataComplete(
@@ -96,7 +97,9 @@ public class XMLContext implements Serializable {
 				LOG.duplicateMetadata();
 			}
 		}
-
+		/*
+		 	
+		 */
 		//entity mapping default
 		Default entityMappingDefault = new Default();
 		Element unitElement = root.element( "package" );
@@ -144,6 +147,20 @@ public class XMLContext implements Serializable {
 	}
 
 	private void addClass(List<Element> entities, String packageName, Default defaults, List<String> addedClasses) {
+		/*
+		 	<entity class="" metadata-complete="" access="">
+		 		<entity-listeners>
+					<entity-listener class="" />
+					<entity-listener class="" />
+				</entity-listeners>
+		 	</entity>
+		 	<entity class="" metadata-complete="" access="">
+		 		<entity-listeners>
+					<entity-listener class="" />
+					<entity-listener class="" />
+				</entity-listeners>
+		 	</entity>
+		 */
 		for (Element element : entities) {
 			String className = buildSafeClassName( element.attributeValue( "class" ), packageName );
 			if ( classOverriding.containsKey( className ) ) {
@@ -198,7 +215,7 @@ public class XMLContext implements Serializable {
 			final String className = converterElement.attributeValue( "class" );
 			final String autoApplyAttribute = converterElement.attributeValue( "auto-apply" );
 			final boolean autoApply = autoApplyAttribute != null && Boolean.parseBoolean( autoApplyAttribute );
-
+			
 			try {
 				final Class<? extends AttributeConverter> attributeConverterClass = ReflectHelper.classForName(
 						className

@@ -294,13 +294,14 @@ public class StandardServiceRegistryBuilder {
 		ConfigurationHelper.resolvePlaceHolders( settingsCopy );
 
 		/**
-		 	请求应用拦截器
+		 	使用IntegratorService服务
+		 		查找Integrators，并应用 xxx.prepareServices(this)
 		 */
 		applyServiceContributingIntegrators();
 		
 		/**
-		 	请求应用类加载服务
-		 		在类路径下查找实现接口ServiceContributor的类列表,并调用空构造函数进行实例化,并调用其中的contribute方法
+		 	使用ClassLoaderService服务
+		 		查找ServiceContributor服务，并应用 serviceContributor.contribute( this );
 		 */
 		applyServiceContributors();
 

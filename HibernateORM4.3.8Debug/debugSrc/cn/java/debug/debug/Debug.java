@@ -10,6 +10,9 @@ import cn.java.curd.entity.Student;
 
 public class Debug {
 
+	/*
+	 	1、读取hibernate.cfg.xml文件，在中间遇到<mapping>标签，进而读取mapping文件
+	 */
 	public static void main(String[] args) {
 		Student student = new Student();
 		student.setId(1);

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<entity-mappings>
+ 	<persistence-unit-metadata>
+ 		<xml-mapping-metadata-complete />
+ 		<persistence-unit-defaults>
+ 			<schema></schema>
+ 			<catalog></catalog>
+ 			<access>FIELD</access>
+ 			<cascade-persist />
+ 			<delimited-identifiers />
+ 			<entity-listeners>
+				<entity-listener class="" />
+				<entity-listener class="" />
+			</entity-listeners>
+ 		</persistence-unit-defaults>
+ 	</persistence-unit-metadata>
+ 	<package />
+ 	<schema></schema>
+		<catalog></catalog>
+ 	<access>FIELD</access>
+ 	<converter class="" auto-apply="" />
+ 	<converter class="" auto-apply="" />
+ 	<entity class="" metadata-complete="" access="">
+ 		<entity-listeners>
+			<entity-listener class="" />
+			<entity-listener class="" />
+		</entity-listeners>
+ 	</entity>
+ 	<entity class="" metadata-complete="" access="">
+ 		<entity-listeners>
+			<entity-listener class="" />
+			<entity-listener class="" />
+		</entity-listeners>
+ 	</entity>
+ 	<mapped-superclass class="" metadata-complete="" access="">
+ 		<entity-listeners>
+			<entity-listener class="" />
+			<entity-listener class="" />
+		</entity-listeners>
+ 	</mapped-superclass>
+ 	<mapped-superclass class="" metadata-complete="" access="">
+ 		<entity-listeners>
+			<entity-listener class="" />
+			<entity-listener class="" />
+		</entity-listeners>
+ 	</mapped-superclass>
+ 	<embeddable class="" metadata-complete="" access="">
+ 		<entity-listeners>
+			<entity-listener class="" />
+			<entity-listener class="" />
+		</entity-listeners>
+ 	</embeddable>
+ 	<embeddable class="" metadata-complete="" access="">
+ 		<entity-listeners>
+			<entity-listener class="" />
+			<entity-listener class="" />
+		</entity-listeners>
+ 	</embeddable>
+ 	<sequence-generator name="" sequence-name="" initial-value="" allocation-size="" />
+ 	<sequence-generator name="" sequence-name="" initial-value="" allocation-size="" />
+ 	<table-generator name="" table="" catalog="" schema="" pk-column-name="" value-column-name="" pk-column-value="" initial-value="" allocation-size="" />
+ 	<table-generator name="" table="" catalog="" schema="" pk-column-name="" value-column-name="" pk-column-value="" initial-value="" allocation-size="" />
+ 	<named-query name="" result-class="" result-set-mapping="">
+ 		<query></query>
+ 		<hint></hint>
+ 		<hint></hint>
+ 	</named-query>
+ 	<named-query name="" result-class="" result-set-mapping="">
+ 		<query></query>
+ 		<hint></hint>
+ 		<hint></hint>
+ 	</named-query>
+ 	<named-native-query name="" result-class="" result-set-mapping="">
+ 		<query></query>
+ 		<hint></hint>
+ 		<hint></hint>
+ 	</named-native-query>
+ 	<named-native-query name="" result-class="" result-set-mapping="">
+ 		<query></query>
+ 		<hint></hint>
+ 		<hint></hint>
+ 	</named-native-query>
+ 	<sql-result-set-mapping name="">
+ 		<entity-result entity-class="" discriminator-column="">
+	 		<field-result name="" column="" />
+	 		<field-result name="" column="" />
+	 		<field-result name="" column="" />
+	 	</entity-result>
+	 	<column-result name="" class="" />
+	 	<constructor-result target-class="">
+	 		<column name="" class="" />
+	 		<column name="" class="" />
+	 	</constructor-result>
+ 	</sql-result-set-mapping>
+ 	<sql-result-set-mapping name="">
+ 		<entity-result entity-class="" discriminator-column="">
+	 		<field-result name="" column="" />
+	 		<field-result name="" column="" />
+	 		<field-result name="" column="" />
+	 	</entity-result>
+	 	<column-result name="" class="" />
+	 	<constructor-result target-class="">
+	 		<column name="" class="" />
+	 		<column name="" class="" />
+	 	</constructor-result>
+ 	</sql-result-set-mapping>
+ 	<named-stored-procedure-query name="" procedure-name="">
+ 		<parameter name="" mode="IN" class="" /> 
+ 		<parameter name="" mode="IN" class="" /> 
+ 		<result-class></result-class>
+	 	<result-class></result-class>
+	 	<result-set-mapping></result-set-mapping>
+	 	<result-set-mapping></result-set-mapping>
+	 	<hint></hint>
+	 	<hint></hint>
+ 	</named-stored-procedure-query>
+ 	<named-stored-procedure-query name="" procedure-name="">
+ 		<parameter name="" mode="IN" class="" /> 
+ 		<parameter name="" mode="IN" class="" /> 
+ 		<result-class></result-class>
+	 	<result-class></result-class>
+	 	<result-set-mapping></result-set-mapping>
+	 	<result-set-mapping></result-set-mapping>
+	 	<hint></hint>
+	 	<hint></hint>
+ 	</named-stored-procedure-query>
+</entity-mappings>

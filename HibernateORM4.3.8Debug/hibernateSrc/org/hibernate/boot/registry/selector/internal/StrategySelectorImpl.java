@@ -139,7 +139,7 @@ public class StrategySelectorImpl implements StrategySelector {
 		}
 
 		try {
-			return classLoaderService.classForName( name );//!!!!!!!!!!!
+			return classLoaderService.classForName( name );//!!!!!!!!!!! 
 		}
 		catch (ClassLoadingException e) {
 			throw new StrategySelectionException(
@@ -170,6 +170,7 @@ public class StrategySelectorImpl implements StrategySelector {
 			implementationClass = (Class<T>) strategyReference;
 		}
 		else {
+//			strategyReference == "org.hibernate.dialect.MySQL5Dialect"
 			//!!!!!!
 			implementationClass = selectStrategyImplementor( strategy, strategyReference.toString() );
 		}
