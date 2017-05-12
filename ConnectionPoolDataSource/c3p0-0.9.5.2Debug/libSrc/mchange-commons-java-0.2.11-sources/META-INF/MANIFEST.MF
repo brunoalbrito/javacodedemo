@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Specification-Vendor: com.mchange
+Specification-Title: mchange-commons-java
+Specification-Version: 0.2.11
+
