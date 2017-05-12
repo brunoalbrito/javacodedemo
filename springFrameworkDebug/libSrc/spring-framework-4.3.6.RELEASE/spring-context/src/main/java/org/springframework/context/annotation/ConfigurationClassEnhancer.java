@@ -115,7 +115,7 @@ class ConfigurationClassEnhancer {
 	/**
 	 * Creates a new CGLIB {@link Enhancer} instance.
 	 */
-	private Enhancer newEnhancer(Class<?> superclass, ClassLoader classLoader) {
+	private Enhancer newEnhancer(Class<?> superclass, ClassLoader classLoader) { // 生成类
 		Enhancer enhancer = new Enhancer();
 		enhancer.setSuperclass(superclass);
 		enhancer.setInterfaces(new Class<?>[] {EnhancedConfiguration.class});
@@ -132,7 +132,7 @@ class ConfigurationClassEnhancer {
 	 * ensuring that callbacks are registered for the new subclass.
 	 */
 	private Class<?> createClass(Enhancer enhancer) {
-		Class<?> subclass = enhancer.createClass();
+		Class<?> subclass = enhancer.createClass(); // 生成类
 		// Registering callbacks statically (as opposed to thread-local)
 		// is critical for usage in an OSGi environment (SPR-5932)...
 		Enhancer.registerStaticCallbacks(subclass, CALLBACKS);

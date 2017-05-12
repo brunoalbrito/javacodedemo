@@ -5,11 +5,13 @@ import org.springframework.context.support.AbstractRefreshableConfigApplicationC
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import cn.java.demo.contexttag.component.api.FooComponent;
+import cn.java.demo.contexttag.internal.ReflectionUtilsTest;
 import cn.java.demo.contexttag.internal.asm.ClassMetadataTest;
+import cn.java.demo.contexttag.internal.enhancer.FooServiceMustNeedBeanFactoryEnhancerTest;
 import cn.java.demo.util.ApplicationContextUtil;
 
 public class Test {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 
 		ApplicationContext context = new ClassPathXmlApplicationContext(
 				"classpath:cn/java/demo/contexttag/applicationContext.xml");
@@ -35,21 +37,31 @@ public class Test {
 		
 		System.out.println("\n----------自动扫描 - BeanDefinition为单例模式--------------");
 		{
-			FooComponent implTowFooComponent0 = (FooComponent) context.getBean("implTowFooComponent");
-			System.out.println(implTowFooComponent0.method1());
-			System.out.println(implTowFooComponent0);
-			System.out.println("identityHashCode = " + System.identityHashCode(implTowFooComponent0));
+			FooComponent implTwoFooComponent0 = (FooComponent) context.getBean("implTwoFooComponent");
+			System.out.println(implTwoFooComponent0.method1());
+			System.out.println(implTwoFooComponent0);
+			System.out.println("identityHashCode = " + System.identityHashCode(implTwoFooComponent0));
 			
-			FooComponent implTowFooComponent1 = (FooComponent) context.getBean("implTowFooComponent");
-			System.out.println(implTowFooComponent1.method1());
-			System.out.println(implTowFooComponent1);
-			System.out.println("identityHashCode = " + System.identityHashCode(implTowFooComponent1));
+			FooComponent implTwoFooComponent1 = (FooComponent) context.getBean("implTwoFooComponent");
+			System.out.println(implTwoFooComponent1.method1());
+			System.out.println(implTwoFooComponent1);
+			System.out.println("identityHashCode = " + System.identityHashCode(implTwoFooComponent1));
 		}
 		
 		System.out.println("\n----------访问类的class文件（不走反射），获取信息--------------");
 		{
-			ClassMetadataTest.testClassFileVisitor();
-			ClassMetadataTest.testStandardAnnotationMetadata();
+			ClassMetadataTest.testGetClassMetadataInfoByParseBytecode();
+			ClassMetadataTest.testGetClassMetadataInfoByReflectClass();
+		}
+		
+		System.out.println("\n----------自动生成子类（Enhancer）--------------");
+		{
+			FooServiceMustNeedBeanFactoryEnhancerTest.testFooServiceWithImplBeanFactoryAware();
+			FooServiceMustNeedBeanFactoryEnhancerTest.testFooServiceWithOutImplBeanFactoryAware();
+		}
+		System.out.println("\n----------反射@Autowired注解--------------");
+		{
+			ReflectionUtilsTest.testReflectionAutowired();
 		}
 	}
 }

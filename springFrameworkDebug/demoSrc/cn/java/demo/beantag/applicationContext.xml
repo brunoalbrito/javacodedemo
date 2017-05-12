@@ -7,9 +7,13 @@
 
 	<!-- id 表示你这个组件的名字，class表示组件类 -->
 	<bean id="helloService" class="cn.java.demo.beantag.bean.HelloServiceImpl" />
+	<bean id="standardBean0" class="cn.java.demo.beantag.bean.StandardBean" />
 	
 	<!-- 标准bean -->
 	<bean id="fooBean" name="fooBeanAlias0" class="cn.java.demo.beantag.bean.FooBean" autowire="constructor"/>
+	
+	<!-- 默认使用的helloService的BeanDefinition，然后再使用helloServiceChild的BeanDefinition进行覆盖 -->
+	<bean id="helloServiceChild" parent="helloService" />
 	
 	<!-- 别名使用 -->
 	<bean id="aliasTestBean" name="aliasTestBeanAlias0,aliasTestBeanAlias1" class="cn.java.demo.beantag.bean.AliasTestBean" />
@@ -115,9 +119,39 @@
 	<bean id="useCustomScopeBean0" scope="singletonScope0" class="cn.java.demo.beantag.bean.UseCustomScopeBean" />  <!-- 使用 singletonScope0 获取bean -->
 	<bean id="useCustomScopeBean1" scope="singletonScope1" class="cn.java.demo.beantag.bean.UseCustomScopeBean" />  <!-- 使用 singletonScope1 获取bean -->
 	<bean id="useInstancePoolScopeBean0" scope="instancePoolScope0" class="cn.java.demo.beantag.bean.UseInstancePoolScopeBean" />  <!-- 使用 instancePoolScope0  获取bean -->
-	
-	<!-- 定义自己的 BeanPostProcessor -->
-	<!-- 机制：实例化后的bean对象，传给MyBeanPostProcessorImpl（在感知注入后，在初始化方法被调用前后），像AOP就是在里面的postProcessAfterInitialization做的篡改 -->
-	<!-- <bean id="myBeanPostProcessorImpl0"  class="cn.java.demo.beantag.bean.beanpostprocessor.MyBeanPostProcessorImpl" /> --> <!-- Spring会自动扫描，实现BeanPostProcessor接口的bean -->
+			
+	<!-- BeanPostProcessor（hook，钩子） -->
+	<!-- 机制：实例化后的bean对象，传给 MyBeanPostProcessorImpl（在感知注入后，在初始化方法被调用前后），像AOP就是在里面的postProcessAfterInitialization做的篡改 -->
+	<bean id="myBeanPostProcessorImpl0"  class="cn.java.demo.beantag.bean.beanpostprocessor.MyBeanPostProcessorImpl" /> <!-- Spring会自动扫描，实现BeanPostProcessor接口的bean -->
+	<!--
+	<bean id="smartInstantiationAwareBeanPostProcessorImpl"  class="cn.java.demo.beantag.bean.beanpostprocessor.SmartInstantiationAwareBeanPostProcessorImpl" /> 
+    -->
+    <!-- BeanFactoryPostProcessor（hook，钩子） -->
+	<bean id="beanDefinitionRegistryPostProcessorImpl"  class="cn.java.demo.beantag.bean.beanfactorypostprocessor.BeanDefinitionRegistryPostProcessorImpl" /> <!-- Spring会自动扫描，实现BeanFactoryPostProcessor接口的bean -->
+	<bean id="beanFactoryPostProcessorImpl"  class="cn.java.demo.beantag.bean.beanfactorypostprocessor.BeanFactoryPostProcessorImpl" /> <!-- Spring会自动扫描，实现BeanFactoryPostProcessor接口的bean -->
     
+    <!-- 替换BeanDefinition中的占位符  -->
+    <!-- 
+    	这个是一个实现org.springframework.beans.factory.config.BeanFactoryPostProcessor接口的bean，
+    	机制：在beanFactory解析完所有的BeanDefinition后，本bean会扫描所有的BeanDefinition,替换BeanDefinition中的占位符（从properties文件中查找值） 
+    -->
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="order" value="0" />
+		<property name="locations">
+			<list>
+			    <value>classpath:/cn/java/demo/beantag/placeholder0.properties</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="beanPlaceholderTest0"  factory-bean="factoryBean0" factory-method="${beanPlaceholderTest0.factoryMethod}" scope="${beanPlaceholderTest0.scope}">
+		<constructor-arg index="0" type="java.lang.Integer" name="userid"  value="${beanPlaceholderTest0.constructorArg0}"/>
+    	<constructor-arg index="1" type="java.lang.String"  name="username"  value="${beanPlaceholderTest0.constructorArg1}"/>
+		<property name="property1" value="${beanPlaceholderTest0.property1}" />
+	</bean>
+	<bean id="beanPlaceholderTest1"  parent="${beanPlaceholderTest1.parent}" class="${beanPlaceholderTest1.class}" scope="${beanPlaceholderTest1.scope}">
+		<constructor-arg index="0" type="java.lang.Integer"  name="beanId" value="${beanPlaceholderTest1.constructorArg0}" />
+		<property name="beanName" value="${beanPlaceholderTest1.beanName}" />
+	</bean>
+	
 </beans>  

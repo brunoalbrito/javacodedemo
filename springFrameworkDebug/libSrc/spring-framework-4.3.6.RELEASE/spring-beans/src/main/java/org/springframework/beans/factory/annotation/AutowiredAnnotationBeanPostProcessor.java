@@ -232,8 +232,8 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 	@Override
 	public void postProcessMergedBeanDefinition(RootBeanDefinition beanDefinition, Class<?> beanType, String beanName) {
 		if (beanType != null) {
-			InjectionMetadata metadata = findAutowiringMetadata(beanName, beanType, null);
-			metadata.checkConfigMembers(beanDefinition);
+			InjectionMetadata metadata = findAutowiringMetadata(beanName, beanType, null); // !!!
+			metadata.checkConfigMembers(beanDefinition); // !!!
 		}
 	}
 
@@ -409,7 +409,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 						metadata.clear(pvs);
 					}
 					try {
-						metadata = buildAutowiringMetadata(clazz);
+						metadata = buildAutowiringMetadata(clazz); // !!!
 						this.injectionMetadataCache.put(cacheKey, metadata);
 					}
 					catch (NoClassDefFoundError err) {
@@ -476,7 +476,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 			});
 
 			elements.addAll(0, currElements);
-			targetClass = targetClass.getSuperclass();
+			targetClass = targetClass.getSuperclass(); // 识别父类的
 		}
 		while (targetClass != null && targetClass != Object.class);
 
@@ -645,7 +645,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 				arguments = resolveCachedArguments(beanName);
 			}
 			else {
-				Class<?>[] paramTypes = method.getParameterTypes();
+				Class<?>[] paramTypes = method.getParameterTypes(); // 声明@Autowired的方法的参数类型
 				arguments = new Object[paramTypes.length];
 				DependencyDescriptor[] descriptors = new DependencyDescriptor[paramTypes.length];
 				Set<String> autowiredBeans = new LinkedHashSet<String>(paramTypes.length);
@@ -656,6 +656,12 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 					currDesc.setContainingClass(bean.getClass());
 					descriptors[i] = currDesc;
 					try {
+						/**
+						 	识别参数类型，进行注入
+						 		机制是：根据参数类型查找符合条件的bean，当有多个bean都符合条件时，选择规则是：1、检查有配置primary的bean ； 2、根据bean优先权   3、根据参数名获取到bean
+						 	
+						 */
+						// org.springframework.beans.factory.support.DefaultListableBeanFactory
 						Object arg = beanFactory.resolveDependency(currDesc, beanName, autowiredBeans, typeConverter);
 						if (arg == null && !this.required) {
 							arguments = null;
@@ -698,7 +704,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 			if (arguments != null) {
 				try {
 					ReflectionUtils.makeAccessible(method);
-					method.invoke(bean, arguments);
+					method.invoke(bean, arguments); // 进行注入
 				}
 				catch (InvocationTargetException ex){
 					throw ex.getTargetException();

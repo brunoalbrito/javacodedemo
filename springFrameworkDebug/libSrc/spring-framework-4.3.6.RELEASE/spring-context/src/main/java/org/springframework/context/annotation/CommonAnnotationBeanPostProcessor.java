@@ -315,7 +315,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 
 		InjectionMetadata metadata = findResourceMetadata(beanName, bean.getClass(), pvs);
 		try {
-			metadata.inject(bean, beanName, pvs);
+			metadata.inject(bean, beanName, pvs); // 进行注入
 		}
 		catch (Throwable ex) {
 			throw new BeanCreationException(beanName, "Injection of resource dependencies failed", ex);
@@ -337,7 +337,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 						metadata.clear(pvs);
 					}
 					try {
-						metadata = buildResourceMetadata(clazz);
+						metadata = buildResourceMetadata(clazz); // !!!
 						this.injectionMetadataCache.put(cacheKey, metadata);
 					}
 					catch (NoClassDefFoundError err) {
@@ -484,7 +484,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 	 */
 	protected Object getResource(LookupElement element, String requestingBeanName) throws BeansException {
 		if (StringUtils.hasLength(element.mappedName)) {
-			return this.jndiFactory.getBean(element.mappedName, element.lookupType);
+			return this.jndiFactory.getBean(element.mappedName, element.lookupType); //!!!
 		}
 		if (this.alwaysUseJndiLookup) {
 			return this.jndiFactory.getBean(element.name, element.lookupType);
@@ -622,7 +622,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 		}
 
 		@Override
-		protected Object getResourceToInject(Object target, String requestingBeanName) {
+		protected Object getResourceToInject(Object target, String requestingBeanName) { // 获取要被注入的资源
 			return (this.lazyLookup ? buildLazyResourceProxy(this, requestingBeanName) :
 					getResource(this, requestingBeanName));
 		}
@@ -671,10 +671,10 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 		}
 
 		@Override
-		protected Object getResourceToInject(Object target, String requestingBeanName) {
+		protected Object getResourceToInject(Object target, String requestingBeanName) {  // 获取要被注入的资源
 			Service service;
 			try {
-				service = (Service) getResource(this, requestingBeanName);
+				service = (Service) getResource(this, requestingBeanName); // 获取资源
 			}
 			catch (NoSuchBeanDefinitionException notFound) {
 				// Service to be created through generated class.
@@ -749,7 +749,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 		}
 
 		@Override
-		protected Object getResourceToInject(Object target, String requestingBeanName) {
+		protected Object getResourceToInject(Object target, String requestingBeanName) {  // 获取要被注入的资源
 			if (StringUtils.hasLength(this.beanName)) {
 				if (beanFactory != null && beanFactory.containsBean(this.beanName)) {
 					// Local match found for explicitly specified local bean name.

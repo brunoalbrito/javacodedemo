@@ -51,7 +51,7 @@ abstract class ConfigurationClassUtils {
 	private static final String CONFIGURATION_CLASS_LITE = "lite";
 
 	private static final String CONFIGURATION_CLASS_ATTRIBUTE =
-			Conventions.getQualifiedAttributeName(ConfigurationClassPostProcessor.class, "configurationClass");
+			Conventions.getQualifiedAttributeName(ConfigurationClassPostProcessor.class, "configurationClass"); // org.springframework.context.annotation.ConfigurationClassPostProcessor.configurationClass
 
 	private static final String ORDER_ATTRIBUTE =
 			Conventions.getQualifiedAttributeName(ConfigurationClassPostProcessor.class, "order");
@@ -62,7 +62,7 @@ abstract class ConfigurationClassUtils {
 	private static final Set<String> candidateIndicators = new HashSet<String>(4);
 
 	static {
-		candidateIndicators.add(Component.class.getName());
+		candidateIndicators.add(Component.class.getName()); 
 		candidateIndicators.add(ComponentScan.class.getName());
 		candidateIndicators.add(Import.class.getName());
 		candidateIndicators.add(ImportResource.class.getName());
@@ -85,11 +85,11 @@ abstract class ConfigurationClassUtils {
 
 		AnnotationMetadata metadata;
 		if (beanDef instanceof AnnotatedBeanDefinition &&
-				className.equals(((AnnotatedBeanDefinition) beanDef).getMetadata().getClassName())) {
+				className.equals(((AnnotatedBeanDefinition) beanDef).getMetadata().getClassName())) { // 扫描@Component出来的bean信息
 			// Can reuse the pre-parsed metadata from the given BeanDefinition...
 			metadata = ((AnnotatedBeanDefinition) beanDef).getMetadata();
 		}
-		else if (beanDef instanceof AbstractBeanDefinition && ((AbstractBeanDefinition) beanDef).hasBeanClass()) {
+		else if (beanDef instanceof AbstractBeanDefinition && ((AbstractBeanDefinition) beanDef).hasBeanClass()) { // xml文件中配置的bean信息
 			// Check already loaded Class if present...
 			// since we possibly can't even load the class file for this Class.
 			Class<?> beanClass = ((AbstractBeanDefinition) beanDef).getBeanClass();
@@ -108,10 +108,10 @@ abstract class ConfigurationClassUtils {
 			}
 		}
 
-		if (isFullConfigurationCandidate(metadata)) {
+		if (isFullConfigurationCandidate(metadata)) { // 有@Configuration注解
 			beanDef.setAttribute(CONFIGURATION_CLASS_ATTRIBUTE, CONFIGURATION_CLASS_FULL);
 		}
-		else if (isLiteConfigurationCandidate(metadata)) {
+		else if (isLiteConfigurationCandidate(metadata)) { // 有类声明 @Component、@ComponentScan、@Import、@ImportResource注解、或者有方法声明 @Bean注解
 			beanDef.setAttribute(CONFIGURATION_CLASS_ATTRIBUTE, CONFIGURATION_CLASS_LITE);
 		}
 		else {
@@ -164,7 +164,7 @@ abstract class ConfigurationClassUtils {
 		}
 
 		// Any of the typical annotations found?
-		for (String indicator : candidateIndicators) {
+		for (String indicator : candidateIndicators) { // @Component、@ComponentScan、@Import、@ImportResource
 			if (metadata.isAnnotated(indicator)) {
 				return true;
 			}

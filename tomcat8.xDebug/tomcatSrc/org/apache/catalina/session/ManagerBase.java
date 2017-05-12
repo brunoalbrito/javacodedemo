@@ -422,7 +422,7 @@ public abstract class ManagerBase extends LifecycleMBeanBase implements Manager 
      *                          name
      */
     public void setSecureRandomClass(String secureRandomClass) {
-
+    	
         String oldSecureRandomClass = this.secureRandomClass;
         this.secureRandomClass = secureRandomClass;
         support.firePropertyChange("secureRandomClass", oldSecureRandomClass,

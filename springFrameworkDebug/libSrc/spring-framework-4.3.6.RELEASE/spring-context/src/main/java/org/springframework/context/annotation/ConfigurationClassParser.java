@@ -162,11 +162,11 @@ class ConfigurationClassParser {
 		for (BeanDefinitionHolder holder : configCandidates) {
 			BeanDefinition bd = holder.getBeanDefinition(); // bean的BeanDefinition
 			try {
-				if (bd instanceof AnnotatedBeanDefinition) {
+				if (bd instanceof AnnotatedBeanDefinition) { // 通过注解@Component扫描出来的bean信息
 					parse(((AnnotatedBeanDefinition) bd).getMetadata(), holder.getBeanName());
 				}
 				else if (bd instanceof AbstractBeanDefinition && ((AbstractBeanDefinition) bd).hasBeanClass()) {
-					parse(((AbstractBeanDefinition) bd).getBeanClass(), holder.getBeanName()); // <bean>标签定义的bean
+					parse(((AbstractBeanDefinition) bd).getBeanClass(), holder.getBeanName()); // 通过XML文件扫描出来的bean信息
 				}
 				else {
 					parse(bd.getBeanClassName(), holder.getBeanName());
@@ -190,11 +190,11 @@ class ConfigurationClassParser {
 	}
 
 	protected final void parse(Class<?> clazz, String beanName) throws IOException {
-		processConfigurationClass(new ConfigurationClass(clazz, beanName)); // !!!
+		processConfigurationClass(new ConfigurationClass(clazz, beanName));
 	}
 
 	protected final void parse(AnnotationMetadata metadata, String beanName) throws IOException {
-		processConfigurationClass(new ConfigurationClass(metadata, beanName));
+		processConfigurationClass(new ConfigurationClass(metadata, beanName)); //!!!
 	}
 
 
@@ -227,11 +227,11 @@ class ConfigurationClassParser {
 		// Recursively process the configuration class and its superclass hierarchy.
 		SourceClass sourceClass = asSourceClass(configClass);
 		do {
-			sourceClass = doProcessConfigurationClass(configClass, sourceClass);
+			sourceClass = doProcessConfigurationClass(configClass, sourceClass);//!!!
 		}
 		while (sourceClass != null);
 
-		this.configurationClasses.put(configClass, configClass);
+		this.configurationClasses.put(configClass, configClass); //!!!
 	}
 
 	/**
@@ -244,13 +244,13 @@ class ConfigurationClassParser {
 	 */
 	protected final SourceClass doProcessConfigurationClass(ConfigurationClass configClass, SourceClass sourceClass) throws IOException {
 		// Recursively process any member (nested) classes first
-		processMemberClasses(configClass, sourceClass);
+		processMemberClasses(configClass, sourceClass); // 内部类
 
 		// Process any @PropertySource annotations
 		for (AnnotationAttributes propertySource : AnnotationConfigUtils.attributesForRepeatable(
 				sourceClass.getMetadata(), PropertySources.class, org.springframework.context.annotation.PropertySource.class)) {
 			if (this.environment instanceof ConfigurableEnvironment) {
-				processPropertySource(propertySource);
+				processPropertySource(propertySource); //!!!
 			}
 			else {
 				logger.warn("Ignoring @PropertySource annotation on [" + sourceClass.getMetadata().getClassName() +
@@ -258,14 +258,15 @@ class ConfigurationClassParser {
 			}
 		}
 
+		// bean扫描器
 		// Process any @ComponentScan annotations
 		Set<AnnotationAttributes> componentScans = AnnotationConfigUtils.attributesForRepeatable(
 				sourceClass.getMetadata(), ComponentScans.class, ComponentScan.class);
-		if (!componentScans.isEmpty() && !this.conditionEvaluator.shouldSkip(sourceClass.getMetadata(), ConfigurationPhase.REGISTER_BEAN)) {
+		if (!componentScans.isEmpty() && !this.conditionEvaluator.shouldSkip(sourceClass.getMetadata(), ConfigurationPhase.REGISTER_BEAN)) { // 不应该跳过
 			for (AnnotationAttributes componentScan : componentScans) {
 				// The config class is annotated with @ComponentScan -> perform the scan immediately
 				Set<BeanDefinitionHolder> scannedBeanDefinitions =
-						this.componentScanParser.parse(componentScan, sourceClass.getMetadata().getClassName());
+						this.componentScanParser.parse(componentScan, sourceClass.getMetadata().getClassName()); // org.springframework.context.annotation.ComponentScanAnnotationParser
 				// Check the set of scanned definitions for any further config classes and parse recursively if necessary
 				for (BeanDefinitionHolder holder : scannedBeanDefinitions) {
 					if (ConfigurationClassUtils.checkConfigurationClassCandidate(holder.getBeanDefinition(), this.metadataReaderFactory)) {
@@ -291,7 +292,7 @@ class ConfigurationClassParser {
 		}
 
 		// Process individual @Bean methods
-		Set<MethodMetadata> beanMethods = retrieveBeanMethodMetadata(sourceClass);
+		Set<MethodMetadata> beanMethods = retrieveBeanMethodMetadata(sourceClass); // !!!
 		for (MethodMetadata methodMetadata : beanMethods) {
 			configClass.addBeanMethod(new BeanMethod(methodMetadata, configClass));
 		}
@@ -317,16 +318,16 @@ class ConfigurationClassParser {
 	 * Register member (nested) classes that happen to be configuration classes themselves.
 	 */
 	private void processMemberClasses(ConfigurationClass configClass, SourceClass sourceClass) throws IOException {
-		for (SourceClass memberClass : sourceClass.getMemberClasses()) {
+		for (SourceClass memberClass : sourceClass.getMemberClasses()) { // 成员类列表
 			if (ConfigurationClassUtils.isConfigurationCandidate(memberClass.getMetadata()) &&
-					!memberClass.getMetadata().getClassName().equals(configClass.getMetadata().getClassName())) {
+					!memberClass.getMetadata().getClassName().equals(configClass.getMetadata().getClassName())) { // 内部类有声明注解
 				if (this.importStack.contains(configClass)) {
 					this.problemReporter.error(new CircularImportProblem(configClass, this.importStack));
 				}
 				else {
 					this.importStack.push(configClass);
 					try {
-						processConfigurationClass(memberClass.asConfigClass(configClass));
+						processConfigurationClass(memberClass.asConfigClass(configClass)); // !!! 配置的类
 					}
 					finally {
 						this.importStack.pop();
@@ -494,7 +495,7 @@ class ConfigurationClassParser {
 			for (SourceClass annotation : sourceClass.getAnnotations()) {
 				String annName = annotation.getMetadata().getClassName();
 				if (!annName.startsWith("java") && !annName.equals(Import.class.getName())) {
-					collectImports(annotation, imports, visited);
+					collectImports(annotation, imports, visited); // 嵌套执行
 				}
 			}
 			imports.addAll(sourceClass.getAnnotationAttributes(Import.class.getName(), "value"));
@@ -539,17 +540,17 @@ class ConfigurationClassParser {
 					if (candidate.isAssignable(ImportSelector.class)) {
 						// Candidate class is an ImportSelector -> delegate to it to determine imports
 						Class<?> candidateClass = candidate.loadClass();
-						ImportSelector selector = BeanUtils.instantiateClass(candidateClass, ImportSelector.class);
+						ImportSelector selector = BeanUtils.instantiateClass(candidateClass, ImportSelector.class); // 实例化对象
 						ParserStrategyUtils.invokeAwareMethods(
-								selector, this.environment, this.resourceLoader, this.registry);
+								selector, this.environment, this.resourceLoader, this.registry); // 感知注入
 						if (this.deferredImportSelectors != null && selector instanceof DeferredImportSelector) {
 							this.deferredImportSelectors.add(
 									new DeferredImportSelectorHolder(configClass, (DeferredImportSelector) selector));
 						}
 						else {
-							String[] importClassNames = selector.selectImports(currentSourceClass.getMetadata());
+							String[] importClassNames = selector.selectImports(currentSourceClass.getMetadata()); // !!!!
 							Collection<SourceClass> importSourceClasses = asSourceClasses(importClassNames);
-							processImports(configClass, currentSourceClass, importSourceClasses, false);
+							processImports(configClass, currentSourceClass, importSourceClasses, false); // 递归
 						}
 					}
 					else if (candidate.isAssignable(ImportBeanDefinitionRegistrar.class)) {
@@ -559,7 +560,7 @@ class ConfigurationClassParser {
 						ImportBeanDefinitionRegistrar registrar =
 								BeanUtils.instantiateClass(candidateClass, ImportBeanDefinitionRegistrar.class);
 						ParserStrategyUtils.invokeAwareMethods(
-								registrar, this.environment, this.resourceLoader, this.registry);
+								registrar, this.environment, this.resourceLoader, this.registry); // 感知注入
 						configClass.addImportBeanDefinitionRegistrar(registrar, currentSourceClass.getMetadata());
 					}
 					else {
@@ -792,10 +793,10 @@ class ConfigurationClassParser {
 
 		public Collection<SourceClass> getMemberClasses() throws IOException {
 			Object sourceToProcess = this.source;
-			if (sourceToProcess instanceof Class) {
+			if (sourceToProcess instanceof Class) { // 使用反射
 				Class<?> sourceClass = (Class<?>) sourceToProcess;
 				try {
-					Class<?>[] declaredClasses = sourceClass.getDeclaredClasses();
+					Class<?>[] declaredClasses = sourceClass.getDeclaredClasses(); // 内部类列表
 					List<SourceClass> members = new ArrayList<SourceClass>(declaredClasses.length);
 					for (Class<?> declaredClass : declaredClasses) {
 						members.add(asSourceClass(declaredClass));
@@ -809,7 +810,7 @@ class ConfigurationClassParser {
 				}
 			}
 
-			// ASM-based resolution - safe for non-resolvable classes as well
+			// ASM-based resolution - safe for non-resolvable classes as well  使用ASM解析方案
 			MetadataReader sourceReader = (MetadataReader) sourceToProcess;
 			String[] memberClassNames = sourceReader.getClassMetadata().getMemberClassNames();
 			List<SourceClass> members = new ArrayList<SourceClass>(memberClassNames.length);

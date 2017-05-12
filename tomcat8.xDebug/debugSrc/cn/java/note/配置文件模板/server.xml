@@ -1,14 +1,59 @@
-<Server> <!-- org.apache.catalina.core.StandardServer -->
-	<GlobalNamingResources></GlobalNamingResources>  <!-- org.apache.catalina.deploy.NamingResourcesImpl -->
-	<Listener></Listener>
-	<Listener></Listener>
-	<Service>  <!-- org.apache.catalina.core.StandardService -->
+<Server port="8005" shutdown="SHUTDOWN" address="localhost"> <!-- org.apache.catalina.core.StandardServer -->
+	<GlobalNamingResources>  <!-- org.apache.catalina.deploy.NamingResourcesImpl -->
+	    <Resource name="UserDatabase" auth="Container"
+              type="org.apache.catalina.UserDatabase"
+              description="User database that can be updated and saved"
+              factory="org.apache.catalina.users.MemoryUserDatabaseFactory"
+              pathname="conf/tomcat-users.xml" />
+	</GlobalNamingResources> 
+	<Listener className="org.apache.catalina.startup.VersionLoggerListener"></Listener>
+	<Listener className="org.apache.catalina.core.AprLifecycleListener" SSLEngine="on"></Listener>
+	<Service name="Catalina">  <!-- org.apache.catalina.core.StandardService -->
 		<Listener></Listener>
 		<Listener></Listener>
-		<Executor></Executor> <!-- org.apache.catalina.core.StandardThreadExecutor -->
-		<Executor></Executor>
-		<Connector> <!--  org.apache.catalina.connector.Connector / StandardService.addConnector() -->
-			<SSLHostConfig>  <!--  org.apache.tomcat.util.net.SSLHostConfig  / Connector.addSslHostConfig() -->
+		<Executor name="executor0" threadPriority="" minSpareThreads="" maxThreads="" maxIdleTime="" maxQueueSize="" className="org.apache.catalina.core.StandardThreadExecutor"></Executor> <!-- org.apache.catalina.core.StandardThreadExecutor -->
+		<Executor name="executor1" ></Executor>
+		<Connector executor="executor0" port="8080" protocol="HTTP/1.1"  connectionTimeout="20000" redirectPort="8443" sslImplementationName=""
+		    allowTrace="false" asyncTimeout="30000" enableLookups="false" maxHeaderCount="20" maxParameterCount="10000"
+		    maxPostSize="2097152" maxSavePostSize="4096" parseBodyMethods="POST,POST" proxyName="" proxyPort="" scheme="http" secure="false" uRIEncoding=""
+		    useBodyEncodingForURI="false" useIPVHosts="false" xpoweredBy="false" 
+		    pollerThreadCount="2" pollerThreadPriority="5" selectorTimeout="1000"  
+		    sniParseLimit="" sslImplementationName=""
+		    algorithm="" allowedTrailerHeaders="" ciphers="" clientAuth="" compressableMimeType="" compression="off" compressionMinSize=""
+		    connectionUploadTimeout="" crlFile="" defaultSSLHostConfigName="" disableUploadTimeout="" keyAlias="" keyPass="" 
+		    keystoreFile="" keystorePass="" keystoreProvider="" keystoreType="" maxExtensionSize="" 
+		    maxExtensionSize="" maxHttpHeaderSize="" maxKeepAliveRequests="100" maxSavePostSize="" maxSwallowSize="" maxTrailerSize=""
+		    noCompressionUserAgents="" restrictedUserAgents="" secure="" server="" serverRemoveAppProvidedValues="" 
+		    sessionCacheSize="" sessionTimeout="" 
+		    sSLCACertificateFile="" sSLCACertificatePath="" sSLCARevocationFile="" sSLCARevocationPath="" sSLCertificateChainFile=""
+		    sSLCertificateFile="" sSLCertificateKeyFile="" sSLCipherSuite="" sSLDisableCompression="" sSLDisableSessionTickets=""
+		    sSLDisableSessionTickets="" sSLEnabled="false" sslEnabledProtocols="" sSLHonorCipherOrder="" sSLPassword=""
+		    sslProtocol="" sSLProtocol="" sSLVerifyClient="" sSLVerifyDepth="" trustManagerClassName=""
+		    trustMaxCertLength="" truststoreAlgorithm="" truststoreFile="" truststorePassword="" truststoreProvider="" truststoreType=""
+		    useSendfile="true" useServerCipherSuitesOrder="" 
+		    acceptorThreadCount="1" acceptorThreadPriority="5" address="" backlog="100" clientCertProvider="" connectionTimeout="" 
+		    keepAliveTimeout="" maxConnections="10000" maxHeaderCount="100" maxThreads="200" minSpareThreads="10" port="" processorCache="200"
+		    soLinger="" soTimeout="" tcpNoDelay="false" threadPriority="5"
+		   
+		    
+		    > <!--  org.apache.catalina.connector.Connector / StandardService.addConnector() -->
+			<SSLHostConfig hostName="" protocols="all,all" sessionCacheSize="" sessionTimeout="" sslProtocol="JSSE" trustManagerClassName="JSSE" 
+			    	truststoreAlgorithm="JSSE" truststoreFile="" truststorePassword="" truststoreProvider="" truststoreType=""
+			    	>  <!--  org.apache.tomcat.util.net.SSLHostConfig  / Connector.addSslHostConfig() -->
+				<Certificate></Certificate>
+				<Certificate></Certificate>
+			</SSLHostConfig>
+			<SSLHostConfig sslProtocol="OPENSSL">
+				<Certificate></Certificate>
+				<Certificate></Certificate>
+			</SSLHostConfig>
+			<Listener></Listener>
+			<Listener></Listener>
+			<UpgradeProtocol></UpgradeProtocol>
+			<UpgradeProtocol></UpgradeProtocol>
+		</Connector> 
+		<Connector port="8009" protocol="AJP/1.3" redirectPort="8443">
+			<SSLHostConfig>
 				<Certificate></Certificate>
 				<Certificate></Certificate>
 			</SSLHostConfig>
@@ -21,21 +66,7 @@
 			<UpgradeProtocol></UpgradeProtocol>
 			<UpgradeProtocol></UpgradeProtocol>
 		</Connector> 
-		<Connector>
-			<SSLHostConfig>
-				<Certificate></Certificate>
-				<Certificate></Certificate>
-			</SSLHostConfig>
-			<SSLHostConfig>
-				<Certificate></Certificate>
-				<Certificate></Certificate>
-			</SSLHostConfig>
-			<Listener></Listener>
-			<Listener></Listener>
-			<UpgradeProtocol></UpgradeProtocol>
-			<UpgradeProtocol></UpgradeProtocol>
-		</Connector> 
-		<Engine>	<!--  org.apache.catalina.core.StandardEngine   / StandardService.setContainer() -->
+		<Engine name="Catalina" defaultHost="localhost" startChildren="true">	<!--  org.apache.catalina.core.StandardEngine   / StandardService.setContainer() -->
 			<Cluster>
 				<Manager>
 					<SessionIdGenerator></SessionIdGenerator> <!--  org.apache.catalina.util.StandardSessionIdGenerator   / setSessionIdGenerator() -->
@@ -72,16 +103,20 @@
 			</Cluster>
 			<Listener></Listener>
 			<Listener></Listener>
-			<Realm>
-				<Realm>
+			<Realm className="org.apache.catalina.realm.LockOutRealm">
+				<Realm className="org.apache.catalina.realm.UserDatabaseRealm" resourceName="UserDatabase">
 					<Realm></Realm>
 				</Realm>
 			</Realm>
 			<Valve></Valve>
 			<Valve></Valve>
-			<Host> <!--  org.apache.catalina.core.StandardHost / StandardEngine.addChild() -->
-				<Alias></Alias>
-				<Alias></Alias>
+			<Host name="localhost" appBase="webapps" unpackWARs="true" autoDeploy="true" 
+			    	hostConfigClass="org.apache.catalina.startup.HostConfig" contextClass="org.apache.catalina.core.StandardContext"
+			    	copyXML="false" createDirs="true" deployIgnore="" deployOnStartup="true" deployXML="true"
+			    	errorReportValveClass="org.apache.catalina.valves.ErrorReportValve" failCtxIfServletStartFails="false"
+			    	undeployOldVersions="false" workDir="" xmlBase=""> <!--  org.apache.catalina.core.StandardHost / StandardEngine.addChild() -->
+				<Alias>www.domain1.com</Alias>
+				<Alias>www.domain2.com</Alias>
 				<Cluster>
 					<Manager>
 						<SessionIdGenerator></SessionIdGenerator> <!--  org.apache.catalina.util.StandardSessionIdGenerator   / setSessionIdGenerator() -->
@@ -123,17 +158,21 @@
 						<Realm></Realm>
 					</Realm>
 				</Realm>
+				<Valve className="org.apache.catalina.valves.AccessLogValve" directory="logs" prefix="localhost_access_log" suffix=".txt" pattern="%h %l %u %t &quot;%r&quot; %s %b"></Valve>
 				<Valve></Valve>
-				<Valve></Valve>
-				<Context>  <!-- org.apache.catalina.core.StandardContext / StandardHost.addChild() -->
+				<Context configClass="org.apache.catalina.startup.ContextConfig">  <!-- org.apache.catalina.core.StandardContext / StandardHost.addChild() -->
 					<Listener></Listener>
 					<Listener></Listener>
-					<Loader></Loader>
-					<Manager>
+					<Loader className="org.apache.catalina.loader.WebappLoader" delegate="false" loaderClass="org.apache.catalina.loader.ParallelWebappClassLoader" reloadable="false"></Loader>
+					<Manager name="StandardManager" pathname="SESSIONS.ser" className="org.apache.catalina.session.StandardManager" duplicates=""
+					    expiredSessions="0" maxActive="0" maxActiveSessions="-1" processExpiresFrequency="6" processingTime="0" secureRandomAlgorithm="SHA1PRNG"
+					    secureRandomClass="" secureRandomProvider=""  sessionAttributeNamePattern="" sessionAttributeValueClassNamePattern="" sessionCounter="" 
+					    sessionMaxAliveTime="" warnOnSessionAttributeFilterFailure="" > 
 						<Store></Store>
-						<SessionIdGenerator></SessionIdGenerator> <!-- org.apache.catalina.util.StandardSessionIdGenerator -->
+						<SessionIdGenerator className="org.apache.catalina.util.StandardSessionIdGenerator" secureRandomAlgorithm=""
+						    secureRandomClass="" secureRandomProvider="" sessionIdLength=""></SessionIdGenerator> <!-- org.apache.catalina.util.StandardSessionIdGenerator -->
 					</Manager>
-					<Parameter></Parameter>  <!-- org.apache.tomcat.util.descriptor.web.ApplicationParameter -->
+					<Parameter name="" value="" override="true" description=""></Parameter>  <!-- org.apache.tomcat.util.descriptor.web.ApplicationParameter -->
 					<Parameter></Parameter>
 					<Realm>
 						<Realm>
@@ -175,7 +214,7 @@
 					<Environment></Environment>
 					<LocalEjb></LocalEjb>
 					<LocalEjb></LocalEjb>
-					<Resource></Resource>  <!-- jndi 资源 -->
+					<Resource></Resource>  <!-- jndi 锟斤拷源 -->
 					<Resource></Resource>
 					<ResourceEnvRef></ResourceEnvRef>
 					<ResourceEnvRef></ResourceEnvRef>
@@ -324,7 +363,7 @@
 					<Environment></Environment>
 					<LocalEjb></LocalEjb> <!-- org.apache.tomcat.util.descriptor.web.ContextLocalEjb / StandardContext.getNamingResources().addLocalEjb() -->
 					<LocalEjb></LocalEjb>
-					<!-- org.apache.tomcat.util.descriptor.web.ContextResource / StandardContext.getNamingResources().addResource() --> <!-- jndi 资源 -->
+					<!-- org.apache.tomcat.util.descriptor.web.ContextResource / StandardContext.getNamingResources().addResource() --> <!-- jndi 锟斤拷源 -->
 					<Resource></Resource> 
 					<Resource></Resource>
 					<!-- org.apache.tomcat.util.descriptor.web.ContextResourceEnvRef / StandardContext.getNamingResources().addResourceEnvRef() --> 
@@ -345,7 +384,7 @@
 		<Environment></Environment>
 		<LocalEjb></LocalEjb>
 		<LocalEjb></LocalEjb>
-		<Resource></Resource> <!-- org.apache.tomcat.util.descriptor.web.ContextResource / StandardServer.addResource() --> <!-- jndi 资源 -->
+		<Resource></Resource> <!-- org.apache.tomcat.util.descriptor.web.ContextResource / StandardServer.addResource() --> <!-- jndi 锟斤拷源 -->
 		<Resource></Resource>
 		<ResourceEnvRef></ResourceEnvRef>
 		<ResourceEnvRef></ResourceEnvRef>

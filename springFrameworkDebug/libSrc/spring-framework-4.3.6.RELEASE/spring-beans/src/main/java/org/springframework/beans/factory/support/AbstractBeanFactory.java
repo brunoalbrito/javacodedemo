@@ -1252,7 +1252,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 						mbd = new RootBeanDefinition(bd);//!!!
 					}
 				}
-				else {
+				else { // 如果有父类
 					// Child bean definition: needs to be merged with parent.
 					BeanDefinition pbd;
 					try {
@@ -1277,8 +1277,8 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 								"Could not resolve parent bean definition '" + bd.getParentName() + "'", ex);
 					}
 					// Deep copy with overridden values.
-					mbd = new RootBeanDefinition(pbd);
-					mbd.overrideFrom(bd);
+					mbd = new RootBeanDefinition(pbd); // 使用父类的配置
+					mbd.overrideFrom(bd); // 然后子类进行覆盖
 				}
 
 				// Set default singleton scope, if not configured before.

@@ -13,3 +13,6 @@
 /tomcat6.xDebug/bin
 /HibernateORM4.3.8Debug/bin
 /tomcat6.xDebug/work/Catalina/localhost
+/Quartz2.2.3Debug/bin
+/ConnectionPoolDataSource/druid-1.0.26Debug/bin
+/ConnectionPoolDataSource/c3p0-0.9.5.2Debug/bin

@@ -147,13 +147,13 @@ public abstract class PropertiesLoaderSupport {
 
 		if (this.localProperties != null) {
 			for (Properties localProp : this.localProperties) {
-				CollectionUtils.mergePropertiesIntoMap(localProp, result);
+				CollectionUtils.mergePropertiesIntoMap(localProp, result); // 合并
 			}
 		}
 
 		if (!this.localOverride) {
 			// Load properties from file afterwards, to let those properties override.
-			loadProperties(result);
+			loadProperties(result); // 加载其他
 		}
 
 		return result;

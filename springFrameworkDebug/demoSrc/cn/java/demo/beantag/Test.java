@@ -15,6 +15,7 @@ import cn.java.demo.beantag.bean.CreatedByFactoryBean;
 import cn.java.demo.beantag.bean.DefineInitMethodBean;
 import cn.java.demo.beantag.bean.FooBean;
 import cn.java.demo.beantag.bean.NeedAwareBean;
+import cn.java.demo.beantag.bean.StandardBean;
 import cn.java.demo.beantag.bean.UseCustomScopeBean;
 import cn.java.demo.beantag.bean.UseInstancePoolScopeBean;
 import cn.java.demo.beantag.bean.lookupmethod.Property1;
@@ -45,10 +46,18 @@ public class Test {
 		}
 		
 		System.out.println("-------------bean的使用-------------------");
-		HelloService helloService = context.getBean("helloService", HelloService.class);
-		helloService.sayHello();
+		{
+			HelloService helloService = context.getBean("helloService", HelloService.class);
+			helloService.sayHello();
+		}
 		
-		System.out.println("-------------bean的使用-------------------");
+		System.out.println("-------------bean的parent属性的使用-------------------");
+		{
+			HelloService helloServiceChild = context.getBean("helloServiceChild", HelloService.class);
+			helloServiceChild.sayHello();
+		}
+		
+		System.out.println("-------------bean的使用，使用构造函数装配-------------------");
 		{ // bean的使用
 			FooBean fooBean = context.getBean("fooBean", FooBean.class);
 			fooBean = context.getBean("fooBeanAlias0", FooBean.class);
@@ -166,6 +175,16 @@ public class Test {
 			stupidRootBeanDefinitionInJavaTest.testBeanDefinitionX((AbstractRefreshableConfigApplicationContext) context);
 		}
 		
+
+		System.out.println("-------------BeanDefinition动态配置-------------------");
+		{
+			CreatedByFactoryBean beanPlaceholderTest0 = context.getBean("beanPlaceholderTest0", CreatedByFactoryBean.class);
+			System.out.println(beanPlaceholderTest0);
+			
+			StandardBean beanPlaceholderTest1 = context.getBean("beanPlaceholderTest1", StandardBean.class);
+			System.out.println(beanPlaceholderTest1);
+		}
+		
 		System.out.println("-------------其他-------------------");
 		{ // 其他
 			
@@ -173,6 +192,7 @@ public class Test {
 			ExpressionParserTest.testStandardBeanExpressionResolverResultString((AbstractRefreshableConfigApplicationContext) context);
 			ExpressionParserTest.testStandardBeanExpressionResolverResultBeanObject((AbstractRefreshableConfigApplicationContext) context);
 		}
+		
 	}
 
 }
