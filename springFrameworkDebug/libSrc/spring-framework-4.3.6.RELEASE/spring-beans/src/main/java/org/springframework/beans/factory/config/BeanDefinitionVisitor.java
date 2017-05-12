@@ -88,7 +88,7 @@ public class BeanDefinitionVisitor {
 	protected void visitParentName(BeanDefinition beanDefinition) {
 		String parentName = beanDefinition.getParentName();
 		if (parentName != null) {
-			String resolvedName = resolveStringValue(parentName);
+			String resolvedName = resolveStringValue(parentName); // 解析
 			if (!parentName.equals(resolvedName)) {
 				beanDefinition.setParentName(resolvedName);
 			}
@@ -279,7 +279,7 @@ public class BeanDefinitionVisitor {
 			throw new IllegalStateException("No StringValueResolver specified - pass a resolver " +
 					"object into the constructor or override the 'resolveStringValue' method");
 		}
-		String resolvedValue = this.valueResolver.resolveStringValue(strVal);
+		String resolvedValue = this.valueResolver.resolveStringValue(strVal); // org.springframework.beans.factory.config.PropertyPlaceholderConfigurer.PlaceholderResolvingStringValueResolver
 		// Return original String if not modified.
 		return (strVal.equals(resolvedValue) ? strVal : resolvedValue);
 	}

@@ -229,12 +229,16 @@ public class NamingContextListener
 
             try {
                 Hashtable<String, Object> contextEnv = new Hashtable<>();
+                // getName() === "/"
                 // getName() === "/Catalina/localhost/webapp1"
                 // getName() === "/Catalina/localhost/webapp2"
                 namingContext = new NamingContext(contextEnv, getName()); // 创建名称上下文
                 ContextAccessController.setSecurityToken(getName(), token); // securityTokens.put("/Catalina/localhost/webapp1", token);
                 ContextAccessController.setSecurityToken(container, token); // securityTokens.put(StandardContext, token);
-                ContextBindings.bindContext(container, namingContext, token); // objectBindings.put(StandardContext, namingContext);
+                // 如果要能ctx.lookup("java:comp/env/resource0");记得配置  java.naming.factory.url.pkgs=org.apache.naming，才会定位到org.apache.naming.java.javaURLContextFactory，不然默认定位到com.sun.jndi.url.java.javaURLContextFactory
+                // !!! ContextBindings是org.apache.naming.java.javaURLContextFactory、和 org.apache.naming.SelectorContext 的共享访问对象
+                // !!! ContextBindings存在着对namingContext的依赖
+                ContextBindings.bindContext(container, namingContext, token); // 把namingContext绑定到ContextBindings中!!!! 
                 if( log.isDebugEnabled() ) {
                     log.debug("Bound " + container );
                 }

@@ -76,7 +76,7 @@ public @interface ComponentScan {
 	 */
 	@AliasFor("value")
 	String[] basePackages() default {};
-
+	
 	/**
 	 * Type-safe alternative to {@link #basePackages} for specifying the packages
 	 * to scan for annotated components. The package of each class specified will be scanned.
@@ -84,7 +84,6 @@ public @interface ComponentScan {
 	 * that serves no purpose other than being referenced by this attribute.
 	 */
 	Class<?>[] basePackageClasses() default {};
-
 	/**
 	 * The {@link BeanNameGenerator} class to be used for naming detected components
 	 * within the Spring container.
@@ -173,7 +172,7 @@ public @interface ComponentScan {
 		 */
 		@AliasFor("classes")
 		Class<?>[] value() default {};
-
+		
 		/**
 		 * The class or classes to use as the filter.
 		 * <p>The following table explains how the classes will be interpreted
@@ -218,7 +217,7 @@ public @interface ComponentScan {
 		 * @see #classes
 		 */
 		String[] pattern() default {};
-
+		
 	}
 
 }

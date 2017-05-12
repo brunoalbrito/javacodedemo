@@ -61,17 +61,24 @@ public class ApplicationContextUtil {
 	 * @param context
 	 */
 	public static void printBeanDefinitionInRegistry(
-			AbstractRefreshableConfigApplicationContext context) {
+				AbstractRefreshableConfigApplicationContext context) {
 		
 		BeanDefinitionRegistry beanDefinitionRegistry = getBeanFactoryAndTryCastTypeToBeanDefinitionRegistry(context);
 		if(beanDefinitionRegistry==null){
 			return;
 		}
-		
+	}
+	
+	/**
+	 * 打印所有的BeanDefinition
+	 * @param context
+	 */
+	public static void printBeanDefinitionInRegistry(
+			BeanDefinitionRegistry registry) {
 		System.out.println("\n----------已经注册的BeanDefinition--------------");
-		String[] beanDefinitionNames = beanDefinitionRegistry.getBeanDefinitionNames();
+		String[] beanDefinitionNames = registry.getBeanDefinitionNames();
 		for (String beanName : beanDefinitionNames) {
-			BeanDefinition beanDefinition = beanDefinitionRegistry.getBeanDefinition(beanName);
+			BeanDefinition beanDefinition = registry.getBeanDefinition(beanName);
 			if(beanDefinition instanceof AbstractBeanDefinition){
 				AbstractBeanDefinition abstractBeanDefinition = (AbstractBeanDefinition)beanDefinition;
 				System.out.println("beanName = "+beanName+" , abstractBeanDefinition.getBeanClassName() == " + abstractBeanDefinition.getBeanClassName());
@@ -90,7 +97,16 @@ public class ApplicationContextUtil {
 		if(beanFactory==null){
 			return;
 		}
-		
+		printBeanFactoryPostProcessorsInBeanFactory(beanFactory);
+	}
+	
+	/**
+	 * 用于劫持registry和beanFactory
+	 * 实现BeanFactoryPostProcessors接口的bean
+	 * @param context
+	 */
+	public static void printBeanFactoryPostProcessorsInBeanFactory(
+			ConfigurableListableBeanFactory beanFactory) {
 		// org.springframework.context.support.PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(...)
 		System.out.println("\n----------实现BeanDefinitionRegistryPostProcessor接口的bean（hook）--------------");
 		if (beanFactory instanceof BeanDefinitionRegistry) {
@@ -125,7 +141,17 @@ public class ApplicationContextUtil {
 			return;
 		}
 		// org.springframework.context.support.PostProcessorRegistrationDelegate.registerBeanPostProcessors(...)
-		
+		printBeanPostProcessorInBeanFactory(beanFactory);
+	}
+	
+	/**
+	 * 用于劫持bean
+	 * 实现BeanPostProcessor接口的bean
+	 * @param context
+	 */
+	public static void printBeanPostProcessorInBeanFactory(
+				ConfigurableListableBeanFactory beanFactory) {
+
 		System.out.println("\n----------实现BeanPostProcessor接口的bean（hook）--------------");
 		// beanFactory.getBeanPostProcessorCount()
 		String[] postProcessorNames = beanFactory.getBeanNamesForType(BeanPostProcessor.class, true, false); // 查找applicationContext.xml中配置的，实现BeanPostProcessor接口的bean

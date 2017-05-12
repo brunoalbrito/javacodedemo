@@ -10,7 +10,7 @@ public class MyBeanPostProcessorImpl implements BeanPostProcessor {
 	 */
 	@Override
 	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
-		System.out.println("this is "+this.getClass().getSimpleName()+":postProcessBeforeInitialization() : beanName = "+ beanName +" , bean.getClass().getName() = "+bean.getClass().getName());
+		System.out.println("hook bean ---> "+this.getClass().getSimpleName()+":postProcessBeforeInitialization() : beanName = "+ beanName +" , bean.getClass().getName() = "+bean.getClass().getName()+"");
 		return bean;
 	}
 
@@ -19,7 +19,7 @@ public class MyBeanPostProcessorImpl implements BeanPostProcessor {
 	 */
 	@Override
 	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-		System.out.println("this is "+this.getClass().getSimpleName()+":postProcessAfterInitialization() : beanName = "+ beanName +" , bean.getClass().getName() = "+bean.getClass().getName());
+		System.out.println("hook bean ---> "+this.getClass().getSimpleName()+":postProcessAfterInitialization() : beanName = "+ beanName +" , bean.getClass().getName() = "+bean.getClass().getName());
 		return bean;
 	}
 

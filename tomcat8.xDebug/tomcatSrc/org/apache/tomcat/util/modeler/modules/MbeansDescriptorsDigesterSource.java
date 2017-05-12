@@ -44,6 +44,44 @@ public class MbeansDescriptorsDigesterSource extends ModelerSource
 
     private static Digester createDigester() {
 
+    	/**
+    	 	<mbeans-descriptors>
+    	 		<mbean>
+    	 			<attribute />
+    	 			<attribute />
+    	 			<notification>
+    	 				<descriptor>
+				        	<field></field>
+				        	<field></field>
+				        </descriptor>
+    	 			</notification>
+    	 			<notification>
+    	 				<descriptor>
+				        	<field></field>
+				        	<field></field>
+				        </descriptor>
+    	 			</notification>
+			        <notification-type></notification-type>
+			        <notification-type></notification-type>
+			        <operation>
+				        <descriptor>
+					    	<field></field>
+					    	<field></field>
+					    </descriptor>
+					    <parameter></parameter>
+					    <parameter></parameter>
+			        </operation>
+			        <operation>
+				        <descriptor>
+				        <field></field>
+				        <field></field>
+				        </descriptor>
+				        <parameter></parameter>
+				        <parameter></parameter>
+			        </operation>
+    	 		</mbean>
+    	 	</mbeans-descriptors>
+    	 */
         Digester digester = new Digester();
         digester.setNamespaceAware(false);
         digester.setValidating(false);
@@ -83,7 +121,6 @@ public class MbeansDescriptorsDigesterSource extends ModelerSource
             ("mbeans-descriptors/mbean/notification",
                 "addNotification",
             "org.apache.tomcat.util.modeler.NotificationInfo");
-
         digester.addObjectCreate
             ("mbeans-descriptors/mbean/notification/descriptor/field",
             "org.apache.tomcat.util.modeler.FieldInfo");

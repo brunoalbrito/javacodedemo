@@ -112,7 +112,7 @@ public class SimpleJndiBeanFactory extends JndiLocatorSupport implements BeanFac
 				return doGetSingleton(name, requiredType);
 			}
 			else {
-				return lookup(name, requiredType);
+				return lookup(name, requiredType); //!!!
 			}
 		}
 		catch (NameNotFoundException ex) {

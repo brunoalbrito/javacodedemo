@@ -115,7 +115,7 @@ public abstract class SessionIdGeneratorBase extends LifecycleBase
         this.secureRandomAlgorithm = secureRandomAlgorithm;
     }
 
-
+    
     /**
      * Get the name of the provider used to create the {@link SecureRandom}
      * instances which generate new session IDs.

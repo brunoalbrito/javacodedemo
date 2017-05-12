@@ -143,9 +143,9 @@ public class PropertyPlaceholderHelper {
 							"Circular placeholder reference '" + originalPlaceholder + "' in property definitions");
 				}
 				// Recursive invocation, parsing placeholders contained in the placeholder key.
-				placeholder = parseStringValue(placeholder, placeholderResolver, visitedPlaceholders);
+				placeholder = parseStringValue(placeholder, placeholderResolver, visitedPlaceholders); // 占位符
 				// Now obtain the value for the fully resolved key...
-				String propVal = placeholderResolver.resolvePlaceholder(placeholder); // 回调，获取指定key的属性值
+				String propVal = placeholderResolver.resolvePlaceholder(placeholder); // 解析占位符，回调，获取指定key的属性值
 				if (propVal == null && this.valueSeparator != null) {
 					int separatorIndex = placeholder.indexOf(this.valueSeparator);
 					if (separatorIndex != -1) {

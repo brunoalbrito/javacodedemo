@@ -5,6 +5,8 @@ public class CreatedByFactoryBean {
 	private String username;
 	private FooBean fooBean;
 	
+	private String property1;
+	
 	public int getUserid() {
 		return userid;
 	}
@@ -34,8 +36,21 @@ public class CreatedByFactoryBean {
 		this.fooBean = fooBean;
 	}
 	
+
+	public void setProperty1(String property1) {
+		this.property1 = property1;
+	}
+
 	public void testMethod() {
 		System.out.println(this.getClass().getName()+":testMethod()");
 	}
+
+	@Override
+	public String toString() {
+		return "CreatedByFactoryBean [userid=" + userid + ", username=" + username + ", fooBean=" + fooBean
+				+ ", property1=" + property1 + "]";
+	}
+	
+	
 	
 }

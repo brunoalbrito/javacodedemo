@@ -1223,7 +1223,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// to support styles of field injection.
 		boolean continueWithPropertyPopulation = true;
 
-		if (!mbd.isSynthetic() && hasInstantiationAwareBeanPostProcessors()) { //　有感知处理器
+		if (!mbd.isSynthetic() && hasInstantiationAwareBeanPostProcessors()) { //　有hook
 			for (BeanPostProcessor bp : getBeanPostProcessors()) {
 				if (bp instanceof InstantiationAwareBeanPostProcessor) {
 					InstantiationAwareBeanPostProcessor ibp = (InstantiationAwareBeanPostProcessor) bp;
@@ -1256,13 +1256,13 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			pvs = newPvs;
 		}
 
-		boolean hasInstAwareBpps = hasInstantiationAwareBeanPostProcessors();
+		boolean hasInstAwareBpps = hasInstantiationAwareBeanPostProcessors(); 
 		boolean needsDepCheck = (mbd.getDependencyCheck() != RootBeanDefinition.DEPENDENCY_CHECK_NONE);
 
 		if (hasInstAwareBpps || needsDepCheck) {
 			PropertyDescriptor[] filteredPds = filterPropertyDescriptorsForDependencyCheck(bw, mbd.allowCaching);
 			if (hasInstAwareBpps) {
-				for (BeanPostProcessor bp : getBeanPostProcessors()) {
+				for (BeanPostProcessor bp : getBeanPostProcessors()) { // HOOK
 					if (bp instanceof InstantiationAwareBeanPostProcessor) {
 						InstantiationAwareBeanPostProcessor ibp = (InstantiationAwareBeanPostProcessor) bp;
 						pvs = ibp.postProcessPropertyValues(pvs, filteredPds, bw.getWrappedInstance(), beanName);

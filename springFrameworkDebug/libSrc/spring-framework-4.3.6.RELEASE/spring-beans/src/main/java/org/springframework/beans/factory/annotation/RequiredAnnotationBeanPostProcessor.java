@@ -144,7 +144,7 @@ public class RequiredAnnotationBeanPostProcessor extends InstantiationAwareBeanP
 			PropertyValues pvs, PropertyDescriptor[] pds, Object bean, String beanName) throws BeansException {
 
 		if (!this.validatedBeanNames.contains(beanName)) {
-			if (!shouldSkip(this.beanFactory, beanName)) {
+			if (!shouldSkip(this.beanFactory, beanName)) { // 不能跳过
 				List<String> invalidProperties = new ArrayList<String>();
 				for (PropertyDescriptor pd : pds) {
 					if (isRequiredProperty(pd) && !pvs.contains(pd.getName())) {

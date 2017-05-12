@@ -80,7 +80,7 @@ public class MbeansDescriptorsIntrospectionSource extends ModelerSource
             if( managed==null ) return;
             managed.setName( type );
 
-            registry.addManagedBean(managed);
+            registry.addManagedBean(managed);//!!!
 
         } catch( Exception ex ) {
             log.error( "Error reading descriptors ", ex);
@@ -297,7 +297,7 @@ public class MbeansDescriptorsIntrospectionSource extends ModelerSource
 
         methods = realClass.getMethods();
 
-        initMethods(realClass, methods, attMap, getAttMap, setAttMap, invokeAttMap );
+        initMethods(realClass, methods, attMap, getAttMap, setAttMap, invokeAttMap ); // 反射出类的方法信息
 
         try {
 

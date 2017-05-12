@@ -13,11 +13,6 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 
-import org.hibernate.engine.jdbc.cursor.internal.StandardRefCursorSupport;
-import org.hibernate.engine.jdbc.spi.TypeInfo;
-import org.hibernate.engine.jdbc.spi.TypeNullability;
-import org.hibernate.engine.jdbc.spi.TypeSearchability;
-import org.hibernate.internal.util.collections.ArrayHelper;
 
 public class Test {
 
@@ -40,7 +35,7 @@ public class Test {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-
+		
 		/**
 		 *  预置语句与statement类的主要区别在于，前者可以只编译和优化一次，然后通过设置不同的参数值多次使用。 
 		 */
@@ -104,7 +99,7 @@ public class Test {
 					e.printStackTrace();
 				}
 				// 连接MySql数据库
-				String url = "jdbc:mysql://127.0.0.1:3306/rap_db";
+				String url = "jdbc:mysql://127.0.0.1:3306/rap_db?useSSL=true&useUnicode=true&characterEncoding=UTF-8&autoReconnect=true";
 				String username = "root";
 				String password = "123456";
 				try {
@@ -193,7 +188,11 @@ public class Test {
 				
 				{
 					String catalogName = connection.getCatalog(); // 数据库名
-					boolean useContextualLobCreation = ConnectionMetaDataUtil.useContextualLobCreation(connection);
+					try {
+						boolean useContextualLobCreation = ConnectionMetaDataUtil.useContextualLobCreation(connection);
+					} catch (NoSuchMethodException | SecurityException e) {
+						e.printStackTrace();
+					}
 					
 				}
 			}
@@ -202,7 +201,7 @@ public class Test {
 		
 
 		private static class ConnectionMetaDataUtil {
-			private static boolean useContextualLobCreation(Connection connection) {
+			private static boolean useContextualLobCreation(Connection connection) throws SQLException, NoSuchMethodException, SecurityException {
 				final DatabaseMetaData metaData = connection.getMetaData();
 				if ( metaData.getJDBCMajorVersion() < 4 ) {
 					return false;

@@ -128,7 +128,7 @@ public class JndiTemplate {
 	 */
 	protected Context createInitialContext() throws NamingException {
 		Hashtable<?, ?> icEnv = null;
-		Properties env = getEnvironment();
+		Properties env = getEnvironment(); // org.springframework.web.context.support.StandardServletEnvironment
 		if (env != null) {
 			icEnv = new Hashtable<Object, Object>(env.size());
 			CollectionUtils.mergePropertiesIntoMap(env, icEnv);

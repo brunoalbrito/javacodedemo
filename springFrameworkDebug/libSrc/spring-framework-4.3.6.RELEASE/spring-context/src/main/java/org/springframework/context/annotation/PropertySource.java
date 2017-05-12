@@ -162,7 +162,7 @@ public @interface PropertySource {
 	 * @see org.springframework.core.io.Resource#getDescription()
 	 */
 	String name() default "";
-
+	
 	/**
 	 * Indicate the resource location(s) of the properties file to be loaded.
 	 * For example, {@code "classpath:/com/myco/app.properties"} or

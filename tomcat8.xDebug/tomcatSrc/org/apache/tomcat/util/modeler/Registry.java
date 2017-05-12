@@ -476,7 +476,7 @@ public class Registry implements RegistryMBean, MBeanRegistration  {
             if( log.isDebugEnabled() ) {
                 log.debug( "Looking for descriptor ");
             }
-            findDescriptor( beanClass, type );
+            findDescriptor( beanClass, type ); // 加载描述文件，使用jar包根目录的文件加载信息
 
             managed=findManagedBean(type);
         }
@@ -487,10 +487,10 @@ public class Registry implements RegistryMBean, MBeanRegistration  {
                 log.debug( "Introspecting ");
             }
 
-            // introspection
+            // introspection 使用反省加载 org.apache.tomcat.util.modeler.modules.MbeansDescriptorsIntrospectionSource
             load("MbeansDescriptorsIntrospectionSource", beanClass, type);
 
-            managed=findManagedBean(type);
+            managed=findManagedBean(type); // !!!
             if( managed==null ) {
                 log.warn( "No metadata found for " + type );
                 return null;
@@ -562,7 +562,7 @@ public class Registry implements RegistryMBean, MBeanRegistration  {
             type=param;
             inputsource=url.openStream();
             if (sourceType == null && location.endsWith(".xml")) {
-                sourceType = "MbeansDescriptorsDigesterSource";
+                sourceType = "MbeansDescriptorsDigesterSource"; // org.apache.tomcat.util.modeler.modules.MbeansDescriptorsDigesterSource
             }
         } else if( source instanceof File ) {
             location=((File)source).getAbsolutePath();
@@ -579,7 +579,7 @@ public class Registry implements RegistryMBean, MBeanRegistration  {
             type=param;
             inputsource=source;
             if( sourceType== null ) {
-                sourceType="MbeansDescriptorsIntrospectionSource";
+                sourceType="MbeansDescriptorsIntrospectionSource"; // org.apache.tomcat.util.modeler.modules.MbeansDescriptorsIntrospectionSource
             }
         }
 
@@ -588,7 +588,7 @@ public class Registry implements RegistryMBean, MBeanRegistration  {
         }
         ModelerSource ds=getModelerSource(sourceType);
         List<ObjectName> mbeans =
-            ds.loadDescriptors(this, type, inputsource);
+            ds.loadDescriptors(this, type, inputsource); 
 
         return mbeans;
     }
@@ -656,7 +656,7 @@ public class Registry implements RegistryMBean, MBeanRegistration  {
             return;
         }
 
-        String descriptors = res + "/mbeans-descriptors.xml";
+        String descriptors = res + "/mbeans-descriptors.xml"; // 包的根路径有文件“mbeans-descriptors.xml”
         URL dURL = classLoader.getResource( descriptors );
 
         if (dURL == null) {
@@ -696,11 +696,11 @@ public class Registry implements RegistryMBean, MBeanRegistration  {
         while( pkg.indexOf( ".") > 0 ) {
             int lastComp=pkg.lastIndexOf( ".");
             if( lastComp <= 0 ) return;
-            pkg=pkg.substring(0, lastComp);
+            pkg=pkg.substring(0, lastComp); // 包名
             if( searchedPaths.get( pkg ) != null ) {
                 return;
             }
-            loadDescriptors(pkg, classLoader);
+            loadDescriptors(pkg, classLoader); // !!!加载描述文件
         }
         return;
     }
@@ -712,7 +712,7 @@ public class Registry implements RegistryMBean, MBeanRegistration  {
         if( type.indexOf( ".") < 0 ) {
             type="org.apache.tomcat.util.modeler.modules." + type;
         }
-
+        
         Class<?> c = Class.forName(type);
         ModelerSource ds=(ModelerSource)c.newInstance();
         return ds;

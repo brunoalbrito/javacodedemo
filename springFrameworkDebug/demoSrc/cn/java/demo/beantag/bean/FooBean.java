@@ -4,6 +4,7 @@ public class FooBean {
 
 	private String filed1 = "filed1";
 
+
 	public String getFiled1() {
 		return filed1;
 	}
@@ -16,6 +17,7 @@ public class FooBean {
 	public String toString() {
 		return "FooBean [filed1=" + filed1 + "]";
 	}
+
 	
 	
 }

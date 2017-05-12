@@ -56,15 +56,15 @@ public class InjectionMetadata {
 
 
 	public InjectionMetadata(Class<?> targetClass, Collection<InjectedElement> elements) {
-		this.targetClass = targetClass;
-		this.injectedElements = elements;
+		this.targetClass = targetClass; // 反射的类
+		this.injectedElements = elements; // 要注入的类
 	}
 
 
 	public void checkConfigMembers(RootBeanDefinition beanDefinition) {
 		Set<InjectedElement> checkedElements = new LinkedHashSet<InjectedElement>(this.injectedElements.size());
 		for (InjectedElement element : this.injectedElements) {
-			Member member = element.getMember();
+			Member member = element.getMember(); // 方法对象的引用
 			if (!beanDefinition.isExternallyManagedConfigMember(member)) {
 				beanDefinition.registerExternallyManagedConfigMember(member);
 				checkedElements.add(element);
@@ -169,7 +169,7 @@ public class InjectionMetadata {
 				field.set(target, getResourceToInject(target, requestingBeanName));
 			}
 			else {
-				if (checkPropertySkipping(pvs)) {
+				if (checkPropertySkipping(pvs)) { // 如果已经通过xml配置了注入，那么跳过本个地段的注入
 					return;
 				}
 				try {
@@ -201,7 +201,7 @@ public class InjectionMetadata {
 					return this.skip;
 				}
 				if (this.pd != null) {
-					if (pvs.contains(this.pd.getName())) {
+					if (pvs.contains(this.pd.getName())) { // 如果已经通过xml配置了注入，那么跳过本个地段的注入
 						// Explicit value provided as part of the bean definition.
 						this.skip = true;
 						return true;

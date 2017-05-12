@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.MutablePropertyValues;
+import org.springframework.beans.PropertyValue;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.config.DependencyDescriptor;
 import org.springframework.beans.factory.support.RootBeanDefinition;
@@ -41,35 +42,38 @@ public class 关于bean后置处理器_埋点_获取bean的过程 {
 					org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(String beanName, RootBeanDefinition mbd, Object[] args)
 					{
 						org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor.postProcessBeforeInstantiation(beanClass, beanName); // --埋点-- 实例化前（钩子）
-						Object beanInstance = doCreateBean(beanName, mbdToUse, args);
+						Object beanInstance = org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(beanName, mbdToUse, args);
 						{
-							instanceWrapper = createBeanInstance(beanName, mbd, args); // 实例化对象
+							// --- createBeanInstance --- bof --- 
+							instanceWrapper = org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(beanName, mbd, args); // 实例化对象
 							{
 								if (mbd.getFactoryMethodName() != null)  { // 工厂方法名
-									return instantiateUsingFactoryMethod(beanName, mbd, args);  // 使用工厂创建
+									return org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(beanName, mbd, args);  // 使用工厂创建
 								}
 								
 								// Need to determine the constructor... 自动感知出构造函数
-								Constructor<?>[] ctors = determineConstructorsFromBeanPostProcessors(beanClass, beanName);
+								Constructor<?>[] ctors = org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.determineConstructorsFromBeanPostProcessors(beanClass, beanName);
 								{
 									org.springframework.beans.factory.config.SmartInstantiationAwareBeanPostProcessor.determineCandidateConstructors(beanClass, beanName);// --埋点-- 决策构造函数（钩子）
 								}
 								if (ctors != null ||
 										mbd.getResolvedAutowireMode() == RootBeanDefinition.AUTOWIRE_CONSTRUCTOR ||
 										mbd.hasConstructorArgumentValues() || !ObjectUtils.isEmpty(args))  {
-									return autowireConstructor(beanName, mbd, ctors, args);
+									return org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(beanName, mbd, ctors, args);
 								}
 						
 								// No special handling: simply use no-arg constructor.
-								return instantiateBean(beanName, mbd);
+								return org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateBean(beanName, mbd);
 							}
-							
+							// --- createBeanInstance --- eof --- 
+							 
 							final Object bean = (instanceWrapper != null ? instanceWrapper.getWrappedInstance() : null); // 实例化对象
 							
 							org.springframework.beans.factory.support.MergedBeanDefinitionPostProcessor.postProcessMergedBeanDefinition(mbd, beanType, beanName); // --埋点-- 合并 BeanDefinition（钩子）
 							
+							// --- populateBean --- bof --- 
 							Object exposedObject = bean;  // 实例对象
-							populateBean(beanName, mbd, instanceWrapper); // 填充属性
+							org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(beanName, mbd, instanceWrapper); // 填充属性
 							{
 								org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor.postProcessAfterInstantiation(bw.getWrappedInstance(), beanName) // --埋点-- 实例化后（钩子）
 								
@@ -80,12 +84,12 @@ public class 关于bean后置处理器_埋点_获取bean的过程 {
 									MutablePropertyValues newPvs = new MutablePropertyValues(pvs);
 					
 									// Add property values based on autowire by name if applicable.
-									if (mbd.getResolvedAutowireMode() == RootBeanDefinition.AUTOWIRE_BY_NAME) { // 感知setter方法的属性名，获取依赖的bean对象
+									if (mbd.getResolvedAutowireMode() == RootBeanDefinition.AUTOWIRE_BY_NAME) { // 感知setter方法的“属性名”，获取依赖的bean对象
 										autowireByName(beanName, mbd, bw, newPvs);
 									}
 					
 									// Add property values based on autowire by type if applicable.
-									if (mbd.getResolvedAutowireMode() == RootBeanDefinition.AUTOWIRE_BY_TYPE) { // 感知setter方法的参数类型，获取依赖的bean对象 !!!
+									if (mbd.getResolvedAutowireMode() == RootBeanDefinition.AUTOWIRE_BY_TYPE) { // 感知setter方法的“参数类型”，获取依赖的bean对象 !!!
 										autowireByType(beanName, mbd, bw, newPvs); // org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireByType(...)
 										{
 											String[] propertyNames = unsatisfiedNonSimpleProperties(mbd, bw);
@@ -164,17 +168,27 @@ public class 关于bean后置处理器_埋点_获取bean的过程 {
 								
 								org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor.postProcessPropertyValues(pvs, filteredPds, bw.getWrappedInstance(), beanName); // --埋点-- 属性依赖识别完成（钩子）
 							
-								applyPropertyValues(beanName, mbd, bw, pvs); // 设置属性值  bw === org.springframework.beans.BeanWrapperImpl
+								org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.applyPropertyValues(beanName, mbd, bw, pvs); // 设置属性值  bw === org.springframework.beans.BeanWrapperImpl
+								{
+									for (PropertyValue pv : original) { // 属性列表
+										String propertyName = pv.getName(); // 属性名
+										Object originalValue = pv.getValue(); // 属性值
+									}
+									bw.setPropertyValues(new MutablePropertyValues(deepCopy)); // 设置值
+								}
 							}
-							
-							exposedObject = initializeBean(beanName, exposedObject, mbd); // 注入感知对象、调用初始化方法
+							// --- populateBean --- eof --- 
+							 
+							// --- initializeBean --- bof ---  
+							exposedObject = org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(beanName, exposedObject, mbd); // 注入感知对象、调用初始化方法
 							{
 								invokeAwareMethods(beanName, bean); // 给bean对注入感知对象
 								org.springframework.beans.factory.config.BeanPostProcessor.postProcessBeforeInitialization(result, beanName); // --埋点--  初始化前（钩子）
 								invokeInitMethods(beanName, wrappedBean, mbd); // 调用bean的初始化方法
 								org.springframework.beans.factory.config.BeanPostProcessor.postProcessAfterInitialization(result, beanName); // --埋点--  初始化后（钩子），aop在这边做的代理劫持
 							}
-							
+							// --- initializeBean --- bof ---  
+							 
 							if (earlySingletonExposure) {
 								Object earlySingletonReference = getSingleton(beanName, false);
 								{
