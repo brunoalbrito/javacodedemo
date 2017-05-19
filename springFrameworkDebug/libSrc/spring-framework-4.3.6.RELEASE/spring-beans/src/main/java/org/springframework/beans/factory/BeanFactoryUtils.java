@@ -174,12 +174,13 @@ public abstract class BeanFactoryUtils {
 	 */
 	public static String[] beanNamesForTypeIncludingAncestors(ListableBeanFactory lbf, Class<?> type) {
 		Assert.notNull(lbf, "ListableBeanFactory must not be null");
+		// lbf === org.springframework.beans.factory.support.DefaultListableBeanFactory
 		String[] result = lbf.getBeanNamesForType(type);
 		if (lbf instanceof HierarchicalBeanFactory) {
 			HierarchicalBeanFactory hbf = (HierarchicalBeanFactory) lbf;
 			if (hbf.getParentBeanFactory() instanceof ListableBeanFactory) {
 				String[] parentResult = beanNamesForTypeIncludingAncestors(
-						(ListableBeanFactory) hbf.getParentBeanFactory(), type);
+						(ListableBeanFactory) hbf.getParentBeanFactory(), type); // 扫描父类的
 				List<String> resultList = new ArrayList<String>();
 				resultList.addAll(Arrays.asList(result));
 				for (String beanName : parentResult) {

@@ -271,11 +271,33 @@ public class DispatcherServlet extends FrameworkServlet {
 	private static final Properties defaultStrategies;
 
 	static {
+		/*
+		 	org.springframework.web.servlet.LocaleResolver=org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver
+
+			org.springframework.web.servlet.ThemeResolver=org.springframework.web.servlet.theme.FixedThemeResolver
+			
+			org.springframework.web.servlet.HandlerMapping=org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping,\
+				org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping
+			
+			org.springframework.web.servlet.HandlerAdapter=org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter,\
+				org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter,\
+				org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter
+			
+			org.springframework.web.servlet.HandlerExceptionResolver=org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerExceptionResolver,\
+				org.springframework.web.servlet.mvc.annotation.ResponseStatusExceptionResolver,\
+				org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver
+			
+			org.springframework.web.servlet.RequestToViewNameTranslator=org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator
+			
+			org.springframework.web.servlet.ViewResolver=org.springframework.web.servlet.view.InternalResourceViewResolver
+			
+			org.springframework.web.servlet.FlashMapManager=org.springframework.web.servlet.support.SessionFlashMapManager
+		 */
 		// Load default strategy implementations from properties file.
 		// This is currently strictly internal and not meant to be customized
 		// by application developers.
 		try {
-			// spring-webmvc-4.3.6.RELEASE.jar!!org/springframework/web/servlet/DispatcherServlet/DispatcherServlet.properties
+			// spring-webmvc-4.3.6.RELEASE.jar!!org/springframework/web/servlet/DispatcherServlet.properties
 			ClassPathResource resource = new ClassPathResource(DEFAULT_STRATEGIES_PATH, DispatcherServlet.class);
 			defaultStrategies = PropertiesLoaderUtils.loadProperties(resource);
 		}
@@ -482,6 +504,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	 * <p>May be overridden in subclasses in order to initialize further strategy objects.
 	 */
 	protected void initStrategies(ApplicationContext context) {
+		// 识别applicationContext.xml文件中配置的一些bean，如果没有配置，就是使用默认的
 		initMultipartResolver(context);
 		initLocaleResolver(context);
 		initThemeResolver(context);
@@ -814,6 +837,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		String key = strategyInterface.getName();
 		String value = defaultStrategies.getProperty(key);
 		if (value != null) {
+			// org.springframework.web.servlet.view.InternalResourceViewResolver
 			String[] classNames = StringUtils.commaDelimitedListToStringArray(value); // 逗号分隔符转成数组
 			List<T> strategies = new ArrayList<T>(classNames.length);
 			for (String className : classNames) {
@@ -895,7 +919,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		request.setAttribute(FLASH_MAP_MANAGER_ATTRIBUTE, this.flashMapManager);
 
 		try {
-			doDispatch(request, response);
+			doDispatch(request, response); // !!!
 		}
 		finally {
 			if (!WebAsyncUtils.getAsyncManager(request).isConcurrentHandlingStarted()) {
@@ -933,43 +957,46 @@ public class DispatcherServlet extends FrameworkServlet {
 				processedRequest = checkMultipart(request); // 检查是否Multipart类型（如：文件上传），如果是，就进行解析
 				multipartRequestParsed = (processedRequest != request); // 是Multipart类型（如：文件上传）
 
+				// mappedHandler === org.springframework.web.servlet.HandlerExecutionChain
+				
 				// 如果不是文件上传，processedRequest就是request本身
 				// Determine handler for the current request.
-				mappedHandler = getHandler(processedRequest); // 决策一个适合processedRequest的Handler
+				mappedHandler = getHandler(processedRequest); // 决策一个适合processedRequest的Handler，执行链管理器HandlerExecutionChain
 				if (mappedHandler == null || mappedHandler.getHandler() == null) {
 					noHandlerFound(processedRequest, response);
 					return;
 				}
 
 				// Determine handler adapter for the current request.
-				HandlerAdapter ha = getHandlerAdapter(mappedHandler.getHandler()); // 决策一个适合Handler的适配器
+				HandlerAdapter ha = getHandlerAdapter(mappedHandler.getHandler()); // 决策一个适合Handler的“Handler适配器”， 四种类型的适配器
 
 				// Process last-modified header, if supported by the handler.
 				String method = request.getMethod();
 				boolean isGet = "GET".equals(method);
 				if (isGet || "HEAD".equals(method)) {
-					long lastModified = ha.getLastModified(request, mappedHandler.getHandler());
+					long lastModified = ha.getLastModified(request, mappedHandler.getHandler()); // Handler的修改时间
 					if (logger.isDebugEnabled()) {
 						logger.debug("Last-Modified value for [" + getRequestUri(request) + "] is: " + lastModified);
 					}
-					if (new ServletWebRequest(request, response).checkNotModified(lastModified) && isGet) {
+					if (new ServletWebRequest(request, response).checkNotModified(lastModified) && isGet) { // 要响应的lastModified
 						return;
 					}
 				}
 
-				if (!mappedHandler.applyPreHandle(processedRequest, response)) { // 调用 Handler的前置方法
+				// org.springframework.web.servlet.HandlerExecutionChain
+				if (!mappedHandler.applyPreHandle(processedRequest, response)) { // 调用 HandlerExecutionChain 的applyPreHandle方法
 					return;
 				}
 
 				// Actually invoke the handler.
-				mv = ha.handle(processedRequest, response, mappedHandler.getHandler());
+				mv = ha.handle(processedRequest, response, mappedHandler.getHandler()); // 执行handler的方法，返回值
 
 				if (asyncManager.isConcurrentHandlingStarted()) {
 					return;
 				}
 
-				applyDefaultViewName(processedRequest, mv);
-				mappedHandler.applyPostHandle(processedRequest, response, mv);  // 调用 Handler的后置方法
+				applyDefaultViewName(processedRequest, mv); // 应用默认视图
+				mappedHandler.applyPostHandle(processedRequest, response, mv);  // 调用 HandlerExecutionChain 的applyPostHandle方法 ，迭代调用Handler的拦截器的postHandle方法
 			}
 			catch (Exception ex) {
 				dispatchException = ex;
@@ -1036,7 +1063,7 @@ public class DispatcherServlet extends FrameworkServlet {
 
 		// Did the handler return a view to render?
 		if (mv != null && !mv.wasCleared()) {
-			render(mv, request, response);
+			render(mv, request, response); // 进行渲染 !!!
 			if (errorView) {
 				WebUtils.clearErrorRequestAttributes(request);
 			}
@@ -1054,7 +1081,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		}
 
 		if (mappedHandler != null) {
-			mappedHandler.triggerAfterCompletion(request, response, null);
+			mappedHandler.triggerAfterCompletion(request, response, null); // 调用结束方法
 		}
 	}
 
@@ -1141,8 +1168,9 @@ public class DispatcherServlet extends FrameworkServlet {
 	 */
 	protected HandlerExecutionChain getHandler(HttpServletRequest request) throws Exception {
 		/*
-		 	org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping
-		 	org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping
+		 	org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping  根据xml文件中配置的beanName来匹配
+		 	org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping  !!!已经过期 -- 根据类上的@RequestMapping注解来匹配
+		 	org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping  !!!新的
 		 */
 		for (HandlerMapping hm : this.handlerMappings) {
 			if (logger.isTraceEnabled()) {
@@ -1187,7 +1215,8 @@ public class DispatcherServlet extends FrameworkServlet {
 		 	handlerAdapters = {
 			 	org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter
 			 	org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter
-			 	org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter
+			 	!!! 从3.2为止这个过期 org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter
+			 	org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter
 		 	}
 		 */
 		for (HandlerAdapter ha : this.handlerAdapters) {
@@ -1259,7 +1288,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		View view;
 		if (mv.isReference()) {
 			// We need to resolve the view name.
-			view = resolveViewName(mv.getViewName(), mv.getModelInternal(), locale, request);
+			view = resolveViewName(mv.getViewName(), mv.getModelInternal(), locale, request); // 解析视图
 			if (view == null) {
 				throw new ServletException("Could not resolve view with name '" + mv.getViewName() +
 						"' in servlet with name '" + getServletName() + "'");
@@ -1280,9 +1309,9 @@ public class DispatcherServlet extends FrameworkServlet {
 		}
 		try {
 			if (mv.getStatus() != null) {
-				response.setStatus(mv.getStatus().value());
+				response.setStatus(mv.getStatus().value()); // 响应状态
 			}
-			view.render(mv.getModelInternal(), request, response);
+			view.render(mv.getModelInternal(), request, response); // 渲染
 		}
 		catch (Exception ex) {
 			if (logger.isDebugEnabled()) {
@@ -1319,7 +1348,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	 */
 	protected View resolveViewName(String viewName, Map<String, Object> model, Locale locale,
 			HttpServletRequest request) throws Exception {
-
+		// viewResolver == org.springframework.web.servlet.view.InternalResourceViewResolver
 		for (ViewResolver viewResolver : this.viewResolvers) {
 			View view = viewResolver.resolveViewName(viewName, locale);
 			if (view != null) {

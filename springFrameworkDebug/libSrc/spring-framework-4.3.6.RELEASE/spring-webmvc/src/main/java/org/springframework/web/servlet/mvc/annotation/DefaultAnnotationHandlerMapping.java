@@ -107,20 +107,21 @@ public class DefaultAnnotationHandlerMapping extends AbstractDetectingUrlHandler
 	/**
 	 * Checks for presence of the {@link org.springframework.web.bind.annotation.RequestMapping}
 	 * annotation on the handler class and on any of its methods.
+	 * 检测Handler
 	 */
 	@Override
 	protected String[] determineUrlsForHandler(String beanName) {
 		ApplicationContext context = getApplicationContext();
 		Class<?> handlerType = context.getType(beanName);
-		RequestMapping mapping = context.findAnnotationOnBean(beanName, RequestMapping.class);
+		RequestMapping mapping = context.findAnnotationOnBean(beanName, RequestMapping.class); // 查找注解 
 		if (mapping != null) {
 			// @RequestMapping found at type level
 			this.cachedMappings.put(handlerType, mapping);
 			Set<String> urls = new LinkedHashSet<String>();
-			String[] typeLevelPatterns = mapping.value();
+			String[] typeLevelPatterns = mapping.value(); // 类级别的匹配
 			if (typeLevelPatterns.length > 0) {
 				// @RequestMapping specifies paths at type level
-				String[] methodLevelPatterns = determineUrlsForHandlerMethods(handlerType, true);
+				String[] methodLevelPatterns = determineUrlsForHandlerMethods(handlerType, true); // 方法级别的匹配，反射方法上的RequestMapping
 				for (String typeLevelPattern : typeLevelPatterns) {
 					if (!typeLevelPattern.startsWith("/")) {
 						typeLevelPattern = "/" + typeLevelPattern;
@@ -174,7 +175,7 @@ public class DefaultAnnotationHandlerMapping extends AbstractDetectingUrlHandler
 		handlerTypes.add(handlerType);
 		handlerTypes.addAll(Arrays.asList(handlerType.getInterfaces()));
 		for (Class<?> currentHandlerType : handlerTypes) {
-			ReflectionUtils.doWithMethods(currentHandlerType, new ReflectionUtils.MethodCallback() {
+			ReflectionUtils.doWithMethods(currentHandlerType, new ReflectionUtils.MethodCallback() { // 反射所有方法
 				@Override
 				public void doWith(Method method) {
 					RequestMapping mapping = AnnotationUtils.findAnnotation(method, RequestMapping.class);
@@ -185,7 +186,7 @@ public class DefaultAnnotationHandlerMapping extends AbstractDetectingUrlHandler
 								if (!hasTypeLevelMapping && !mappedPattern.startsWith("/")) {
 									mappedPattern = "/" + mappedPattern;
 								}
-								addUrlsForPath(urls, mappedPattern);
+								addUrlsForPath(urls, mappedPattern); // 增加“带后缀”和“斜杠结尾”
 							}
 						}
 						else if (hasTypeLevelMapping) {

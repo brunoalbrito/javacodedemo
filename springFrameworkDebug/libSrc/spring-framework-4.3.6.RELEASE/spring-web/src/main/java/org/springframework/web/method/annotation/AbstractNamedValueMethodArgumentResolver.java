@@ -115,7 +115,8 @@ public abstract class AbstractNamedValueMethodArgumentResolver implements Handle
 		}
 
 		if (binderFactory != null) {
-			WebDataBinder binder = binderFactory.createBinder(webRequest, null, namedValueInfo.name);
+			// binderFactory === org.springframework.web.servlet.mvc.method.annotation.ServletRequestDataBinderFactory
+			WebDataBinder binder = binderFactory.createBinder(webRequest, null, namedValueInfo.name); // !!! 调用@InitBinder注解的方法进行初始化
 			try {
 				arg = binder.convertIfNecessary(arg, parameter.getParameterType(), parameter);
 			}

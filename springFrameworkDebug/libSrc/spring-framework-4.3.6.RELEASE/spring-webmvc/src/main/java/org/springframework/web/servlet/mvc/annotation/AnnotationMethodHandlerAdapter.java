@@ -393,7 +393,7 @@ public class AnnotationMethodHandlerAdapter extends WebContentGenerator
 
 	@Override
 	public boolean supports(Object handler) {
-		return getMethodResolver(handler).hasHandlerMethods();
+		return getMethodResolver(handler).hasHandlerMethods(); // 有@RequestMapping注解的方法
 	}
 
 	@Override
@@ -408,7 +408,7 @@ public class AnnotationMethodHandlerAdapter extends WebContentGenerator
 		}
 
 		if (annotatedWithSessionAttributes) {
-			checkAndPrepare(request, response, this.cacheSecondsForSessionAttributeHandlers, true);
+			checkAndPrepare(request, response, this.cacheSecondsForSessionAttributeHandlers, true); // 请求方式和Session的检查/应用"缓存控制"
 		}
 		else {
 			checkAndPrepare(request, response, true);
@@ -430,17 +430,17 @@ public class AnnotationMethodHandlerAdapter extends WebContentGenerator
 
 	protected ModelAndView invokeHandlerMethod(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
-
-		ServletHandlerMethodResolver methodResolver = getMethodResolver(handler);
-		Method handlerMethod = methodResolver.resolveHandlerMethod(request);
-		ServletHandlerMethodInvoker methodInvoker = new ServletHandlerMethodInvoker(methodResolver);
+		// methodResolver === org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter.ServletHandlerMethodResolver
+		ServletHandlerMethodResolver methodResolver = getMethodResolver(handler); // 某个类的解析器
+		Method handlerMethod = methodResolver.resolveHandlerMethod(request); // 返回要调用的方法
+		ServletHandlerMethodInvoker methodInvoker = new ServletHandlerMethodInvoker(methodResolver); // 方法调用器
 		ServletWebRequest webRequest = new ServletWebRequest(request, response);
 		ExtendedModelMap implicitModel = new BindingAwareModelMap();
 
-		Object result = methodInvoker.invokeHandlerMethod(handlerMethod, handler, webRequest, implicitModel);
+		Object result = methodInvoker.invokeHandlerMethod(handlerMethod, handler, webRequest, implicitModel); // 调用获取返回值
 		ModelAndView mav =
-				methodInvoker.getModelAndView(handlerMethod, handler.getClass(), result, implicitModel, webRequest);
-		methodInvoker.updateModelAttributes(handler, (mav != null ? mav.getModel() : null), implicitModel, webRequest);
+				methodInvoker.getModelAndView(handlerMethod, handler.getClass(), result, implicitModel, webRequest); // 处理返回值类型，统一转成ModelAndView
+		methodInvoker.updateModelAttributes(handler, (mav != null ? mav.getModel() : null), implicitModel, webRequest); // 更新Session等的值
 		return mav;
 	}
 
@@ -468,7 +468,7 @@ public class AnnotationMethodHandlerAdapter extends WebContentGenerator
 			synchronized (this.methodResolverCache) {
 				resolver = this.methodResolverCache.get(handlerClass);
 				if (resolver == null) {
-					resolver = new ServletHandlerMethodResolver(handlerClass);
+					resolver = new ServletHandlerMethodResolver(handlerClass);//!!!
 					this.methodResolverCache.put(handlerClass, resolver);
 				}
 			}
@@ -528,7 +528,7 @@ public class AnnotationMethodHandlerAdapter extends WebContentGenerator
 		private final Map<Method, RequestMappingInfo> mappings = new HashMap<Method, RequestMappingInfo>();
 
 		private ServletHandlerMethodResolver(Class<?> handlerType) {
-			init(handlerType);
+			init(handlerType); // 归类类上的@RequestMapping、@SessionAttributes注解，方法上的@RequestMapping、@InitBinder、@ModelAttribute注解
 		}
 
 		@Override
@@ -542,17 +542,17 @@ public class AnnotationMethodHandlerAdapter extends WebContentGenerator
 				RequestMethod[] methods = new RequestMethod[0];
 				String[] params = new String[0];
 				String[] headers = new String[0];
-				if (!hasTypeLevelMapping() || !Arrays.equals(mapping.method(), getTypeLevelMapping().method())) {
+				if (!hasTypeLevelMapping() || !Arrays.equals(mapping.method(), getTypeLevelMapping().method())) { // 和类级别的配置不一样
 					methods = mapping.method();
 				}
-				if (!hasTypeLevelMapping() || !Arrays.equals(mapping.params(), getTypeLevelMapping().params())) {
+				if (!hasTypeLevelMapping() || !Arrays.equals(mapping.params(), getTypeLevelMapping().params())) { // 和类级别的配置不一样
 					params = mapping.params();
 				}
-				if (!hasTypeLevelMapping() || !Arrays.equals(mapping.headers(), getTypeLevelMapping().headers())) {
+				if (!hasTypeLevelMapping() || !Arrays.equals(mapping.headers(), getTypeLevelMapping().headers())) { // 和类级别的配置不一样
 					headers = mapping.headers();
 				}
 				RequestMappingInfo mappingInfo = new RequestMappingInfo(patterns, methods, params, headers);
-				this.mappings.put(method, mappingInfo);
+				this.mappings.put(method, mappingInfo); // 方法的@RequestMapping注解配置
 				return true;
 			}
 			return false;
@@ -564,8 +564,8 @@ public class AnnotationMethodHandlerAdapter extends WebContentGenerator
 			Map<RequestSpecificMappingInfo, Method> targetHandlerMethods = new LinkedHashMap<RequestSpecificMappingInfo, Method>();
 			Set<String> allowedMethods = new LinkedHashSet<String>(7);
 			String resolvedMethodName = null;
-			for (Method handlerMethod : getHandlerMethods()) {
-				RequestSpecificMappingInfo mappingInfo = new RequestSpecificMappingInfo(this.mappings.get(handlerMethod));
+			for (Method handlerMethod : getHandlerMethods()) { // 有@RequestMapping 注解的方法列表
+				RequestSpecificMappingInfo mappingInfo = new RequestSpecificMappingInfo(this.mappings.get(handlerMethod)); // 方法的@RequestMapping注解配置
 				boolean match = false;
 				if (mappingInfo.hasPatterns()) {
 					for (String pattern : mappingInfo.getPatterns()) {
@@ -624,7 +624,7 @@ public class AnnotationMethodHandlerAdapter extends WebContentGenerator
 					}
 				}
 				if (match) {
-					Method oldMappedMethod = targetHandlerMethods.put(mappingInfo, handlerMethod);
+					Method oldMappedMethod = targetHandlerMethods.put(mappingInfo, handlerMethod); // 方法的@RequestMapping注解配置 ---> 方法的引用
 					if (oldMappedMethod != null && oldMappedMethod != handlerMethod) {
 						if (methodNameResolver != null && !mappingInfo.hasPatterns()) {
 							if (!oldMappedMethod.getName().equals(handlerMethod.getName())) {
@@ -661,11 +661,11 @@ public class AnnotationMethodHandlerAdapter extends WebContentGenerator
 						new RequestSpecificMappingInfoComparator(pathComparator, request);
 				Collections.sort(matches, requestMappingInfoComparator);
 				RequestSpecificMappingInfo bestMappingMatch = matches.get(0);
-				String bestMatchedPath = bestMappingMatch.bestMatchedPattern();
+				String bestMatchedPath = bestMappingMatch.bestMatchedPattern(); // 最佳匹配路径
 				if (bestMatchedPath != null) {
-					extractHandlerMethodUriTemplates(bestMatchedPath, lookupPath, request);
+					extractHandlerMethodUriTemplates(bestMatchedPath, lookupPath, request); // 模板变量
 				}
-				return targetHandlerMethods.get(bestMappingMatch);
+				return targetHandlerMethods.get(bestMappingMatch); // !!!
 			}
 			else {
 				if (!allowedMethods.isEmpty()) {
@@ -757,7 +757,7 @@ public class AnnotationMethodHandlerAdapter extends WebContentGenerator
 					(Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
 			int patternVariableCount = StringUtils.countOccurrencesOf(mappedPattern, "{");
 			if ((variables == null || patternVariableCount != variables.size()) && pathMatcher.match(mappedPattern, lookupPath)) {
-				variables = pathMatcher.extractUriTemplateVariables(mappedPattern, lookupPath);
+				variables = pathMatcher.extractUriTemplateVariables(mappedPattern, lookupPath); // 模板变量
 				Map<String, String> decodedVariables = urlPathHelper.decodePathVariables(request, variables);
 				request.setAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE, decodedVariables);
 			}
@@ -911,7 +911,8 @@ public class AnnotationMethodHandlerAdapter extends WebContentGenerator
 		@SuppressWarnings("unchecked")
 		public ModelAndView getModelAndView(Method handlerMethod, Class<?> handlerType, Object returnValue,
 				ExtendedModelMap implicitModel, ServletWebRequest webRequest) throws Exception {
-
+			
+			//  @ResponseStatus(code=200,reason="原因")
 			ResponseStatus responseStatus = AnnotatedElementUtils.findMergedAnnotation(handlerMethod, ResponseStatus.class);
 			if (responseStatus != null) {
 				HttpStatus statusCode = responseStatus.code();
@@ -939,6 +940,7 @@ public class AnnotationMethodHandlerAdapter extends WebContentGenerator
 					}
 				}
 			}
+			
 
 			if (returnValue instanceof HttpEntity) {
 				handleHttpEntityResponse((HttpEntity<?>) returnValue, webRequest);

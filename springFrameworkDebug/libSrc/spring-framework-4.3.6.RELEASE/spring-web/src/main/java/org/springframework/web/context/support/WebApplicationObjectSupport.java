@@ -77,7 +77,7 @@ public abstract class WebApplicationObjectSupport extends ApplicationObjectSuppo
 		if (this.servletContext == null && context instanceof WebApplicationContext) {
 			this.servletContext = ((WebApplicationContext) context).getServletContext();
 			if (this.servletContext != null) {
-				initServletContext(this.servletContext);
+				initServletContext(this.servletContext); // 空方法
 			}
 		}
 	}

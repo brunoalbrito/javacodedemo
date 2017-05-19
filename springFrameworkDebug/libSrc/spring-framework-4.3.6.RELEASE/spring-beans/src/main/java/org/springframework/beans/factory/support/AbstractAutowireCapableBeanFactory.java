@@ -1673,7 +1673,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	protected void invokeInitMethods(String beanName, final Object bean, RootBeanDefinition mbd)
 			throws Throwable {
 
-		boolean isInitializingBean = (bean instanceof InitializingBean);
+		boolean isInitializingBean = (bean instanceof InitializingBean);  // bean实现了InitializingBean接口
 		if (isInitializingBean && (mbd == null || !mbd.isExternallyManagedInitMethod("afterPropertiesSet"))) {
 			if (logger.isDebugEnabled()) {
 				logger.debug("Invoking afterPropertiesSet() on bean with name '" + beanName + "'");
@@ -1701,7 +1701,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			String initMethodName = mbd.getInitMethodName();
 			if (initMethodName != null && !(isInitializingBean && "afterPropertiesSet".equals(initMethodName)) &&
 					!mbd.isExternallyManagedInitMethod(initMethodName)) {
-				invokeCustomInitMethod(beanName, bean, mbd); // 调用配置的初始化方法
+				invokeCustomInitMethod(beanName, bean, mbd);  // 调用init-method="xxx"配置的初始化方法
 			}
 		}
 	}
@@ -1716,7 +1716,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	protected void invokeCustomInitMethod(String beanName, final Object bean, RootBeanDefinition mbd)
 			throws Throwable {
 
-		String initMethodName = mbd.getInitMethodName();
+		String initMethodName = mbd.getInitMethodName(); // bean中定义的方法名
 		final Method initMethod = (mbd.isNonPublicAccessAllowed() ?
 				BeanUtils.findMethod(bean.getClass(), initMethodName) :
 				ClassUtils.getMethodIfAvailable(bean.getClass(), initMethodName));
@@ -1764,7 +1764,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		else {
 			try {
 				ReflectionUtils.makeAccessible(initMethod);
-				initMethod.invoke(bean);
+				initMethod.invoke(bean); // 调用初始化方法
 			}
 			catch (InvocationTargetException ex) {
 				throw ex.getTargetException();

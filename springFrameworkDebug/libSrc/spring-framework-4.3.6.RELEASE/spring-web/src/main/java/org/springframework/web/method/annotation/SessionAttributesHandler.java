@@ -137,6 +137,7 @@ public class SessionAttributesHandler {
 	public Map<String, Object> retrieveAttributes(WebRequest request) {
 		Map<String, Object> attributes = new HashMap<String, Object>();
 		for (String name : this.knownAttributeNames) {
+			// sessionAttributeStore === org.springframework.web.bind.support.DefaultSessionAttributeStore
 			Object value = this.sessionAttributeStore.retrieveAttribute(request, name);
 			if (value != null) {
 				attributes.put(name, value);

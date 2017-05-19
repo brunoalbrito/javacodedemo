@@ -59,8 +59,9 @@ public class DefaultSessionAttributeStore implements SessionAttributeStore {
 	public Object retrieveAttribute(WebRequest request, String attributeName) {
 		Assert.notNull(request, "WebRequest must not be null");
 		Assert.notNull(attributeName, "Attribute name must not be null");
-		String storeAttributeName = getAttributeNameInSession(request, attributeName);
-		return request.getAttribute(storeAttributeName, WebRequest.SCOPE_SESSION);
+		String storeAttributeName = getAttributeNameInSession(request, attributeName); // 键名
+		// request === org.springframework.web.context.request.ServletWebRequest
+		return request.getAttribute(storeAttributeName, WebRequest.SCOPE_SESSION); // !!!!
 	}
 
 	@Override

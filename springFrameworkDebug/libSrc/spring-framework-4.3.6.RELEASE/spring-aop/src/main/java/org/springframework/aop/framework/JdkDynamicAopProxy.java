@@ -195,8 +195,7 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 			}
 
 			
-//			advised === org.springframework.aop.framework.ProxyFactory
-			
+			// advised === org.springframework.aop.framework.ProxyFactory
 			// Get the interception chain for this method.
 			List<Object> chain = this.advised.getInterceptorsAndDynamicInterceptionAdvice(method, targetClass); // 符合条件的“拦截器链条”
 

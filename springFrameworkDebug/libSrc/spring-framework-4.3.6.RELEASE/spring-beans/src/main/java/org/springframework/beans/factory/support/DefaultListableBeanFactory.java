@@ -1111,7 +1111,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			Object instanceCandidate;
 
 			if (matchingBeans.size() > 1) { // 根据类型匹配到的bean超过一个
-				autowiredBeanName = determineAutowireCandidate(matchingBeans, descriptor); // 选择规则是：1、检查有配置primary的bean ； 2、根据bean优先权   3、根据参数名获取到bean
+				autowiredBeanName = determineAutowireCandidate(matchingBeans, descriptor); // 选择规则是：1、检查有配置primary的bean ； 2、根据bean优先权order   3、根据参数名获取到bean
 				if (autowiredBeanName == null) {
 					if (descriptor.isRequired() || !indicatesMultipleBeans(type)) {
 						return descriptor.resolveNotUnique(type, matchingBeans);
@@ -1328,7 +1328,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		if (primaryCandidate != null) {
 			return primaryCandidate;
 		}
-		String priorityCandidate = determineHighestPriorityCandidate(candidates, requiredType); // 根据优先权获取bean
+		String priorityCandidate = determineHighestPriorityCandidate(candidates, requiredType); // 根据优先权order获取bean
 		if (priorityCandidate != null) {
 			return priorityCandidate;
 		}
@@ -1395,7 +1395,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		for (Map.Entry<String, Object> entry : candidates.entrySet()) {
 			String candidateBeanName = entry.getKey();
 			Object beanInstance = entry.getValue();
-			Integer candidatePriority = getPriority(beanInstance); //  实例的优先权
+			Integer candidatePriority = getPriority(beanInstance); //  实例的优先权order
 			if (candidatePriority != null) {
 				if (highestPriorityBeanName != null) {
 					if (candidatePriority.equals(highestPriority)) { // 两个bean一样的优先权

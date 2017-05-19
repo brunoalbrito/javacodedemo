@@ -103,14 +103,17 @@ public final class ModelFactory {
 	 */
 	public void initModel(NativeWebRequest request, ModelAndViewContainer container,
 			HandlerMethod handlerMethod) throws Exception {
-
-		Map<String, ?> sessionAttributes = this.sessionAttributesHandler.retrieveAttributes(request);
-		container.mergeAttributes(sessionAttributes);
-		invokeModelAttributeMethods(request, container);
+		
+		// sessionAttributesHandler ==== org.springframework.web.method.annotation.SessionAttributesHandler 
+		// handlerMethod === org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod
+		
+		Map<String, ?> sessionAttributes = this.sessionAttributesHandler.retrieveAttributes(request); // 从session中获取值
+		container.mergeAttributes(sessionAttributes); // 合并值
+		invokeModelAttributeMethods(request, container); // 迭代调用带@ModelAttribute注解的方法
 
 		for (String name : findSessionAttributeArguments(handlerMethod)) {
 			if (!container.containsAttribute(name)) {
-				Object value = this.sessionAttributesHandler.retrieveAttribute(request, name);
+				Object value = this.sessionAttributesHandler.retrieveAttribute(request, name); // 从session中获取值
 				if (value == null) {
 					throw new HttpSessionRequiredException("Expected session attribute '" + name + "'", name);
 				}
@@ -127,8 +130,10 @@ public final class ModelFactory {
 			throws Exception {
 
 		while (!this.modelMethods.isEmpty()) {
+			// getNextModelMethod(container) === org.springframework.web.method.annotation.ModelFactory.ModelMethod
 			InvocableHandlerMethod modelMethod = getNextModelMethod(container).getHandlerMethod();
-			ModelAttribute ann = modelMethod.getMethodAnnotation(ModelAttribute.class);
+			// modelMethod === org.springframework.web.method.support.InvocableHandlerMethod
+			ModelAttribute ann = modelMethod.getMethodAnnotation(ModelAttribute.class); // 获取方法上的@ModelAttribute注解
 			if (container.containsAttribute(ann.name())) {
 				if (!ann.binding()) {
 					container.setBindingDisabled(ann.name());
@@ -136,14 +141,14 @@ public final class ModelFactory {
 				continue;
 			}
 
-			Object returnValue = modelMethod.invokeForRequest(request, container);
-			if (!modelMethod.isVoid()){
-				String returnValueName = getNameForReturnValue(returnValue, modelMethod.getReturnType());
+			Object returnValue = modelMethod.invokeForRequest(request, container); // !!!!调用带@ModelAttribute注解的方法
+			if (!modelMethod.isVoid()){ // 返回值不是void
+				String returnValueName = getNameForReturnValue(returnValue, modelMethod.getReturnType()); // 返回值的类型的“短名”作为键名
 				if (!ann.binding()) {
 					container.setBindingDisabled(returnValueName);
 				}
 				if (!container.containsAttribute(returnValueName)) {
-					container.addAttribute(returnValueName, returnValue);
+					container.addAttribute(returnValueName, returnValue); // 把返回值放入container,返回值的类型的“短名”作为键名
 				}
 			}
 		}
@@ -151,7 +156,8 @@ public final class ModelFactory {
 
 	private ModelMethod getNextModelMethod(ModelAndViewContainer container) {
 		for (ModelMethod modelMethod : this.modelMethods) {
-			if (modelMethod.checkDependencies(container)) {
+			// modelMethod === org.springframework.web.method.annotation.ModelFactory.ModelMethod
+			if (modelMethod.checkDependencies(container)) { // 依赖
 				if (logger.isTraceEnabled()) {
 					logger.trace("Selected @ModelAttribute method " + modelMethod);
 				}
@@ -173,10 +179,12 @@ public final class ModelFactory {
 	 */
 	private List<String> findSessionAttributeArguments(HandlerMethod handlerMethod) {
 		List<String> result = new ArrayList<String>();
-		for (MethodParameter parameter : handlerMethod.getMethodParameters()) {
-			if (parameter.hasParameterAnnotation(ModelAttribute.class)) {
+		// handlerMethod === org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod
+		for (MethodParameter parameter : handlerMethod.getMethodParameters()) { // 参数名
+			if (parameter.hasParameterAnnotation(ModelAttribute.class)) { // 在参数上有@ModelAttribute注解
 				String name = getNameForParameter(parameter);
 				Class<?> paramType = parameter.getParameterType();
+				// sessionAttributesHandler === org.springframework.web.method.annotation.SessionAttributesHandler
 				if (this.sessionAttributesHandler.isHandlerSessionAttribute(name, paramType)) {
 					result.add(name);
 				}
@@ -273,9 +281,9 @@ public final class ModelFactory {
 		}
 		else {
 			Method method = returnType.getMethod();
-			Class<?> containingClass = returnType.getContainingClass();
+			Class<?> containingClass = returnType.getContainingClass(); // 类型
 			Class<?> resolvedType = GenericTypeResolver.resolveReturnType(method, containingClass);
-			return Conventions.getVariableNameForReturnType(method, resolvedType, returnValue);
+			return Conventions.getVariableNameForReturnType(method, resolvedType, returnValue); //
 		}
 	}
 

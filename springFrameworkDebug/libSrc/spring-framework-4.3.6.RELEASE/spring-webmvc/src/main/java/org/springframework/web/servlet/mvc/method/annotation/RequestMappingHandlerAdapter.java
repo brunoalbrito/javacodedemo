@@ -513,15 +513,15 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 		initControllerAdviceCache();
 
 		if (this.argumentResolvers == null) {
-			List<HandlerMethodArgumentResolver> resolvers = getDefaultArgumentResolvers();
+			List<HandlerMethodArgumentResolver> resolvers = getDefaultArgumentResolvers(); // “参数”解析器
 			this.argumentResolvers = new HandlerMethodArgumentResolverComposite().addResolvers(resolvers);
 		}
 		if (this.initBinderArgumentResolvers == null) {
-			List<HandlerMethodArgumentResolver> resolvers = getDefaultInitBinderArgumentResolvers();
+			List<HandlerMethodArgumentResolver> resolvers = getDefaultInitBinderArgumentResolvers(); // “初始化参数绑定”解析器
 			this.initBinderArgumentResolvers = new HandlerMethodArgumentResolverComposite().addResolvers(resolvers);
 		}
 		if (this.returnValueHandlers == null) {
-			List<HandlerMethodReturnValueHandler> handlers = getDefaultReturnValueHandlers();
+			List<HandlerMethodReturnValueHandler> handlers = getDefaultReturnValueHandlers(); // “返回值”处理器
 			this.returnValueHandlers = new HandlerMethodReturnValueHandlerComposite().addHandlers(handlers);
 		}
 	}
@@ -534,20 +534,20 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 			logger.info("Looking for @ControllerAdvice: " + getApplicationContext());
 		}
 
-		List<ControllerAdviceBean> beans = ControllerAdviceBean.findAnnotatedBeans(getApplicationContext());
+		List<ControllerAdviceBean> beans = ControllerAdviceBean.findAnnotatedBeans(getApplicationContext()); // 带有 @ControllerAdvice注解的类
 		AnnotationAwareOrderComparator.sort(beans);
 
 		List<Object> requestResponseBodyAdviceBeans = new ArrayList<Object>();
 
 		for (ControllerAdviceBean bean : beans) {
-			Set<Method> attrMethods = MethodIntrospector.selectMethods(bean.getBeanType(), MODEL_ATTRIBUTE_METHODS);
+			Set<Method> attrMethods = MethodIntrospector.selectMethods(bean.getBeanType(), MODEL_ATTRIBUTE_METHODS); // @ModelAttribute注解的方法
 			if (!attrMethods.isEmpty()) {
 				this.modelAttributeAdviceCache.put(bean, attrMethods);
 				if (logger.isInfoEnabled()) {
 					logger.info("Detected @ModelAttribute methods in " + bean);
 				}
 			}
-			Set<Method> binderMethods = MethodIntrospector.selectMethods(bean.getBeanType(), INIT_BINDER_METHODS);
+			Set<Method> binderMethods = MethodIntrospector.selectMethods(bean.getBeanType(), INIT_BINDER_METHODS);// @InitBinder注解的方法
 			if (!binderMethods.isEmpty()) {
 				this.initBinderAdviceCache.put(bean, binderMethods);
 				if (logger.isInfoEnabled()) {
@@ -717,7 +717,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 			HttpServletResponse response, HandlerMethod handlerMethod) throws Exception {
 
 		ModelAndView mav;
-		checkRequest(request);
+		checkRequest(request); // 检查提交的方式和Session是否提供
 
 		// Execute invokeHandlerMethod in synchronized block if required.
 		if (this.synchronizeOnSession) {
@@ -735,15 +735,15 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 		}
 		else {
 			// No synchronization on session demanded at all...
-			mav = invokeHandlerMethod(request, response, handlerMethod);
+			mav = invokeHandlerMethod(request, response, handlerMethod); // !!!!
 		}
 
-		if (!response.containsHeader(HEADER_CACHE_CONTROL)) {
-			if (getSessionAttributesHandler(handlerMethod).hasSessionAttributes()) {
-				applyCacheSeconds(response, this.cacheSecondsForSessionAttributeHandlers);
+		if (!response.containsHeader(HEADER_CACHE_CONTROL)) { // 缓存控制
+			if (getSessionAttributesHandler(handlerMethod).hasSessionAttributes()) { // 有使用@SessionAttributes注解
+				applyCacheSeconds(response, this.cacheSecondsForSessionAttributeHandlers); // 发送控制“浏览器缓存”的Header
 			}
 			else {
-				prepareResponse(response);
+				prepareResponse(response); // 发送控制“浏览器缓存”的Header
 			}
 		}
 
@@ -772,7 +772,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 			synchronized (this.sessionAttributesHandlerCache) {
 				sessionAttrHandler = this.sessionAttributesHandlerCache.get(handlerType);
 				if (sessionAttrHandler == null) {
-					sessionAttrHandler = new SessionAttributesHandler(handlerType, sessionAttributeStore);
+					sessionAttrHandler = new SessionAttributesHandler(handlerType, sessionAttributeStore); // 类上的@SessionAttributes注解信息
 					this.sessionAttributesHandlerCache.put(handlerType, sessionAttrHandler);
 				}
 			}
@@ -788,21 +788,22 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 	 */
 	protected ModelAndView invokeHandlerMethod(HttpServletRequest request,
 			HttpServletResponse response, HandlerMethod handlerMethod) throws Exception {
-
+		
 		ServletWebRequest webRequest = new ServletWebRequest(request, response);
 		try {
-			WebDataBinderFactory binderFactory = getDataBinderFactory(handlerMethod);
-			ModelFactory modelFactory = getModelFactory(handlerMethod, binderFactory);
+			WebDataBinderFactory binderFactory = getDataBinderFactory(handlerMethod); // !!! 归类带@InitBinder注解的方法
+			ModelFactory modelFactory = getModelFactory(handlerMethod, binderFactory); // !!! 归类带@ModelAttribute注解的方法
 
 			ServletInvocableHandlerMethod invocableMethod = createInvocableHandlerMethod(handlerMethod);
-			invocableMethod.setHandlerMethodArgumentResolvers(this.argumentResolvers);
-			invocableMethod.setHandlerMethodReturnValueHandlers(this.returnValueHandlers);
-			invocableMethod.setDataBinderFactory(binderFactory);
-			invocableMethod.setParameterNameDiscoverer(this.parameterNameDiscoverer);
+			invocableMethod.setHandlerMethodArgumentResolvers(this.argumentResolvers); // 参数解析器
+			invocableMethod.setHandlerMethodReturnValueHandlers(this.returnValueHandlers); // 返回值处理器
+			invocableMethod.setDataBinderFactory(binderFactory);  // 初始化处理器
+			invocableMethod.setParameterNameDiscoverer(this.parameterNameDiscoverer); // 参数名识别器
 
 			ModelAndViewContainer mavContainer = new ModelAndViewContainer();
 			mavContainer.addAllAttributes(RequestContextUtils.getInputFlashMap(request));
-			modelFactory.initModel(webRequest, mavContainer, invocableMethod);
+			// modelFactory === org.springframework.web.method.annotation.ModelFactory
+			modelFactory.initModel(webRequest, mavContainer, invocableMethod); // 迭代调用带@ModelAttribute注解的方法，返回值会以“返回值类型短名”作为键，放入mavContainer
 			mavContainer.setIgnoreDefaultModelOnRedirect(this.ignoreDefaultModelOnRedirect);
 
 			AsyncWebRequest asyncWebRequest = WebAsyncUtils.createAsyncWebRequest(request, response);
@@ -824,12 +825,12 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 				invocableMethod = invocableMethod.wrapConcurrentResult(result);
 			}
 
-			invocableMethod.invokeAndHandle(webRequest, mavContainer);
+			invocableMethod.invokeAndHandle(webRequest, mavContainer); // 调用方法
 			if (asyncManager.isConcurrentHandlingStarted()) {
 				return null;
 			}
 
-			return getModelAndView(mavContainer, modelFactory, webRequest);
+			return getModelAndView(mavContainer, modelFactory, webRequest); // 处理返回的 ModelAndViewContainer
 		}
 		finally {
 			webRequest.requestCompleted();
@@ -847,7 +848,8 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 	}
 
 	private ModelFactory getModelFactory(HandlerMethod handlerMethod, WebDataBinderFactory binderFactory) {
-		SessionAttributesHandler sessionAttrHandler = getSessionAttributesHandler(handlerMethod);
+		// handlerMethod 用来存放被匹配到的Cotroller的方法的信息
+		SessionAttributesHandler sessionAttrHandler = getSessionAttributesHandler(handlerMethod); // Cotroller类上的@SessionAttributes注解信息
 		Class<?> handlerType = handlerMethod.getBeanType();
 		Set<Method> methods = this.modelAttributeCache.get(handlerType);
 		if (methods == null) {
@@ -856,7 +858,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 		}
 		List<InvocableHandlerMethod> attrMethods = new ArrayList<InvocableHandlerMethod>();
 		// Global methods first
-		for (Entry<ControllerAdviceBean, Set<Method>> entry : this.modelAttributeAdviceCache.entrySet()) {
+		for (Entry<ControllerAdviceBean, Set<Method>> entry : this.modelAttributeAdviceCache.entrySet()) { // 全局的 @ModelAttribute
 			if (entry.getKey().isApplicableToBeanType(handlerType)) {
 				Object bean = entry.getKey().resolveBean();
 				for (Method method : entry.getValue()) {
@@ -864,7 +866,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 				}
 			}
 		}
-		for (Method method : methods) {
+		for (Method method : methods) { // 局部的 @ModelAttribute
 			Object bean = handlerMethod.getBean();
 			attrMethods.add(createModelAttributeMethod(binderFactory, bean, method));
 		}
@@ -880,19 +882,20 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 	}
 
 	private WebDataBinderFactory getDataBinderFactory(HandlerMethod handlerMethod) throws Exception {
-		Class<?> handlerType = handlerMethod.getBeanType();
+		// handlerMethod === org.springframework.web.method.HandlerMethod
+		Class<?> handlerType = handlerMethod.getBeanType();  // 配置在HandlerMethod的bean类型
 		Set<Method> methods = this.initBinderCache.get(handlerType);
 		if (methods == null) {
-			methods = MethodIntrospector.selectMethods(handlerType, INIT_BINDER_METHODS);
+			methods = MethodIntrospector.selectMethods(handlerType, INIT_BINDER_METHODS); // 查找带有@InitBinder注解的方法
 			this.initBinderCache.put(handlerType, methods);
 		}
 		List<InvocableHandlerMethod> initBinderMethods = new ArrayList<InvocableHandlerMethod>();
 		// Global methods first
 		for (Entry<ControllerAdviceBean, Set<Method>> entry : this.initBinderAdviceCache.entrySet()) {
-			if (entry.getKey().isApplicableToBeanType(handlerType)) {
-				Object bean = entry.getKey().resolveBean();
-				for (Method method : entry.getValue()) {
-					initBinderMethods.add(createInitBinderMethod(bean, method));
+			if (entry.getKey().isApplicableToBeanType(handlerType)) { // org.springframework.web.method.ControllerAdviceBean.isApplicableToBeanType(handlerType)
+				Object bean = entry.getKey().resolveBean(); // 接受通知的bean
+				for (Method method : entry.getValue()) { // "接受通知的bean"的所有方法
+					initBinderMethods.add(createInitBinderMethod(bean, method)); // 初始方法加入
 				}
 			}
 		}

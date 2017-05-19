@@ -5,6 +5,8 @@ public class Test {
 	public static void main(String[] args) {
 		/*
 		 	《bean命名空间》：
+			 	hook机制是：
+			 		原生支持 - 无需hook
 			 	bean信息的定义 - 使用xml配置
 				 	别名（<bean name="">）
 				 	父BeanDefinition（<bean parent="">）
@@ -19,8 +21,14 @@ public class Test {
 			 		定义自己的scope，指定scope创建bean（<bean scope="singletonScope0">）
 			 		hook感知（实现BeanPostProcessor接口的hook用来hook关于bean的流程、实现BeanFactoryPostProcessor接口的hook用来hook关于beanFactory的流程）
 			 		由PropertyPlaceholderConfigurer支持的动态属性值配置（value="${beanPlaceholderTest0.property1}"）
-		 		
+		 			实现ApplicationListener接口，用于感知应用的事件
+		 	
 		 	《context命名空间》：
+		 		hook机制是：
+		 			context标签在触发“命名空间的指定标签处理器”的时候，“命名空间的指定标签处理器”会扫描指定目录的下的，符合指定条件的Component类，并注册一些BeanPostProcessor
+			 			BeanFactory级别的hook - ConfigurationClassPostProcessor
+			 			bean级别的hook - AutowiredAnnotationBeanPostProcessor、RequiredAnnotationBeanPostProcessor、CommonAnnotationBeanPostProcessor、PersistenceAnnotationBeanPostProcessor、EventListenerMethodProcessor、DefaultEventListenerFactory
+		 			
 		 		bean信息的定义 - 使用注解配置
 		 			@Component(value="implOneFooComponent") // beanName == "implOneFooComponent"
 					@Scope(scopeName=ConfigurableBeanFactory.SCOPE_PROTOTYPE,proxyMode=ScopedProxyMode.DEFAULT) // 当 proxyMode=ScopedProxyMode.TARGET_CLASS , BeanDefinition 被代理
@@ -29,6 +37,9 @@ public class Test {
 					@DependsOn(value={})
 					@Role(value=BeanDefinition.ROLE_APPLICATION)
 					@Description(value="this is Description..")
+				
+				bean依赖注入 - 使用注解配置
+					@Autowired
 					
 		 		扫描器的定义 - 使用xml配置
 		 			<context:component-scan>
@@ -63,13 +74,45 @@ public class Test {
 				 	}	
 		 	
 		 	《aop命名空间》：
-		 			aop的配置 - 使用xml配置
-			 			<aop:scoped-proxy proxy-target-class="true" /> 劫持 BeanDefinition 的信息，以CGLIB生成子类
-			 			<aop:config>
-			 			
-		 			aop的配置 - 使用注解配置
-		 				<aop:include name="aspect4AspectJAutoProxyTag[0-9]" /> 正则表达式，用来匹配通知者的beanName，bean的必须scope="prototype"
-		 				@Aspect(...)、@Before(...)、@After(...)、@Around(...)、@AfterReturning(...)、@AfterThrowing(...)
+	 			hook机制是：
+	 				aop的“命名空间的指定标签处理器”在处理指定标签的时候，会自动注册bean级别的hook - org.springframework.aop.aspectj.autoproxy.AspectJAwareAdvisorAutoProxyCreator
+	 			aop的配置 - 使用xml配置
+		 			<aop:scoped-proxy proxy-target-class="true" /> 劫持 BeanDefinition 的信息，以CGLIB生成子类
+		 			<aop:config>
+		 			
+	 			aop的配置 - 使用注解配置
+	 				<aop:include name="aspect4AspectJAutoProxyTag[0-9]" /> 正则表达式，用来匹配通知者的beanName，bean的必须scope="prototype"
+	 				@Aspect(...)、@Before(...)、@After(...)、@Around(...)、@AfterReturning(...)、@AfterThrowing(...)
+		 	《web》：
+		 		定义
+					<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+				使用 
+					XmlWebApplicationContext context = servletContext.getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);
+		 	
+		 	《webmvc》：
+		 		定义
+					<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+				
+				handler可以使用的注解
+					类上使用的注解：
+						@RequestMapping、@SessionAttributes注解 
+					方法上使用的注解：
+						@RequestMapping、@InitBinder、@ModelAttribute注解
+					参数上使用的注解：
+						// param0 配置了获取方式，默认值，校验器
+						@RequestParam(name="param0",required=true,defaultValue="defaultValue0") @Value(value="defaultValue") @Validated(value={ValidatorRegForm.class})Object param0,
+						// param1 配置了获取方式，默认值，校验器
+				 		@RequestHeader(name="param0",required=true,defaultValue="defaultValue0") @Validated(value={ValidatorRegForm.class})Object param1,
+				 		@RequestBody() Object param2,
+				 		@CookieValue(name="param0",required=true,defaultValue="defaultValue0") Object param3,
+				 		@PathVariable() Object param4,
+				 		@ModelAttribute() Object param5
+				handler可以实现的接口
+					org.springframework.web.HttpRequestHandler
+					org.springframework.web.servlet.mvc.Controller
+					org.springframework.web.servlet.mvc.LastModified
+					
+					
 		 */
 	}
 

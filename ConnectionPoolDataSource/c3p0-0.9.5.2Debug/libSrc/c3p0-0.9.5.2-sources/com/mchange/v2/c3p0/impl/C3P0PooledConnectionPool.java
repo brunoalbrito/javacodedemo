@@ -198,6 +198,7 @@ public final class C3P0PooledConnectionPool
 
 					if ( connectionCustomizer == null)
 					{
+						// cpds === com.mchange.v2.c3p0.WrapperConnectionPoolDataSource
 						out = (auth.equals( C3P0ImplUtils.NULL_AUTH ) ?
 								cpds.getPooledConnection() :
 									cpds.getPooledConnection( auth.getUser(), 
@@ -670,8 +671,8 @@ public final class C3P0PooledConnectionPool
 				fact.setAcquisitionRetryAttempts( acq_retry_attempts );
 				fact.setAcquisitionRetryDelay( acq_retry_delay );
 				fact.setBreakOnAcquisitionFailure( break_after_acq_failure );
-				// com.mchange.v2.resourcepool.BasicResourcePoolFactory
-				rp = fact.createPool( manager );
+				// fact === com.mchange.v2.resourcepool.BasicResourcePoolFactory
+				rp = fact.createPool( manager ); // 发放“创建连接池”任务
 			}
 		}
 		catch (ResourcePoolException e)

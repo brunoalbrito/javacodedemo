@@ -143,7 +143,7 @@ public class HandlerMethodInvoker {
 	public final Object invokeHandlerMethod(Method handlerMethod, Object handler,
 			NativeWebRequest webRequest, ExtendedModelMap implicitModel) throws Exception {
 
-		Method handlerMethodToInvoke = BridgeMethodResolver.findBridgedMethod(handlerMethod);
+		Method handlerMethodToInvoke = BridgeMethodResolver.findBridgedMethod(handlerMethod); // 要调用的方法
 		try {
 			boolean debug = logger.isDebugEnabled();
 			for (String attrName : this.methodResolver.getActualSessionAttributeNames()) {
@@ -152,9 +152,9 @@ public class HandlerMethodInvoker {
 					implicitModel.addAttribute(attrName, attrValue);
 				}
 			}
-			for (Method attributeMethod : this.methodResolver.getModelAttributeMethods()) {
+			for (Method attributeMethod : this.methodResolver.getModelAttributeMethods()) { // 使用@ModelAttribute注解的方法
 				Method attributeMethodToInvoke = BridgeMethodResolver.findBridgedMethod(attributeMethod);
-				Object[] args = resolveHandlerArguments(attributeMethodToInvoke, handler, webRequest, implicitModel);
+				Object[] args = resolveHandlerArguments(attributeMethodToInvoke, handler, webRequest, implicitModel); 
 				if (debug) {
 					logger.debug("Invoking model attribute method: " + attributeMethodToInvoke);
 				}
@@ -172,9 +172,9 @@ public class HandlerMethodInvoker {
 					implicitModel.addAttribute(attrName, attrValue);
 				}
 			}
-			Object[] args = resolveHandlerArguments(handlerMethodToInvoke, handler, webRequest, implicitModel);
+			Object[] args = resolveHandlerArguments(handlerMethodToInvoke, handler, webRequest, implicitModel); // 反射方法参数注解，根据配置获取响应值
 			if (debug) {
-				logger.debug("Invoking request handler method: " + handlerMethodToInvoke);
+				logger.debug("Invoking request handler method: " + handlerMethodToInvoke); 
 			}
 			ReflectionUtils.makeAccessible(handlerMethodToInvoke);
 			return handlerMethodToInvoke.invoke(handler, args);
@@ -210,12 +210,12 @@ public class HandlerMethodInvoker {
 					Object attrValue = model.get(attrName);
 					boolean isSessionAttr = this.methodResolver.isSessionAttribute(
 							attrName, (attrValue != null ? attrValue.getClass() : null));
-					if (isSessionAttr) {
+					if (isSessionAttr) { // 是Session的字段
 						if (this.sessionStatus.isComplete()) {
 							implicitModel.put(MODEL_KEY_PREFIX_STALE + attrName, Boolean.TRUE);
 						}
 						else if (!implicitModel.containsKey(MODEL_KEY_PREFIX_STALE + attrName)) {
-							this.sessionAttributeStore.storeAttribute(webRequest, attrName, attrValue);
+							this.sessionAttributeStore.storeAttribute(webRequest, attrName, attrValue); // 放入session
 						}
 					}
 					if (!attrName.startsWith(BindingResult.MODEL_KEY_PREFIX) &&
@@ -243,7 +243,7 @@ public class HandlerMethodInvoker {
 		Class<?>[] paramTypes = handlerMethod.getParameterTypes();
 		Object[] args = new Object[paramTypes.length];
 
-		for (int i = 0; i < args.length; i++) {
+		for (int i = 0; i < args.length; i++) { // 方法的参数列表
 			MethodParameter methodParam = new SynthesizingMethodParameter(handlerMethod, i);
 			methodParam.initParameterNameDiscovery(this.parameterNameDiscoverer);
 			GenericTypeResolver.resolveParameterType(methodParam, handler.getClass());
@@ -258,8 +258,11 @@ public class HandlerMethodInvoker {
 			boolean validate = false;
 			Object[] validationHints = null;
 			int annotationsFound = 0;
-			Annotation[] paramAnns = methodParam.getParameterAnnotations();
-
+			Annotation[] paramAnns = methodParam.getParameterAnnotations(); // 参数上的注解
+			
+			/*
+			 * !!!!!
+			 */
 			for (Annotation paramAnn : paramAnns) {
 				if (RequestParam.class.isInstance(paramAnn)) {
 					RequestParam requestParam = (RequestParam) paramAnn;
@@ -309,7 +312,7 @@ public class HandlerMethodInvoker {
 				}
 			}
 
-			if (annotationsFound > 1) {
+			if (annotationsFound > 1) { // 存在互斥的注解
 				throw new IllegalStateException("Handler parameter annotations are exclusive choices - " +
 						"do not specify more than one such annotation on the same parameter: " + handlerMethod);
 			}
@@ -352,7 +355,7 @@ public class HandlerMethodInvoker {
 			}
 
 			if (paramName != null) {
-				args[i] = resolveRequestParam(paramName, required, defaultValue, methodParam, webRequest, handler);
+				args[i] = resolveRequestParam(paramName, required, defaultValue, methodParam, webRequest, handler); // 获取值
 			}
 			else if (headerName != null) {
 				args[i] = resolveRequestHeader(headerName, required, defaultValue, methodParam, webRequest, handler);
@@ -392,9 +395,9 @@ public class HandlerMethodInvoker {
 			this.bindingInitializer.initBinder(binder, webRequest);
 		}
 		if (handler != null) {
-			Set<Method> initBinderMethods = this.methodResolver.getInitBinderMethods();
-			if (!initBinderMethods.isEmpty()) {
+			Set<Method> initBinderMethods = this.methodResolver.getInitBinderMethods(); // 初始化方法
 				boolean debug = logger.isDebugEnabled();
+				if (!initBinderMethods.isEmpty()) {
 				for (Method initBinderMethod : initBinderMethods) {
 					Method methodToInvoke = BridgeMethodResolver.findBridgedMethod(initBinderMethod);
 					String[] targetNames = AnnotationUtils.findAnnotation(initBinderMethod, InitBinder.class).value();
@@ -405,7 +408,7 @@ public class HandlerMethodInvoker {
 							logger.debug("Invoking init-binder method: " + methodToInvoke);
 						}
 						ReflectionUtils.makeAccessible(methodToInvoke);
-						Object returnValue = methodToInvoke.invoke(handler, initBinderArgs);
+						Object returnValue = methodToInvoke.invoke(handler, initBinderArgs); // 调用初始化方法
 						if (returnValue != null) {
 							throw new IllegalStateException(
 									"InitBinder methods must not have a return value: " + methodToInvoke);
@@ -419,7 +422,7 @@ public class HandlerMethodInvoker {
 	private Object[] resolveInitBinderArguments(Object handler, Method initBinderMethod,
 			WebDataBinder binder, NativeWebRequest webRequest) throws Exception {
 
-		Class<?>[] initBinderParams = initBinderMethod.getParameterTypes();
+		Class<?>[] initBinderParams = initBinderMethod.getParameterTypes(); // 初始化方法（声明@InitBinder的方法）的参数列表
 		Object[] initBinderArgs = new Object[initBinderParams.length];
 
 		for (int i = 0; i < initBinderArgs.length; i++) {
@@ -432,7 +435,7 @@ public class HandlerMethodInvoker {
 			String pathVarName = null;
 			Annotation[] paramAnns = methodParam.getParameterAnnotations();
 
-			for (Annotation paramAnn : paramAnns) {
+			for (Annotation paramAnn : paramAnns) { // 方法参数的注解
 				if (RequestParam.class.isInstance(paramAnn)) {
 					RequestParam requestParam = (RequestParam) paramAnn;
 					paramName = requestParam.name();
@@ -486,7 +489,7 @@ public class HandlerMethodInvoker {
 	private Object resolveRequestParam(String paramName, boolean required, String defaultValue,
 			MethodParameter methodParam, NativeWebRequest webRequest, Object handlerForInitBinderCall)
 			throws Exception {
-
+//		webRequest === org.springframework.web.context.request.ServletWebRequest
 		Class<?> paramType = methodParam.getParameterType();
 		if (Map.class.isAssignableFrom(paramType) && paramName.length() == 0) {
 			return resolveRequestParamMap((Class<? extends Map<?, ?>>) paramType, webRequest);
@@ -503,14 +506,15 @@ public class HandlerMethodInvoker {
 			}
 		}
 		if (paramValue == null) {
-			String[] paramValues = webRequest.getParameterValues(paramName);
+//			webRequest === org.springframework.web.context.request.ServletWebRequest
+			String[] paramValues = webRequest.getParameterValues(paramName); // 获取值
 			if (paramValues != null) {
 				paramValue = (paramValues.length == 1 ? paramValues[0] : paramValues);
 			}
 		}
 		if (paramValue == null) {
 			if (defaultValue != null) {
-				paramValue = resolveDefaultValue(defaultValue);
+				paramValue = resolveDefaultValue(defaultValue); // 默认值
 			}
 			else if (required) {
 				raiseMissingParameterException(paramName, paramType);
@@ -519,7 +523,7 @@ public class HandlerMethodInvoker {
 		}
 		WebDataBinder binder = createBinder(webRequest, null, paramName);
 		initBinder(handlerForInitBinderCall, paramName, binder, webRequest);
-		return binder.convertIfNecessary(paramValue, paramType, methodParam);
+		return binder.convertIfNecessary(paramValue, paramType, methodParam); // 转换类型
 	}
 
 	private Map<String, ?> resolveRequestParamMap(Class<? extends Map<?, ?>> mapType, NativeWebRequest webRequest) {

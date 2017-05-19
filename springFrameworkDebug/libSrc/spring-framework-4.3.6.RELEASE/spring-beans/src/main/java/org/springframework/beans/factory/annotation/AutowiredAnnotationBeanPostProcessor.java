@@ -363,7 +363,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 
 		InjectionMetadata metadata = findAutowiringMetadata(beanName, bean.getClass(), pvs);
 		try {
-			metadata.inject(bean, beanName, pvs);
+			metadata.inject(bean, beanName, pvs); // !!!! 进行依赖注入
 		}
 		catch (BeanCreationException ex) {
 			throw ex;
@@ -582,7 +582,8 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 				Set<String> autowiredBeanNames = new LinkedHashSet<String>(1);
 				TypeConverter typeConverter = beanFactory.getTypeConverter();
 				try {
-					value = beanFactory.resolveDependency(desc, beanName, autowiredBeanNames, typeConverter);
+					// org.springframework.beans.factory.support.DefaultListableBeanFactory
+					value = beanFactory.resolveDependency(desc, beanName, autowiredBeanNames, typeConverter); // 解析依赖
 				}
 				catch (BeansException ex) {
 					throw new UnsatisfiedDependencyException(null, beanName, new InjectionPoint(field), ex);
@@ -592,10 +593,10 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 						if (value != null || this.required) {
 							this.cachedFieldValue = desc;
 							registerDependentBeans(beanName, autowiredBeanNames);
-							if (autowiredBeanNames.size() == 1) {
+							if (autowiredBeanNames.size() == 1) { // 只有一个匹配
 								String autowiredBeanName = autowiredBeanNames.iterator().next();
 								if (beanFactory.containsBean(autowiredBeanName)) {
-									if (beanFactory.isTypeMatch(autowiredBeanName, field.getType())) {
+									if (beanFactory.isTypeMatch(autowiredBeanName, field.getType())) { // 类型匹配
 										this.cachedFieldValue = new ShortcutDependencyDescriptor(
 												desc, autowiredBeanName, field.getType());
 									}
@@ -658,7 +659,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 					try {
 						/**
 						 	识别参数类型，进行注入
-						 		机制是：根据参数类型查找符合条件的bean，当有多个bean都符合条件时，选择规则是：1、检查有配置primary的bean ； 2、根据bean优先权   3、根据参数名获取到bean
+						 		机制是：根据参数类型查找符合条件的bean，当有多个bean都符合条件时，选择规则是：1、检查有配置primary的bean ； 2、根据bean优先权order   3、根据参数名获取到bean
 						 	
 						 */
 						// org.springframework.beans.factory.support.DefaultListableBeanFactory

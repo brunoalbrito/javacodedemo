@@ -56,322 +56,323 @@ import com.mchange.v1.db.sql.ConnectionUtils;
 //     to hang, blocking access to getPooledConnection() for all Threads.
 public final class WrapperConnectionPoolDataSource extends WrapperConnectionPoolDataSourceBase implements ConnectionPoolDataSource
 {
-    final static MLogger logger = MLog.getLogger( WrapperConnectionPoolDataSource.class );
+	final static MLogger logger = MLog.getLogger( WrapperConnectionPoolDataSource.class );
 
-    //MT: protected by this' lock
-    ConnectionTester connectionTester = C3P0Registry.getDefaultConnectionTester();
-    Map              userOverrides;
+	//MT: protected by this' lock
+	ConnectionTester connectionTester = C3P0Registry.getDefaultConnectionTester();
+	Map              userOverrides;
 
-    public WrapperConnectionPoolDataSource(boolean autoregister)
-    {
-	super( autoregister );
-
-	setUpPropertyListeners();
-
-	//set up initial value of userOverrides
-	try
-	    { this.userOverrides = C3P0ImplUtils.parseUserOverridesAsString( this.getUserOverridesAsString() ); }
-	catch (Exception e)
-	    {
-		if ( logger.isLoggable( MLevel.WARNING ) )
-		    logger.log( MLevel.WARNING, "Failed to parse stringified userOverrides. " + this.getUserOverridesAsString(), e );
-	    }
-    }
-
-    public WrapperConnectionPoolDataSource()
-    { this( true ); }
-
-    private void setUpPropertyListeners()
-    {
-	VetoableChangeListener setConnectionTesterListener = new VetoableChangeListener()
-	    {
-		// always called within synchronized mutators of the parent class... needn't explicitly sync here
-		public void vetoableChange( PropertyChangeEvent evt ) throws PropertyVetoException
-		{
-		    String propName = evt.getPropertyName();
-		    Object val = evt.getNewValue();
-
-		    if ( "connectionTesterClassName".equals( propName ) )
-			{
-			    try
-				{ recreateConnectionTester( (String) val ); }
-			    catch ( Exception e )
-				{
-				    //e.printStackTrace();
-				    if ( logger.isLoggable( MLevel.WARNING ) )
-					logger.log( MLevel.WARNING, "Failed to create ConnectionTester of class " + val, e );
-				    
-				    throw new PropertyVetoException("Could not instantiate connection tester class with name '" + val + "'.", evt);
-				}
-			}
-		    else if ("userOverridesAsString".equals( propName ))
-			{
-			    try
-				{ WrapperConnectionPoolDataSource.this.userOverrides = C3P0ImplUtils.parseUserOverridesAsString( (String) val ); }
-			    catch (Exception e)
-				{
-				    if ( logger.isLoggable( MLevel.WARNING ) )
-					logger.log( MLevel.WARNING, "Failed to parse stringified userOverrides. " + val, e );
-				    
-				    throw new PropertyVetoException("Failed to parse stringified userOverrides. " + val, evt);
-				}
-			}
-		}
-	    };
-	this.addVetoableChangeListener( setConnectionTesterListener );
-    }
-
-    public WrapperConnectionPoolDataSource( String configName )
-    {
-	this();
-	
-	try
-	    {
-		if (configName != null)
-		    C3P0Config.bindNamedConfigToBean( this, configName, true ); 
-	    }
-	catch (Exception e)
-	    {
-		if (logger.isLoggable( MLevel.WARNING ))
-		    logger.log( MLevel.WARNING, 
-				"Error binding WrapperConnectionPoolDataSource to named-config '" + configName + 
-				"'. Some default-config values may be used.", 
-				e);
-	    }
-    }
-
-    // implementation of javax.sql.ConnectionPoolDataSource
-
-    public PooledConnection getPooledConnection()
-	throws SQLException
-    { return this.getPooledConnection( (ConnectionCustomizer) null, null ); }
-
-    // getNestedDataSource() is sync'ed, which is enough. Unsync'ed this method,
-    // because when sync'ed a hang in retrieving one connection blocks all
-    //
-    protected PooledConnection getPooledConnection( ConnectionCustomizer cc, String pdsIdt )
-	throws SQLException
-    { 
-	DataSource nds = getNestedDataSource();
-	if (nds == null)
-	    throw new SQLException( "No standard DataSource has been set beneath this wrapper! [ nestedDataSource == null ]");
-	Connection conn = null;
-	try
+	public WrapperConnectionPoolDataSource(boolean autoregister)
 	{
-	    conn = nds.getConnection();
-	    if (conn == null)
-		throw new SQLException("An (unpooled) DataSource returned null from its getConnection() method! " +
-				       "DataSource: " + getNestedDataSource());
-	    if ( this.isUsesTraditionalReflectiveProxies( this.getUser() ) )
-	    {
-		//return new C3P0PooledConnection( new com.mchange.v2.c3p0.test.CloseReportingConnection( conn ), 
-		return new C3P0PooledConnection( conn, 
-						 connectionTester,
-						 this.isAutoCommitOnClose( this.getUser() ), 
-						 this.isForceIgnoreUnresolvedTransactions( this.getUser() ),
-						 cc,
-						 pdsIdt); 
-	    }
-	    else
-	    {
-		return new NewPooledConnection( conn, 
+		super( autoregister );
+
+		setUpPropertyListeners();
+
+		//set up initial value of userOverrides
+		try
+		{ this.userOverrides = C3P0ImplUtils.parseUserOverridesAsString( this.getUserOverridesAsString() ); }
+		catch (Exception e)
+		{
+			if ( logger.isLoggable( MLevel.WARNING ) )
+				logger.log( MLevel.WARNING, "Failed to parse stringified userOverrides. " + this.getUserOverridesAsString(), e );
+		}
+	}
+
+	public WrapperConnectionPoolDataSource()
+	{ this( true ); }
+
+	private void setUpPropertyListeners()
+	{
+		VetoableChangeListener setConnectionTesterListener = new VetoableChangeListener()
+		{
+			// always called within synchronized mutators of the parent class... needn't explicitly sync here
+			public void vetoableChange( PropertyChangeEvent evt ) throws PropertyVetoException
+			{
+				String propName = evt.getPropertyName();
+				Object val = evt.getNewValue();
+
+				if ( "connectionTesterClassName".equals( propName ) )
+				{
+					try
+					{ recreateConnectionTester( (String) val ); }
+					catch ( Exception e )
+					{
+						//e.printStackTrace();
+						if ( logger.isLoggable( MLevel.WARNING ) )
+							logger.log( MLevel.WARNING, "Failed to create ConnectionTester of class " + val, e );
+
+						throw new PropertyVetoException("Could not instantiate connection tester class with name '" + val + "'.", evt);
+					}
+				}
+				else if ("userOverridesAsString".equals( propName ))
+				{
+					try
+					{ WrapperConnectionPoolDataSource.this.userOverrides = C3P0ImplUtils.parseUserOverridesAsString( (String) val ); }
+					catch (Exception e)
+					{
+						if ( logger.isLoggable( MLevel.WARNING ) )
+							logger.log( MLevel.WARNING, "Failed to parse stringified userOverrides. " + val, e );
+
+						throw new PropertyVetoException("Failed to parse stringified userOverrides. " + val, evt);
+					}
+				}
+			}
+		};
+		this.addVetoableChangeListener( setConnectionTesterListener );
+	}
+
+	public WrapperConnectionPoolDataSource( String configName )
+	{
+		this();
+
+		try
+		{
+			if (configName != null)
+				C3P0Config.bindNamedConfigToBean( this, configName, true ); 
+		}
+		catch (Exception e)
+		{
+			if (logger.isLoggable( MLevel.WARNING ))
+				logger.log( MLevel.WARNING, 
+						"Error binding WrapperConnectionPoolDataSource to named-config '" + configName + 
+						"'. Some default-config values may be used.", 
+						e);
+		}
+	}
+
+	// implementation of javax.sql.ConnectionPoolDataSource
+
+	public PooledConnection getPooledConnection()
+			throws SQLException
+	{ return this.getPooledConnection( (ConnectionCustomizer) null, null ); }
+
+	// getNestedDataSource() is sync'ed, which is enough. Unsync'ed this method,
+	// because when sync'ed a hang in retrieving one connection blocks all
+	//
+	protected PooledConnection getPooledConnection( ConnectionCustomizer cc, String pdsIdt )
+			throws SQLException
+	{ 
+		DataSource nds = getNestedDataSource();
+		if (nds == null)
+			throw new SQLException( "No standard DataSource has been set beneath this wrapper! [ nestedDataSource == null ]");
+		Connection conn = null;
+		try
+		{
+			conn = nds.getConnection();
+			if (conn == null)
+				throw new SQLException("An (unpooled) DataSource returned null from its getConnection() method! " +
+						"DataSource: " + getNestedDataSource());
+			if ( this.isUsesTraditionalReflectiveProxies( this.getUser() ) )
+			{
+				//return new C3P0PooledConnection( new com.mchange.v2.c3p0.test.CloseReportingConnection( conn ), 
+				return new C3P0PooledConnection( conn, 
+						connectionTester,
+						this.isAutoCommitOnClose( this.getUser() ), 
+						this.isForceIgnoreUnresolvedTransactions( this.getUser() ),
+						cc,
+						pdsIdt); 
+			}
+			else
+			{
+				return new NewPooledConnection( conn, 
 						connectionTester,
 						this.isAutoCommitOnClose( this.getUser() ), 
 						this.isForceIgnoreUnresolvedTransactions( this.getUser() ),
 						this.getPreferredTestQuery( this.getUser() ),
 						cc,
 						pdsIdt); 
-	    }
-	}
-	catch (SQLException e)
-	{
-	    // if we did not succeed at emitting the PooledConnection, we should close
-	    // the underlying database Connection
-	    ConnectionUtils.attemptClose( conn );
+			}
+		}
+		catch (SQLException e)
+		{
+			// if we did not succeed at emitting the PooledConnection, we should close
+			// the underlying database Connection
+			ConnectionUtils.attemptClose( conn );
 
-	    throw e;
-	}
-	catch (RuntimeException re)
-	{
-	    // if we did not succeed at emitting the PooledConnection, we should close
-	    // the underlying database Connection
-	    ConnectionUtils.attemptClose( conn );
+			throw e;
+		}
+		catch (RuntimeException re)
+		{
+			// if we did not succeed at emitting the PooledConnection, we should close
+			// the underlying database Connection
+			ConnectionUtils.attemptClose( conn );
 
-	    throw re;
-	}
-    } 
- 
-    public PooledConnection getPooledConnection(String user, String password)
-	throws SQLException
-    { return this.getPooledConnection( user, password, null, null ); }
+			throw re;
+		}
+	} 
 
-    // getNestedDataSource() is sync'ed, which is enough. Unsync'ed this method,
-    // because when sync'ed a hang in retrieving one connection blocks all
-    //
-    protected PooledConnection getPooledConnection(String user, String password, ConnectionCustomizer cc, String pdsIdt)
-	throws SQLException
-    { 
-	DataSource nds = getNestedDataSource();
-	if (nds == null)
-	    throw new SQLException( "No standard DataSource has been set beneath this wrapper! [ nestedDataSource == null ]");
-	Connection conn = null;
-	try
-	{
-	    conn = nds.getConnection(user, password);
-	    if (conn == null)
-		throw new SQLException("An (unpooled) DataSource returned null from its getConnection() method! " +
-				       "DataSource: " + getNestedDataSource());
-	    if ( this.isUsesTraditionalReflectiveProxies( user ) )
-	    {
-		//return new C3P0PooledConnection( new com.mchange.v2.c3p0.test.CloseReportingConnection( conn ), 
-		return new C3P0PooledConnection( conn,
-						 connectionTester,
-						 this.isAutoCommitOnClose( user ), 
-						 this.isForceIgnoreUnresolvedTransactions( user ),
-						 cc,
-						 pdsIdt);
-	    }
-	    else
-	    {
-		return new NewPooledConnection( conn, 
+	public PooledConnection getPooledConnection(String user, String password)
+			throws SQLException
+	{ return this.getPooledConnection( user, password, null, null ); }
+
+	// getNestedDataSource() is sync'ed, which is enough. Unsync'ed this method,
+	// because when sync'ed a hang in retrieving one connection blocks all
+	//
+	protected PooledConnection getPooledConnection(String user, String password, ConnectionCustomizer cc, String pdsIdt)
+			throws SQLException
+	{ 
+		// nds === com.mchange.v2.c3p0.DriverManagerDataSource
+		DataSource nds = getNestedDataSource();
+		if (nds == null)
+			throw new SQLException( "No standard DataSource has been set beneath this wrapper! [ nestedDataSource == null ]");
+		Connection conn = null;
+		try
+		{
+			conn = nds.getConnection(user, password); // 获取连接
+			if (conn == null)
+				throw new SQLException("An (unpooled) DataSource returned null from its getConnection() method! " +
+						"DataSource: " + getNestedDataSource());
+			if ( this.isUsesTraditionalReflectiveProxies( user ) )
+			{
+				//return new C3P0PooledConnection( new com.mchange.v2.c3p0.test.CloseReportingConnection( conn ), 
+				return new C3P0PooledConnection( conn,
+						connectionTester,
+						this.isAutoCommitOnClose( user ), 
+						this.isForceIgnoreUnresolvedTransactions( user ),
+						cc,
+						pdsIdt);
+			}
+			else
+			{
+				return new NewPooledConnection( conn, 
 						connectionTester,
 						this.isAutoCommitOnClose( user ), 
 						this.isForceIgnoreUnresolvedTransactions( user ),
 						this.getPreferredTestQuery( user ),
 						cc,
 						pdsIdt); 
-	    }
+			}
+		}
+		catch (SQLException e)
+		{
+			// if we did not succeed at emitting the PooledConnection, we should close
+			// the underlying database Connection
+			ConnectionUtils.attemptClose( conn );
+
+			throw e;
+		}
+		catch (RuntimeException re)
+		{
+			// if we did not succeed at emitting the PooledConnection, we should close
+			// the underlying database Connection
+			ConnectionUtils.attemptClose( conn );
+
+			throw re;
+		}
 	}
-	catch (SQLException e)
+
+	private boolean isAutoCommitOnClose( String userName )
 	{
-	    // if we did not succeed at emitting the PooledConnection, we should close
-	    // the underlying database Connection
-	    ConnectionUtils.attemptClose( conn );
+		if ( userName == null )
+			return this.isAutoCommitOnClose();
 
-	    throw e;
+		Boolean override = C3P0ConfigUtils.extractBooleanOverride( "autoCommitOnClose", userName, userOverrides );
+		return ( override == null ? this.isAutoCommitOnClose() : override.booleanValue() );
 	}
-	catch (RuntimeException re)
+
+	private boolean isForceIgnoreUnresolvedTransactions( String userName )
 	{
-	    // if we did not succeed at emitting the PooledConnection, we should close
-	    // the underlying database Connection
-	    ConnectionUtils.attemptClose( conn );
+		if ( userName == null )
+			return this.isForceIgnoreUnresolvedTransactions();
 
-	    throw re;
+		Boolean override = C3P0ConfigUtils.extractBooleanOverride( "forceIgnoreUnresolvedTransactions", userName, userOverrides );
+		return ( override == null ? this.isForceIgnoreUnresolvedTransactions() : override.booleanValue() );
 	}
-    }
 
-    private boolean isAutoCommitOnClose( String userName )
-    {
-	if ( userName == null )
-	    return this.isAutoCommitOnClose();
+	private boolean isUsesTraditionalReflectiveProxies( String userName )
+	{
+		if ( userName == null )
+			return this.isUsesTraditionalReflectiveProxies();
 
-	Boolean override = C3P0ConfigUtils.extractBooleanOverride( "autoCommitOnClose", userName, userOverrides );
-	return ( override == null ? this.isAutoCommitOnClose() : override.booleanValue() );
-    }
+		Boolean override = C3P0ConfigUtils.extractBooleanOverride( "usesTraditionalReflectiveProxies", userName, userOverrides );
+		return ( override == null ? this.isUsesTraditionalReflectiveProxies() : override.booleanValue() );
+	}
 
-    private boolean isForceIgnoreUnresolvedTransactions( String userName )
-    {
-	if ( userName == null )
-	    return this.isForceIgnoreUnresolvedTransactions();
+	private String getPreferredTestQuery( String userName )
+	{
+		if ( userName == null )
+			return this.getPreferredTestQuery();
 
-	Boolean override = C3P0ConfigUtils.extractBooleanOverride( "forceIgnoreUnresolvedTransactions", userName, userOverrides );
-	return ( override == null ? this.isForceIgnoreUnresolvedTransactions() : override.booleanValue() );
-    }
+		String override = (String) C3P0ConfigUtils.extractUserOverride( "preferredTestQuery", userName, userOverrides );
+		return (override == null ? this.getPreferredTestQuery() : override);
+	}
 
-    private boolean isUsesTraditionalReflectiveProxies( String userName )
-    {
-	if ( userName == null )
-	    return this.isUsesTraditionalReflectiveProxies();
+	public PrintWriter getLogWriter()
+			throws SQLException
+	{ return getNestedDataSource().getLogWriter(); }
 
-	Boolean override = C3P0ConfigUtils.extractBooleanOverride( "usesTraditionalReflectiveProxies", userName, userOverrides );
-	return ( override == null ? this.isUsesTraditionalReflectiveProxies() : override.booleanValue() );
-    }
+	public void setLogWriter(PrintWriter out)
+			throws SQLException
+	{ getNestedDataSource().setLogWriter( out ); }
 
-    private String getPreferredTestQuery( String userName )
-    {
-	if ( userName == null )
-	    return this.getPreferredTestQuery();
+	public void setLoginTimeout(int seconds)
+			throws SQLException
+	{ getNestedDataSource().setLoginTimeout( seconds ); }
 
-	String override = (String) C3P0ConfigUtils.extractUserOverride( "preferredTestQuery", userName, userOverrides );
-	return (override == null ? this.getPreferredTestQuery() : override);
-    }
+	public int getLoginTimeout()
+			throws SQLException
+	{ return getNestedDataSource().getLoginTimeout(); }
 
-    public PrintWriter getLogWriter()
-	throws SQLException
-    { return getNestedDataSource().getLogWriter(); }
+	//"virtual properties"
 
-    public void setLogWriter(PrintWriter out)
-	throws SQLException
-    { getNestedDataSource().setLogWriter( out ); }
+	public String getUser()
+	{ 
+		try { return C3P0ImplUtils.findAuth( this.getNestedDataSource() ).getUser(); }
+		catch (SQLException e)
+		{
+			//e.printStackTrace();
+			if ( logger.isLoggable( MLevel.WARNING ) )
+				logger.log( MLevel.WARNING, 
+						"An Exception occurred while trying to find the 'user' property from our nested DataSource." +
+								" Defaulting to no specified username.", e );
+			return null; 
+		}
+	}
 
-    public void setLoginTimeout(int seconds)
-	throws SQLException
-    { getNestedDataSource().setLoginTimeout( seconds ); }
+	public String getPassword()
+	{ 
+		try { return C3P0ImplUtils.findAuth( this.getNestedDataSource() ).getPassword(); }
+		catch (SQLException e)
+		{ 
+			//e.printStackTrace();
+			if ( logger.isLoggable( MLevel.WARNING ) )
+				logger.log( MLevel.WARNING, "An Exception occurred while trying to find the 'password' property from our nested DataSource." + 
+						" Defaulting to no specified password.", e );
+			return null; 
+		}
+	}
 
-    public int getLoginTimeout()
-	throws SQLException
-    { return getNestedDataSource().getLoginTimeout(); }
+	public Map getUserOverrides()
+	{ return userOverrides; }
 
-    //"virtual properties"
+	public String toString()
+	{
+		StringBuffer sb = new StringBuffer();
+		sb.append( super.toString() );
 
-    public String getUser()
-    { 
-	try { return C3P0ImplUtils.findAuth( this.getNestedDataSource() ).getUser(); }
-	catch (SQLException e)
-	    {
-		//e.printStackTrace();
-		if ( logger.isLoggable( MLevel.WARNING ) )
-		    logger.log( MLevel.WARNING, 
-				"An Exception occurred while trying to find the 'user' property from our nested DataSource." +
-				" Defaulting to no specified username.", e );
-		return null; 
-	    }
-    }
+		// 	if (userOverrides != null)
+		// 	    sb.append("; userOverrides: " + userOverrides.toString());
 
-    public String getPassword()
-    { 
-	try { return C3P0ImplUtils.findAuth( this.getNestedDataSource() ).getPassword(); }
-	catch (SQLException e)
-	    { 
-		//e.printStackTrace();
-		if ( logger.isLoggable( MLevel.WARNING ) )
-		    logger.log( MLevel.WARNING, "An Exception occurred while trying to find the 'password' property from our nested DataSource." + 
-				" Defaulting to no specified password.", e );
-		return null; 
-	    }
-    }
+		return sb.toString();
+	}
 
-    public Map getUserOverrides()
-    { return userOverrides; }
+	protected String extraToStringInfo()
+	{
+		if (userOverrides != null)
+			return "; userOverrides: " + userOverrides.toString();
+		else
+			return null;
+	}
 
-    public String toString()
-    {
-	StringBuffer sb = new StringBuffer();
-	sb.append( super.toString() );
-
-// 	if (userOverrides != null)
-// 	    sb.append("; userOverrides: " + userOverrides.toString());
-
-	return sb.toString();
-    }
-
-    protected String extraToStringInfo()
-    {
-	if (userOverrides != null)
-	    return "; userOverrides: " + userOverrides.toString();
-	else
-	    return null;
-    }
-
-    //other code
-    private synchronized void recreateConnectionTester(String className) throws Exception
-    {
-	if (className != null)
-	    {
-		ConnectionTester ct = (ConnectionTester) Class.forName( className ).newInstance();
-		this.connectionTester = ct;
-	    }
-	else
-	    this.connectionTester = C3P0Registry.getDefaultConnectionTester();
-    }
+	//other code
+	private synchronized void recreateConnectionTester(String className) throws Exception
+	{
+		if (className != null)
+		{
+			ConnectionTester ct = (ConnectionTester) Class.forName( className ).newInstance();
+			this.connectionTester = ct;
+		}
+		else
+			this.connectionTester = C3P0Registry.getDefaultConnectionTester();
+	}
 }

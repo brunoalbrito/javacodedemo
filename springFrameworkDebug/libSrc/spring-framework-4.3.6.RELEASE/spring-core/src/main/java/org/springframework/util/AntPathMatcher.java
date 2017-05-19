@@ -188,6 +188,8 @@ public class AntPathMatcher implements PathMatcher {
 	 * @return {@code true} if the supplied {@code path} matched, {@code false} if it didn't
 	 */
 	protected boolean doMatch(String pattern, String path, boolean fullMatch, Map<String, String> uriTemplateVariables) {
+		// 匹配表达式 pattern
+		// 被匹配的地址 path
 		if (path.startsWith(this.pathSeparator) != pattern.startsWith(this.pathSeparator)) {
 			return false;
 		}
@@ -383,7 +385,7 @@ public class AntPathMatcher implements PathMatcher {
 			tokenized = this.tokenizedPatternCache.get(pattern);
 		}
 		if (tokenized == null) {
-			tokenized = tokenizePath(pattern);
+			tokenized = tokenizePath(pattern); // !!!
 			if (cachePatterns == null && this.tokenizedPatternCache.size() >= CACHE_TURNOFF_THRESHOLD) {
 				// Try to adapt to the runtime situation that we're encountering:
 				// There are obviously too many different patterns coming in here...

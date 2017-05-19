@@ -79,7 +79,7 @@ public class ServletInvocableHandlerMethod extends InvocableHandlerMethod {
 	 */
 	public ServletInvocableHandlerMethod(HandlerMethod handlerMethod) {
 		super(handlerMethod);
-		initResponseStatus();
+		initResponseStatus(); // !!!!
 	}
 
 
@@ -113,10 +113,10 @@ public class ServletInvocableHandlerMethod extends InvocableHandlerMethod {
 	public void invokeAndHandle(ServletWebRequest webRequest,
 			ModelAndViewContainer mavContainer, Object... providedArgs) throws Exception {
 
-		Object returnValue = invokeForRequest(webRequest, mavContainer, providedArgs);
-		setResponseStatus(webRequest);
+		Object returnValue = invokeForRequest(webRequest, mavContainer, providedArgs); // 调用方法
+		setResponseStatus(webRequest); // 发送响应状态
 
-		if (returnValue == null) {
+		if (returnValue == null) { // 没有返回值
 			if (isRequestNotModified(webRequest) || hasResponseStatus() || mavContainer.isRequestHandled()) {
 				mavContainer.setRequestHandled(true);
 				return;
@@ -129,8 +129,9 @@ public class ServletInvocableHandlerMethod extends InvocableHandlerMethod {
 
 		mavContainer.setRequestHandled(false);
 		try {
+			// returnValueHandlers === org.springframework.web.method.support.HandlerMethodReturnValueHandlerComposite
 			this.returnValueHandlers.handleReturnValue(
-					returnValue, getReturnValueType(returnValue), mavContainer, webRequest);
+					returnValue, getReturnValueType(returnValue), mavContainer, webRequest); // 处理返回值
 		}
 		catch (Exception ex) {
 			if (logger.isTraceEnabled()) {

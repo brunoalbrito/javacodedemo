@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="    
+    http://www.springframework.org/schema/beans        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd    
+    http://www.springframework.org/schema/context                http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+    <!-- 以“/”开头的beanName被“org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping”认为是Handler -->
+    
+    <!-- -------拦截器  bof-------------- -->
+    <!-- 拦截器 - MappedInterceptor被自动扫描 -->
+    <bean id="mappedInterceptor0" class="org.springframework.web.servlet.handler.MappedInterceptor">
+      	<constructor-arg index="0" type="java.lang.String[]" name="includePatterns">
+      	    <array value-type="java.lang.String" merge="false">
+      	        <value type=""></value>
+      	        <value type=""></value>
+		 	</array>
+    	</constructor-arg>
+      	<constructor-arg index="1" type="java.lang.String[]" name="excludePatterns">
+      	    <array value-type="java.lang.String" merge="false">
+			 	<value type=""></value>
+	     	    <value type=""></value>
+		 	</array>
+    	</constructor-arg>
+      	<constructor-arg index="2" type="org.springframework.web.servlet.HandlerInterceptor" name="interceptor">
+      		<bean class="cn.java.demo.webmvc.bean.interceptor.HandlerInterceptorImpl1" /><!-- 拦截器 -->
+      	</constructor-arg>
+    </bean>
+    <!-- 拦截器 - 主动配置 -->
+    <bean id="handlerInterceptor0" class="cn.java.demo.webmvc.bean.interceptor.HandlerInterceptorImpl0" />
+	<bean id="webRequestInterceptor0" class="cn.java.demo.webmvc.bean.interceptor.WebRequestInterceptorImpl0" />
+    <!-- -------拦截器  eof-------------- -->
+   
+   	<!-- -------处理器（控制器）  bof-------------- --> 
+    <bean id="/http-request-handler-impl0" class="cn.java.demo.webmvc.bean.handler.byxml.HttpRequestHandlerImpl0" />
+    <bean id="/controller-impl0" class="cn.java.demo.webmvc.bean.handler.byxml.ControllerImpl0" />
+   	<!-- -------处理器（控制器）  eof-------------- -->
+   	
+    <!-- -------映射器  bof-------------- --> 
+    <bean id="handlerMapping0" class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping" order="0">
+	    <property  name="rootHandler"> <!-- 根处理器 -->
+	    	<bean class="cn.java.demo.webmvc.bean.handler.byxml.RootHandler" />
+	    </property>
+	    <property  name="defaultHandler"> <!-- 默认处理器 -->
+	    	<bean class="cn.java.demo.webmvc.bean.handler.byxml.DefaultHandler" />
+	    </property>
+	    <property  name="interceptors"> <!-- 方法的拦截器 -->
+	        <array merge="false">
+			 	<ref bean="handlerInterceptor0" />
+			 	<ref bean="webRequestInterceptor0" />
+		 	</array>
+	    </property>
+    </bean>
+    <!-- -------映射器  eof-------------- --> 
+        
+        
+   
+    
+</beans>

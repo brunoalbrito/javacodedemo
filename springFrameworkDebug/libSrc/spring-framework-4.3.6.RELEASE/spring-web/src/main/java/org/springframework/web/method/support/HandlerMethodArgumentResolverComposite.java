@@ -114,11 +114,12 @@ public class HandlerMethodArgumentResolverComposite implements HandlerMethodArgu
 	public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
 			NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
 
-		HandlerMethodArgumentResolver resolver = getArgumentResolver(parameter);
+		HandlerMethodArgumentResolver resolver = getArgumentResolver(parameter); // 获取参数解析器
 		if (resolver == null) {
 			throw new IllegalArgumentException("Unknown parameter type [" + parameter.getParameterType().getName() + "]");
 		}
-		return resolver.resolveArgument(parameter, mavContainer, webRequest, binderFactory);
+		// 如： resolver === org.springframework.web.servlet.mvc.method.annotation.ServletRequestMethodArgumentResolver
+		return resolver.resolveArgument(parameter, mavContainer, webRequest, binderFactory); // 获取参数值
 	}
 
 	/**
@@ -127,12 +128,77 @@ public class HandlerMethodArgumentResolverComposite implements HandlerMethodArgu
 	private HandlerMethodArgumentResolver getArgumentResolver(MethodParameter parameter) {
 		HandlerMethodArgumentResolver result = this.argumentResolverCache.get(parameter);
 		if (result == null) {
+			/*
+			 	----------有@InitBinder注解的方法的参数的识别------------
+			 	// Annotation-based argument resolution
+                resolvers.add(new RequestParamMethodArgumentResolver(getBeanFactory(), false));
+                resolvers.add(new RequestParamMapMethodArgumentResolver());
+                resolvers.add(new PathVariableMethodArgumentResolver());
+                resolvers.add(new PathVariableMapMethodArgumentResolver());
+                resolvers.add(new MatrixVariableMethodArgumentResolver());
+                resolvers.add(new MatrixVariableMapMethodArgumentResolver());
+                resolvers.add(new ExpressionValueMethodArgumentResolver(getBeanFactory()));
+                resolvers.add(new SessionAttributeMethodArgumentResolver());
+                resolvers.add(new RequestAttributeMethodArgumentResolver());
+
+                // Type-based argument resolution
+                resolvers.add(new ServletRequestMethodArgumentResolver());
+                resolvers.add(new ServletResponseMethodArgumentResolver());
+
+                // Custom arguments
+                if (getCustomArgumentResolvers() != null) {
+                        resolvers.addAll(getCustomArgumentResolvers());
+                }
+
+                // Catch-all
+                resolvers.add(new RequestParamMethodArgumentResolver(getBeanFactory(), true));
+                
+                ----------------业务方法的参数的识别-------------------------
+                 // Annotation-based argument resolution
+                resolvers.add(new RequestParamMethodArgumentResolver(getBeanFactory(), false));
+                resolvers.add(new RequestParamMapMethodArgumentResolver());
+                resolvers.add(new PathVariableMethodArgumentResolver());
+                resolvers.add(new PathVariableMapMethodArgumentResolver());
+                resolvers.add(new MatrixVariableMethodArgumentResolver());
+                resolvers.add(new MatrixVariableMapMethodArgumentResolver());
+                resolvers.add(new ServletModelAttributeMethodProcessor(false));
+                resolvers.add(new RequestResponseBodyMethodProcessor(getMessageConverters(), this.requestResponseBodyAdvice));
+                resolvers.add(new RequestPartMethodArgumentResolver(getMessageConverters(), this.requestResponseBodyAdvice));
+                resolvers.add(new RequestHeaderMethodArgumentResolver(getBeanFactory()));
+                resolvers.add(new RequestHeaderMapMethodArgumentResolver());
+                resolvers.add(new ServletCookieValueMethodArgumentResolver(getBeanFactory()));
+                resolvers.add(new ExpressionValueMethodArgumentResolver(getBeanFactory()));
+                resolvers.add(new SessionAttributeMethodArgumentResolver());
+                resolvers.add(new RequestAttributeMethodArgumentResolver());
+
+                // Type-based argument resolution
+                resolvers.add(new ServletRequestMethodArgumentResolver());
+                resolvers.add(new ServletResponseMethodArgumentResolver());
+                resolvers.add(new HttpEntityMethodProcessor(getMessageConverters(), this.requestResponseBodyAdvice));
+                resolvers.add(new RedirectAttributesMethodArgumentResolver());
+                resolvers.add(new ModelMethodProcessor());
+                resolvers.add(new MapMethodProcessor());
+                resolvers.add(new ErrorsMethodArgumentResolver());
+                resolvers.add(new SessionStatusMethodArgumentResolver());
+                resolvers.add(new UriComponentsBuilderMethodArgumentResolver());
+
+                // Custom arguments
+                if (getCustomArgumentResolvers() != null) {
+                        resolvers.addAll(getCustomArgumentResolvers());
+                }
+
+                // Catch-all
+                resolvers.add(new RequestParamMethodArgumentResolver(getBeanFactory(), true));
+                resolvers.add(new ServletModelAttributeMethodProcessor(true));
+
+			 */
 			for (HandlerMethodArgumentResolver methodArgumentResolver : this.argumentResolvers) {
 				if (logger.isTraceEnabled()) {
 					logger.trace("Testing if argument resolver [" + methodArgumentResolver + "] supports [" +
 							parameter.getGenericParameterType() + "]");
 				}
-				if (methodArgumentResolver.supportsParameter(parameter)) {
+				// 如： methodArgumentResolver === org.springframework.web.servlet.mvc.method.annotation.ServletRequestMethodArgumentResolver
+				if (methodArgumentResolver.supportsParameter(parameter)) { // 支持此种类型的参数
 					result = methodArgumentResolver;
 					this.argumentResolverCache.put(parameter, result);
 					break;

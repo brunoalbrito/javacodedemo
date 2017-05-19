@@ -146,7 +146,7 @@ public final class C3P0PooledConnectionPoolManager
 					threadLabel );
 		}
 		else
-			out = new ThreadPoolAsynchronousRunner( num_threads, true, timer, threadLabel ); // !!!
+			out = new ThreadPoolAsynchronousRunner( num_threads, true, timer, threadLabel ); // !!! 会初始化连接池
 
 		return out;
 	}
@@ -182,7 +182,7 @@ public final class C3P0PooledConnectionPoolManager
 			AccessController.doPrivileged( privilegedPoolsInit );
 		}
 		else
-			_poolsInit();  //!!!
+			_poolsInit();  //!!! 会初始化连接池
 	}
 
 	private void poolsInit()
@@ -225,7 +225,7 @@ public final class C3P0PooledConnectionPoolManager
 			{
 				if ( logger.isLoggable( MLevel.WARNING ) && ! "caller".equalsIgnoreCase( contextClassLoaderSource ) )
 					logger.log( MLevel.WARNING, "Unknown contextClassLoaderSource: " + contextClassLoaderSource + " -- should be 'caller', 'library', or 'none'. Using default value 'caller'." );
-				maybePrivilegedPoolsInit( privilege_spawned_threads );
+				maybePrivilegedPoolsInit( privilege_spawned_threads );// !!!! 会初始化连接池
 			}
 		}
 		catch ( InterruptedException e )
@@ -243,7 +243,7 @@ public final class C3P0PooledConnectionPoolManager
 
 		int matt = this.getMaxAdministrativeTaskTime(); // === 0
 
-		this.taskRunner = createTaskRunner( num_task_threads, matt, timer, idStr + "-HelperThread" );
+		this.taskRunner = createTaskRunner( num_task_threads, matt, timer, idStr + "-HelperThread" ); // !!!! 会初始化连接池
 		//this.taskRunner = new RoundRobinAsynchronousRunner( num_task_threads, true );
 		//this.rpfact = ResourcePoolFactory.createInstance( taskRunner, timer );
 
@@ -365,7 +365,7 @@ public final class C3P0PooledConnectionPoolManager
 			else
 				this.userOverrides = forceUserOverrides;
 
-			poolsInit(); // !!! 初始化
+			poolsInit(); // !!! 会初始化连接池
 		}
 		catch (Exception e)
 		{
@@ -554,6 +554,7 @@ public final class C3P0PooledConnectionPoolManager
 		{
 			try
 			{
+				// 对 com.mchange.v2.c3p0.WrapperConnectionPoolDataSource 所有属性的反射
 				Method m = (Method) propNamesToReadMethods.get( propName );
 				if (m != null)
 				{
@@ -969,6 +970,7 @@ public final class C3P0PooledConnectionPoolManager
 			realTestQuery = this.getPreferredTestQuery( userName );
 		}
 
+		// 创建连接池
 		C3P0PooledConnectionPool out =  new C3P0PooledConnectionPool( cpds,
 				auth,
 				this.getMinPoolSize( userName ),

@@ -65,7 +65,7 @@ public class DefaultAdvisorChainFactory implements AdvisorChainFactory, Serializ
 				// Add it conditionally.
 				PointcutAdvisor pointcutAdvisor = (PointcutAdvisor) advisor;
 				if (config.isPreFiltered() || pointcutAdvisor.getPointcut().getClassFilter().matches(actualClass)) { // 《类匹配》成功
-					MethodInterceptor[] interceptors = registry.getInterceptors(advisor); // !!!! 获取 Advisor的拦截器列表
+					MethodInterceptor[] interceptors = registry.getInterceptors(advisor); // !!!! 获取 Advisor的拦截器列表，里面给advice会做适配
 					// org.springframework.aop.support.ComposablePointcut.getMethodMatcher();
 					// mm === org.springframework.aop.support.MethodMatchers.IntersectionMethodMatcher 
 					MethodMatcher mm = pointcutAdvisor.getPointcut().getMethodMatcher(); 

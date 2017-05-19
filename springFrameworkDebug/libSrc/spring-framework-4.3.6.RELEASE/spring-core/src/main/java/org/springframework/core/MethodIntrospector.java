@@ -62,10 +62,10 @@ public abstract class MethodIntrospector {
 		}
 		handlerTypes.addAll(Arrays.asList(targetType.getInterfaces()));
 
-		for (Class<?> currentHandlerType : handlerTypes) {
+		for (Class<?> currentHandlerType : handlerTypes) { // 迭代所有接口
 			final Class<?> targetClass = (specificHandlerType != null ? specificHandlerType : currentHandlerType);
 
-			ReflectionUtils.doWithMethods(currentHandlerType, new ReflectionUtils.MethodCallback() {
+			ReflectionUtils.doWithMethods(currentHandlerType, new ReflectionUtils.MethodCallback() { // 反射所有方法
 				@Override
 				public void doWith(Method method) {
 					Method specificMethod = ClassUtils.getMostSpecificMethod(method, targetClass);

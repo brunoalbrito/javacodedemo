@@ -50,7 +50,7 @@ public abstract class AspectJProxyUtils {
 					foundAspectJAdvice = true;
 				}
 			}
-			if (foundAspectJAdvice && !advisors.contains(ExposeInvocationInterceptor.ADVISOR)) {
+			if (foundAspectJAdvice && !advisors.contains(ExposeInvocationInterceptor.ADVISOR)) { // 自动添加一个advisor，且添加在首位
 				advisors.add(0, ExposeInvocationInterceptor.ADVISOR);
 				return true;
 			}

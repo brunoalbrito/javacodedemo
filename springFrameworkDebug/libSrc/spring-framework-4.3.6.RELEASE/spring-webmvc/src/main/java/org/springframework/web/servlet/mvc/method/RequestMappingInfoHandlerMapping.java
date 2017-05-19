@@ -80,6 +80,8 @@ public abstract class RequestMappingInfoHandlerMapping extends AbstractHandlerMe
 	 */
 	@Override
 	protected Set<String> getMappingPathPatterns(RequestMappingInfo info) {
+		// info === org.springframework.web.servlet.mvc.method.RequestMappingInfo
+		// info.getPatternsCondition() === org.springframework.web.servlet.mvc.condition.PatternsRequestCondition
 		return info.getPatternsCondition().getPatterns();
 	}
 
@@ -91,6 +93,7 @@ public abstract class RequestMappingInfoHandlerMapping extends AbstractHandlerMe
 	 */
 	@Override
 	protected RequestMappingInfo getMatchingMapping(RequestMappingInfo info, HttpServletRequest request) {
+		// info === org.springframework.web.servlet.mvc.method.RequestMappingInfo
 		return info.getMatchingCondition(request);
 	}
 
@@ -129,14 +132,15 @@ public abstract class RequestMappingInfoHandlerMapping extends AbstractHandlerMe
 		}
 		else {
 			bestPattern = patterns.iterator().next();
-			uriVariables = getPathMatcher().extractUriTemplateVariables(bestPattern, lookupPath);
-			decodedUriVariables = getUrlPathHelper().decodePathVariables(request, uriVariables);
+			// getPathMatcher() === org.springframework.util.AntPathMatcher
+			uriVariables = getPathMatcher().extractUriTemplateVariables(bestPattern, lookupPath); // 模板变量
+			decodedUriVariables = getUrlPathHelper().decodePathVariables(request, uriVariables); // 解码后的变量
 		}
 
 		request.setAttribute(BEST_MATCHING_PATTERN_ATTRIBUTE, bestPattern);
 		request.setAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE, decodedUriVariables);
 
-		if (isMatrixVariableContentAvailable()) {
+		if (isMatrixVariableContentAvailable()) { // 多维数组
 			Map<String, MultiValueMap<String, String>> matrixVars = extractMatrixVariables(request, uriVariables);
 			request.setAttribute(HandlerMapping.MATRIX_VARIABLES_ATTRIBUTE, matrixVars);
 		}
@@ -158,11 +162,10 @@ public abstract class RequestMappingInfoHandlerMapping extends AbstractHandlerMe
 		for (Entry<String, String> uriVar : uriVariables.entrySet()) {
 			String uriVarValue = uriVar.getValue();
 
-			int equalsIndex = uriVarValue.indexOf('=');
+			int equalsIndex = uriVarValue.indexOf('='); // 值带等号
 			if (equalsIndex == -1) {
 				continue;
 			}
-
 			String matrixVariables;
 
 			int semicolonIndex = uriVarValue.indexOf(';');
@@ -170,10 +173,12 @@ public abstract class RequestMappingInfoHandlerMapping extends AbstractHandlerMe
 				matrixVariables = uriVarValue;
 			}
 			else {
+				// uriVarValue = "key00;key000=value000;key001=value001"
 				matrixVariables = uriVarValue.substring(semicolonIndex + 1);
+				// uriVariables.put("key0_patt", "key00");
 				uriVariables.put(uriVar.getKey(), uriVarValue.substring(0, semicolonIndex));
 			}
-
+			// matrixVariables = "key000=value000;key001=value001"
 			MultiValueMap<String, String> vars = WebUtils.parseMatrixVariables(matrixVariables);
 			result.put(uriVar.getKey(), getUrlPathHelper().decodeMatrixVariables(request, vars));
 		}

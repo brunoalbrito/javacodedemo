@@ -7,8 +7,14 @@ import java.util.Map;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.PropertyValue;
+import org.springframework.beans.factory.Aware;
+import org.springframework.beans.factory.BeanClassLoaderAware;
+import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.FactoryBean;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.config.DependencyDescriptor;
+import org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.AutowireByTypeDependencyDescriptor;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory.OptionalDependencyFactory;
@@ -144,7 +150,7 @@ public class 关于bean后置处理器_埋点_获取bean的过程 {
 																}
 																...
 																if (matchingBeans.size() > 1) { // 根据类型匹配到的bean超过一个
-																	autowiredBeanName = determineAutowireCandidate(matchingBeans, descriptor); // 选择规则是：1、检查有配置primary的bean ； 2、根据bean优先权   3、根据参数名获取到bean
+																	autowiredBeanName = determineAutowireCandidate(matchingBeans, descriptor); // 选择规则是：1、检查有配置primary的bean ； 2、根据bean优先权order   3、根据参数名获取到bean
 																	instanceCandidate = matchingBeans.get(autowiredBeanName);
 																}
 																...
@@ -183,8 +189,36 @@ public class 关于bean后置处理器_埋点_获取bean的过程 {
 							exposedObject = org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(beanName, exposedObject, mbd); // 注入感知对象、调用初始化方法
 							{
 								invokeAwareMethods(beanName, bean); // 给bean对注入感知对象
+								{
+									if (bean instanceof Aware) {
+										if (bean instanceof BeanNameAware) {
+											((BeanNameAware) bean).setBeanName(beanName); // 调用感知方法
+										}
+										if (bean instanceof BeanClassLoaderAware) {
+											((BeanClassLoaderAware) bean).setBeanClassLoader(getBeanClassLoader());
+										}
+										if (bean instanceof BeanFactoryAware) {
+											((BeanFactoryAware) bean).setBeanFactory(AbstractAutowireCapableBeanFactory.this);
+										}
+									}
+								}
+								
 								org.springframework.beans.factory.config.BeanPostProcessor.postProcessBeforeInitialization(result, beanName); // --埋点--  初始化前（钩子）
+							
 								invokeInitMethods(beanName, wrappedBean, mbd); // 调用bean的初始化方法
+								{
+									if (isInitializingBean && (mbd == null || !mbd.isExternallyManagedInitMethod("afterPropertiesSet"))) { // bean实现了InitializingBean接口
+										((InitializingBean) bean).afterPropertiesSet();
+									}
+									if (mbd != null) {
+										String initMethodName = mbd.getInitMethodName();
+										if (initMethodName != null && !(isInitializingBean && "afterPropertiesSet".equals(initMethodName)) &&
+												!mbd.isExternallyManagedInitMethod(initMethodName)) {
+											invokeCustomInitMethod(beanName, bean, mbd); // 调用init-method="xxx"配置的初始化方法
+										}
+									}
+								}
+								
 								org.springframework.beans.factory.config.BeanPostProcessor.postProcessAfterInitialization(result, beanName); // --埋点--  初始化后（钩子），aop在这边做的代理劫持
 							}
 							// --- initializeBean --- bof ---  

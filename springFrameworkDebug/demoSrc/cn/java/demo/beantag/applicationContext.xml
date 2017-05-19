@@ -94,10 +94,11 @@
 	</bean>
 	
 	<!-- bean指定初始化方法 -->
-	<bean id="defineInitMethodBean"  class="cn.java.demo.beantag.bean.DefineInitMethodBean" init-method="initMethod" />
+	<bean id="demoInitMethodBean"  class="cn.java.demo.beantag.bean.initmehtod.DemoInitMethodBean" init-method="initMethod" />
+	<bean id="demoInitializingBean"  class="cn.java.demo.beantag.bean.initmehtod.DemoInitializingBean"  />
 	
 	<!-- bean实现感知接口 -->
-	<bean id="needAwareBean"  class="cn.java.demo.beantag.bean.NeedAwareBean" />
+	<bean id="needAwareBean"  class="cn.java.demo.beantag.bean.aware.NeedAwareBean" />
 	
 	<!-- 实现自己的scope，使用自己的scope对象创建bean -->
 	<bean id="mySingletonScope0"  class="cn.java.demo.beantag.customscope.MySingletonScope">
@@ -152,6 +153,14 @@
 	<bean id="beanPlaceholderTest1"  parent="${beanPlaceholderTest1.parent}" class="${beanPlaceholderTest1.class}" scope="${beanPlaceholderTest1.scope}">
 		<constructor-arg index="0" type="java.lang.Integer"  name="beanId" value="${beanPlaceholderTest1.constructorArg0}" />
 		<property name="beanName" value="${beanPlaceholderTest1.beanName}" />
+	</bean>
+	
+	<!-- 实现ApplicationListener接口，用于感知应用的事件 -->
+	<bean id="applicationListenerWithPayloadApplicationEventParamBean" class="cn.java.demo.beantag.bean.applicationlistener.ApplicationListenerWithPayloadApplicationEventParamBean" />
+	<bean id="applicationListenerWithApplicationEventParamBean" class="cn.java.demo.beantag.bean.applicationlistener.ApplicationListenerWithApplicationEventParamBean" />
+	<bean id="fooEventTriggerBean"  class="cn.java.demo.beantag.bean.applicationlistener.FooEventTriggerBean">
+		<constructor-arg index="0" type="java.lang.Integer" name="beanId"  value="0"/>
+    	<constructor-arg index="1" type="java.lang.String"  name="beanName"  value="beanName0"/>
 	</bean>
 	
 </beans>  

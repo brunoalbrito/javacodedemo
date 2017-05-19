@@ -63,7 +63,7 @@ public class ServletRequestMethodArgumentResolver implements HandlerMethodArgume
 
 	@Override
 	public boolean supportsParameter(MethodParameter parameter) {
-		Class<?> paramType = parameter.getParameterType();
+		Class<?> paramType = parameter.getParameterType(); // 参数类型
 		return (WebRequest.class.isAssignableFrom(paramType) ||
 				ServletRequest.class.isAssignableFrom(paramType) ||
 				MultipartRequest.class.isAssignableFrom(paramType) ||

@@ -39,7 +39,7 @@ public class ExpressionParserTest {
 	 */
 	public static void testStandardBeanExpressionResolverResultString(
 			AbstractRefreshableConfigApplicationContext context) {
-		System.out.println("--------------testStandardBeanExpressionResolverResultString----------------");
+		System.out.println("--------表达式解析器---------");
 		ConfigurableListableBeanFactory beanFactory = ApplicationContextUtil.getBeanFactoryAndTryCastTypeToConfigurableListableBeanFactory(context);
 		if (beanFactory == null) {
 			return;
@@ -57,7 +57,7 @@ public class ExpressionParserTest {
 	 */
 	public static void testStandardBeanExpressionResolverResultBeanObject(
 			AbstractRefreshableConfigApplicationContext context) {
-		System.out.println("--------------testStandardBeanExpressionResolverResultBeanObject----------------");
+		System.out.println("------表达式解析器，使用获取bean对象，获取对象属性-------");
 		BeanDefinitionRegistry registry = ApplicationContextUtil.getBeanFactoryAndTryCastTypeToBeanDefinitionRegistry(context);
 		ConfigurableListableBeanFactory beanFactory = ApplicationContextUtil.getBeanFactoryAndTryCastTypeToConfigurableListableBeanFactory(context);
 

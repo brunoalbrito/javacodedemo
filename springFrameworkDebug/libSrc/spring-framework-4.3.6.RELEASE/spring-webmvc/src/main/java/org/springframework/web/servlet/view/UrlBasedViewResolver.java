@@ -453,23 +453,23 @@ public class UrlBasedViewResolver extends AbstractCachingViewResolver implements
 	protected View createView(String viewName, Locale locale) throws Exception {
 		// If this resolver is not supposed to handle the given view,
 		// return null to pass on to the next resolver in the chain.
-		if (!canHandle(viewName, locale)) {
+		if (!canHandle(viewName, locale)) { // !!!!
 			return null;
 		}
 		// Check for special "redirect:" prefix.
-		if (viewName.startsWith(REDIRECT_URL_PREFIX)) {
+		if (viewName.startsWith(REDIRECT_URL_PREFIX)) { // 重定向
 			String redirectUrl = viewName.substring(REDIRECT_URL_PREFIX.length());
 			RedirectView view = new RedirectView(redirectUrl, isRedirectContextRelative(), isRedirectHttp10Compatible());
 			view.setHosts(getRedirectHosts());
 			return applyLifecycleMethods(viewName, view);
 		}
 		// Check for special "forward:" prefix.
-		if (viewName.startsWith(FORWARD_URL_PREFIX)) {
+		if (viewName.startsWith(FORWARD_URL_PREFIX)) { // 转发
 			String forwardUrl = viewName.substring(FORWARD_URL_PREFIX.length());
 			return new InternalResourceView(forwardUrl);
 		}
 		// Else fall back to superclass implementation: calling loadView.
-		return super.createView(viewName, locale);
+		return super.createView(viewName, locale); // !!!!
 	}
 
 	/**
@@ -504,7 +504,7 @@ public class UrlBasedViewResolver extends AbstractCachingViewResolver implements
 	 */
 	@Override
 	protected View loadView(String viewName, Locale locale) throws Exception {
-		AbstractUrlBasedView view = buildView(viewName);
+		AbstractUrlBasedView view = buildView(viewName); // !!!
 		View result = applyLifecycleMethods(viewName, view);
 		return (view.checkResource(locale) ? result : null);
 	}

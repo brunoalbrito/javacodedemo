@@ -8,7 +8,7 @@
         http://www.springframework.org/schema/aop
         http://www.springframework.org/schema/aop/spring-aop-4.2.xsd">
         
-        <bean id="aspect4AopConfigTagGlobal" class="cn.java.demo.aoptag.aspect.Aspect4AopConfigTag"><!-- 接受通知的bean -->
+        <bean id="aspect4AopConfigTagGlobal" class="cn.java.demo.aoptag.aspect.configbyxml.Aspect4AopConfigTag"><!-- 接受通知的bean -->
             <constructor-arg index="0"  name="name" value="aspect4AopConfigTagGlobal..." />
         </bean>
         <!--   1./////////  使用aop:config 标签的使用  （在xml文件中配置“要拦截的特征+通知的对象”）  /////////  -->
@@ -63,7 +63,7 @@
         <!--  /////////   1.1使用aop:config + aop:advisor + aop:pointcut 标签的使用  eof   /////////  -->
         <!--  /////////   1.2使用aop:config + aop:aspect + aop:pointcut + aop:before 标签的使用   bof   /////////  -->
         <!-- 接受通知的bean -->
-        <bean id="aspect4AopConfigAllTag12" class="cn.java.demo.aoptag.aspect.Aspect4AopConfigAllTag">
+        <bean id="aspect4AopConfigAllTag12" class="cn.java.demo.aoptag.aspect.configbyxml.Aspect4AopConfigAllTag">
             <constructor-arg index="0"  name="name" value="aspect4AopConfigTagGlobal..." />
         </bean>
         <!-- 被拦截的bean -->
@@ -74,12 +74,13 @@
                 <aop:pointcut id="pointcutRefId_12_aspectMethodAround" expression="execution(public String cn.java.demo.aoptag.bean.HelloServiceImpl4ConfigAopWithAdvisorTag1.method3(..))" />
                 <aop:around method="aspectMethodAround" pointcut-ref="pointcutRefId_12_aspectMethodAround"  />
             </aop:aspect>
-            <aop:aspect id="aspectId_12_aspectMethodBefore" ref="aspect4AopConfigAllTag12" order="3"> 
+            <aop:aspect id="aspectId_12_aspectMethodBefore" ref="aspect4AopConfigAllTag12" order="3"> <!-- 调用方法前 -->
                 <aop:pointcut id="pointcutRefId_12_aspectMethodBefore" expression="execution(public String cn.java.demo.aoptag.bean.HelloServiceImpl4ConfigAopWithAdvisorTag1.method3(..))" />
-                <aop:before method="aspectMethodBefore" pointcut-ref="pointcutRefId_12_aspectMethodBefore"   />
+                <aop:before method="aspectMethodBefore0" pointcut-ref="pointcutRefId_12_aspectMethodBefore"   />
+                <aop:before method="aspectMethodBefore1" pointcut-ref="pointcutRefId_12_aspectMethodBefore"   />
                 <!-- <aop:before method="aspectMethodBefore" pointcut-ref="pointcutRefId_12"   /> -->
             </aop:aspect>
-            <aop:aspect id="aspectId_12_aspectMethodAfter" ref="aspect4AopConfigAllTag12" order="5">  
+            <aop:aspect id="aspectId_12_aspectMethodAfter" ref="aspect4AopConfigAllTag12" order="5">   <!-- 调用方法后 -->
                 <aop:pointcut id="pointcutRefId_12_aspectMethodAfter" expression="execution(public String cn.java.demo.aoptag.bean.HelloServiceImpl4ConfigAopWithAdvisorTag1.method3(..))" />
                 <aop:after method="aspectMethodAfter" pointcut-ref="pointcutRefId_12_aspectMethodAfter"  />
             </aop:aspect>
@@ -121,7 +122,7 @@
         <!--  /////////   使用aop:scoped-proxy 标签的使用  eof   /////////  -->
         
         <!--  4./////////   使用aop:aspectj-autoproxy标签  bof （在java文件中配置注解“要拦截的特征+通知的对象”）  /////////  -->
-        <bean id="aspect4AspectJAutoProxyTag0" class="cn.java.demo.aoptag.aspect.Aspect4AspectJAutoProxyTag" scope="prototype" />
+        <bean id="aspect4AspectJAutoProxyTag0" class="cn.java.demo.aoptag.aspect.configbyannotation.Aspect4AspectJAutoProxyTag" scope="prototype" />
         <bean id="helloServiceImpl4AspectJAutoProxyTag0" class="cn.java.demo.aoptag.bean.HelloServiceImpl4AspectJAutoProxyTag"  />
         <aop:aspectj-autoproxy> <!-- proxy-target-class="false" expose-proxy="false" -->
 	 		<aop:include name="aspect4AspectJAutoProxyTag[0-9]" /> <!-- 正则表达式，用来匹配通知者的beanName，bean的必须scope="prototype"-->

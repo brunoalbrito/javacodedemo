@@ -345,6 +345,7 @@ public class BasicResourcePoolFactory extends ResourcePoolFactory
 	{
 		if (liveChildren == null)
 			createThreadResources();
+		 // 创建连接池
 		//System.err.println("Created liveChildren: " + liveChildren);
 		ResourcePool child = new BasicResourcePool( mgr, 
 				start, 

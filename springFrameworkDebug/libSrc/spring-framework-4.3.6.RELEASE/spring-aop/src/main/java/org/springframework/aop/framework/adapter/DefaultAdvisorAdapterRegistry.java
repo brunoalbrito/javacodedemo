@@ -80,20 +80,25 @@ public class DefaultAdvisorAdapterRegistry implements AdvisorAdapterRegistry, Se
 		List<MethodInterceptor> interceptors = new ArrayList<MethodInterceptor>(3);
 		// advisor === org.springframework.aop.aspectj.AspectJPointcutAdvisor 
 		Advice advice = advisor.getAdvice();//!!!
+		
+		// <before ...> advice == org.springframework.aop.aspectj.AspectJMethodBeforeAdvice
+		// <after ...> advice === org.springframework.aop.aspectj.AspectJAfterAdvice
+		// <after-returning ...> advice === org.springframework.aop.aspectj.AspectJAfterReturningAdvice
+		// <after-throwing ...> advice=== org.springframework.aop.aspectj.AspectJAfterThrowingAdvice
+		// <around ...> advice === org.springframework.aop.aspectj.AspectJAroundAdvice
+		
 		if (advice instanceof MethodInterceptor) {
 			// advice === org.springframework.aop.aspectj.AspectJAfterAdvice   <aop:after>
 			interceptors.add((MethodInterceptor) advice);
 		}
-		/*
-		 	adapters = {
-		 		org.springframework.aop.framework.adapter.MethodBeforeAdviceAdapter,
-		 		org.springframework.aop.framework.adapter.AfterReturningAdviceAdapter,
-		 		org.springframework.aop.framework.adapter.ThrowsAdviceAdapter,
-		 	}
+//		 	adapters = {
+//		 		org.springframework.aop.framework.adapter.MethodBeforeAdviceAdapter,
+//		 		org.springframework.aop.framework.adapter.AfterReturningAdviceAdapter,
+//		 		org.springframework.aop.framework.adapter.ThrowsAdviceAdapter,
+//		 	}
 		 	
-		 */
 		for (AdvisorAdapter adapter : this.adapters) {
-			if (adapter.supportsAdvice(advice)) { // !!!
+			if (adapter.supportsAdvice(advice)) { // !!! 给advice会做适配
 //				advisor === org.springframework.aop.aspectj.AspectJMethodBeforeAdvice   <aop:before>
 				interceptors.add(adapter.getInterceptor(advisor));
 //				interceptors.add(new org.springframework.aop.framework.adapter.MethodBeforeAdviceInterceptor(advisor.getAdvice()));

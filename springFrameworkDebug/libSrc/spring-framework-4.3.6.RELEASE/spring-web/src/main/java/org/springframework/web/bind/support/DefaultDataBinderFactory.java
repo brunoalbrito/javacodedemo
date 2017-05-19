@@ -54,7 +54,7 @@ public class DefaultDataBinderFactory implements WebDataBinderFactory {
 		if (this.initializer != null) {
 			this.initializer.initBinder(dataBinder, webRequest);
 		}
-		initBinder(dataBinder, webRequest);
+		initBinder(dataBinder, webRequest);//!!!!
 		return dataBinder;
 	}
 
