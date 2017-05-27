@@ -21,12 +21,31 @@
 	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.ValidHandler" />
 	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.DownloadHandler" />
 	
+	<!-- 拦截器映射器  bof -->
+    <bean class="org.springframework.web.servlet.handler.MappedInterceptor">
+      	<constructor-arg index="0" type="java.lang.String[]" name="includePatterns"><!-- 只要有一个符合条件 -->
+      	    <array value-type="java.lang.String" merge="false">
+      	        <value type="java.lang.String">/req-param-handler/get</value>
+      	        <value type="java.lang.String">/req-param-handler/*</value>
+		 	</array>
+    	</constructor-arg>
+      	<constructor-arg index="1" type="java.lang.String[]" name="excludePatterns"><!-- 都不能符合条件 -->
+      	    <array value-type="java.lang.String" merge="false">
+			 	<value type="java.lang.String">/req-param-handler/exclude0</value>
+	     	    <value type="java.lang.String">/req-param-handler/exclude1</value>
+		 	</array>
+    	</constructor-arg>
+      	<constructor-arg index="2" type="org.springframework.web.servlet.HandlerInterceptor" name="interceptor">
+      		<bean class="cn.java.demo.webmvc.bean.interceptor.MappedInterceptorWithHandlerInterceptorImpl1" /> <!-- 只能是实现HandlerInterceptor接口的拦截器 -->
+      	</constructor-arg>
+    </bean>
+    
 	<!-- 请求匹配器 -->
 	<bean id="handlerMapping1" class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
 	    <property  name="defaultHandler"> 
 	    	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.DefaultHandler" /> <!-- 默认Hanlder-->
 	    </property>
-	    <property  name="interceptors"> <!-- 拦截器 -->
+	    <property  name="interceptors"> <!-- 方法拦截器 -->
 	        <array merge="false">
 			 	<bean class="cn.java.demo.webmvc.bean.interceptor.HandlerInterceptorImpl0" />
     			<bean class="cn.java.demo.webmvc.bean.interceptor.WebRequestInterceptorImpl0" />
@@ -41,13 +60,13 @@
 	<!-- 视图渲染器 -->
     <bean id="viewResolver0" class="org.springframework.web.servlet.view.InternalResourceViewResolver" autowire="byName"> <!-- JSP和jstl的支持 -->
         <property  name="order" value="0" />
-        <property  name="prefix" value="/WEB-INF/template" />
+        <property  name="prefix" value="/WEB-INF/templates" />
     	<property  name="suffix" value=".jsp" />
     </bean>
     <bean id="freeMarkerConfigurer" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer" /><!-- FreeMarker配置 -->
     <bean id="viewResolver1" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver" autowire="byName"> <!-- FreeMarker的支持 -->
         <property  name="order" value="1" />
-    	<property  name="prefix" value="/WEB-INF/template" />
+    	<property  name="prefix" value="/WEB-INF/templates" />
     	<property  name="suffix" value=".ftl" />
     </bean>
     

@@ -108,7 +108,7 @@ public class ArticleCateSerlvet extends AdminCommonSerlvet {
 	 * @throws IOException
 	 */
 	public void deleteAction() throws ServletException, IOException {
-		String id = request.getParameter("id");
+		String id = getRequest().getParameter("id");
 		String sql = "DELETE FROM " + DBHelper.normalTableName("article_cate") + " WHERE id=?";
 		Connection connection = null;
 		PreparedStatement statement = null;
@@ -147,7 +147,7 @@ public class ArticleCateSerlvet extends AdminCommonSerlvet {
 	 * @throws IOException
 	 */
 	public void addAction() throws ServletException, IOException {
-		if (request.getMethod().equals("GET")) {
+		if (getRequest().getMethod().equals("GET")) {
 			this.assign("cateItemList", this.getTopCateList());
 			String html = this.fetch("ArticleCate-add.jsp");
 			this.ajaxHtmlReturn(1, "添加文章分类", html);
@@ -158,8 +158,8 @@ public class ArticleCateSerlvet extends AdminCommonSerlvet {
 			try {
 				connection = DBHelper.getConnect();
 				statement = connection.prepareStatement(sql);
-				statement.setString(1, request.getParameter("cate_name"));
-				statement.setString(2, request.getParameter("parent_id"));
+				statement.setString(1, getRequest().getParameter("cate_name"));
+				statement.setString(2, getRequest().getParameter("parent_id"));
 				statement.executeUpdate();
 				int affectedRowCount = statement.getUpdateCount();// 影响的行数
 				DBHelper.close(statement, connection);
@@ -190,8 +190,8 @@ public class ArticleCateSerlvet extends AdminCommonSerlvet {
 	 * @throws IOException
 	 */
 	public void editAction() throws ServletException, IOException {
-		String method = request.getMethod();
-		String id = request.getParameter("id");
+		String method = getRequest().getMethod();
+		String id = getRequest().getParameter("id");
 		if (method.equals("POST")) {
 			//修改文章分类
 			String sql = "UPDATE " + DBHelper.normalTableName("article_cate") + " SET cate_name=?,parent_id=?,status=1 where id=? ";
@@ -200,8 +200,8 @@ public class ArticleCateSerlvet extends AdminCommonSerlvet {
 			try {
 				connection = DBHelper.getConnect();
 				statement = connection.prepareStatement(sql);
-				statement.setString(1, request.getParameter("cate_name"));
-				statement.setString(2, request.getParameter("parent_id"));
+				statement.setString(1, getRequest().getParameter("cate_name"));
+				statement.setString(2, getRequest().getParameter("parent_id"));
 				statement.setString(3, id);
 				statement.executeUpdate();
 				int affectedRowCount = statement.getUpdateCount();// 影响的行数
@@ -298,7 +298,7 @@ public class ArticleCateSerlvet extends AdminCommonSerlvet {
 	 */
 	public void ajaxGetSubCateListAction(){
 		this.jsonHeader();
-		String parentId = request.getParameter("id");
+		String parentId = getRequest().getParameter("id");
 		try {
 			ArticleCateService mArticleCateService = new ArticleCateService();
 			ArrayList<HashMap> cateList = mArticleCateService.getCateListByParentId(new Integer(parentId));
@@ -316,7 +316,7 @@ public class ArticleCateSerlvet extends AdminCommonSerlvet {
 			mJSONObject.put("status", 1);
 			mJSONObject.put("info", "成功！");
 			mJSONObject.put("data", mJSONObject2);
-			response.getWriter().write(mJSONObject.toJSONString());
+			getResponse().getWriter().write(mJSONObject.toJSONString());
 		} catch (Exception e) {
 		}
 	}

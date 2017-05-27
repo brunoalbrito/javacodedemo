@@ -61,8 +61,8 @@ public class AdminCommonSerlvet extends CoreSerlvet {
 	 * @throws IOException
 	 */
 	public void captchaAction() throws IOException {
-		Captcha captcha = Captcha.getCaptchaAndOutput(request, response);
-		HttpSession session = request.getSession();
+		Captcha captcha = Captcha.getCaptchaAndOutput(getRequest(), getResponse());
+		HttpSession session = getRequest().getSession();
 		session.setAttribute("code", captcha.getCode());
 	}
 
@@ -122,7 +122,7 @@ public class AdminCommonSerlvet extends CoreSerlvet {
 		}
 		try {
 			this.jsonHeader();
-			response.getWriter().write(mJSONObject.toJSONString());
+			getResponse().getWriter().write(mJSONObject.toJSONString());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -148,9 +148,9 @@ public class AdminCommonSerlvet extends CoreSerlvet {
 			tempDirPathFile.mkdirs();
 		}
 		//设置编码  
-		request.setCharacterEncoding(ApplicationConfig.getConfig("app_request_characterEncoding"));
+		getRequest().setCharacterEncoding(ApplicationConfig.getConfig("app_request_characterEncoding"));
 		//解析上传的数据
-		FieldHashMap fieldHashMap = MultiPartForm.parseForm(request, tempDirPath, saveDirPath);
+		FieldHashMap fieldHashMap = MultiPartForm.parseForm(getRequest(), tempDirPath, saveDirPath);
 //		System.out.println(fieldHashMap.toString());
 		return fieldHashMap;
 	}

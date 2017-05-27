@@ -302,8 +302,8 @@ public class RedirectView extends AbstractUrlBasedView implements SmartView {
 	protected void renderMergedOutputModel(Map<String, Object> model, HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 
-		String targetUrl = createTargetUrl(model, request);
-		targetUrl = updateTargetUrl(targetUrl, model, request, response);
+		String targetUrl = createTargetUrl(model, request); // 创建要跳转的地址
+		targetUrl = updateTargetUrl(targetUrl, model, request, response); 
 
 		FlashMap flashMap = RequestContextUtils.getOutputFlashMap(request);
 		if (!CollectionUtils.isEmpty(flashMap)) {
@@ -317,7 +317,7 @@ public class RedirectView extends AbstractUrlBasedView implements SmartView {
 			flashMapManager.saveOutputFlashMap(flashMap, request, response);
 		}
 
-		sendRedirect(request, response, targetUrl, this.http10Compatible);
+		sendRedirect(request, response, targetUrl, this.http10Compatible); // !!!!
 	}
 
 	/**
@@ -608,7 +608,7 @@ public class RedirectView extends AbstractUrlBasedView implements SmartView {
 			String targetUrl, boolean http10Compatible) throws IOException {
 
 		String encodedURL = (isRemoteHost(targetUrl) ? targetUrl : response.encodeRedirectURL(targetUrl));
-		if (http10Compatible) {
+		if (http10Compatible) { // true
 			HttpStatus attributeStatusCode = (HttpStatus) request.getAttribute(View.RESPONSE_STATUS_ATTRIBUTE);
 			if (this.statusCode != null) {
 				response.setStatus(this.statusCode.value());

@@ -34,12 +34,12 @@ public class TestSerlvet extends AdminCommonSerlvet {
 	 */
 	public void testDispatcherAction() throws ServletException, IOException{
 		String fileFullPath = "/WEB-INF/servletView/admin/Common-footer.jsp";
-		RequestDispatcher mRequestDispatcher = request.getRequestDispatcher(fileFullPath);
-		mRequestDispatcher.forward(request, response);
+		RequestDispatcher mRequestDispatcher = getRequest().getRequestDispatcher(fileFullPath);
+		mRequestDispatcher.forward(getRequest(), getResponse());
 	}
 
 	public void testFetchAction() throws ServletException, IOException {
-		//response.addHeader("Content-type", "text/json");
+		//getResponse().addHeader("Content-type", "text/json");
 		String htmlStr = this.fetch("/WEB-INF/servletView/common/testFetch.jsp");
 		JSONObject mJSONObject = new JSONObject();
 		mJSONObject.put("status", 1);
@@ -65,51 +65,51 @@ public class TestSerlvet extends AdminCommonSerlvet {
 	 */
 	public void testAction() throws ServletException, IOException {
 
-		String page = request.getParameter("page");
+		String page = getRequest().getParameter("page");
 		if (page == null || page.equals("")) {
 			page = "1";
 		}
 		int currentPage = Integer.valueOf(page);
-		if (request.getMethod().equals("GET")) {
+		if (getRequest().getMethod().equals("GET")) {
 			this.assign("pagination", this.pagination("/admin/test/?act=test", currentPage, 20));
 			this.display("Test-test.jsp");
 		} else {
 			// -------------text---------
-			System.out.println("username:" + request.getParameter("username"));
-			System.out.println("sex:" + request.getParameter("sex"));
-			System.out.println("age:" + request.getParameter("age"));
+			System.out.println("username:" + getRequest().getParameter("username"));
+			System.out.println("sex:" + getRequest().getParameter("sex"));
+			System.out.println("age:" + getRequest().getParameter("age"));
 			// -------------radio---------
-			String[] values = request.getParameterValues("sex");
+			String[] values = getRequest().getParameterValues("sex");
 			for (String string : values) {
 				System.out.println("sex:" + string);
 			}
 			// -------------select---------
-			values = request.getParameterValues("age");
+			values = getRequest().getParameterValues("age");
 			for (String string : values) {
 				System.out.println("age:" + string);
 			}
 			// -------------text---------
-			values = request.getParameterValues("username");
+			values = getRequest().getParameterValues("username");
 			for (String string : values) {
 				System.out.println("username:" + string);
 			}
 			// -------------text list---------
-			values = request.getParameterValues("list");
+			values = getRequest().getParameterValues("list");
 			for (String string : values) {
 				System.out.println("text list:" + string);
 			}
 			// -------------checkbox---------
-			values = request.getParameterValues("like1");
+			values = getRequest().getParameterValues("like1");
 			for (String string : values) {
 				System.out.println("checkbox:" + string);
 			}
-			Enumeration  mEnumeration= request.getParameterNames();
+			Enumeration  mEnumeration= getRequest().getParameterNames();
 			HashMap configHashMap = new HashMap(); 
 			while(mEnumeration.hasMoreElements()){
 				String filedName = (String) mEnumeration.nextElement();
 				if(filedName.indexOf("config.")!=-1){
 					String[] filedNameSplit = filedName.split("\\.");
-					String valueTemp = request.getParameter(filedName);
+					String valueTemp = getRequest().getParameter(filedName);
 					if(filedNameSplit.length==2){
 						configHashMap.put(filedNameSplit[1], valueTemp);
 					}

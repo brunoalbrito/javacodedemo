@@ -427,7 +427,7 @@ public abstract class AbstractView extends WebApplicationObjectSupport implement
 			String modelName = entry.getKey();
 			Object modelValue = entry.getValue();
 			if (modelValue != null) {
-				request.setAttribute(modelName, modelValue); // !!!!
+				request.setAttribute(modelName, modelValue); // !!!! 所有的属性值，放入request
 				if (logger.isDebugEnabled()) {
 					logger.debug("Added model object '" + modelName + "' of type [" + modelValue.getClass().getName() +
 							"] to request in view with name '" + getBeanName() + "'");

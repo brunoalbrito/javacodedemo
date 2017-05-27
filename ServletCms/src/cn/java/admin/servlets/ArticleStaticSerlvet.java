@@ -52,8 +52,8 @@ public class ArticleStaticSerlvet extends AdminCommonSerlvet {
 		if (totalRows > 0) {
 			int perPageShowCount = new Integer(ApplicationConfig.getConfig("app_pagination_showRangCount"));
 			int currPage = 1;
-			if (request.getParameter("page") != null && (!request.getParameter("page").equals(""))) {
-				currPage = new Integer(request.getParameter("page"));
+			if (getRequest().getParameter("page") != null && (!getRequest().getParameter("page").equals(""))) {
+				currPage = new Integer(getRequest().getParameter("page"));
 			}
 			// 分页查询
 			String sql = "SELECT art.*,art_cate.cate_name FROM " + DBHelper.normalTableName("article") + " AS art LEFT JOIN " + DBHelper.normalTableName("article_cate") + " AS art_cate ON art.cate_id=art_cate.id "+
@@ -96,8 +96,8 @@ public class ArticleStaticSerlvet extends AdminCommonSerlvet {
 	 * @throws IOException
 	 */
 	public void editAction() throws ServletException, IOException {
-		String method = request.getMethod();
-		String id = request.getParameter("id");
+		String method = getRequest().getMethod();
+		String id = getRequest().getParameter("id");
 		PreparedStatement statement = null;
 		Connection connection = null;
 		ResultSet resultSet = null;
@@ -107,12 +107,12 @@ public class ArticleStaticSerlvet extends AdminCommonSerlvet {
 				String sql = "UPDATE " + DBHelper.normalTableName("article") + " SET content=?  where id=? ";
 				connection = DBHelper.getConnect();
 				statement = connection.prepareStatement(sql);
-				statement.setString(1, request.getParameter("content"));
+				statement.setString(1, getRequest().getParameter("content"));
 				statement.setInt(2, new Integer(id));
 				statement.executeUpdate();
 				int affectedRowCount = statement.getUpdateCount();// 影响的行数
 				if(affectedRowCount>0){
-					request.getRequestDispatcher(UrlHelper.url("admin", "article-static", "index")).forward(request, response);//到文章列表页
+					getRequest().getRequestDispatcher(UrlHelper.url("admin", "article-static", "index")).forward(getRequest(), getResponse());//到文章列表页
 					return ;
 				}
 			} catch (Exception e) {
@@ -145,7 +145,7 @@ public class ArticleStaticSerlvet extends AdminCommonSerlvet {
 				this.display("ArticleStatic-edit.jsp");
 			} 
 			else{
-				request.getRequestDispatcher(UrlHelper.url("admin", "article-static", "index")).forward(request, response);//到文章列表页
+				getRequest().getRequestDispatcher(UrlHelper.url("admin", "article-static", "index")).forward(getRequest(), getResponse());//到文章列表页
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

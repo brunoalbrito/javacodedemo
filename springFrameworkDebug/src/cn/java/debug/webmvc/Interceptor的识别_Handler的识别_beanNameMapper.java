@@ -1,6 +1,16 @@
 package cn.java.debug.webmvc;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.web.HttpRequestHandler;
+import org.springframework.web.context.request.WebRequestInterceptor;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsUtils;
+import org.springframework.web.servlet.HandlerExecutionChain;
+import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.handler.MappedInterceptor;
+import org.springframework.web.servlet.handler.WebRequestHandlerInterceptorAdapter;
 import org.springframework.web.servlet.mvc.Controller;
 
 public class Interceptor的识别_Handler的识别_beanNameMapper {
@@ -36,7 +46,14 @@ public class Interceptor的识别_Handler的识别_beanNameMapper {
 											if (interceptor == null) {
 												throw new IllegalArgumentException("Entry number " + i + " in interceptors array is null");
 											}
-											this.adaptedInterceptors.add(adaptInterceptor(interceptor)); // 注册Interceptor ----- 1
+											this.adaptedInterceptors.add(adaptInterceptor(interceptor){
+												if (interceptor instanceof HandlerInterceptor) {
+													return (HandlerInterceptor) interceptor;
+												}
+												else if (interceptor instanceof WebRequestInterceptor) {
+													return new WebRequestHandlerInterceptorAdapter((WebRequestInterceptor) interceptor);
+												}
+											}); // 适配，并注册Interceptor ----- 1
 										}
 									}
 								}
@@ -100,14 +117,14 @@ public class Interceptor的识别_Handler的识别_beanNameMapper {
 		 		}
 		 	}
 		 	
-		 	--------------BeanNameUrlHandlerMapping如何Handler-------------------
+		 	-------------- BeanNameUrlHandlerMapping 如何匹配符合条件的Handler-------------------
 		 	org.springframework.web.servlet.handler.AbstractHandlerMapping.getHandler(HttpServletRequest request)
 		 	{
 		 		org.springframework.web.servlet.handler.AbstractUrlHandlerMapping.getHandlerInternal(HttpServletRequest request)
 		 		{
 			 		// org.springframework.web.util.UrlPathHelper.getLookupPathForRequest(request);
 					String lookupPath = getUrlPathHelper().getLookupPathForRequest(request); // 请求地址
-					Object handler = lookupHandler(lookupPath, request); // !!! 返回Handler执行链
+					Object handler = AbstractUrlHandlerMapping.lookupHandler(lookupPath, request); // !!! 返回Handler执行链
 					{
 						// Direct match?  直接匹配
 						Object handler = this.handlerMap.get(urlPath);
@@ -168,9 +185,28 @@ public class Interceptor的识别_Handler的识别_beanNameMapper {
 							return buildPathExposingHandler(handler, bestPatternMatch, pathWithinMapping, uriTemplateVariables);
 							{
 								HandlerExecutionChain chain = new HandlerExecutionChain(rawHandler); // Handler执行链
-								chain.addInterceptor(new PathExposingHandlerInterceptor(bestMatchingPattern, pathWithinMapping));
+								chain.addInterceptor(new PathExposingHandlerInterceptor(bestMatchingPattern, pathWithinMapping){
+									public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+										exposePathWithinMapping(this.bestMatchingPattern, this.pathWithinMapping, request);
+										{
+											request.setAttribute(BEST_MATCHING_PATTERN_ATTRIBUTE, bestMatchingPattern); //  -- 匹配的信息放入request
+											request.setAttribute(PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE, pathWithinMapping); //  -- 匹配的信息放入request
+										}
+										request.setAttribute(INTROSPECT_TYPE_LEVEL_MAPPING, supportsTypeLevelMappings());
+										return true;
+									}
+								});// --- 添加内置的拦截器
 								if (!CollectionUtils.isEmpty(uriTemplateVariables)) {
-									chain.addInterceptor(new UriTemplateVariablesHandlerInterceptor(uriTemplateVariables));
+									chain.addInterceptor(new UriTemplateVariablesHandlerInterceptor(uriTemplateVariables){
+										@Override
+										public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+											exposeUriTemplateVariables(this.uriTemplateVariables, request);
+											{
+												request.setAttribute(URI_TEMPLATE_VARIABLES_ATTRIBUTE, uriTemplateVariables); //  -- 匹配的信息放入request
+											}
+											return true;
+										}
+									});// --- 添加内置的拦截器
 								}
 								return chain;
 							}
@@ -195,12 +231,31 @@ public class Interceptor的识别_Handler的识别_beanNameMapper {
 								rawHandler = getApplicationContext().getBean(handlerName);
 							}
 							validateHandler(rawHandler, request); // 校验请求的method、参数、header是否符合@RequestMapping注解配置的
-							handler = buildPathExposingHandler(rawHandler, lookupPath, lookupPath, null); // !!! 返回Handler执行链
+							handler = AbstractUrlHandlerMapping.buildPathExposingHandler(rawHandler, lookupPath, lookupPath, null); // !!! 返回Handler执行链
 							{
 								HandlerExecutionChain chain = new HandlerExecutionChain(rawHandler); // Handler执行链
-								chain.addInterceptor(new PathExposingHandlerInterceptor(bestMatchingPattern, pathWithinMapping));
+								chain.addInterceptor(new PathExposingHandlerInterceptor(bestMatchingPattern, pathWithinMapping){
+									public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+										exposePathWithinMapping(this.bestMatchingPattern, this.pathWithinMapping, request);
+										{
+											request.setAttribute(BEST_MATCHING_PATTERN_ATTRIBUTE, bestMatchingPattern);
+											request.setAttribute(PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE, pathWithinMapping);
+										}
+										request.setAttribute(INTROSPECT_TYPE_LEVEL_MAPPING, supportsTypeLevelMappings());
+										return true;
+									}
+								}); // --- 添加内置的拦截器
 								if (!CollectionUtils.isEmpty(uriTemplateVariables)) {
-									chain.addInterceptor(new UriTemplateVariablesHandlerInterceptor(uriTemplateVariables));
+									chain.addInterceptor(new UriTemplateVariablesHandlerInterceptor(uriTemplateVariables){
+										@Override
+										public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+											exposeUriTemplateVariables(this.uriTemplateVariables, request);
+											{
+												request.setAttribute(URI_TEMPLATE_VARIABLES_ATTRIBUTE, uriTemplateVariables);
+											}
+											return true;
+										}
+									}); // --- 添加内置的拦截器
 								}
 								return chain;
 							}
@@ -208,6 +263,42 @@ public class Interceptor的识别_Handler的识别_beanNameMapper {
 					}
 					return handler;
 		 		}
+		 		
+		 		if (handler == null) {
+					handler = getDefaultHandler(); // 使用默认的
+				}
+				// Bean name or resolved handler?
+				if (handler instanceof String) {
+					String handlerName = (String) handler;
+					handler = getApplicationContext().getBean(handlerName);
+				}
+		
+				HandlerExecutionChain executionChain = getHandlerExecutionChain(handler, request); // !!!! 获取符合条件的Interceptor
+				{
+					HandlerExecutionChain chain = (handler instanceof HandlerExecutionChain ?
+							(HandlerExecutionChain) handler : new HandlerExecutionChain(handler));
+			
+					String lookupPath = this.urlPathHelper.getLookupPathForRequest(request);
+					for (HandlerInterceptor interceptor : this.adaptedInterceptors) {  // 匹配符合条件的Interceptor
+						if (interceptor instanceof MappedInterceptor) {
+							MappedInterceptor mappedInterceptor = (MappedInterceptor) interceptor;
+							if (mappedInterceptor.matches(lookupPath, this.pathMatcher)) {
+								chain.addInterceptor(mappedInterceptor.getInterceptor()); 
+							}
+						}
+						else {
+							chain.addInterceptor(interceptor); // 添加拦截器
+						}
+					}
+					return chain;
+				}
+				if (CorsUtils.isCorsRequest(request)) { // 是跨域请求
+					CorsConfiguration globalConfig = this.corsConfigSource.getCorsConfiguration(request);
+					CorsConfiguration handlerConfig = getCorsConfiguration(handler, request);
+					CorsConfiguration config = (globalConfig != null ? globalConfig.combine(handlerConfig) : handlerConfig);
+					executionChain = getCorsHandlerExecutionChain(request, executionChain, config);
+				}
+				return executionChain;
 		 	}
 		 	
 			--------------------执行Handler的过程--------------------------
@@ -303,12 +394,21 @@ public class Interceptor的识别_Handler的识别_beanNameMapper {
 							errorView = (mv != null);
 						}
 					}
-					render(mv, request, response); // 进行渲染 !!!
+					DispatcherServlet.render(mv, request, response); // 进行渲染 !!!
 					{
 						View view;
 						if (mv.isReference()) {
 							// We need to resolve the view name.
 							view = resolveViewName(mv.getViewName(), mv.getModelInternal(), locale, request); // 解析视图
+							{
+								for (ViewResolver viewResolver : this.viewResolvers) {
+									// 如：viewResolver == org.springframework.web.servlet.view.InternalResourceViewResolver
+									View view = viewResolver.resolveViewName(viewName, locale);
+									if (view != null) {
+										return view;
+									}
+								}
+							}
 						}
 						else {
 							// No need to lookup: the ModelAndView object contains the actual View object.

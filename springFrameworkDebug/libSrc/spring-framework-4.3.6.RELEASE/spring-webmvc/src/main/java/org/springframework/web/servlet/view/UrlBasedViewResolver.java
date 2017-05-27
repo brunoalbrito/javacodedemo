@@ -512,7 +512,8 @@ public class UrlBasedViewResolver extends AbstractCachingViewResolver implements
 	}
 
 	private View applyLifecycleMethods(String viewName, AbstractView view) {
-		return (View) getApplicationContext().getAutowireCapableBeanFactory().initializeBean(view, viewName);
+		// org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(view, viewName);
+		return (View) getApplicationContext().getAutowireCapableBeanFactory().initializeBean(view, viewName); //  给view对注入感知对象/ 调用view的初始化方法
 	}
 
 	/**
@@ -534,7 +535,7 @@ public class UrlBasedViewResolver extends AbstractCachingViewResolver implements
 		// getViewClass() === org.springframework.web.servlet.view.InternalResourceView
 		// getViewClass() === org.springframework.web.servlet.view.freemarker.FreeMarkerView
 		AbstractUrlBasedView view = (AbstractUrlBasedView) BeanUtils.instantiateClass(getViewClass()); // 实例化对象
-		view.setUrl(getPrefix() + viewName + getSuffix());
+		view.setUrl(getPrefix() + viewName + getSuffix()); // 设置模板路径
 
 		String contentType = getContentType();
 		if (contentType != null) {

@@ -82,7 +82,7 @@ public class FriendlinkSerlvet extends AdminCommonSerlvet {
 	 * @throws IOException
 	 */
 	public void deleteAction() throws ServletException, IOException {
-		String ids = request.getParameter("ids");
+		String ids = getRequest().getParameter("ids");
 		String sql = "DELETE FROM " + DBHelper.normalTableName("friend_link") + " WHERE id IN(?)";
 		Connection connection = null;
 		PreparedStatement statement = null;
@@ -117,7 +117,7 @@ public class FriendlinkSerlvet extends AdminCommonSerlvet {
 	 * @throws IOException
 	 */
 	public void addAction() throws ServletException, IOException {
-		if (request.getMethod().equals("GET")) {
+		if (getRequest().getMethod().equals("GET")) {
 			String html = this.fetch("Friendlink-add.jsp");
 			this.ajaxHtmlReturn(1, "添加文章分类", html);
 		} else {
@@ -127,10 +127,10 @@ public class FriendlinkSerlvet extends AdminCommonSerlvet {
 			try {
 				connection = DBHelper.getConnect();
 				statement = connection.prepareStatement(sql);
-				statement.setString(1, request.getParameter("site_name"));
-				statement.setString(2, request.getParameter("site_url"));
-				statement.setString(3, request.getParameter("site_logo"));
-				statement.setString(4, request.getParameter("sort_order"));
+				statement.setString(1, getRequest().getParameter("site_name"));
+				statement.setString(2, getRequest().getParameter("site_url"));
+				statement.setString(3, getRequest().getParameter("site_logo"));
+				statement.setString(4, getRequest().getParameter("sort_order"));
 				statement.setInt(5, (int) (System.currentTimeMillis()/1000));
 				statement.setInt(6, (int) (System.currentTimeMillis()/1000));
 				statement.executeUpdate();
@@ -159,8 +159,8 @@ public class FriendlinkSerlvet extends AdminCommonSerlvet {
 	 * @throws IOException
 	 */
 	public void editAction() throws ServletException, IOException {
-		String method = request.getMethod();
-		String id = request.getParameter("id");
+		String method = getRequest().getMethod();
+		String id = getRequest().getParameter("id");
 		if (method.equals("POST")) {
 			//修改文章分类
 			String sql = "UPDATE " + DBHelper.normalTableName("friend_link") + " SET site_name=?,site_url=?,site_logo=?,sort_order=?,update_time=? where id = ? ";
@@ -169,10 +169,10 @@ public class FriendlinkSerlvet extends AdminCommonSerlvet {
 			try {
 				connection = DBHelper.getConnect();
 				statement = connection.prepareStatement(sql);
-				statement.setString(1, request.getParameter("site_name"));
-				statement.setString(2, request.getParameter("site_url"));
-				statement.setString(3, request.getParameter("site_logo"));
-				statement.setString(4, request.getParameter("sort_order"));
+				statement.setString(1, getRequest().getParameter("site_name"));
+				statement.setString(2, getRequest().getParameter("site_url"));
+				statement.setString(3, getRequest().getParameter("site_logo"));
+				statement.setString(4, getRequest().getParameter("sort_order"));
 				statement.setInt(5, (int) (System.currentTimeMillis()/1000));
 				statement.setString(6, id);
 				statement.executeUpdate();

@@ -27,13 +27,29 @@ import com.alibaba.fastjson.JSONObject;
 public class CoreSerlvet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	protected String tplRootDir = "/WEB-INF/servletView/";
-	protected HttpServletRequest request;
-	protected HttpServletResponse response;
+//	private HttpServletRequest request; // HttpServlet 不是线程安全的，不能这种写法
+//	private HttpServletResponse response; // HttpServlet 不是线程安全的，不能这种写法
+	private ThreadLocal<HttpServletRequest> request = new ThreadLocal<HttpServletRequest>();
+	private ThreadLocal<HttpServletResponse> response = new ThreadLocal<HttpServletResponse>();
 
 	protected void note() {
 		//JspRuntimeLibrary.include(request, response, "date.jsp", out, true); 
 	}
 
+	protected HttpServletRequest getRequest() {
+		if(request.get()==null){
+			throw new RuntimeException("request is null");
+		}
+		return request.get();
+	}
+	
+	protected HttpServletResponse getResponse() {
+		if(response.get()==null){
+			throw new RuntimeException("response is null");
+		}
+		return response.get();
+	}
+	
 	protected void initial() {
 
 	}
@@ -53,8 +69,8 @@ public class CoreSerlvet extends HttpServlet {
 	 * post请求
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		this.request = request;
-		this.response = response;
+		this.request.set(request);
+		this.response.set(response);
 		String actionName = request.getParameter("act");
 		if (actionName == null || "".equals(actionName)) {
 			actionName = "index";
@@ -64,8 +80,8 @@ public class CoreSerlvet extends HttpServlet {
 		String[] denyStrArray = denyString.toLowerCase().split(",");
 		List denyList = Arrays.asList(denyStrArray);
 		if (denyList.contains(actionName.toLowerCase())) {
-			response.sendError(404);//禁止访问的方法
-			response.getWriter().write("miss action...");
+			getResponse().sendError(404);//禁止访问的方法
+			getResponse().getWriter().write("miss action...");
 		} else {
 			
 			if(true){
@@ -87,19 +103,24 @@ public class CoreSerlvet extends HttpServlet {
 					}
 				}
 				if (!isHit) {
-					response.sendError(404);//禁止访问的方法
-					response.getWriter().write("miss action...");
+					getResponse().sendError(404);//禁止访问的方法
+					getResponse().getWriter().write("miss action...");
 				}
 			}
 			else{
-				Method method = this.getClass().getMethod(actionName, null);
-				if(method==null){
-					response.sendError(404);//禁止访问的方法
-					response.getWriter().write("miss action...");
+				try {
+					Method method = this.getClass().getMethod(actionName, null);
+					if(method==null){
+						getResponse().sendError(404);//禁止访问的方法
+						getResponse().getWriter().write("miss action...");
+					}
+					else{
+						method.invoke(this, null);
+					}
+				} catch (Exception e) {
+					throw new RuntimeException(e);
 				}
-				else{
-					method.invoke(this, null);
-				}
+				
 			}
 		}
 	}
@@ -111,7 +132,7 @@ public class CoreSerlvet extends HttpServlet {
 	 * @param object
 	 */
 	protected void assign(String key, Object object) {
-		request.setAttribute(key, object);
+		getRequest().setAttribute(key, object);
 	}
 
 	/**
@@ -129,7 +150,7 @@ public class CoreSerlvet extends HttpServlet {
 			else
 				tplName1 = tplName;
 		}
-		request.getRequestDispatcher(tplName1).forward(request, response);//内部转发
+		getRequest().getRequestDispatcher(tplName1).forward(getRequest(), getResponse());//内部转发
 	}
 
 	/**
@@ -149,7 +170,7 @@ public class CoreSerlvet extends HttpServlet {
 				tplName1 = tplName;
 		}
 		MyJspWriterImpl mMyJspWriterImpl = new MyJspWriterImpl();
-		org.apache.jasper.runtime.JspRuntimeLibrary.include(request, response, tplName1, mMyJspWriterImpl, false);
+		org.apache.jasper.runtime.JspRuntimeLibrary.include(getRequest(), getResponse(), tplName1, mMyJspWriterImpl, false);
 		return mMyJspWriterImpl.getHtmlStrTemp().trim();
 	}
 
@@ -163,8 +184,8 @@ public class CoreSerlvet extends HttpServlet {
 	 */
 	protected String fetch2(String resourcePath) throws IOException, ServletException {
 		MyJspWriterImpl mMyJspWriterImpl = new MyJspWriterImpl();
-		RequestDispatcher mRequestDispatcher = request.getRequestDispatcher(resourcePath);//org.apache.catalina.core.ApplicationDispatcher
-		mRequestDispatcher.include(request, new ServletResponseWrapperInclude(response, mMyJspWriterImpl));
+		RequestDispatcher mRequestDispatcher = getRequest().getRequestDispatcher(resourcePath);//org.apache.catalina.core.ApplicationDispatcher
+		mRequestDispatcher.include(getRequest(), new ServletResponseWrapperInclude(getResponse(), mMyJspWriterImpl));
 		return mMyJspWriterImpl.getHtmlStrTemp().trim();
 	}
 
@@ -175,7 +196,7 @@ public class CoreSerlvet extends HttpServlet {
 	 */
 	protected void redirect(String url) {
 		try {
-			response.sendRedirect(url);
+			getResponse().sendRedirect(url);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -260,9 +281,9 @@ public class CoreSerlvet extends HttpServlet {
 		JSONObject mJSONObject2 = new JSONObject();
 		mJSONObject2.put("html", html);
 		mJSONObject.put("data", mJSONObject2);
-		response.setCharacterEncoding("UTF-8");
-		response.addHeader("Content-type", "text/json");
-		response.getWriter().write(mJSONObject.toJSONString());
+		getResponse().setCharacterEncoding("UTF-8");
+		getResponse().addHeader("Content-type", "text/json");
+		getResponse().getWriter().write(mJSONObject.toJSONString());
 		return;
 	}
 	
@@ -275,7 +296,7 @@ public class CoreSerlvet extends HttpServlet {
 			mJSONObject.put(key,hashMap.get(key));
 		}
 		this.jsonHeader();
-		response.getWriter().write(mJSONObject.toJSONString());
+		getResponse().getWriter().write(mJSONObject.toJSONString());
 		return;
 	}
 	
@@ -283,8 +304,8 @@ public class CoreSerlvet extends HttpServlet {
 	 * 发送JSON的头部
 	 */
 	protected void jsonHeader() {
-		response.setCharacterEncoding("UTF-8");
-		response.addHeader("Content-type", "text/json");
+		getResponse().setCharacterEncoding("UTF-8");
+		getResponse().addHeader("Content-type", "text/json");
 	}
 	
 

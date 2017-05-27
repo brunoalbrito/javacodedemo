@@ -24,12 +24,12 @@ public class PassportSerlvet extends AdminCommonSerlvet {
 	 * @throws IOException
 	 */
 	public void logout() throws ServletException, IOException {
-		HashMap hashTable = (HashMap) request.getSession().getAttribute("adminInfo");
+		HashMap hashTable = (HashMap) getRequest().getSession().getAttribute("adminInfo");
 		if (hashTable != null) {
-			request.removeAttribute("adminInfo");
+			getRequest().removeAttribute("adminInfo");
 		}
 		//进入登录页面
-		request.getRequestDispatcher("/admin/index/login").forward(request, response);
+		getRequest().getRequestDispatcher("/admin/index/login").forward(getRequest(), getResponse());
 	}
 
 	
@@ -41,11 +41,11 @@ public class PassportSerlvet extends AdminCommonSerlvet {
 	 * @throws IOException
 	 */
 	public void login() throws ServletException, IOException {
-		if (request.getMethod().equals("GET")) {
+		if (getRequest().getMethod().equals("GET")) {
 			this.display("admin/Passport-login.jsp");
 		} else {
-			String username = request.getParameter("username");
-			String password = request.getParameter("password");
+			String username = getRequest().getParameter("username");
+			String password = getRequest().getParameter("password");
 			String sql = "SELECT * FROM " + DBHelper.normalTableName("admin") + " WHERE username=? LIMIT 1";// 查找用户
 			PreparedStatement statement = null;
 			Connection connection = null;
@@ -59,7 +59,7 @@ public class PassportSerlvet extends AdminCommonSerlvet {
 					String passwordTemp = resultSet.getString("password");
 					DBHelper.close(resultSet, statement, connection);
 					if (passwordTemp == MD5.digest(password)) {
-						request.getRequestDispatcher("/admin/Index/index").forward(request, response);//进入后台
+						getRequest().getRequestDispatcher("/admin/Index/index").forward(getRequest(), getResponse());//进入后台
 					} else {
 						this.display("admin/Passport-login.jsp");
 					}
@@ -81,9 +81,9 @@ public class PassportSerlvet extends AdminCommonSerlvet {
 	 * @throws IOException
 	 */
 	public void register() throws ServletException, IOException {
-		if (request.getMethod().equals("POST")) {
-			String username = request.getParameter("username");
-			String password = request.getParameter("password");
+		if (getRequest().getMethod().equals("POST")) {
+			String username = getRequest().getParameter("username");
+			String password = getRequest().getParameter("password");
 			String sql = "SELECT * FROM " + DBHelper.normalTableName("admin") + " WHERE username=?  LIMIT 1";// 查找用户
 			PreparedStatement statement = null;
 			Connection connection = null;
@@ -111,7 +111,7 @@ public class PassportSerlvet extends AdminCommonSerlvet {
 							DBHelper.close(resultSet, statement, connection);
 
 							//进入会员中心
-							request.getRequestDispatcher("/admin/Index/index").forward(request, response);//进入后台
+							getRequest().getRequestDispatcher("/admin/Index/index").forward(getRequest(), getResponse());//进入后台
 						}
 					} catch (SQLException e) {
 						e.printStackTrace();
@@ -140,7 +140,7 @@ public class PassportSerlvet extends AdminCommonSerlvet {
 		hashTable.put("username", resultSet.getString("username"));
 		hashTable.put("password", resultSet.getString("password"));
 		hashTable.put("realname", resultSet.getString("realname"));
-		request.getSession().setAttribute("adminInfo", hashTable);
+		getRequest().getSession().setAttribute("adminInfo", hashTable);
 	}
 
 	/**
@@ -154,6 +154,6 @@ public class PassportSerlvet extends AdminCommonSerlvet {
 		hashTable.put("username", username);
 		hashTable.put("password", password);
 		hashTable.put("realname", realname);
-		request.getSession().setAttribute("adminInfo", hashTable);
+		getRequest().getSession().setAttribute("adminInfo", hashTable);
 	}
 }

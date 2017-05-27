@@ -30,6 +30,8 @@ import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 import org.springframework.web.util.CookieGenerator;
 import org.springframework.web.util.HtmlUtils;
 import org.springframework.web.util.JavaScriptUtils;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.util.WebUtils;
 
 import cn.java.demo.util.ApplicationContextUtil;
@@ -192,6 +194,17 @@ public class HelloServlet extends CommonServlet   {
 						}
 					}
 				}
+			}
+			
+			{
+				String targetUrl = "http://www.baidu.com/dir1/dir2?param0=value0#fragment0";
+				UriComponents uriComponents = UriComponentsBuilder.fromUriString(targetUrl).build();
+				System.out.println("uriComponents.getScheme() = " + uriComponents.getScheme());
+				System.out.println("uriComponents.getHost() = " + uriComponents.getHost());
+				System.out.println("uriComponents.getPort() = " + uriComponents.getPort());
+				System.out.println("uriComponents.getPath() = " + uriComponents.getPath());
+				System.out.println("uriComponents.getQueryParams() = " + uriComponents.getQueryParams());
+				System.out.println("uriComponents.getFragment() = " + uriComponents.getFragment());
 			}
 			
 			// 渲染模板

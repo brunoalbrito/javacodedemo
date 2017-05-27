@@ -1,5 +1,6 @@
 package cn.java.demo.webmvc.bean.handler.byannotation;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
@@ -9,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,6 +19,7 @@ import org.springframework.web.context.request.async.WebAsyncTask;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
+import org.springframework.web.servlet.view.InternalResourceView;
 
 /**
  * @author zhouzhian
@@ -29,19 +32,96 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 public class RespHandler {
 	
 	/**
+	 * 有jsp模板，会直接使用
+	 * 赋值数据、并进行渲染
+	 * localhost:8080/springwebmvc/resp-handler/return-model-and-view0
 	 */
-	@RequestMapping(path={"/method0"},method={RequestMethod.GET})
-	public ModelAndView method0(HttpServletRequest request,HttpServletResponse response) throws Exception{ 
-		return null;
+	@RequestMapping(path={"/return-model-and-view0"},method={RequestMethod.GET})
+	public ModelAndView returnModelAndView0(HttpServletRequest request,HttpServletResponse response) throws Exception{ 
+		request.setAttribute("attr0","value0");
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("/resp-handler/return-model-and-view0");
+		ModelMap modelMap = new ModelMap();
+		modelMap.put("attr1", "value1");
+		modelAndView.addAllObjects(modelMap);
+		return modelAndView;
 	}
 	
-	@RequestMapping(path={"/method1"},method={RequestMethod.GET})
-	public Model method1(HttpServletRequest request,HttpServletResponse response) throws Exception{ 
-		return null;
+	/**
+	 * 没有jsp模板，会使用freemark的模板
+	 * 赋值数据、并进行渲染
+	 * localhost:8080/springwebmvc/resp-handler/return-model-and-view1
+	 */
+	@RequestMapping(path={"/return-model-and-view1"},method={RequestMethod.GET})
+	public ModelAndView returnModelAndView1(HttpServletRequest request,HttpServletResponse response) throws Exception{ 
+		request.setAttribute("attr0","value0");
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("/resp-handler/return-model-and-view1");
+		ModelMap modelMap = new ModelMap();
+		modelMap.put("attr1", "value1");
+		modelAndView.addAllObjects(modelMap);
+		return modelAndView;
 	}
 	
-	@RequestMapping(path={"/method2"},method={RequestMethod.GET})
-	public View method2(HttpServletRequest request,HttpServletResponse response) throws Exception{ 
+	/**
+	 * /resp-handler/return-model
+	 */
+	@RequestMapping(path={"/return-model"},method={RequestMethod.GET})
+	public Model returnModel(HttpServletRequest request,HttpServletResponse response) throws Exception{ 
+		class FooModel implements Model{
+			private ModelMap modelMap = new ModelMap();
+			
+			@Override
+			public Model mergeAttributes(Map<String, ?> attributes) {
+				modelMap.mergeAttributes(attributes);
+				return this;
+			}
+			
+			@Override
+			public boolean containsAttribute(String attributeName) {
+				return modelMap.containsKey(attributeName);
+			}
+			
+			@Override
+			public Map<String, Object> asMap() {
+				return modelMap;
+			}
+			
+			@Override
+			public Model addAttribute(Object attributeValue) {
+				modelMap.addAttribute(attributeValue);
+				return this;
+			}
+			
+			@Override
+			public Model addAttribute(String attributeName, Object attributeValue) {
+				modelMap.addAttribute(attributeName,attributeValue);
+				return this;
+			}
+			
+			@Override
+			public Model addAllAttributes(Map<String, ?> attributes) {
+				modelMap.addAllAttributes(attributes);
+				return this;
+			}
+			
+			@Override
+			public Model addAllAttributes(Collection<?> attributeValues) {
+				modelMap.addAllAttributes(attributeValues);
+				return this;
+			}
+		}
+		FooModel model = new FooModel();
+		return model;
+	}
+	
+	@RequestMapping(path={"/return-view0"},method={RequestMethod.GET})
+	public View returnView0(HttpServletRequest request,HttpServletResponse response) throws Exception{ 
+		{
+			InternalResourceView internalResourceView = new InternalResourceView(); // 使用jsp解析引擎
+			internalResourceView.setContentType("text/html; charset=UTF-8");
+			internalResourceView.setUrl("/WEB-INF/templates/resp-handler/return-view0.jsp");
+		}
 		return null;
 	}
 	
@@ -95,6 +175,7 @@ public class RespHandler {
 		return "redirect:http://www.baidu.com";
 		
 	}
+	
 	@RequestMapping(path={"/method13"},method={RequestMethod.GET})
 	public String method13(HttpServletRequest request,HttpServletResponse response) throws Exception{ 
 		return "forward:/resp-handler/method13";

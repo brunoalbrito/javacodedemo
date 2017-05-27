@@ -77,6 +77,7 @@ public class ReqParamHandler {
 
 	
 	/**
+	 * http://localhost:8080/springwebmvc/req-param-handler/get
 	 */
 	@RequestMapping(path={"/get"},method={RequestMethod.GET})
 	public ModelAndView get(

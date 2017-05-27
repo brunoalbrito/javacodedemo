@@ -46,8 +46,8 @@ public class ArticleSerlvet extends AdminCommonSerlvet {
 			if (totalRows > 0) {
 				int perPageShowCount = new Integer(ApplicationConfig.getConfig("app_pagination_showRangCount"));
 				int currPage = 1;
-				if (request.getParameter("page") != null && (!request.getParameter("page").equals(""))) {
-					currPage = new Integer(request.getParameter("page"));
+				if (getRequest().getParameter("page") != null && (!getRequest().getParameter("page").equals(""))) {
+					currPage = new Integer(getRequest().getParameter("page"));
 				}
 				// 分页查询
 				String sql = "SELECT art.*,art_cate.cate_name FROM " + DBHelper.normalTableName("article") + " AS art LEFT JOIN " + DBHelper.normalTableName("article_cate") + " AS art_cate ON art.cate_id=art_cate.id "+
@@ -94,7 +94,7 @@ public class ArticleSerlvet extends AdminCommonSerlvet {
 	 */
 	public void addAction() throws ServletException, IOException {
 		ArticleCateService mArticleCateService = new ArticleCateService();
-		if (request.getMethod().equals("GET")) {
+		if (getRequest().getMethod().equals("GET")) {
 			//一级分类
 			ArrayList<HashMap> levelOneCateList = mArticleCateService.getCateListByParentId(0);
 			this.assign("item",null);
@@ -106,11 +106,11 @@ public class ArticleSerlvet extends AdminCommonSerlvet {
 		} else {
 			//构造数据
 			HashMap<String, String> item = new HashMap();
-			item.put("article_name", request.getParameter("article_name"));
-			item.put("weight", request.getParameter("weight"));
-			item.put("thumb_pic", request.getParameter("thumb_pic"));
-			item.put("cate_id", request.getParameter("cate_id"));
-			item.put("content", request.getParameter("content"));
+			item.put("article_name", getRequest().getParameter("article_name"));
+			item.put("weight", getRequest().getParameter("weight"));
+			item.put("thumb_pic", getRequest().getParameter("thumb_pic"));
+			item.put("cate_id", getRequest().getParameter("cate_id"));
+			item.put("content", getRequest().getParameter("content"));
 
 			//Service调用，插入数据
 			ArticleService artService = new ArticleService();
@@ -118,7 +118,7 @@ public class ArticleSerlvet extends AdminCommonSerlvet {
 
 			//Service调用结果
 			if((Integer) result.get("status")==1){
-				request.getRequestDispatcher(UrlHelper.url("admin", "article", "index")).forward(request, response);//到文章列表页
+				getRequest().getRequestDispatcher(UrlHelper.url("admin", "article", "index")).forward(getRequest(), getResponse());//到文章列表页
 			} else {//插入失败
 				ArrayList<HashMap> levelOneCateList = mArticleCateService.getCateListByParentId(0);
 				this.assign("item", (HashMap) result.get("data"));
@@ -139,17 +139,17 @@ public class ArticleSerlvet extends AdminCommonSerlvet {
 	 * @throws IOException
 	 */
 	public void editAction() throws ServletException, IOException {
-		String method = request.getMethod();
-		String id = request.getParameter("id");
+		String method = getRequest().getMethod();
+		String id = getRequest().getParameter("id");
 		if (method.equals("POST")) {
 			//构造数据
 			HashMap data = new HashMap();
 			data.put("id", id);
-			data.put("article_name", request.getParameter("article_name"));
-			data.put("weight", request.getParameter("weight"));
-			data.put("thumb_pic", request.getParameter("thumb_pic"));
-			data.put("cate_id", request.getParameter("cate_id"));
-			data.put("content", request.getParameter("content"));
+			data.put("article_name", getRequest().getParameter("article_name"));
+			data.put("weight", getRequest().getParameter("weight"));
+			data.put("thumb_pic", getRequest().getParameter("thumb_pic"));
+			data.put("cate_id", getRequest().getParameter("cate_id"));
+			data.put("content", getRequest().getParameter("content"));
 
 			//Service调用
 			ArticleService artService = new ArticleService();
@@ -157,7 +157,7 @@ public class ArticleSerlvet extends AdminCommonSerlvet {
 
 			//Service调用结果
 			if((Integer) result.get("status")==1){//修改成功
-				request.getRequestDispatcher(UrlHelper.url("admin", "article", "index")).forward(request, response);//到文章列表页
+				getRequest().getRequestDispatcher(UrlHelper.url("admin", "article", "index")).forward(getRequest(), getResponse());//到文章列表页
 			}
 			else{
 				this.assign("item",data);
@@ -199,7 +199,7 @@ public class ArticleSerlvet extends AdminCommonSerlvet {
 				this.display("Article-edit.jsp");
 			}
 			else{
-				request.getRequestDispatcher(UrlHelper.url("admin", "article", "index")).forward(request, response);//到文章列表页
+				getRequest().getRequestDispatcher(UrlHelper.url("admin", "article", "index")).forward(getRequest(), getResponse());//到文章列表页
 			}
 
 		}
@@ -215,7 +215,7 @@ public class ArticleSerlvet extends AdminCommonSerlvet {
 	public void deleteAction() throws ServletException, IOException {
 		//Service调用
 		ArticleService articleService = new ArticleService();
-		HashMap result = articleService.delete(request.getParameter("ids"));
+		HashMap result = articleService.delete(getRequest().getParameter("ids"));
 
 		//Service调用结果
 		this.ajaxReturn(result);

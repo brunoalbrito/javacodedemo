@@ -20,8 +20,11 @@ import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.http.MediaType;
+import org.springframework.ui.ModelMap;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.MultiValueMap;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
@@ -67,10 +70,13 @@ import org.springframework.web.method.support.InvocableHandlerMethod;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.multipart.MultipartRequest;
 import org.springframework.web.servlet.HandlerAdapter;
+import org.springframework.web.servlet.HandlerExecutionChain;
 import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.ModelAndViewDefiningException;
 import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.handler.MappedInterceptor;
 import org.springframework.web.servlet.handler.WebRequestHandlerInterceptorAdapter;
 import org.springframework.web.servlet.handler.AbstractHandlerMethodMapping.Match;
@@ -104,6 +110,7 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 import org.springframework.web.servlet.mvc.method.annotation.UriComponentsBuilderMethodArgumentResolver;
 import org.springframework.web.servlet.mvc.method.annotation.ViewMethodReturnValueHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ViewNameMethodReturnValueHandler;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
 import org.springframework.web.servlet.view.AbstractUrlBasedView;
 import org.springframework.web.servlet.view.InternalResourceView;
@@ -314,7 +321,7 @@ public class Interceptor的识别_Handler的识别_AnnotationMapper {
 	 			}
  			}
 		 	
-		 	--------------------RequestMappingHandlerMapping如何匹配Handler--------------------------
+		 	-------------------- RequestMappingHandlerMapping 如何匹配符合条件的Handler--------------------------
 		 	org.springframework.web.servlet.handler.AbstractHandlerMapping.getHandler(HttpServletRequest request)
 		 	{
 		 		org.springframework.web.servlet.handler.AbstractHandlerMethodMapping.getHandlerInternal(HttpServletRequest request)
@@ -369,8 +376,22 @@ public class Interceptor的识别_Handler的识别_AnnotationMapper {
 						}
 						org.springframework.web.servlet.mvc.method.RequestMappingInfoHandlerMapping.handleMatch(bestMatch.mapping, lookupPath, request);
 						{
-							request.setAttribute(BEST_MATCHING_PATTERN_ATTRIBUTE, bestPattern);
-							request.setAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE, decodedUriVariables); // 地址上的变量
+							super.handleMatch(info, lookupPath, request);
+							{
+								request.setAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE, lookupPath); // -- 匹配的信息放入request
+							}
+							request.setAttribute(BEST_MATCHING_PATTERN_ATTRIBUTE, bestPattern); // -- 匹配的信息放入request
+							request.setAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE, decodedUriVariables); //  -- 匹配的信息放入request
+							
+							if (isMatrixVariableContentAvailable()) { // 多维数组
+								Map<String, MultiValueMap<String, String>> matrixVars = extractMatrixVariables(request, uriVariables);
+								request.setAttribute(HandlerMapping.MATRIX_VARIABLES_ATTRIBUTE, matrixVars);
+							}
+					
+							if (!info.getProducesCondition().getProducibleMediaTypes().isEmpty()) {
+								Set<MediaType> mediaTypes = info.getProducesCondition().getProducibleMediaTypes();
+								request.setAttribute(PRODUCIBLE_MEDIA_TYPES_ATTRIBUTE, mediaTypes);
+							}
 						}
 						return bestMatch.handlerMethod;
 		 			}
@@ -389,7 +410,25 @@ public class Interceptor的识别_Handler的识别_AnnotationMapper {
 					handler = getApplicationContext().getBean(handlerName);
 				}
 		
-				HandlerExecutionChain executionChain = getHandlerExecutionChain(handler, request); // !!!!
+				HandlerExecutionChain executionChain = AbstractHandlerMapping.getHandlerExecutionChain(handler, request); // !!!!
+				{
+					HandlerExecutionChain chain = (handler instanceof HandlerExecutionChain ?
+							(HandlerExecutionChain) handler : new HandlerExecutionChain(handler));
+			
+					String lookupPath = this.urlPathHelper.getLookupPathForRequest(request);
+					for (HandlerInterceptor interceptor : this.adaptedInterceptors) {  // 匹配符合条件的Interceptor
+						if (interceptor instanceof MappedInterceptor) {
+							MappedInterceptor mappedInterceptor = (MappedInterceptor) interceptor;
+							if (mappedInterceptor.matches(lookupPath, this.pathMatcher)) { // 匹配本拦截器
+								chain.addInterceptor(mappedInterceptor.getInterceptor()); 
+							}
+						}
+						else {
+							chain.addInterceptor(interceptor); // 添加拦截器
+						}
+					}
+					return chain;
+				}
 				if (CorsUtils.isCorsRequest(request)) { // 是跨域请求
 					CorsConfiguration globalConfig = this.corsConfigSource.getCorsConfiguration(request);
 					CorsConfiguration handlerConfig = getCorsConfiguration(handler, request);
@@ -830,6 +869,9 @@ public class Interceptor的识别_Handler的识别_AnnotationMapper {
 												// returnValueHandlers === org.springframework.web.method.support.HandlerMethodReturnValueHandlerComposite
 												this.returnValueHandlers.handleReturnValue(
 														returnValue, getReturnValueType(returnValue), mavContainer, webRequest); // 处理返回值
+												{
+													
+												}
 											}
 										}
 										
@@ -837,7 +879,24 @@ public class Interceptor的识别_Handler的识别_AnnotationMapper {
 											return null;
 										}
 							
-										return getModelAndView(mavContainer, modelFactory, webRequest); // 处理返回的 org.springframework.web.servlet.ModelAndView
+										return RequestMappingHandlerAdapter.getModelAndView(mavContainer, modelFactory, webRequest); // 处理返回的 org.springframework.web.servlet.ModelAndView
+										{
+											modelFactory.updateModel(webRequest, mavContainer);
+											if (mavContainer.isRequestHandled()) {
+												return null;
+											}
+											ModelMap model = mavContainer.getModel(); // 数据
+											ModelAndView mav = new ModelAndView(mavContainer.getViewName(), model, mavContainer.getStatus());
+											if (!mavContainer.isViewReference()) {
+												mav.setView((View) mavContainer.getView());
+											}
+											if (model instanceof RedirectAttributes) {
+												Map<String, ?> flashAttributes = ((RedirectAttributes) model).getFlashAttributes();
+												HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
+												RequestContextUtils.getOutputFlashMap(request).putAll(flashAttributes);
+											}
+											return mav;
+										}
 									}
 									finally {
 										webRequest.requestCompleted();
@@ -871,7 +930,7 @@ public class Interceptor的识别_Handler的识别_AnnotationMapper {
 					}
 				}
 				
-				// 处理视图
+				// 进行渲染
 				org.springframework.web.servlet.DispatcherServlet.processDispatchResult( request,  response,  mappedHandler,  mv,  exception)
 				{
 					boolean errorView = false;
@@ -887,12 +946,21 @@ public class Interceptor的识别_Handler的识别_AnnotationMapper {
 							errorView = (mv != null);
 						}
 					}
-					render(mv, request, response); // 进行渲染 !!!
+					DispatcherServlet.render(mv, request, response); // 进行渲染 !!!
 					{
 						View view;
 						if (mv.isReference()) {
 							// We need to resolve the view name.
 							view = resolveViewName(mv.getViewName(), mv.getModelInternal(), locale, request); // 解析视图
+							{
+								for (ViewResolver viewResolver : this.viewResolvers) {
+									// 如：viewResolver == org.springframework.web.servlet.view.InternalResourceViewResolver
+									View view = viewResolver.resolveViewName(viewName, locale);
+									if (view != null) {
+										return view;
+									}
+								}
+							}
 						}
 						else {
 							// No need to lookup: the ModelAndView object contains the actual View object.

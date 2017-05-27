@@ -110,8 +110,8 @@ public class ArticleStaticCateSerlvet extends AdminCommonSerlvet {
 	 * @throws IOException
 	 */
 	public void editAction() throws ServletException, IOException {
-		String method = request.getMethod();
-		String id = request.getParameter("id");
+		String method = getRequest().getMethod();
+		String id = getRequest().getParameter("id");
 		if (method.equals("POST")) {
 			//修改文章分类
 			String sql = "UPDATE " + DBHelper.normalTableName("article_cate") + " SET cate_name=? where id=? ";
@@ -120,7 +120,7 @@ public class ArticleStaticCateSerlvet extends AdminCommonSerlvet {
 			try {
 				connection = DBHelper.getConnect();
 				statement = connection.prepareStatement(sql);
-				statement.setString(1, request.getParameter("cate_name"));
+				statement.setString(1, getRequest().getParameter("cate_name"));
 				statement.setString(2, id);
 				statement.executeUpdate();
 				int affectedRowCount = statement.getUpdateCount();// 影响的行数

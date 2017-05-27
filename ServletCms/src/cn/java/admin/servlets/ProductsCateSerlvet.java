@@ -161,7 +161,7 @@ public class ProductsCateSerlvet<V> extends AdminCommonSerlvet {
 	 * @throws IOException
 	 */
 	public void deleteAction() throws ServletException, IOException {
-		String id = request.getParameter("id");
+		String id = getRequest().getParameter("id");
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
@@ -231,8 +231,8 @@ public class ProductsCateSerlvet<V> extends AdminCommonSerlvet {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		try {
-			if (request.getMethod().equals("GET")) {
-				Integer parentId = new Integer(request.getParameter("parent_id"));
+			if (getRequest().getMethod().equals("GET")) {
+				Integer parentId = new Integer(getRequest().getParameter("parent_id"));
 				if(parentId==null||parentId==0){
 					this.assign("selectList", this.getSelectList());
 				}
@@ -260,8 +260,8 @@ public class ProductsCateSerlvet<V> extends AdminCommonSerlvet {
 				String sql = "INSERT INTO " + DBHelper.normalTableName("products_cate") + "(cate_name,parent_id,status) VALUES(?,?,1)";
 				connection = DBHelper.getConnect();
 				statement = connection.prepareStatement(sql);
-				statement.setString(1, request.getParameter("cate_name"));
-				statement.setString(2, request.getParameter("parent_id"));
+				statement.setString(1, getRequest().getParameter("cate_name"));
+				statement.setString(2, getRequest().getParameter("parent_id"));
 				statement.executeUpdate();
 				int affectedRowCount = statement.getUpdateCount();// 影响的行数
 				if (affectedRowCount > 0) {
@@ -287,8 +287,8 @@ public class ProductsCateSerlvet<V> extends AdminCommonSerlvet {
 	 * @throws IOException
 	 */
 	public void editAction() throws ServletException, IOException {
-		String method = request.getMethod();
-		String id = request.getParameter("id");
+		String method = getRequest().getMethod();
+		String id = getRequest().getParameter("id");
 		if (method.equals("POST")) {
 			//修改文章分类
 			String sql = "UPDATE " + DBHelper.normalTableName("products_cate") + " SET cate_name=?,parent_id=?,status=1 where id=? ";
@@ -297,8 +297,8 @@ public class ProductsCateSerlvet<V> extends AdminCommonSerlvet {
 			try {
 				connection = DBHelper.getConnect();
 				statement = connection.prepareStatement(sql);
-				statement.setString(1, request.getParameter("cate_name"));
-				statement.setString(2, request.getParameter("parent_id"));
+				statement.setString(1, getRequest().getParameter("cate_name"));
+				statement.setString(2, getRequest().getParameter("parent_id"));
 				statement.setString(3, id);
 				statement.executeUpdate();
 				int affectedRowCount = statement.getUpdateCount();// 影响的行数

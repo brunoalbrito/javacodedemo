@@ -6,13 +6,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-public class HandlerInterceptorImpl1 implements HandlerInterceptor {
+public class MappedInterceptorWithHandlerInterceptorImpl1 implements HandlerInterceptor {
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
-		// TODO Auto-generated method stub
-		return false;
+		System.out.println("\n---> code in : " + this.getClass().getName());
+		return true;
 	}
 
 	@Override

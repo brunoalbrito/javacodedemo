@@ -15,6 +15,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 import org.springframework.web.cors.CorsUtils;
+import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.util.WebUtils;
 
 public class WebUtilx {
@@ -148,6 +149,7 @@ public class WebUtilx {
 	/**
 	 * 设置内容类型
 	 * 		和setContentType函数是等幂的
+	 * 	contentType = "text/html; charset=UTF-8";
 	 */
 	public static void setContentTypeIdempotent(HttpServletResponse response,String contentType) throws IOException {
 		if(contentType.indexOf(";")!=-1){
