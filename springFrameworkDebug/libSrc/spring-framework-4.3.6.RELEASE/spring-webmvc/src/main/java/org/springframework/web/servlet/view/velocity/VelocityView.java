@@ -240,7 +240,7 @@ public class VelocityView extends AbstractTemplateView {
 	protected VelocityEngine autodetectVelocityEngine() throws BeansException {
 		try {
 			VelocityConfig velocityConfig = BeanFactoryUtils.beanOfTypeIncludingAncestors(
-					getApplicationContext(), VelocityConfig.class, true, false);
+					getApplicationContext(), VelocityConfig.class, true, false); // 自动感知配置对象
 			return velocityConfig.getVelocityEngine();
 		}
 		catch (NoSuchBeanDefinitionException ex) {

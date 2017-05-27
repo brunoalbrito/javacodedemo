@@ -23,8 +23,12 @@ import cn.java.demo.beantag.bean.initmehtod.DemoInitializingBean;
 import cn.java.demo.beantag.bean.lookupmethod.Property1;
 import cn.java.demo.beantag.bean.methodreplacer.MethodReplacerImpl;
 import cn.java.demo.beantag.beandefinition_property.StupidRootBeanDefinitionInJavaTest;
-import cn.java.demo.internal.ExpressionParserTest;
-import cn.java.demo.internal.TypeConverterTest;
+import cn.java.demo.beantag.internal.AnnotationUtilsTest;
+import cn.java.demo.beantag.internal.BeanUtilsTest;
+import cn.java.demo.beantag.internal.ExpressionParserTest;
+import cn.java.demo.beantag.internal.ObjectUtilsTest;
+import cn.java.demo.beantag.internal.ReflectionUtilsTest;
+import cn.java.demo.beantag.internal.TypeConverterTest;
 import cn.java.demo.util.ApplicationContextUtil;
 
 
@@ -197,9 +201,20 @@ public class Test {
 		System.out.println("-------------其他-------------------");
 		{ // 其他
 			
+			// 类型转换器
 			TypeConverterTest.testStandardTypeConverterTest();
+			
+			// 使用表达式访问bean对象
 			ExpressionParserTest.testStandardBeanExpressionResolverResultString((AbstractRefreshableConfigApplicationContext) context);
 			ExpressionParserTest.testStandardBeanExpressionResolverResultBeanObject((AbstractRefreshableConfigApplicationContext) context);
+			
+			// 实例化bean
+			BeanUtilsTest.testInstantiateClass((AbstractRefreshableConfigApplicationContext) context);
+			BeanUtilsTest.testIsPresent((AbstractRefreshableConfigApplicationContext) context);
+			
+			ReflectionUtilsTest.testReflectionUtils((AbstractRefreshableConfigApplicationContext) context);
+			AnnotationUtilsTest.testAnnotationUtils((AbstractRefreshableConfigApplicationContext) context);
+			ObjectUtilsTest.testObjectUtils((AbstractRefreshableConfigApplicationContext) context);
 		}
 		
 	}

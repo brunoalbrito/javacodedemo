@@ -201,7 +201,7 @@ public class WebDataBinder extends DataBinder {
 	 * @see #getFieldDefaultPrefix
 	 */
 	protected void checkFieldDefaults(MutablePropertyValues mpvs) {
-		if (getFieldDefaultPrefix() != null) {
+		if (getFieldDefaultPrefix() != null) { // getFieldDefaultPrefix() === "!"
 			String fieldDefaultPrefix = getFieldDefaultPrefix();
 			PropertyValue[] pvArray = mpvs.getPropertyValues();
 			for (PropertyValue pv : pvArray) {
@@ -228,7 +228,7 @@ public class WebDataBinder extends DataBinder {
 	 * @see #getEmptyValue(String, Class)
 	 */
 	protected void checkFieldMarkers(MutablePropertyValues mpvs) {
-		if (getFieldMarkerPrefix() != null) {
+		if (getFieldMarkerPrefix() != null) { // getFieldMarkerPrefix() === "_"
 			String fieldMarkerPrefix = getFieldMarkerPrefix();
 			PropertyValue[] pvArray = mpvs.getPropertyValues();
 			for (PropertyValue pv : pvArray) {

@@ -61,7 +61,7 @@ public class ExtendedServletRequestDataBinder extends ServletRequestDataBinder {
 	@SuppressWarnings("unchecked")
 	protected void addBindValues(MutablePropertyValues mpvs, ServletRequest request) {
 		String attr = HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE;
-		Map<String, String> uriVars = (Map<String, String>) request.getAttribute(attr);
+		Map<String, String> uriVars = (Map<String, String>) request.getAttribute(attr); // 模板变量的值
 		if (uriVars != null) {
 			for (Entry<String, String> entry : uriVars.entrySet()) {
 				if (mpvs.contains(entry.getKey())) {

@@ -77,7 +77,7 @@ public class Test {
 	 			hook机制是：
 	 				aop的“命名空间的指定标签处理器”在处理指定标签的时候，会自动注册bean级别的hook - org.springframework.aop.aspectj.autoproxy.AspectJAwareAdvisorAutoProxyCreator
 	 			aop的配置 - 使用xml配置
-		 			<aop:scoped-proxy proxy-target-class="true" /> 劫持 BeanDefinition 的信息，以CGLIB生成子类
+		 			<aop:scoped-proxy proxy-target-class="true" /> BeanDefinition装饰器机制 - 劫持 BeanDefinition 的信息，以CGLIB生成子类
 		 			<aop:config>
 		 			
 	 			aop的配置 - 使用注解配置

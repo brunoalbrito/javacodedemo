@@ -155,7 +155,7 @@ public abstract class AnnotationUtils {
 		if (annotationType.isInstance(ann)) {
 			return synthesizeAnnotation((A) ann);
 		}
-		Class<? extends Annotation> annotatedElement = ann.annotationType();
+		Class<? extends Annotation> annotatedElement = ann.annotationType(); // 注解类
 		try {
 			return synthesizeAnnotation(annotatedElement.getAnnotation(annotationType), annotatedElement);
 		}

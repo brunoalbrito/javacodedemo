@@ -13,12 +13,6 @@ public class Debug {
 		 	扫描处理器Handler（以“/”开头的beanName被认为是Handler）
 		 	根据URL地址匹配出Handler，创建HandlerExecutionChain，匹配Handler的Interceptors，并注入到HandlerExecutionChain
 		 		
-		 			 
-		 			 
-		 			 		 	
-			 	
-			 	
-			 	
 			 	
 	 	Hadler的实现方式：
 	 		方式一：

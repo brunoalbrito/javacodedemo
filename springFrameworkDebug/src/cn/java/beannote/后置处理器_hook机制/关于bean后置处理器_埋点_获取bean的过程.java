@@ -5,6 +5,8 @@ import java.lang.reflect.Constructor;
 import java.util.Map;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.PropertyValue;
 import org.springframework.beans.factory.Aware;
@@ -39,7 +41,7 @@ public class 关于bean后置处理器_埋点_获取bean的过程 {
 		 	org.springframework.beans.factory.support.MergedBeanDefinitionPostProcessor 合并 BeanDefinition
 		 	org.springframework.beans.factory.config.BeanPostProcessor 调用初始化方法前后
 		 	
-		埋点信息：（不是合成（!mbd.isSynthetic()）的bean才会应用 BeanPostProcessors）
+		埋点信息：（不是扩展硬编码合成（!mbd.isSynthetic()）的bean才会应用 BeanPostProcessors）
 			// org.springframework.beans.factory.support.DefaultListableBeanFactory
 			org.springframework.beans.factory.support.AbstractBeanFactory.getBean(String name, Class<T> requiredType)
 			{
@@ -63,13 +65,20 @@ public class 关于bean后置处理器_埋点_获取bean的过程 {
 									org.springframework.beans.factory.config.SmartInstantiationAwareBeanPostProcessor.determineCandidateConstructors(beanClass, beanName);// --埋点-- 决策构造函数（钩子）
 								}
 								if (ctors != null ||
-										mbd.getResolvedAutowireMode() == RootBeanDefinition.AUTOWIRE_CONSTRUCTOR ||
+										mbd.getResolvedAutowireMode() == RootBeanDefinition.AUTOWIRE_CONSTRUCTOR || “自动装配” --- 感知“构造函数”，注入依赖的bean对象
 										mbd.hasConstructorArgumentValues() || !ObjectUtils.isEmpty(args))  {
 									return org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(beanName, mbd, ctors, args);
 								}
 						
-								// No special handling: simply use no-arg constructor.
+								// No special handling: simply use no-arg constructor. 使用无参构造函数实例化bean
 								return org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateBean(beanName, mbd);
+								{
+									// 实例化对象， org.springframework.beans.factory.support.CglibSubclassingInstantiationStrategy.instantiate(mbd, beanName, parent);
+									beanInstance = getInstantiationStrategy().instantiate(mbd, beanName, parent);
+									BeanWrapper bw = new BeanWrapperImpl(beanInstance);
+									initBeanWrapper(bw);
+									return bw;
+								}
 							}
 							// --- createBeanInstance --- eof --- 
 							 
@@ -90,12 +99,12 @@ public class 关于bean后置处理器_埋点_获取bean的过程 {
 									MutablePropertyValues newPvs = new MutablePropertyValues(pvs);
 					
 									// Add property values based on autowire by name if applicable.
-									if (mbd.getResolvedAutowireMode() == RootBeanDefinition.AUTOWIRE_BY_NAME) { // 感知setter方法的“属性名”，获取依赖的bean对象
+									if (mbd.getResolvedAutowireMode() == RootBeanDefinition.AUTOWIRE_BY_NAME) { // “自动装配” --- 感知setter方法的“属性名”，注入依赖的bean对象
 										autowireByName(beanName, mbd, bw, newPvs);
 									}
 					
 									// Add property values based on autowire by type if applicable.
-									if (mbd.getResolvedAutowireMode() == RootBeanDefinition.AUTOWIRE_BY_TYPE) { // 感知setter方法的“参数类型”，获取依赖的bean对象 !!!
+									if (mbd.getResolvedAutowireMode() == RootBeanDefinition.AUTOWIRE_BY_TYPE) { // “自动装配” --- 感知setter方法的“参数类型”，注入依赖的bean对象 !!!
 										autowireByType(beanName, mbd, bw, newPvs); // org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireByType(...)
 										{
 											String[] propertyNames = unsatisfiedNonSimpleProperties(mbd, bw);

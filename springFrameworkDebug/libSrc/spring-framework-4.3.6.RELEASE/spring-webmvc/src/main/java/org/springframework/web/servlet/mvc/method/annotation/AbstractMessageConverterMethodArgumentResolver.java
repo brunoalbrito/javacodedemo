@@ -164,7 +164,7 @@ public abstract class AbstractMessageConverterMethodArgumentResolver implements 
 		MediaType contentType;
 		boolean noContentType = false;
 		try {
-			contentType = inputMessage.getHeaders().getContentType();
+			contentType = inputMessage.getHeaders().getContentType(); // 类型
 		}
 		catch (InvalidMediaTypeException ex) {
 			throw new HttpMediaTypeNotSupportedException(ex.getMessage());
@@ -182,13 +182,13 @@ public abstract class AbstractMessageConverterMethodArgumentResolver implements 
 			targetClass = (Class<T>) resolvableType.resolve();
 		}
 
-		HttpMethod httpMethod = ((HttpRequest) inputMessage).getMethod();
+		HttpMethod httpMethod = ((HttpRequest) inputMessage).getMethod(); // 请求方式
 		Object body = NO_VALUE;
 
 		try {
 			inputMessage = new EmptyBodyCheckingHttpInputMessage(inputMessage);
 
-			for (HttpMessageConverter<?> converter : this.messageConverters) {
+			for (HttpMessageConverter<?> converter : this.messageConverters) { // 转换器列表
 				Class<HttpMessageConverter<?>> converterType = (Class<HttpMessageConverter<?>>) converter.getClass();
 				if (converter instanceof GenericHttpMessageConverter) {
 					GenericHttpMessageConverter<?> genericConverter = (GenericHttpMessageConverter<?>) converter;
@@ -196,9 +196,9 @@ public abstract class AbstractMessageConverterMethodArgumentResolver implements 
 						if (logger.isDebugEnabled()) {
 							logger.debug("Read [" + targetType + "] as \"" + contentType + "\" with [" + converter + "]");
 						}
-						if (inputMessage.getBody() != null) {
+						if (inputMessage.getBody() != null) { // !!!! http中body的数据不为空
 							inputMessage = getAdvice().beforeBodyRead(inputMessage, parameter, targetType, converterType);
-							body = genericConverter.read(targetType, contextClass, inputMessage);
+							body = genericConverter.read(targetType, contextClass, inputMessage); // 读取http中body的数据
 							body = getAdvice().afterBodyRead(body, inputMessage, parameter, targetType, converterType);
 						}
 						else {
@@ -212,9 +212,9 @@ public abstract class AbstractMessageConverterMethodArgumentResolver implements 
 						if (logger.isDebugEnabled()) {
 							logger.debug("Read [" + targetType + "] as \"" + contentType + "\" with [" + converter + "]");
 						}
-						if (inputMessage.getBody() != null) {
+						if (inputMessage.getBody() != null) {// !!!! http中body的数据不为空
 							inputMessage = getAdvice().beforeBodyRead(inputMessage, parameter, targetType, converterType);
-							body = ((HttpMessageConverter<T>) converter).read(targetClass, inputMessage);
+							body = ((HttpMessageConverter<T>) converter).read(targetClass, inputMessage);// 读取http中body的数据
 							body = getAdvice().afterBodyRead(body, inputMessage, parameter, targetType, converterType);
 						}
 						else {

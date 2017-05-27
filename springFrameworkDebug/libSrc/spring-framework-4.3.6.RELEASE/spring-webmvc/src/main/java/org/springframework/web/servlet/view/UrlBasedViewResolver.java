@@ -504,9 +504,11 @@ public class UrlBasedViewResolver extends AbstractCachingViewResolver implements
 	 */
 	@Override
 	protected View loadView(String viewName, Locale locale) throws Exception {
+		// view === org.springframework.web.servlet.view.JstlView 
+		// view === org.springframework.web.servlet.view.InternalResourceView 
 		AbstractUrlBasedView view = buildView(viewName); // !!!
 		View result = applyLifecycleMethods(viewName, view);
-		return (view.checkResource(locale) ? result : null);
+		return (view.checkResource(locale) ? result : null); // 检查资源
 	}
 
 	private View applyLifecycleMethods(String viewName, AbstractView view) {
@@ -528,7 +530,10 @@ public class UrlBasedViewResolver extends AbstractCachingViewResolver implements
 	 * @see #loadView(String, java.util.Locale)
 	 */
 	protected AbstractUrlBasedView buildView(String viewName) throws Exception {
-		AbstractUrlBasedView view = (AbstractUrlBasedView) BeanUtils.instantiateClass(getViewClass());
+		// getViewClass() === org.springframework.web.servlet.view.JstlView
+		// getViewClass() === org.springframework.web.servlet.view.InternalResourceView
+		// getViewClass() === org.springframework.web.servlet.view.freemarker.FreeMarkerView
+		AbstractUrlBasedView view = (AbstractUrlBasedView) BeanUtils.instantiateClass(getViewClass()); // 实例化对象
 		view.setUrl(getPrefix() + viewName + getSuffix());
 
 		String contentType = getContentType();

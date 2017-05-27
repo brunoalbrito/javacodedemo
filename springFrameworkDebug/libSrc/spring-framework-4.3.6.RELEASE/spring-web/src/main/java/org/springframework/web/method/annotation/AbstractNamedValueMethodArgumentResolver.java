@@ -91,16 +91,16 @@ public abstract class AbstractNamedValueMethodArgumentResolver implements Handle
 	public final Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
 			NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
 
-		NamedValueInfo namedValueInfo = getNamedValueInfo(parameter);
+		NamedValueInfo namedValueInfo = getNamedValueInfo(parameter); // !!!!
 		MethodParameter nestedParameter = parameter.nestedIfOptional();
 
-		Object resolvedName = resolveStringValue(namedValueInfo.name);
+		Object resolvedName = resolveStringValue(namedValueInfo.name); // 获取key的实际名（可能别名）  resolvedName = request.getAttribute(namedValueInfo.name);
 		if (resolvedName == null) {
 			throw new IllegalArgumentException(
 					"Specified name must not resolve to null: [" + namedValueInfo.name + "]");
 		}
 
-		Object arg = resolveName(resolvedName.toString(), nestedParameter, webRequest);
+		Object arg = resolveName(resolvedName.toString(), nestedParameter, webRequest); // 子类实现
 		if (arg == null) {
 			if (namedValueInfo.defaultValue != null) {
 				arg = resolveStringValue(namedValueInfo.defaultValue);
@@ -118,7 +118,7 @@ public abstract class AbstractNamedValueMethodArgumentResolver implements Handle
 			// binderFactory === org.springframework.web.servlet.mvc.method.annotation.ServletRequestDataBinderFactory
 			WebDataBinder binder = binderFactory.createBinder(webRequest, null, namedValueInfo.name); // !!! 调用@InitBinder注解的方法进行初始化
 			try {
-				arg = binder.convertIfNecessary(arg, parameter.getParameterType(), parameter);
+				arg = binder.convertIfNecessary(arg, parameter.getParameterType(), parameter);  // !!!! 类型转换
 			}
 			catch (ConversionNotSupportedException ex) {
 				throw new MethodArgumentConversionNotSupportedException(arg, ex.getRequiredType(),
@@ -131,7 +131,7 @@ public abstract class AbstractNamedValueMethodArgumentResolver implements Handle
 			}
 		}
 
-		handleResolvedValue(arg, namedValueInfo.name, parameter, mavContainer, webRequest);
+		handleResolvedValue(arg, namedValueInfo.name, parameter, mavContainer, webRequest); // !!!
 
 		return arg;
 	}
@@ -142,7 +142,7 @@ public abstract class AbstractNamedValueMethodArgumentResolver implements Handle
 	private NamedValueInfo getNamedValueInfo(MethodParameter parameter) {
 		NamedValueInfo namedValueInfo = this.namedValueInfoCache.get(parameter);
 		if (namedValueInfo == null) {
-			namedValueInfo = createNamedValueInfo(parameter);
+			namedValueInfo = createNamedValueInfo(parameter); // !!! 子类实现
 			namedValueInfo = updateNamedValueInfo(parameter, namedValueInfo);
 			this.namedValueInfoCache.put(parameter, namedValueInfo);
 		}
@@ -171,7 +171,7 @@ public abstract class AbstractNamedValueMethodArgumentResolver implements Handle
 			}
 		}
 		String defaultValue = (ValueConstants.DEFAULT_NONE.equals(info.defaultValue) ? null : info.defaultValue);
-		return new NamedValueInfo(name, info.required, defaultValue);
+		return new NamedValueInfo(name, info.required, defaultValue);//!!!!
 	}
 
 	/**

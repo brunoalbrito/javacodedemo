@@ -181,7 +181,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	 */
 	@Override
 	public void afterPropertiesSet() {
-		initHandlerMethods(); // !!!
+		initHandlerMethods(); // !!! 扫描BeanDefinition，识别处理Handler
 	}
 
 	/**
@@ -279,10 +279,10 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 			// getApplicationContext() === org.springframework.web.context.support.XmlWebApplicationContext
 			// getApplicationContext().getAutowireCapableBeanFactory()  === org.springframework.beans.factory.support.DefaultListableBeanFactory
 			handlerMethod = new HandlerMethod(beanName,
-					getApplicationContext().getAutowireCapableBeanFactory(), method); // !!!
+					getApplicationContext().getAutowireCapableBeanFactory(), method); // 使用HandlerMethod对象来描述调用者信息
 		}
 		else {
-			handlerMethod = new HandlerMethod(handler, method);
+			handlerMethod = new HandlerMethod(handler, method); // 使用HandlerMethod对象来描述调用者信息
 		}
 		return handlerMethod;
 	}

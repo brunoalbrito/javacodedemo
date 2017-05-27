@@ -49,7 +49,7 @@ public class DefaultDataBinderFactory implements WebDataBinderFactory {
 	@Override
 	public final WebDataBinder createBinder(NativeWebRequest webRequest, Object target, String objectName)
 			throws Exception {
-
+		// target === cn.java.demo.webmvc.form.UserLoginForm
 		WebDataBinder dataBinder = createBinderInstance(target, objectName, webRequest);
 		if (this.initializer != null) {
 			this.initializer.initBinder(dataBinder, webRequest);

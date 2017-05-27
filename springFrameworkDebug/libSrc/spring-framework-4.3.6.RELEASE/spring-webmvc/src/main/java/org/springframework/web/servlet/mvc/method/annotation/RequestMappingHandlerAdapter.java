@@ -735,7 +735,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 		}
 		else {
 			// No synchronization on session demanded at all...
-			mav = invokeHandlerMethod(request, response, handlerMethod); // !!!!
+			mav = invokeHandlerMethod(request, response, handlerMethod); // !!!! mav === org.springframework.web.servlet.ModelAndView
 		}
 
 		if (!response.containsHeader(HEADER_CACHE_CONTROL)) { // 缓存控制
@@ -825,12 +825,13 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 				invocableMethod = invocableMethod.wrapConcurrentResult(result);
 			}
 
-			invocableMethod.invokeAndHandle(webRequest, mavContainer); // 调用方法
+			// invocableMethod === org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod
+			invocableMethod.invokeAndHandle(webRequest, mavContainer); // !!!调用业务方法，让“返回值处理器”处理后，把值放入mavContainer
 			if (asyncManager.isConcurrentHandlingStarted()) {
 				return null;
 			}
 
-			return getModelAndView(mavContainer, modelFactory, webRequest); // 处理返回的 ModelAndViewContainer
+			return getModelAndView(mavContainer, modelFactory, webRequest); // 处理返回的 org.springframework.web.servlet.ModelAndView
 		}
 		finally {
 			webRequest.requestCompleted();
@@ -875,7 +876,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 
 	private InvocableHandlerMethod createModelAttributeMethod(WebDataBinderFactory factory, Object bean, Method method) {
 		InvocableHandlerMethod attrMethod = new InvocableHandlerMethod(bean, method);
-		attrMethod.setHandlerMethodArgumentResolvers(this.argumentResolvers);
+		attrMethod.setHandlerMethodArgumentResolvers(this.argumentResolvers); // 参数解析器
 		attrMethod.setParameterNameDiscoverer(this.parameterNameDiscoverer);
 		attrMethod.setDataBinderFactory(factory);
 		return attrMethod;
@@ -891,7 +892,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 		}
 		List<InvocableHandlerMethod> initBinderMethods = new ArrayList<InvocableHandlerMethod>();
 		// Global methods first
-		for (Entry<ControllerAdviceBean, Set<Method>> entry : this.initBinderAdviceCache.entrySet()) {
+		for (Entry<ControllerAdviceBean, Set<Method>> entry : this.initBinderAdviceCache.entrySet()) { // 全局@InitBinder配置
 			if (entry.getKey().isApplicableToBeanType(handlerType)) { // org.springframework.web.method.ControllerAdviceBean.isApplicableToBeanType(handlerType)
 				Object bean = entry.getKey().resolveBean(); // 接受通知的bean
 				for (Method method : entry.getValue()) { // "接受通知的bean"的所有方法
@@ -908,7 +909,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 
 	private InvocableHandlerMethod createInitBinderMethod(Object bean, Method method) {
 		InvocableHandlerMethod binderMethod = new InvocableHandlerMethod(bean, method);
-		binderMethod.setHandlerMethodArgumentResolvers(this.initBinderArgumentResolvers);
+		binderMethod.setHandlerMethodArgumentResolvers(this.initBinderArgumentResolvers); // 参数解析器
 		binderMethod.setDataBinderFactory(new DefaultDataBinderFactory(this.webBindingInitializer));
 		binderMethod.setParameterNameDiscoverer(this.parameterNameDiscoverer);
 		return binderMethod;
@@ -935,7 +936,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 		if (mavContainer.isRequestHandled()) {
 			return null;
 		}
-		ModelMap model = mavContainer.getModel();
+		ModelMap model = mavContainer.getModel(); // 数据
 		ModelAndView mav = new ModelAndView(mavContainer.getViewName(), model, mavContainer.getStatus());
 		if (!mavContainer.isViewReference()) {
 			mav.setView((View) mavContainer.getView());

@@ -129,9 +129,9 @@ public final class ModelFactory {
 	private void invokeModelAttributeMethods(NativeWebRequest request, ModelAndViewContainer container)
 			throws Exception {
 
-		while (!this.modelMethods.isEmpty()) {
+		while (!this.modelMethods.isEmpty()) {  // 迭代调用
 			// getNextModelMethod(container) === org.springframework.web.method.annotation.ModelFactory.ModelMethod
-			InvocableHandlerMethod modelMethod = getNextModelMethod(container).getHandlerMethod();
+			InvocableHandlerMethod modelMethod = getNextModelMethod(container).getHandlerMethod(); // 获取下一个带@ModelAttribute注解的方法
 			// modelMethod === org.springframework.web.method.support.InvocableHandlerMethod
 			ModelAttribute ann = modelMethod.getMethodAnnotation(ModelAttribute.class); // 获取方法上的@ModelAttribute注解
 			if (container.containsAttribute(ann.name())) {
@@ -206,7 +206,8 @@ public final class ModelFactory {
 			this.sessionAttributesHandler.cleanupAttributes(request);
 		}
 		else {
-			this.sessionAttributesHandler.storeAttributes(request, defaultModel);
+			// org.springframework.web.method.annotation.SessionAttributesHandler
+			this.sessionAttributesHandler.storeAttributes(request, defaultModel); // 保存session
 		}
 		if (!container.isRequestHandled() && container.getModel() == defaultModel) {
 			updateBindingResult(request, defaultModel);

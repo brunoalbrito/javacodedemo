@@ -19,6 +19,8 @@ package org.springframework.web.method.annotation;
 import java.lang.annotation.Annotation;
 import java.util.Map;
 
+import javax.servlet.ServletRequest;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -27,6 +29,7 @@ import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
+import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -96,10 +99,10 @@ public class ModelAttributeMethodProcessor
 	@Override
 	public final Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
 			NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-
-		String name = ModelFactory.getNameForParameter(parameter);
+//		webRequest === org.springframework.web.context.request.ServletWebRequest
+		String name = ModelFactory.getNameForParameter(parameter); // 变量名
 		Object attribute = (mavContainer.containsAttribute(name) ? mavContainer.getModel().get(name) :
-				createAttribute(name, parameter, binderFactory, webRequest));
+				createAttribute(name, parameter, binderFactory, webRequest)); // 创建参数类型的对象 attribute === target === cn.java.demo.webmvc.form.UserLoginForm
 
 		if (!mavContainer.isBindingDisabled(name)) {
 			ModelAttribute ann = parameter.getParameterAnnotation(ModelAttribute.class);
@@ -107,24 +110,26 @@ public class ModelAttributeMethodProcessor
 				mavContainer.setBindingDisabled(name);
 			}
 		}
-
-		WebDataBinder binder = binderFactory.createBinder(webRequest, attribute, name);
+		// binderFactory == org.springframework.web.servlet.mvc.method.annotation.ServletRequestDataBinderFactory
+		WebDataBinder binder = binderFactory.createBinder(webRequest, attribute, name); // 迭代调用“带@InitBinder注解的方法”
 		if (binder.getTarget() != null) {
 			if (!mavContainer.isBindingDisabled(name)) {
-				bindRequestParameters(binder, webRequest);
+				bindRequestParameters(binder, webRequest); // 把webRequest.getNativeRequest(ServletRequest.class)的值设置到target
 			}
-			validateIfApplicable(binder, parameter);
-			if (binder.getBindingResult().hasErrors() && isBindExceptionRequired(binder, parameter)) {
+			validateIfApplicable(binder, parameter); // 校验!!!!
+			if (binder.getBindingResult().hasErrors() && isBindExceptionRequired(binder, parameter)) { // 如果校验不通过
 				throw new BindException(binder.getBindingResult());
 			}
 		}
 
 		// Add resolved attribute and BindingResult at the end of the model
-		Map<String, Object> bindingResultModel = binder.getBindingResult().getModel();
+		// binder === org.springframework.web.servlet.mvc.method.annotation.ExtendedServletRequestDataBinder
+		// binder.getBindingResult() === org.springframework.validation.BeanPropertyBindingResult
+		Map<String, Object> bindingResultModel = binder.getBindingResult().getModel(); // model.put(attribute,webRequest);  // model.put("org.springframework.validation.BindingResult.attribute",org.springframework.validation.BeanPropertyBindingResult对象)
 		mavContainer.removeAttributes(bindingResultModel);
-		mavContainer.addAllAttributes(bindingResultModel);
+		mavContainer.addAllAttributes(bindingResultModel); // 绑定结果放入mavContainer
 
-		return binder.convertIfNecessary(binder.getTarget(), parameter.getParameterType(), parameter);
+		return binder.convertIfNecessary(binder.getTarget(), parameter.getParameterType(), parameter); // 返回值是binder.getTarget()
 	}
 
 	/**
@@ -148,7 +153,7 @@ public class ModelAttributeMethodProcessor
 	 * @param request the current request
 	 */
 	protected void bindRequestParameters(WebDataBinder binder, NativeWebRequest request) {
-		((WebRequestDataBinder) binder).bind(request);
+		((WebRequestDataBinder) binder).bind(request); // org.springframework.web.bind.support.WebRequestDataBinder
 	}
 
 	/**
@@ -162,10 +167,12 @@ public class ModelAttributeMethodProcessor
 	protected void validateIfApplicable(WebDataBinder binder, MethodParameter methodParam) {
 		Annotation[] annotations = methodParam.getParameterAnnotations();
 		for (Annotation ann : annotations) {
-			Validated validatedAnn = AnnotationUtils.getAnnotation(ann, Validated.class);
+			
+			Validated validatedAnn = AnnotationUtils.getAnnotation(ann, Validated.class); // 注解类上的注解
 			if (validatedAnn != null || ann.annotationType().getSimpleName().startsWith("Valid")) {
 				Object hints = (validatedAnn != null ? validatedAnn.value() : AnnotationUtils.getValue(ann));
 				Object[] validationHints = (hints instanceof Object[] ? (Object[]) hints : new Object[] {hints});
+				// binder === org.springframework.web.bind.support.WebRequestDataBinder
 				binder.validate(validationHints);
 				break;
 			}
@@ -180,8 +187,8 @@ public class ModelAttributeMethodProcessor
 	 */
 	protected boolean isBindExceptionRequired(WebDataBinder binder, MethodParameter methodParam) {
 		int i = methodParam.getParameterIndex();
-		Class<?>[] paramTypes = methodParam.getMethod().getParameterTypes();
-		boolean hasBindingResult = (paramTypes.length > (i + 1) && Errors.class.isAssignableFrom(paramTypes[i + 1]));
+		Class<?>[] paramTypes = methodParam.getMethod().getParameterTypes(); // 参数列表
+		boolean hasBindingResult = (paramTypes.length > (i + 1) && Errors.class.isAssignableFrom(paramTypes[i + 1])); // 绑定对象的“后一个”参数是“存放绑定结果”的对象
 		return !hasBindingResult;
 	}
 

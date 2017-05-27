@@ -136,13 +136,13 @@ public class InternalResourceView extends AbstractUrlBasedView {
 			Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		// Expose the model object as request attributes.
-		exposeModelAsRequestAttributes(model, request);
+		exposeModelAsRequestAttributes(model, request); // 把modle的数据导出到request.setAttributes(...)
 
 		// Expose helpers as request attributes, if any.
 		exposeHelpers(request);
 
 		// Determine the path for the request dispatcher.
-		String dispatcherPath = prepareForRendering(request, response);
+		String dispatcherPath = prepareForRendering(request, response); // 防止“死循环”
 
 		// Obtain a RequestDispatcher for the target resource (typically a JSP).
 		RequestDispatcher rd = getRequestDispatcher(request, dispatcherPath);
@@ -157,7 +157,7 @@ public class InternalResourceView extends AbstractUrlBasedView {
 			if (logger.isDebugEnabled()) {
 				logger.debug("Including resource [" + getUrl() + "] in InternalResourceView '" + getBeanName() + "'");
 			}
-			rd.include(request, response);
+			rd.include(request, response); // !!!! 使用include的方式渲染
 		}
 
 		else {
@@ -165,7 +165,7 @@ public class InternalResourceView extends AbstractUrlBasedView {
 			if (logger.isDebugEnabled()) {
 				logger.debug("Forwarding to resource [" + getUrl() + "] in InternalResourceView '" + getBeanName() + "'");
 			}
-			rd.forward(request, response);
+			rd.forward(request, response); // !!!! 使用forward的方式渲染
 		}
 	}
 
@@ -199,7 +199,7 @@ public class InternalResourceView extends AbstractUrlBasedView {
 			throws Exception {
 
 		String path = getUrl();
-		if (this.preventDispatchLoop) {
+		if (this.preventDispatchLoop) { // 防止“死循环”
 			String uri = request.getRequestURI();
 			if (path.startsWith("/") ? uri.equals(path) : uri.equals(StringUtils.applyRelativePath(uri, path))) {
 				throw new ServletException("Circular view path [" + path + "]: would dispatch back " +

@@ -83,7 +83,7 @@ public abstract class PropertyResourceConfigurer extends PropertiesLoaderSupport
 			convertProperties(mergedProps); // 转换
 
 			// Let the subclass process the properties.
-			processProperties(beanFactory, mergedProps);
+			processProperties(beanFactory, mergedProps); // !!!!
 		}
 		catch (IOException ex) {
 			throw new BeanInitializationException("Could not load properties", ex);

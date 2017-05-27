@@ -984,18 +984,18 @@ public class DispatcherServlet extends FrameworkServlet {
 				}
 
 				// org.springframework.web.servlet.HandlerExecutionChain
-				if (!mappedHandler.applyPreHandle(processedRequest, response)) { // 调用 HandlerExecutionChain 的applyPreHandle方法
+				if (!mappedHandler.applyPreHandle(processedRequest, response)) { // 调用 HandlerExecutionChain 的applyPreHandle方法，迭代调用Handler的拦截器的preHandle方法
 					return;
 				}
 
 				// Actually invoke the handler.
-				mv = ha.handle(processedRequest, response, mappedHandler.getHandler()); // 执行handler的方法，返回值
+				mv = ha.handle(processedRequest, response, mappedHandler.getHandler()); // 执行handler的方法，返回值 org.springframework.web.servlet.ModelAndView
 
 				if (asyncManager.isConcurrentHandlingStarted()) {
 					return;
 				}
 
-				applyDefaultViewName(processedRequest, mv); // 应用默认视图
+				applyDefaultViewName(processedRequest, mv); // 应用“默认视图”
 				mappedHandler.applyPostHandle(processedRequest, response, mv);  // 调用 HandlerExecutionChain 的applyPostHandle方法 ，迭代调用Handler的拦截器的postHandle方法
 			}
 			catch (Exception ex) {
@@ -1281,8 +1281,11 @@ public class DispatcherServlet extends FrameworkServlet {
 	 * @throws Exception if there's a problem rendering the view
 	 */
 	protected void render(ModelAndView mv, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		// localeResolver === org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver
+		
 		// Determine locale for request and apply it to the response.
-		Locale locale = this.localeResolver.resolveLocale(request);
+		Locale locale = this.localeResolver.resolveLocale(request); // 检查语言
 		response.setLocale(locale);
 
 		View view;
@@ -1348,8 +1351,8 @@ public class DispatcherServlet extends FrameworkServlet {
 	 */
 	protected View resolveViewName(String viewName, Map<String, Object> model, Locale locale,
 			HttpServletRequest request) throws Exception {
-		// viewResolver == org.springframework.web.servlet.view.InternalResourceViewResolver
 		for (ViewResolver viewResolver : this.viewResolvers) {
+			// 如：viewResolver == org.springframework.web.servlet.view.InternalResourceViewResolver
 			View view = viewResolver.resolveViewName(viewName, locale);
 			if (view != null) {
 				return view;
