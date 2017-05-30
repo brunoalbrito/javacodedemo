@@ -1084,7 +1084,15 @@ public final class HbmBinder {
 			final Mappings mappings) throws MappingException {
 
 		Table table = simpleValue.getTable();
-
+		
+		/*
+			<xxx>
+				<column length="" scale="" precision="" not-null="" unique="" check="" default="" 
+	 				sql-type="" write="" read=""  name="" index="" unique-key="" />
+	 				<comment></comment>
+	 			</column>
+			</xxx>
+		 */
 		// COLUMN(S)
 		Attribute columnAttribute = node.attribute( "column" );
 		if ( columnAttribute == null ) {
@@ -1096,7 +1104,7 @@ public final class HbmBinder {
 					Column column = new Column();
 					column.setValue( simpleValue );
 					column.setTypeIndex( count++ );
-					bindColumn( columnElement, column, isNullable );
+					bindColumn( columnElement, column, isNullable ); //!!!
 					String columnName = columnElement.attributeValue( "name" );
 					String logicalColumnName = getNamingStrategyDelegate( mappings ).determineLogicalColumnName(
 							columnName, propertyPath
@@ -1418,7 +1426,7 @@ public final class HbmBinder {
 		if ( inverseNode != null ) {
 			collection.setInverse( "true".equals( inverseNode.getValue() ) );
 		}
-
+		
 		Attribute mutableNode = node.attribute( "mutable" );
 		if ( mutableNode != null ) {
 			collection.setMutable( !"false".equals( mutableNode.getValue() ) );
@@ -1481,7 +1489,7 @@ public final class HbmBinder {
 
 		// FETCH STRATEGY
 
-		initOuterJoinFetchSetting( node, collection );
+		initOuterJoinFetchSetting( node, collection ); //!!!
 
 		if ( "subselect".equals( node.attributeValue("fetch") ) ) {
 			collection.setSubselectLoadable(true);
@@ -1602,23 +1610,38 @@ public final class HbmBinder {
 			mappings.addSecondPass( new CollectionSecondPass( node, mappings, collection, inheritedMetas ) );
 		}
 
+		/*
+		 	<filter name="" condition="" autoAliasInjection="" >
+		 		<aliases alias="" table="" />
+		 		<aliases alias="" table="" />
+		 	</filter>
+		 */
 		Iterator iter = node.elementIterator( "filter" );
 		while ( iter.hasNext() ) {
 			final Element filter = (Element) iter.next();
 			parseFilter( filter, collection, mappings );
 		}
 
+		/**
+		 	<synchronize table=""></synchronize>
+		 */
 		Iterator tables = node.elementIterator( "synchronize" );
 		while ( tables.hasNext() ) {
 			collection.getSynchronizedTables().add(
 				( (Element) tables.next() ).attributeValue( "table" ) );
 		}
 
+		/*
+		 	<loader query-ref="" />
+		 */
 		Element element = node.element( "loader" );
 		if ( element != null ) {
 			collection.setLoaderName( element.attributeValue( "query-ref" ) );
 		}
 
+		/*
+		 	<key property-ref="" />
+		 */
 		collection.setReferencedPropertyName( node.element( "key" ).attributeValue( "property-ref" ) );
 	}
 
@@ -1642,6 +1665,9 @@ public final class HbmBinder {
 			Mappings mappings,
 			boolean defaultLazy
 	) {
+		/*
+		 	<xxx lazy="">
+		 */
 		if ( "no-proxy".equals( node.attributeValue( "lazy" ) ) ) {
 			fetchable.setUnwrapProxy(true);
 			fetchable.setLazy( true );
@@ -1673,6 +1699,11 @@ public final class HbmBinder {
 	public static void bindManyToOne(Element node, ManyToOne manyToOne, String path,
 			boolean isNullable, Mappings mappings) throws MappingException {
 
+		/*
+		 	<many-to-one formula="" fetch="" outer-join="" lazy="" property-ref="" embed-xml=""
+				not-found="" foreign-key="" cascade="">
+			</many-to-one>
+		 */
 		bindColumnsOrFormula( node, manyToOne, path, isNullable, mappings );
 		initOuterJoinFetchSetting( node, manyToOne );
 		initLaziness( node, manyToOne, mappings, true );
@@ -1718,6 +1749,11 @@ public final class HbmBinder {
 
 	public static void bindAny(Element node, Any any, boolean isNullable, Mappings mappings)
 			throws MappingException {
+		/*
+		 	<any type="" meta-type="">
+		 		<meta-value value="" class=""></meta-value>
+		 	</any>
+		 */
 		any.setIdentifierType( getTypeFromXML( node ) );
 		Attribute metaAttribute = node.attribute( "meta-type" );
 		if ( metaAttribute != null ) {
@@ -1748,13 +1784,26 @@ public final class HbmBinder {
 
 		}
 
-		bindColumns( node, any, isNullable, false, null, mappings );
+		bindColumns( node, any, isNullable, false, null, mappings ); //!!!
 	}
 
 	public static void bindOneToOne(Element node, OneToOne oneToOne, String path, boolean isNullable,
 			Mappings mappings) throws MappingException {
 
-		bindColumns( node, oneToOne, isNullable, false, null, mappings );
+		/*
+		 	<one-to-one constrained="" fetch="" outer-join="" lazy="" embed-xml="" foreign-key=""
+	 			property-ref="" name="" entity-name="" cascade="delete-orphan">
+	 			<column length="" scale="" precision="" not-null="" unique="" check="" default="" 
+	 				sql-type="" write="" read=""  name="" index="" unique-key="" />
+	 				<comment></comment>
+	 			</column>
+	 			<column length="" scale="" precision="" not-null="" unique="" check="" default="" 
+	 				sql-type="" write="" read=""  name="" index="" unique-key="" />
+	 				<comment></comment>
+	 			</column>
+	 		</one-to-one>
+		 */
+		bindColumns( node, oneToOne, isNullable, false, null, mappings ); //!!!
 
 		Attribute constrNode = node.attribute( "constrained" );
 		boolean constrained = constrNode != null && constrNode.getValue().equals( "true" );
@@ -1764,8 +1813,8 @@ public final class HbmBinder {
 				ForeignKeyDirection.FOREIGN_KEY_FROM_PARENT :
 				ForeignKeyDirection.FOREIGN_KEY_TO_PARENT );
 
-		initOuterJoinFetchSetting( node, oneToOne );
-		initLaziness( node, oneToOne, mappings, true );
+		initOuterJoinFetchSetting( node, oneToOne ); //!!!
+		initLaziness( node, oneToOne, mappings, true ); //!!!
 
 		String embed = node.attributeValue( "embed-xml" );
 		// sometimes embed is set to the default value when not specified in the mapping,
@@ -1823,7 +1872,7 @@ public final class HbmBinder {
 		if ( scalNode != null ) column.setScale( Integer.parseInt( scalNode.getValue() ) );
 		Attribute precNode = node.attribute( "precision" );
 		if ( precNode != null ) column.setPrecision( Integer.parseInt( precNode.getValue() ) );
-
+		
 		Attribute nullNode = node.attribute( "not-null" );
 		column.setNullable( nullNode == null ? isNullable : nullNode.getValue().equals( "false" ) );
 
@@ -1953,7 +2002,7 @@ public final class HbmBinder {
 		component.setEmbedded( isEmbedded );
 		component.setRoleName( path );
 
-		inheritedMetas = getMetas( node, inheritedMetas );
+		inheritedMetas = getMetas( node, inheritedMetas ); //!!!
 		component.setMetaAttributes( inheritedMetas );
 
 		Attribute classNode = isIdentifierMapper ? null : node.attribute( "class" );
@@ -2107,6 +2156,11 @@ public final class HbmBinder {
 	}
 
 	private static void initOuterJoinFetchSetting(Element node, Fetchable model) {
+		/*
+		 	<xxx fetch="" outer-join="">
+		 	
+		 	</xxx>
+		 */
 		Attribute fetchNode = node.attribute( "fetch" );
 		final FetchMode fetchStyle;
 		boolean lazy = true;
@@ -3040,6 +3094,10 @@ public final class HbmBinder {
 		java.util.Map map = new HashMap();
 		map.putAll( inheritedMeta );
 		
+		/*
+		 	<meta inherit="true" attribute="name0">
+			<meta inherit="true" attribute="name1">
+		 */
 		Iterator iter = node.elementIterator( "meta" );
 		while ( iter.hasNext() ) {
 			Element metaNode = (Element) iter.next();

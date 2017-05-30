@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="">
+	<class name="cn.java.demo.hbm.entity.field.component.User" table="hbm_user">
+		<id name="id">
+			<generator class="native" /><!-- 主键生成器 -->
+		</id>
+		<component name="userName">
+			<property name="firstName" column="first_name" />
+			<property name="lastName" column="last_name" />
+		</component>
+		<property name="birthday" />
+	</class>
+
+</hibernate-mapping>

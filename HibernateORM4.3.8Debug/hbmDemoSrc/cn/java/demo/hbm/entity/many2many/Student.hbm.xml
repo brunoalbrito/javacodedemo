@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="cn.java.demo.hbm.entity.many2many"><!-- 包地址 -->
+	<!-- 映射文件 -->
+	<class name="Student" table="hbm_student"><!-- 为类配置映射 -->
+		
+		<id name="id">
+			<generator class="native"/><!-- 主键生成器 -->
+		</id>
+		
+		<property name="name"/>
+	
+		<set name="teachers" table="hbm_teacher_student"><!-- 多对多 -->
+			<key column="student_id"/><!-- 在中间表,先找到老师 -->
+			<many-to-many class="Teacher" column="teacher_id"/><!-- 到教师表里找 -->
+		</set>
+	</class>
+	
+</hibernate-mapping>

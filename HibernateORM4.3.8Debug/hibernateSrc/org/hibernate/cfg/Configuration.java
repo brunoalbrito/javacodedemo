@@ -1559,8 +1559,11 @@ public class Configuration implements Serializable {
 
 		// process metadata queue
 		{
+			/*
+			 	metadataSourceQueue === org.hibernate.cfg.Configuration.MetadataSourceQueue
+			 */
 			metadataSourceQueue.syncAnnotatedClasses(); // 使用  @Entity(name="FooEntity") 注解的类
-			// !!!!
+			// !!!! 这里面开始解析*.hbm.xml 和 class 文件
 			metadataSourceQueue.processMetadata( determineMetadataSourcePrecedence() ); // 处理*.hbm.xml 和 class 文件
 		}
 
@@ -2003,6 +2006,7 @@ public class Configuration implements Serializable {
 		buildTypeRegistrations( serviceRegistry );
 		
 		/**
+		 * 这里面开始解析*.hbm.xml 和 class 文件
 		 */
 		secondPassCompile();
 		if ( !metadataSourceQueue.isEmpty() ) {

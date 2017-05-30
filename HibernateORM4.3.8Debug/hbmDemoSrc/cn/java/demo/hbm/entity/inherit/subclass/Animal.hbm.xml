@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping auto-import="false">
+	<!--
+		(meta*,
+		subselect?,
+		cache?,
+		synchronize*,
+		comment?,
+		tuplizer*,
+		(id|composite-id),
+		discriminator?,
+		natural-id?,
+		(version|timestamp)?,
+		(property|many-to-one|one-to-one|component|dynamic-component|properties|any|map|set|list|bag|idbag|array|primitive-array)*,
+		((join*,subclass*)|joined-subclass*|union-subclass*),
+		loader?,
+		sql-insert?,
+		sql-update?,
+		sql-delete?,
+		filter*,
+		fetch-profile*,
+		resultset*,
+		(query|sql-query)*)
+	-->
+	<!-- 生成一张表 -->
+	<class name="cn.java.demo.hbm.entity.inherit.subclass.Animal" table="hbm_inherit_subclass_animal" lazy="true" >
+		<id name="animalId" column="animal_id">
+		 	<generator class="native"/>
+		</id>
+		<discriminator type="string" column="animal_type" /> <!-- 鉴别字段 -->
+		<property name="animalName" column="animal_name"/>
+		<property name="animalSex" column="animal_sex"/>
+		<!-- 子类 -->
+		<subclass name="cn.java.demo.hbm.entity.inherit.subclass.Pig" discriminator-value="pig"><!-- p:鉴别值 -->
+			<property name="weigth" column="animal_weigth" />
+		</subclass>
+		<subclass name="cn.java.demo.hbm.entity.inherit.subclass.Bird" discriminator-value="bird">
+			<property name="height" column="animal_height" />
+		</subclass>
+	</class>
+</hibernate-mapping>

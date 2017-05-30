@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="">
+	<class name="cn.java.demo.hbm.entity.field.id.uuid.User" table="hbm_user_uuid">
+		<id name="uuidStr" column="uuid" length="32">
+			<generator class="uuid"/>
+		</id>
+		<property name="nickName" column="nickname" type="string" update="true" unique="false" length="32" access="property" not-null="false"/>
+		<property name="birthday" />
+	</class>
+
+</hibernate-mapping>

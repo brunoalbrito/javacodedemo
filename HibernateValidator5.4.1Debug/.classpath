@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="debugSrc"/>
+	<classpathentry kind="src" path="demoSrc"/>
+	<classpathentry kind="src" path="libSrc/engine/src/main/java"/>
+	<classpathentry kind="src" path="constraintValidator"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="lib/hibernate-validator-5.4.1.Final.jar"/>
+	<classpathentry kind="lib" path="lib/lib/required/validation-api-1.1.0.Final.jar"/>
+	<classpathentry kind="lib" path="lib/lib/required/classmate-1.3.1.jar"/>
+	<classpathentry kind="lib" path="lib/lib/required/javax.el-3.0.1-b08.jar"/>
+	<classpathentry kind="lib" path="lib/lib/required/jboss-logging-3.3.0.Final.jar"/>
+	<classpathentry kind="lib" path="lib/hibernate-validator-annotation-processor-5.4.1.Final.jar"/>
+	<classpathentry kind="lib" path="lib/hibernate-validator-cdi-5.4.1.Final.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

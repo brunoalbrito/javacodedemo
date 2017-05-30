@@ -1,0 +1,9 @@
+
+配置方式
+
+	<session-factory>
+		<event type="save">
+			<listener class="cn.java.demo.event.listener.SaveOrUpdateEventListener0"/>
+			<listener class="org.hibernate.event.def.DefaultSaveOrUpdateEventListener"/>
+		</event>
+	</session-factory> 

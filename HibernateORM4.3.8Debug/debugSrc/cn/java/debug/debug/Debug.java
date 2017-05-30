@@ -41,5 +41,26 @@ public class Debug {
 //		session.save(student);
 //		session.getTransaction().commit();
 	}
+	
+	{
+		/*
+		 	处理 *.class文件中注解的元信息 和 *.hbm.xml文件中定义的元信息
+			org.hibernate.cfg.Configuration.MetadataSourceQueue.processMetadata
+			{
+				// 解析 *.hbm.xml文件中定义的元信息
+				{
+					HbmBinder.bindRoot( metadataXml, createMappings(), Collections.EMPTY_MAP, entityNames );
+				}
+				
+				// 解析 *.class文件中注解的元信息
+				{
+					Mappings mappings = createMappings();
+					AnnotationBinder.bindClass( clazz, inheritanceStatePerClass, mappings );
+				}
+				
+			}
+			
+		 */
+	}
 
 }

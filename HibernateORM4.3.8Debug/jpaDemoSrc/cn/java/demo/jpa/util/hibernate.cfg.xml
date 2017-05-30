@@ -1,0 +1,66 @@
+<!DOCTYPE hibernate-configuration PUBLIC
+	"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+	<session-factory >
+		<!-- ============配置属性 - bof============ -->
+		<!-- 注意标签内不能有空格 -->
+		<property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+		<!--连到test数据库 -->
+		<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/hibernate_hbm_or_jpa</property>
+		<property name="hibernate.connection.username">root</property>
+		<property name="hibernate.connection.password"></property>
+		<!-- 方言，告诉 hibernate用什么数据库 -->
+		<property name="dialect">org.hibernate.dialect.MySQLDialect</property>		
+		<!-- 自动创建表 -->
+		<property name="hbm2ddl.auto">create</property>
+	    <property name="show_sql">true</property> <!-- 	 显示sql语句 -->
+		<!-- ============配置属性 - eof============ -->
+		
+		<!-- ============配置二级缓存 - bof============ -->
+		<property name="hibernate.cache.use_second_level_cache">true</property> <!-- 打开二级缓存 -->
+		<property name="hibernate.cache.use_query_cache">true</property> <!-- 打开对查询的缓存 -->
+		<property name="cache.region.factory_class">org.hibernate.cache.EhCacheRegionFactory</property> <!-- 使用哪种(第三方, *.jar)二级缓存 -->
+		<!-- 为谁配置缓存，以及使用策略 -->
+		<!-- 
+		<class-cache class="cn.java.demo.hbm.entity.User" usage="read-write"/>
+		-->
+		<!-- 统计信息 ,显示cache的信息-->
+		<property name="generate_statistics">false</property> 
+		<!-- ============配置二级缓存 - eof============ -->
+		<!-- 单表 -->
+		<mapping class="cn.java.demo.jpa.entity.one.User"/>
+		<!-- 一对一 -->
+		<mapping class="cn.java.demo.jpa.entity.one2one.onesided.Person"/>
+		<mapping class="cn.java.demo.jpa.entity.one2one.onesided.IdCard"/>
+		<mapping class="cn.java.demo.jpa.entity.one2one.allsided.Person"/>
+		<mapping class="cn.java.demo.jpa.entity.one2one.allsided.IdCard"/>
+		<!-- 一对多 -->
+		<mapping class="cn.java.demo.jpa.entity.one2many.onesided.Department"/>
+		<mapping class="cn.java.demo.jpa.entity.one2many.onesided.Employee"/>
+		<mapping class="cn.java.demo.jpa.entity.one2many.allsided.Department"/>
+		<mapping class="cn.java.demo.jpa.entity.one2many.allsided.Employee"/>
+		<!-- 多对一 -->
+		<mapping class="cn.java.demo.jpa.entity.many2one.onesided.Cluster"/>
+		<mapping class="cn.java.demo.jpa.entity.many2one.onesided.Node"/>
+		<mapping class="cn.java.demo.jpa.entity.many2one.allsided.Cluster"/>
+		<mapping class="cn.java.demo.jpa.entity.many2one.allsided.Node"/>
+		<!-- 多对多 -->
+		<mapping class="cn.java.demo.jpa.entity.many2many.onesided.Teacher"/>
+		<mapping class="cn.java.demo.jpa.entity.many2many.onesided.Student"/>
+		<mapping class="cn.java.demo.jpa.entity.many2many.allsided.Teacher"/>
+		<mapping class="cn.java.demo.jpa.entity.many2many.allsided.Student"/> 
+		<!-- 继承 -->
+		<mapping class="cn.java.demo.jpa.entity.inherit.subclass.Animal"/> 
+		<mapping class="cn.java.demo.jpa.entity.inherit.subclass.Pig"/> 
+		<mapping class="cn.java.demo.jpa.entity.inherit.subclass.Bird"/> 
+		<mapping class="cn.java.demo.jpa.entity.inherit.joinedsubclass.Animal"/> 
+		<mapping class="cn.java.demo.jpa.entity.inherit.joinedsubclass.Pig"/> 
+		<mapping class="cn.java.demo.jpa.entity.inherit.joinedsubclass.Bird"/> 
+		<mapping class="cn.java.demo.jpa.entity.inherit.unionsubclass.Animal"/> 
+		<mapping class="cn.java.demo.jpa.entity.inherit.unionsubclass.Pig"/> 
+		<mapping class="cn.java.demo.jpa.entity.inherit.unionsubclass.Bird"/> 
+		
+	</session-factory> 
+</hibernate-configuration>

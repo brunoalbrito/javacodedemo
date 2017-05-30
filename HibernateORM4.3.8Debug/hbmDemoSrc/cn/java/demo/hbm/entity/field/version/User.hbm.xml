@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package=""><!-- 包地址 -->
+	<class name="cn.java.demo.hbm.entity.field.version.User" table="hbm_user">
+		<id name="id">
+			<generator class="native" />
+		</id>
+		<property name="nickName" column="nickname" type="string" update="true" unique="false" length="32" access="property" not-null="false"/>
+		<property name="birthday" />
+		<version name="ver" />
+	</class>
+
+</hibernate-mapping>

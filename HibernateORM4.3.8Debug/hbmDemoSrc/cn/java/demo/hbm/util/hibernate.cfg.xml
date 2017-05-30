@@ -1,0 +1,59 @@
+<!DOCTYPE hibernate-configuration PUBLIC
+	"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+	<session-factory >
+		<!-- ============配置属性 - bof============ -->
+		<!-- 注意标签内不能有空格 -->
+		<property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+		<!--连到test数据库 -->
+		<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/hibernate_hbm_or_jpa</property>
+		<property name="hibernate.connection.username">root</property>
+		<property name="hibernate.connection.password"></property>
+		<!-- 方言，告诉 hibernate用什么数据库 -->
+		<property name="dialect">org.hibernate.dialect.MySQLDialect</property>		
+		<!-- 自动创建表 -->
+		<property name="hbm2ddl.auto">create</property>
+	    <property name="show_sql">true</property> <!-- 	 显示sql语句 -->
+		<!-- ============配置属性 - eof============ -->
+		
+		<!-- ============配置二级缓存 - bof============ -->
+		<property name="hibernate.cache.use_second_level_cache">true</property> <!-- 打开二级缓存 -->
+		<property name="hibernate.cache.use_query_cache">true</property> <!-- 打开对查询的缓存 -->
+		<property name="cache.region.factory_class">org.hibernate.cache.EhCacheRegionFactory</property> <!-- 使用哪种(第三方, *.jar)二级缓存 -->
+		<!-- 为谁配置缓存，以及使用策略 -->
+		<!-- 
+		<class-cache class="cn.java.demo.hbm.entity.User" usage="read-write"/>
+		-->
+		<!-- 统计信息 ,显示cache的信息-->
+		<property name="generate_statistics">false</property> 
+		<!-- ============配置二级缓存 - eof============ -->
+			 
+		<!-- ============配置mapping - bof============ -->
+		<mapping resource="cn/java/demo/hbm/entity/one/User.hbm.xml"/><!-- 为谁配置 ，即映射文件的路径-->
+		<!-- 一对多 -->
+		<mapping resource="cn/java/demo/hbm/entity/one2many/Department.hbm.xml"/>
+		<mapping resource="cn/java/demo/hbm/entity/one2many/Employee.hbm.xml"/>
+		<!-- 一对一 -->
+		<mapping resource="cn/java/demo/hbm/entity/one2one/Person.hbm.xml"/>
+		<mapping resource="cn/java/demo/hbm/entity/one2one/IdCard.hbm.xml"/>
+		<!-- 多对多 -->
+		<mapping resource="cn/java/demo/hbm/entity/many2many/Teacher.hbm.xml"/>
+		<mapping resource="cn/java/demo/hbm/entity/many2many/Student.hbm.xml"/>
+		<!-- 继承 -->
+		<mapping resource="cn/java/demo/hbm/entity/inherit/subclass/Animal.hbm.xml"/>
+		<mapping resource="cn/java/demo/hbm/entity/inherit/joinedsubclass/Animal.hbm.xml"/>
+		<mapping resource="cn/java/demo/hbm/entity/inherit/unionsubclass/Animal.hbm.xml"/>
+		
+		
+		<!-- ============配置mapping - eof============ -->
+		
+		<!-- 监听器，要配置保存 
+		<event type="save">
+		<listener class="cn.java.demo.hbm.SaveListener"/>
+		<listener class="org.hibernate.event.def.DefaultSaveOrUpdateEventListener"/>
+		</event>
+		-->
+	</session-factory> 
+</hibernate-configuration>

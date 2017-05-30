@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="cn.java.demo.hbm.entity.one2one"><!-- 包地址 -->
+	<!-- 映射文件 -->
+	<class name="Person" table="hbm_person"><!-- 为类配置映射 -->
+		
+		<id name="id">
+			<generator class="native"/><!-- 主键生成器 -->
+		</id>
+		
+		<property name="name"/>
+	
+		<one-to-one name="idCard" property-ref="person" cascade="delete" />        
+		<!-- 通过IdCard里的Person_id字段，获取IdCard里字段的相关信息 -->
+	</class>
+	
+</hibernate-mapping>

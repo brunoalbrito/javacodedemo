@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="cn.java.demo.hbm.entity.one2one"><!-- 包地址 -->
+	<!-- 映射文件 -->
+	<class name="IdCard" table="hbm_id_card"><!-- 为类配置映射 -->
+
+		<id name="id">
+			<!--外键 生成器 -->
+			<generator class="foreign">
+				<param name="property">person</param>
+			</generator>
+		</id>
+
+		<property name="usefulLife" column="useful_life" />
+		<!-- 一对一 -->
+		<!-- constrained="true",约束条件，表示id是参考外键 -->
+		<!-- fetch：通过什么抓取,如果要实现懒加载，不要配置成"join" -->
+		<!-- lazy:什么时候抓取 -->
+		<!-- <one-to-one name="person" constrained="true" lazy="proxy" fetch="select"/> -->
+		<many-to-one name="person" column="person_id" unique="true" />
+
+	</class>
+
+</hibernate-mapping>

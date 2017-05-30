@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="cn.java.demo.hbm.entity.one2many"><!-- 包地址 -->
+	<!-- 映射文件 -->
+	<class name="Employee" table="hbm_employee"><!-- 为类配置映射 -->
+		
+		<id name="id">
+			<generator class="native"/><!-- 主键生成器 -->
+		</id>
+		
+		<property name="name"/>
+		
+		<many-to-one name="depart" column="depart_id"/><!-- 多对一 -->
+		<!-- “对象”到“表字段”的映射  如果没有指定column为depart_id则默认的depart，property-ref="name":引用不是主键的字段-->
+	
+		
+	</class>
+	
+</hibernate-mapping>

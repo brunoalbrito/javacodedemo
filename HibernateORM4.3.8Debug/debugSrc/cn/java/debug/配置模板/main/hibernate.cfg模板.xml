@@ -37,10 +37,10 @@
 
 		<!-- 映射文件 -->
 		<mapping resource="cn/java/hibernate/entity/Student.hbm.xml" />
-		<mapping class="cn.java.demo.entity.Teacher" />
+		<mapping class="cn.java.demo.all.jpa.demo.entity.Teacher" />
 		<mapping file="d:/dir1/Student.hbm.xml"/>
 		<mapping jar="d:/dir1/test.jar"/>
-		<mapping package="cn.java.demo.packagetest"/><!-- cn.java.demo.packagetest.package-info文件 -->
+		<mapping package="cn.java.demo.all.jpa.demo.packagetest"/><!-- cn.java.demo.all.jpa.demo.packagetest.package-info文件 -->
 		<mapping package="org.hibernate.cfg.annotations.reflection"/><!-- org.hibernate.cfg.annotations.reflection.package-info文件 -->
 		
 		<!-- 设置缓存策略 -->

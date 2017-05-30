@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping auto-import="false">
+	<!-- 生成三张表-->
+	<class name="cn.java.demo.hbm.entity.inherit.joinedsubclass.Animal" table="hbm_inherit_joinedsubclass_animal" lazy="true" >
+		<id name="animalId" column="animal_id">
+			<generator class="native"/>
+		</id>
+
+		<property name="animalName" column="animal_name"/>
+		<property name="animalSex" column="animal_sex"/>
+			
+		<joined-subclass name="cn.java.demo.hbm.entity.inherit.joinedsubclass.Pig" table="hbm_inherit_joinedsubclass_pig">
+			<key column="animal_id_ref"/>
+			<property name="weigth"/>
+		</joined-subclass>
+		
+		<joined-subclass name="cn.java.demo.hbm.entity.inherit.joinedsubclass.Bird" table="hbm_inherit_joinedsubclass_bird">
+			<key column="animal_id_ref"/>
+			<property name="height"/>
+		</joined-subclass>
+	
+	
+	  
+	
+
+	</class>
+	
+</hibernate-mapping>

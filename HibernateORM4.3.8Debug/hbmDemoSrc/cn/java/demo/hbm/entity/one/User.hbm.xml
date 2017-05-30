@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="cn.java.demo.hbm.entity.one"><!-- 包地址 -->
+	<!-- 映射文件 -->
+	<class name="User" table="hbm_user"><!-- 为类配置映射 -->
+		<cache usage="read-write" /><!-- 配置二级缓存 -->
+		<id name="id">
+			<generator class="native" /><!-- 主键生成器 -->
+		</id>
+		<version name="ver" />
+		<component name="userName">
+			<property name="firstName" column="first_name" />
+			<property name="lastName" column="last_name" />
+		</component>
+		<!-- 
+			type:使用hibernate内建的，名称为string的转换规则 
+			update:表示该字段可以让update语句操作
+			unique:表示该字段不可以重复
+			length:表示该字段的长度
+			perperty:表示调用set方法设置该字段
+			not-null:表示不允许为空
+			field:表示注入方式
+		-->
+		<property name="nickName" column="nickname" type="string" update="true" unique="false" length="32" access="property" not-null="false"/>
+		<property name="birthday" />
+
+		<query name="getUserByBirthday"><!-- 命名查询 ，Hql -->
+			<![CDATA[from User where birthday=:birthday]]>
+		</query>
+		<!-- 命名查询，sql <sql-query name=""></sql-query> -->
+
+	</class>
+
+</hibernate-mapping>

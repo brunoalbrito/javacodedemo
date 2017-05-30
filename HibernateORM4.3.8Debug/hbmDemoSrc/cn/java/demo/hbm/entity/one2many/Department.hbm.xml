@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="cn.java.demo.hbm.entity.one2many"><!-- 包地址 -->
+	<!-- 映射文件 -->
+	<class name="Department" table="hbm_department"><!-- 为类配置映射 -->
+		
+		<id name="id">
+			<generator class="native"/><!-- 主键生成器 -->
+		</id>
+		
+		<property name="name"/>
+	    <!-- cascade="save-update,delete" 级联，即保存department的时候顺便保存emploree-->
+		
+		<!-- 禁用懒加载 lazy="false" 或者 fetch="join"-->
+		<set name="emps">                        <!-- 一对多 --><!-- 实现部门到员工的查找 -->
+			<key column="depart_id"/><!-- 员工表里的字段 -->
+			<one-to-many class="cn.java.demo.hbm.entity.one2many.Employee"/><!--  -->
+		</set>
+	</class>
+	
+</hibernate-mapping> 
