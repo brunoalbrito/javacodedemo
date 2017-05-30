@@ -159,16 +159,16 @@ public class ControllerAdviceBean implements Ordered {
 		}
 		else if (beanType != null) {
 			for (String basePackage : this.basePackages) {
-				if (beanType.getName().startsWith(basePackage)) {
+				if (beanType.getName().startsWith(basePackage)) { // 包命中
 					return true;
 				}
 			}
-			for (Class<?> clazz : this.assignableTypes) {
+			for (Class<?> clazz : this.assignableTypes) { // 类型命中
 				if (ClassUtils.isAssignable(clazz, beanType)) {
 					return true;
 				}
 			}
-			for (Class<? extends Annotation> annotationClass : this.annotations) {
+			for (Class<? extends Annotation> annotationClass : this.annotations) { // 注解命中
 				if (AnnotationUtils.findAnnotation(beanType, annotationClass) != null) {
 					return true;
 				}

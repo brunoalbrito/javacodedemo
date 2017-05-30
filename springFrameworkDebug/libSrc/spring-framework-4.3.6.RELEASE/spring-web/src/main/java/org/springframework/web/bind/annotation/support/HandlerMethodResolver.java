@@ -76,14 +76,17 @@ public class HandlerMethodResolver {
 	 * @param handlerType the handler class to introspect
 	 */
 	public void init(final Class<?> handlerType) {
+		
+		// 类上的@RequestMapping、@SessionAttributes注解，方法上的@RequestMapping、@InitBinder、@ModelAttribute注解
+		
 		Set<Class<?>> handlerTypes = new LinkedHashSet<Class<?>>();
 		Class<?> specificHandlerType = null;
-		if (!Proxy.isProxyClass(handlerType)) {
+		if (!Proxy.isProxyClass(handlerType)) { // 不是代理类
 			handlerTypes.add(handlerType);
 			specificHandlerType = handlerType;
 		}
 		handlerTypes.addAll(Arrays.asList(handlerType.getInterfaces()));
-		for (Class<?> currentHandlerType : handlerTypes) {
+		for (Class<?> currentHandlerType : handlerTypes) { // 所有接口
 			final Class<?> targetClass = (specificHandlerType != null ? specificHandlerType : currentHandlerType);
 			ReflectionUtils.doWithMethods(currentHandlerType, new ReflectionUtils.MethodCallback() {
 				@Override
@@ -92,24 +95,25 @@ public class HandlerMethodResolver {
 					Method bridgedMethod = BridgeMethodResolver.findBridgedMethod(specificMethod);
 					if (isHandlerMethod(specificMethod) &&
 							(bridgedMethod == specificMethod || !isHandlerMethod(bridgedMethod))) {
-						handlerMethods.add(specificMethod);
+						handlerMethods.add(specificMethod); // 使用@RequestMapping注解的方法
 					}
 					else if (isInitBinderMethod(specificMethod) &&
 							(bridgedMethod == specificMethod || !isInitBinderMethod(bridgedMethod))) {
-						initBinderMethods.add(specificMethod);
+						initBinderMethods.add(specificMethod); // 使用@InitBinder注解的方法
 					}
 					else if (isModelAttributeMethod(specificMethod) &&
 							(bridgedMethod == specificMethod || !isModelAttributeMethod(bridgedMethod))) {
-						modelAttributeMethods.add(specificMethod);
+						modelAttributeMethods.add(specificMethod); // 使用@ModelAttribute注解的方法
 					}
 				}
 			}, ReflectionUtils.USER_DECLARED_METHODS);
 		}
-		this.typeLevelMapping = AnnotationUtils.findAnnotation(handlerType, RequestMapping.class);
-		SessionAttributes sessionAttributes = AnnotationUtils.findAnnotation(handlerType, SessionAttributes.class);
+		
+		this.typeLevelMapping = AnnotationUtils.findAnnotation(handlerType, RequestMapping.class); // 类上的@RequestMapping注解
+		SessionAttributes sessionAttributes = AnnotationUtils.findAnnotation(handlerType, SessionAttributes.class); // 类上的@SessionAttributes注解
 		this.sessionAttributesFound = (sessionAttributes != null);
 		if (this.sessionAttributesFound) {
-			this.sessionAttributeNames.addAll(Arrays.asList(sessionAttributes.names()));
+			this.sessionAttributeNames.addAll(Arrays.asList(sessionAttributes.names())); // 类上的@SessionAttributes注解的配置
 			this.sessionAttributeTypes.addAll(Arrays.asList(sessionAttributes.types()));
 		}
 	}

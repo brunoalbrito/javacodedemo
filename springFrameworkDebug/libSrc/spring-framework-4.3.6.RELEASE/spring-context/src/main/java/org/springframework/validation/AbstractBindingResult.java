@@ -274,7 +274,7 @@ public abstract class AbstractBindingResult extends AbstractErrors implements Bi
 		// Mapping from name to target object.
 		model.put(getObjectName(), getTarget());
 		// Errors instance, even if no errors.
-		model.put(MODEL_KEY_PREFIX + getObjectName(), this);
+		model.put(MODEL_KEY_PREFIX + getObjectName(), this); // !!!!
 		return model;
 	}
 

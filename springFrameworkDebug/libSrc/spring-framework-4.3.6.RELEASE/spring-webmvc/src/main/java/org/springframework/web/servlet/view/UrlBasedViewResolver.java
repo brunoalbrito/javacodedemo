@@ -453,23 +453,23 @@ public class UrlBasedViewResolver extends AbstractCachingViewResolver implements
 	protected View createView(String viewName, Locale locale) throws Exception {
 		// If this resolver is not supposed to handle the given view,
 		// return null to pass on to the next resolver in the chain.
-		if (!canHandle(viewName, locale)) {
+		if (!canHandle(viewName, locale)) { // !!!!
 			return null;
 		}
 		// Check for special "redirect:" prefix.
-		if (viewName.startsWith(REDIRECT_URL_PREFIX)) {
+		if (viewName.startsWith(REDIRECT_URL_PREFIX)) { // 重定向
 			String redirectUrl = viewName.substring(REDIRECT_URL_PREFIX.length());
 			RedirectView view = new RedirectView(redirectUrl, isRedirectContextRelative(), isRedirectHttp10Compatible());
 			view.setHosts(getRedirectHosts());
 			return applyLifecycleMethods(viewName, view);
 		}
 		// Check for special "forward:" prefix.
-		if (viewName.startsWith(FORWARD_URL_PREFIX)) {
+		if (viewName.startsWith(FORWARD_URL_PREFIX)) { // 转发
 			String forwardUrl = viewName.substring(FORWARD_URL_PREFIX.length());
 			return new InternalResourceView(forwardUrl);
 		}
 		// Else fall back to superclass implementation: calling loadView.
-		return super.createView(viewName, locale);
+		return super.createView(viewName, locale); // !!!!
 	}
 
 	/**
@@ -504,13 +504,16 @@ public class UrlBasedViewResolver extends AbstractCachingViewResolver implements
 	 */
 	@Override
 	protected View loadView(String viewName, Locale locale) throws Exception {
-		AbstractUrlBasedView view = buildView(viewName);
+		// view === org.springframework.web.servlet.view.JstlView 
+		// view === org.springframework.web.servlet.view.InternalResourceView 
+		AbstractUrlBasedView view = buildView(viewName); // !!!
 		View result = applyLifecycleMethods(viewName, view);
-		return (view.checkResource(locale) ? result : null);
+		return (view.checkResource(locale) ? result : null); // 检查资源
 	}
 
 	private View applyLifecycleMethods(String viewName, AbstractView view) {
-		return (View) getApplicationContext().getAutowireCapableBeanFactory().initializeBean(view, viewName);
+		// org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(view, viewName);
+		return (View) getApplicationContext().getAutowireCapableBeanFactory().initializeBean(view, viewName); //  给view对注入感知对象/ 调用view的初始化方法
 	}
 
 	/**
@@ -528,8 +531,11 @@ public class UrlBasedViewResolver extends AbstractCachingViewResolver implements
 	 * @see #loadView(String, java.util.Locale)
 	 */
 	protected AbstractUrlBasedView buildView(String viewName) throws Exception {
-		AbstractUrlBasedView view = (AbstractUrlBasedView) BeanUtils.instantiateClass(getViewClass());
-		view.setUrl(getPrefix() + viewName + getSuffix());
+		// getViewClass() === org.springframework.web.servlet.view.JstlView
+		// getViewClass() === org.springframework.web.servlet.view.InternalResourceView
+		// getViewClass() === org.springframework.web.servlet.view.freemarker.FreeMarkerView
+		AbstractUrlBasedView view = (AbstractUrlBasedView) BeanUtils.instantiateClass(getViewClass()); // 实例化对象
+		view.setUrl(getPrefix() + viewName + getSuffix()); // 设置模板路径
 
 		String contentType = getContentType();
 		if (contentType != null) {

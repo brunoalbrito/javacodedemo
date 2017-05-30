@@ -146,8 +146,8 @@ public class FreeMarkerView extends AbstractTemplateView {
 			this.taglibFactory = new TaglibFactory(servletContext);
 		}
 		else {
-			FreeMarkerConfig config = autodetectConfiguration();
-			setConfiguration(config.getConfiguration());
+			FreeMarkerConfig config = autodetectConfiguration(); // 自动检测
+			setConfiguration(config.getConfiguration()); // !!!!
 			this.taglibFactory = config.getTaglibFactory();
 		}
 
@@ -230,8 +230,8 @@ public class FreeMarkerView extends AbstractTemplateView {
 	protected void renderMergedTemplateModel(
 			Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-		exposeHelpers(model, request);
-		doRender(model, request, response);
+		exposeHelpers(model, request); // !!!
+		doRender(model, request, response); // !!!
 	}
 
 	/**
@@ -281,7 +281,7 @@ public class FreeMarkerView extends AbstractTemplateView {
 		}
 		// Grab the locale-specific version of the template.
 		Locale locale = RequestContextUtils.getLocale(request);
-		processTemplate(getTemplate(locale), fmModel, response);
+		processTemplate(getTemplate(locale), fmModel, response); // !!!! getTemplate(...)
 	}
 
 	/**
@@ -348,7 +348,7 @@ public class FreeMarkerView extends AbstractTemplateView {
 	protected Template getTemplate(String name, Locale locale) throws IOException {
 		return (getEncoding() != null ?
 				getConfiguration().getTemplate(name, locale, getEncoding()) :
-				getConfiguration().getTemplate(name, locale));
+				getConfiguration().getTemplate(name, locale)); //!!!!
 	}
 
 	/**
@@ -364,7 +364,7 @@ public class FreeMarkerView extends AbstractTemplateView {
 	protected void processTemplate(Template template, SimpleHash model, HttpServletResponse response)
 			throws IOException, TemplateException {
 
-		template.process(model, response.getWriter());
+		template.process(model, response.getWriter()); // !!!
 	}
 
 

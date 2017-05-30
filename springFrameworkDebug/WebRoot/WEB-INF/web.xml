@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	version="2.5">
+	
+	<description>spring web 测试</description>
+	<display-name>spring web 测试</display-name>
+	
+	
+	<!-- 监听器，会使用ServletContext中的配置作为自己的配置-->
+	<context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>/WEB-INF/classes/cn/java/demo/web/applicationContext.xml</param-value>
+    </context-param>
+    <context-param>
+        <param-name>log4jConfigLocation</param-name>
+        <param-value>/WEB-INF/classes/log4j.properties</param-value>
+    </context-param>
+	<listener>             
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+			
+	<!-- springweb -->
+	<servlet>
+		<servlet-name>springweb_HelloServlet</servlet-name>
+		<servlet-class>cn.java.demo.web.HelloServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>springweb_HelloServlet</servlet-name>
+		<url-pattern>/springweb/*</url-pattern>
+	</servlet-mapping>
+
+	<!-- springwebmvc，使用 <init-param> 配置-->
+	<servlet>
+        <servlet-name>springwebmvc_DispatcherServlet</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+        <init-param>
+	        <param-name>contextConfigLocation</param-name>
+       		<param-value>/WEB-INF/classes/cn/java/demo/webmvc/applicationContext.xml</param-value>
+     	</init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>springwebmvc_DispatcherServlet</servlet-name>
+        <url-pattern>/springwebmvc</url-pattern>
+　　</servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>springwebmvc_DispatcherServlet</servlet-name>
+        <url-pattern>/springwebmvc/</url-pattern>
+　　</servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>springwebmvc_DispatcherServlet</servlet-name>
+        <url-pattern>/springwebmvc/*</url-pattern>
+　　</servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>springwebmvc_DispatcherServlet</servlet-name>
+        <url-pattern>/springwebmvc/*.do</url-pattern>
+　　</servlet-mapping>
+</web-app>

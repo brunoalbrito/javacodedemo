@@ -121,7 +121,7 @@ public class RequestParamMethodArgumentResolver extends AbstractNamedValueMethod
 	 */
 	@Override
 	public boolean supportsParameter(MethodParameter parameter) {
-		if (parameter.hasParameterAnnotation(RequestParam.class)) {
+		if (parameter.hasParameterAnnotation(RequestParam.class)) { // 参数上有@RequestParam注解
 			if (Map.class.isAssignableFrom(parameter.nestedIfOptional().getNestedParameterType())) {
 				String paramName = parameter.getParameterAnnotation(RequestParam.class).name();
 				return StringUtils.hasText(paramName);
@@ -150,7 +150,7 @@ public class RequestParamMethodArgumentResolver extends AbstractNamedValueMethod
 	@Override
 	protected NamedValueInfo createNamedValueInfo(MethodParameter parameter) {
 		RequestParam ann = parameter.getParameterAnnotation(RequestParam.class);
-		return (ann != null ? new RequestParamNamedValueInfo(ann) : new RequestParamNamedValueInfo());
+		return (ann != null ? new RequestParamNamedValueInfo(ann) : new RequestParamNamedValueInfo()); //!!!
 	}
 
 	@Override
@@ -172,7 +172,7 @@ public class RequestParamMethodArgumentResolver extends AbstractNamedValueMethod
 			}
 		}
 		if (arg == null) {
-			String[] paramValues = request.getParameterValues(name);
+			String[] paramValues = request.getParameterValues(name); // 结果值 request.getParameterValues(resolvedName);
 			if (paramValues != null) {
 				arg = (paramValues.length == 1 ? paramValues[0] : paramValues);
 			}

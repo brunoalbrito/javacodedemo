@@ -258,7 +258,7 @@ class BasicResourcePool implements ResourcePool
 			int                      min, 
 			int                      max, 
 			int                      inc,
-			int                      num_acq_attempts,
+			int                      num_acq_attempts, // 尝试获取次数
 			int                      acq_attempt_delay,
 			long                     check_idle_resources_delay,
 			long                     max_resource_age,
@@ -303,7 +303,7 @@ class BasicResourcePool implements ResourcePool
 			this.min                              = min;
 			this.max                              = max;
 			this.inc                              = inc;
-			this.num_acq_attempts                 = num_acq_attempts;
+			this.num_acq_attempts                 = num_acq_attempts; // 尝试获取次数
 			this.acq_attempt_delay                = acq_attempt_delay;
 			this.check_idle_resources_delay       = check_idle_resources_delay;
 			this.max_resource_age                 = max_resource_age;
@@ -330,7 +330,7 @@ class BasicResourcePool implements ResourcePool
 				this.rpes = null;
 
 			//start acquiring our initial resources
-			ensureStartResources();
+			ensureStartResources();  // 发放“创建连接池”任务
 
 			if (mustEnforceExpiration())
 			{
@@ -464,7 +464,7 @@ class BasicResourcePool implements ResourcePool
 			if ((shrink_count = msz - pending_removes - target_pool_size) > 0)
 				shrinkPool( shrink_count );
 			else if ((expand_count = target_pool_size - (msz + pending_acquires)) > 0)
-				expandPool( expand_count );
+				expandPool( expand_count );  // 发放“创建连接池”任务
 		}
 	}
 
@@ -509,7 +509,9 @@ class BasicResourcePool implements ResourcePool
 
 	// idempotent
 	private synchronized void recheckResizePool()
-	{ _recheckResizePool(); }
+	{ 
+		_recheckResizePool();   // 发放“创建连接池”任务
+	}
 
 	// must be called from synchronized method
 	private void expandPool(int count)
@@ -520,8 +522,9 @@ class BasicResourcePool implements ResourcePool
 		//      in favor of ScatteredAcquireTask
 		if ( USE_SCATTERED_ACQUIRE_TASK )
 		{
+			// taskRunner === com.mchange.v2.async.ThreadPoolAsynchronousRunner
 			for (int i = 0; i < count; ++i)
-				taskRunner.postRunnable( new ScatteredAcquireTask() );
+				taskRunner.postRunnable( new ScatteredAcquireTask() ); // 发放“创建连接池”任务
 		}
 		else
 		{
@@ -615,7 +618,7 @@ class BasicResourcePool implements ResourcePool
 			ensureNotBroken();
 
 			int available = unused.size(); // 未被使用的数量
-			if (available == 0)
+			if (available == 0) // 没有可获取的连接
 			{
 				int msz = managed.size();
 
@@ -1126,7 +1129,9 @@ class BasicResourcePool implements ResourcePool
 	{ doAcquire( NO_DECREMENT ); }				    
 
 	private void doAcquireAndDecrementPendingAcquiresWithinLockOnSuccess() throws Exception
-	{ doAcquire( DECREMENT_ON_SUCCESS ); }
+	{ 
+		doAcquire( DECREMENT_ON_SUCCESS );//!!!
+	}
 
 	private void doAcquireAndDecrementPendingAcquiresWithinLockAlways() throws Exception
 	{ doAcquire( DECREMENT_WITH_CERTAINTY ); }
@@ -1138,7 +1143,9 @@ class BasicResourcePool implements ResourcePool
 	private void doAcquire( int decrement_policy ) throws Exception
 	{
 		assert !Thread.holdsLock( this );
-
+		
+		// 获取数据库连接
+		// mgr === com.mchange.v2.c3p0.impl.C3P0PooledConnectionPool.C3P0PooledConnectionPool(...).PooledConnectionResourcePoolManager
 		Object resc = mgr.acquireResource(); //note we acquire the resource while we DO NOT hold the pool's lock!
 
 		boolean destroy = false;
@@ -1150,7 +1157,7 @@ class BasicResourcePool implements ResourcePool
 			{
 				msz = managed.size();
 				if (!broken && msz < target_pool_size)
-					assimilateResource(resc); 
+					assimilateResource(resc); // 把连接放入连接池
 				else
 					destroy = true;
 
@@ -1487,7 +1494,7 @@ class BasicResourcePool implements ResourcePool
 		assert Thread.holdsLock( this );
 
 		managed.put(resc, new PunchCard());
-		unused.add(0, resc);
+		unused.add(0, resc); // 把连接放入连接池
 		//System.err.println("assimilate resource... unused: " + unused.size());
 		asyncFireResourceAcquired( resc, managed.size(), unused.size(), excluded.size() );
 		this.notifyAll();
@@ -1722,7 +1729,9 @@ class BasicResourcePool implements ResourcePool
 
 	// we needn't hold this' lock
 	private void ensureStartResources()
-	{ recheckResizePool(); }
+	{ 
+		recheckResizePool();  // 发放“创建连接池”任务
+	}
 
 	// we needn't hold this' lock
 	private void ensureMinResources()
@@ -1831,14 +1840,14 @@ class BasicResourcePool implements ResourcePool
 
 	class ScatteredAcquireTask implements Runnable
 	{
-		int attempts_remaining;
+		int attempts_remaining;  // 尝试获取次数
 
 		ScatteredAcquireTask()
 		{ this ( (num_acq_attempts >= 0 ? num_acq_attempts : -1) , true ); }
 
 		private ScatteredAcquireTask(int attempts_remaining, boolean first_attempt)
 		{ 
-			this.attempts_remaining = attempts_remaining; 
+			this.attempts_remaining = attempts_remaining;  // 尝试获取次数
 			if (first_attempt)
 			{
 				incrementPendingAcquires();
@@ -1871,7 +1880,7 @@ class BasicResourcePool implements ResourcePool
 					//we don't want this call to be sync'd
 					//on the pool, so that resource acquisition
 					//does not interfere with other pool clients.
-					BasicResourcePool.this.doAcquireAndDecrementPendingAcquiresWithinLockOnSuccess();
+					BasicResourcePool.this.doAcquireAndDecrementPendingAcquiresWithinLockOnSuccess(); // 会创建连接，并把连接放入连接池
 				}
 				else
 				{
@@ -1907,7 +1916,7 @@ class BasicResourcePool implements ResourcePool
 			{
 				BasicResourcePool.this.setLastAcquisitionFailure(e);
 
-				if (attempts_remaining == 0) //last try in a round...
+				if (attempts_remaining == 0) //last try in a round... 尝试次数为0
 				{
 					decrementPendingAcquires();
 					if ( logger.isLoggable( MLevel.WARNING ) )
@@ -1964,7 +1973,9 @@ class BasicResourcePool implements ResourcePool
 					TimerTask doNextAcquire = new TimerTask()
 					{
 						public void run()
-						{ taskRunner.postRunnable( new ScatteredAcquireTask( attempts_remaining - 1, false ) ); }
+						{ 
+							taskRunner.postRunnable( new ScatteredAcquireTask( attempts_remaining - 1, false ) ); // 发放新的任务，尝试次数 - 1
+						}
 					};
 					cullAndIdleRefurbishTimer.schedule( doNextAcquire, acq_attempt_delay );
 				}

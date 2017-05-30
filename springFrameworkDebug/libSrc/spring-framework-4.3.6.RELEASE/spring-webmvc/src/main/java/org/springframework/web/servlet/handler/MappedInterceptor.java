@@ -150,7 +150,7 @@ public final class MappedInterceptor implements HandlerInterceptor {
 	public boolean matches(String lookupPath, PathMatcher pathMatcher) {
 		PathMatcher pathMatcherToUse = (this.pathMatcher != null) ? this.pathMatcher : pathMatcher;
 		if (this.excludePatterns != null) {
-			for (String pattern : this.excludePatterns) {
+			for (String pattern : this.excludePatterns) { // 必须都不能包含
 				if (pathMatcherToUse.match(pattern, lookupPath)) {
 					return false;
 				}
@@ -160,7 +160,7 @@ public final class MappedInterceptor implements HandlerInterceptor {
 			return true;
 		}
 		else {
-			for (String pattern : this.includePatterns) {
+			for (String pattern : this.includePatterns) { // 有一个包含
 				if (pathMatcherToUse.match(pattern, lookupPath)) {
 					return true;
 				}

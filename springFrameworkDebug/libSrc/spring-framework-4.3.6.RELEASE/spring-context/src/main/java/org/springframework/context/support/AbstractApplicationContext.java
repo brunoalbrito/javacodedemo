@@ -481,7 +481,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	public void addApplicationListener(ApplicationListener<?> listener) {
 		Assert.notNull(listener, "ApplicationListener must not be null");
 		if (this.applicationEventMulticaster != null) {
-			this.applicationEventMulticaster.addApplicationListener(listener);
+			this.applicationEventMulticaster.addApplicationListener(listener); // !!!!
 		}
 		else {
 			this.applicationListeners.add(listener);
@@ -530,7 +530,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				initMessageSource(); // 设置bean工厂的一些属性
 
 				// Initialize event multicaster for this context.
-				initApplicationEventMulticaster(); // 设置bean工厂的一些属性
+				initApplicationEventMulticaster(); // 创建应用事件多播器
 
 				// Initialize other special beans in specific context subclasses.
 				onRefresh();

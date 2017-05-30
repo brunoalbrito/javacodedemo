@@ -525,11 +525,11 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	 */
 	protected Advisor[] buildAdvisors(String beanName, Object[] specificInterceptors) {
 		// Handle prototypes correctly...
-		Advisor[] commonInterceptors = resolveInterceptorNames(); // 通用拦截器列表
+		Advisor[] commonInterceptors = resolveInterceptorNames(); // 实例化“通用拦截器列表”
 		
 		List<Object> allInterceptors = new ArrayList<Object>();
 		if (specificInterceptors != null) {
-			allInterceptors.addAll(Arrays.asList(specificInterceptors));
+			allInterceptors.addAll(Arrays.asList(specificInterceptors)); // 合并“拦截器列表”
 			if (commonInterceptors.length > 0) {
 				if (this.applyCommonInterceptorsFirst) {
 					allInterceptors.addAll(0, Arrays.asList(commonInterceptors));

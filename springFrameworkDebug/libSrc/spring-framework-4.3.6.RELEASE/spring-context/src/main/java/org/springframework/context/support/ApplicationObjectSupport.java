@@ -69,7 +69,7 @@ public abstract class ApplicationObjectSupport implements ApplicationContextAwar
 				throw new ApplicationContextException(
 						"Invalid application context: needs to be of type [" + requiredContextClass().getName() + "]");
 			}
-			this.applicationContext = context;
+			this.applicationContext = context; // === org.springframework.web.context.support.XmlWebApplicationContext
 			this.messageSourceAccessor = new MessageSourceAccessor(context);
 			initApplicationContext(context);
 		}

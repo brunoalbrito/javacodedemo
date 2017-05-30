@@ -272,6 +272,7 @@ public class DataBinder implements PropertyEditorRegistry, TypeConverter {
 	 * @since 4.2.1
 	 */
 	protected AbstractPropertyBindingResult createBeanPropertyBindingResult() {
+//		getTarget() == org.springframework.web.context.request.ServletWebRequest
 		BeanPropertyBindingResult result = new BeanPropertyBindingResult(getTarget(),
 				getObjectName(), isAutoGrowNestedPaths(), getAutoGrowCollectionLimit());
 
@@ -324,14 +325,14 @@ public class DataBinder implements PropertyEditorRegistry, TypeConverter {
 		if (this.bindingResult == null) {
 			initBeanPropertyAccess();
 		}
-		return this.bindingResult;
+		return this.bindingResult; // org.springframework.validation.BeanPropertyBindingResult
 	}
 
 	/**
 	 * Return the underlying PropertyAccessor of this binder's BindingResult.
 	 */
 	protected ConfigurablePropertyAccessor getPropertyAccessor() {
-		return getInternalBindingResult().getPropertyAccessor();
+		return getInternalBindingResult().getPropertyAccessor(); // === org.springframework.beans.BeanWrapper
 	}
 
 	/**
@@ -381,7 +382,7 @@ public class DataBinder implements PropertyEditorRegistry, TypeConverter {
 	 * @see #bind
 	 */
 	public BindingResult getBindingResult() {
-		return getInternalBindingResult();
+		return getInternalBindingResult(); // org.springframework.validation.BeanPropertyBindingResult
 	}
 
 
@@ -709,7 +710,7 @@ public class DataBinder implements PropertyEditorRegistry, TypeConverter {
 	@Override
 	public <T> T convertIfNecessary(Object value, Class<T> requiredType, MethodParameter methodParam)
 			throws TypeMismatchException {
-
+//		org.springframework.beans.SimpleTypeConverter.convertIfNecessary(value, requiredType, methodParam);
 		return getTypeConverter().convertIfNecessary(value, requiredType, methodParam);
 	}
 
@@ -752,7 +753,7 @@ public class DataBinder implements PropertyEditorRegistry, TypeConverter {
 	protected void doBind(MutablePropertyValues mpvs) {
 		checkAllowedFields(mpvs);
 		checkRequiredFields(mpvs);
-		applyPropertyValues(mpvs);
+		applyPropertyValues(mpvs); // 把mpvs的属性值设置到beanWrapper
 	}
 
 	/**
@@ -768,7 +769,7 @@ public class DataBinder implements PropertyEditorRegistry, TypeConverter {
 			String field = PropertyAccessorUtils.canonicalPropertyName(pv.getName());
 			if (!isAllowed(field)) {
 				mpvs.removePropertyValue(pv);
-				getBindingResult().recordSuppressedField(field);
+				getBindingResult().recordSuppressedField(field); //org.springframework.validation.BeanPropertyBindingResult.recordSuppressedField(field);
 				if (logger.isDebugEnabled()) {
 					logger.debug("Field [" + field + "] has been removed from PropertyValues " +
 							"and will not be bound, because it has not been found in the list of allowed fields");
@@ -856,7 +857,7 @@ public class DataBinder implements PropertyEditorRegistry, TypeConverter {
 	protected void applyPropertyValues(MutablePropertyValues mpvs) {
 		try {
 			// Bind request parameters onto target object.
-			getPropertyAccessor().setPropertyValues(mpvs, isIgnoreUnknownFields(), isIgnoreInvalidFields());
+			getPropertyAccessor().setPropertyValues(mpvs, isIgnoreUnknownFields(), isIgnoreInvalidFields()); // 把mpvs的属性值设置到beanWrapper
 		}
 		catch (PropertyBatchUpdateException ex) {
 			// Use bind error processor to create FieldErrors.
@@ -886,7 +887,7 @@ public class DataBinder implements PropertyEditorRegistry, TypeConverter {
 	 * @see SmartValidator#validate(Object, Errors, Object...)
 	 */
 	public void validate(Object... validationHints) {
-		for (Validator validator : getValidators()) {
+		for (Validator validator : getValidators()) { // 迭代调用在“有@InitBinder注解”方法中注入的校验器
 			if (!ObjectUtils.isEmpty(validationHints) && validator instanceof SmartValidator) {
 				((SmartValidator) validator).validate(getTarget(), getBindingResult(), validationHints);
 			}

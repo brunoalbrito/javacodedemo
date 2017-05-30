@@ -169,7 +169,7 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 	 * Expects a handler to have a type-level @{@link Controller} annotation.
 	 */
 	@Override
-	protected boolean isHandler(Class<?> beanType) {
+	protected boolean isHandler(Class<?> beanType) { // 有 @Controller 或  @RequestMapping 注解
 		return (AnnotatedElementUtils.hasAnnotation(beanType, Controller.class) ||
 				AnnotatedElementUtils.hasAnnotation(beanType, RequestMapping.class));
 	}
@@ -184,11 +184,11 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 	 */
 	@Override
 	protected RequestMappingInfo getMappingForMethod(Method method, Class<?> handlerType) {
-		RequestMappingInfo info = createRequestMappingInfo(method);
+		RequestMappingInfo info = createRequestMappingInfo(method); // 获取方法的@RequestMapping注解 
 		if (info != null) {
-			RequestMappingInfo typeInfo = createRequestMappingInfo(handlerType);
+			RequestMappingInfo typeInfo = createRequestMappingInfo(handlerType);// 获取类的@RequestMapping注解 
 			if (typeInfo != null) {
-				info = typeInfo.combine(info);
+				info = typeInfo.combine(info); // 合并
 			}
 		}
 		return info;
@@ -246,7 +246,6 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 	 */
 	protected RequestMappingInfo createRequestMappingInfo(
 			RequestMapping requestMapping, RequestCondition<?> customCondition) {
-
 		return RequestMappingInfo
 				.paths(resolveEmbeddedValuesInPatterns(requestMapping.path()))
 				.methods(requestMapping.method())

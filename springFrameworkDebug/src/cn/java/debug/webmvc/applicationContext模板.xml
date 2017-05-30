@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop-4.2.xsd">
+        
+    	<!--  .....  以下为默认的配置 .....  -->
+    	<!-- multipartResolver -->
+        <bean id="multipartResolver" class="org.springframework.web.multipart.support.StandardServletMultipartResolver" />
+        <!-- LocaleResolver -->
+        <bean id="localeResolver" class="org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver" />
+        <!-- ThemeResolver -->
+        <bean id="themeResolver" class="org.springframework.web.servlet.theme.FixedThemeResolver" />
+        <!-- HandlerMapping -->
+        <bean id="handlerMapping0" class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping" />
+        <bean id="handlerMapping1" class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping" />
+        <!-- HandlerAdapter -->
+        <bean id="handlerAdapter0" class="org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter" />
+        <bean id="handlerAdapter1" class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter" />
+        <bean id="handlerAdapter2" class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter" />
+        <!-- HandlerExceptionResolver -->
+        <bean id="handlerExceptionResolver0" class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerExceptionResolver" />
+        <bean id="handlerExceptionResolver1" class="org.springframework.web.servlet.mvc.annotation.ResponseStatusExceptionResolver" />
+        <bean id="handlerExceptionResolver2" class="org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver" />
+        <!-- viewNameTranslator -->
+        <bean id="viewNameTranslator" class="org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator" />
+        <!-- flashMapManager -->
+        <bean id="flashMapManager" class="org.springframework.web.servlet.support.SessionFlashMapManager" />
+        
+        
+        <!-- 视图渲染器 -->
+	    <bean id="viewResolver0" class="org.springframework.web.servlet.view.InternalResourceViewResolver" order="0" autowire="byName"> <!-- JSP和jstl的支持 -->
+	        <property  name="prefix" value="/WEB-INF/template" />
+	    	<property  name="suffix" value=".jsp" />
+	    </bean>
+	    <bean id="viewResolver1" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver" order="1" autowire="byName"> <!-- FreeMarker的支持 -->
+	        <bean id="freeMarkerConfigurer" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer" /><!-- FreeMarker配置 -->
+	    	<property  name="prefix" value="/WEB-INF/template" />
+	    	<property  name="suffix" value=".ftl" />
+	    </bean>
+		<bean id="viewResolver2" class="org.springframework.web.servlet.view.groovy.GroovyMarkupViewResolver" order="2" /><!-- GroovyMarkup的支持 -->
+	    <bean id="viewResolver3" class="org.springframework.web.servlet.view.jasperreports.JasperReportsViewResolver" order="3" /><!-- JasperReports的支持 -->
+	    <bean id="viewResolver4" class="org.springframework.web.servlet.view.script.ScriptTemplateViewResolver" order="4" /><!-- JasperReports的支持 -->
+	    <bean id="viewResolver5" class="org.springframework.web.servlet.view.tiles3.TilesViewResolver" order="5" /><!-- TilesView的支持 -->
+	    <bean id="viewResolver6" class="org.springframework.web.servlet.view.velocity.VelocityViewResolver" order="6" autowire="byName"><!-- Velocity的支持 -->
+	        <bean id="velocityConfigurer" class="org.springframework.web.servlet.view.velocity.VelocityConfigurer" /><!-- Velocity配置 -->
+	      	<property  name="prefix" value="/WEB-INF/template" />
+	    	<property  name="suffix" value=".vm" />
+	    </bean>  
+	    <bean id="viewResolver7" class="org.springframework.web.servlet.view.xslt.XsltViewResolver" order="7" /><!-- Xslt的支持 -->
+</beans>

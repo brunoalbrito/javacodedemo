@@ -87,7 +87,7 @@ public class ComponentScanBeanDefinitionParser implements BeanDefinitionParser {
 		// Actually scan for bean definitions and register them.
 		ClassPathBeanDefinitionScanner scanner = configureScanner(parserContext, element); // !!! 创建扫描器 org.springframework.context.annotation.ClassPathBeanDefinitionScanner
 		Set<BeanDefinitionHolder> beanDefinitions = scanner.doScan(basePackages); // 扫描bean的定义，并注册bean的定义
-		registerComponents(parserContext.getReaderContext(), beanDefinitions, element); // 注册bean的定义
+		registerComponents(parserContext.getReaderContext(), beanDefinitions, element); // 注册一些BeanPostProcessor
 
 		return null;
 	}
@@ -149,9 +149,9 @@ public class ComponentScanBeanDefinitionParser implements BeanDefinitionParser {
 		if (element.hasAttribute(ANNOTATION_CONFIG_ATTRIBUTE)) { // annotation-config
 			annotationConfig = Boolean.valueOf(element.getAttribute(ANNOTATION_CONFIG_ATTRIBUTE));
 		}
-		if (annotationConfig) {
+		if (annotationConfig) { // 是否支持在bean定义“扫描器的配置”
 			Set<BeanDefinitionHolder> processorDefinitions =
-					AnnotationConfigUtils.registerAnnotationConfigProcessors(readerContext.getRegistry(), source); // !!!!
+					AnnotationConfigUtils.registerAnnotationConfigProcessors(readerContext.getRegistry(), source); // !!!! 注册一些BeanPostProcessor
 			for (BeanDefinitionHolder processorDefinition : processorDefinitions) {
 				compositeDef.addNestedComponent(new BeanComponentDefinition(processorDefinition));
 			}

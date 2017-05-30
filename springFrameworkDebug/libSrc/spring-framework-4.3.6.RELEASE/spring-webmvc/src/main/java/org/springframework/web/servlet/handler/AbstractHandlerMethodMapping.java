@@ -181,7 +181,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	 */
 	@Override
 	public void afterPropertiesSet() {
-		initHandlerMethods();
+		initHandlerMethods(); // !!! 扫描BeanDefinition，识别处理Handler
 	}
 
 	/**
@@ -196,10 +196,10 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 		}
 		String[] beanNames = (this.detectHandlerMethodsInAncestorContexts ?
 				BeanFactoryUtils.beanNamesForTypeIncludingAncestors(getApplicationContext(), Object.class) :
-				getApplicationContext().getBeanNamesForType(Object.class));
+				getApplicationContext().getBeanNamesForType(Object.class)); // 扫描所有bean
 
 		for (String beanName : beanNames) {
-			if (!beanName.startsWith(SCOPED_TARGET_NAME_PREFIX)) {
+			if (!beanName.startsWith(SCOPED_TARGET_NAME_PREFIX)) { // 不处理被代理的bean
 				Class<?> beanType = null;
 				try {
 					beanType = getApplicationContext().getType(beanName);
@@ -211,7 +211,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 					}
 				}
 				if (beanType != null && isHandler(beanType)) {
-					detectHandlerMethods(beanName);
+					detectHandlerMethods(beanName); // !!!!
 				}
 			}
 		}
@@ -224,7 +224,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	 */
 	protected void detectHandlerMethods(final Object handler) {
 		Class<?> handlerType = (handler instanceof String ?
-				getApplicationContext().getType((String) handler) : handler.getClass());
+				getApplicationContext().getType((String) handler) : handler.getClass()); // 获取bean的类型
 		final Class<?> userType = ClassUtils.getUserClass(handlerType);
 
 		Map<Method, T> methods = MethodIntrospector.selectMethods(userType,
@@ -232,7 +232,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 					@Override
 					public T inspect(Method method) {
 						try {
-							return getMappingForMethod(method, userType);
+							return getMappingForMethod(method, userType); // 识别@RequestMapping注解，获取配置
 						}
 						catch (Throwable ex) {
 							throw new IllegalStateException("Invalid mapping on handler class [" +
@@ -246,8 +246,10 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 		}
 		for (Map.Entry<Method, T> entry : methods.entrySet()) {
 			Method invocableMethod = AopUtils.selectInvocableMethod(entry.getKey(), userType);
-			T mapping = entry.getValue();
-			registerHandlerMethod(handler, invocableMethod, mapping);
+			T mapping = entry.getValue(); 
+			// handler === "beanName0"
+			// mapping === org.springframework.web.servlet.mvc.method.RequestMappingInfo
+			registerHandlerMethod(handler, invocableMethod, mapping); // !!!!
 		}
 	}
 
@@ -274,11 +276,13 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 		HandlerMethod handlerMethod;
 		if (handler instanceof String) {
 			String beanName = (String) handler;
+			// getApplicationContext() === org.springframework.web.context.support.XmlWebApplicationContext
+			// getApplicationContext().getAutowireCapableBeanFactory()  === org.springframework.beans.factory.support.DefaultListableBeanFactory
 			handlerMethod = new HandlerMethod(beanName,
-					getApplicationContext().getAutowireCapableBeanFactory(), method);
+					getApplicationContext().getAutowireCapableBeanFactory(), method); // 使用HandlerMethod对象来描述调用者信息
 		}
 		else {
-			handlerMethod = new HandlerMethod(handler, method);
+			handlerMethod = new HandlerMethod(handler, method); // 使用HandlerMethod对象来描述调用者信息
 		}
 		return handlerMethod;
 	}
@@ -305,7 +309,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	 */
 	@Override
 	protected HandlerMethod getHandlerInternal(HttpServletRequest request) throws Exception {
-		String lookupPath = getUrlPathHelper().getLookupPathForRequest(request);
+		String lookupPath = getUrlPathHelper().getLookupPathForRequest(request); // 请求资源的地址
 		if (logger.isDebugEnabled()) {
 			logger.debug("Looking up handler method for path " + lookupPath);
 		}
@@ -338,13 +342,13 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	 */
 	protected HandlerMethod lookupHandlerMethod(String lookupPath, HttpServletRequest request) throws Exception {
 		List<Match> matches = new ArrayList<Match>();
-		List<T> directPathMatches = this.mappingRegistry.getMappingsByUrl(lookupPath);
+		List<T> directPathMatches = this.mappingRegistry.getMappingsByUrl(lookupPath); // 完整匹配
 		if (directPathMatches != null) {
 			addMatchingMappings(directPathMatches, matches, request);
 		}
 		if (matches.isEmpty()) {
 			// No choice but to go through all mappings...
-			addMatchingMappings(this.mappingRegistry.getMappings().keySet(), matches, request);
+			addMatchingMappings(this.mappingRegistry.getMappings().keySet(), matches, request); // !!! 迭代进行匹配
 		}
 
 		if (!matches.isEmpty()) {
@@ -355,7 +359,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 						lookupPath + "] : " + matches);
 			}
 			Match bestMatch = matches.get(0);
-			if (matches.size() > 1) {
+			if (matches.size() > 1) { // 多个规则命中
 				if (CorsUtils.isPreFlightRequest(request)) {
 					return PREFLIGHT_AMBIGUOUS_MATCH;
 				}
@@ -534,9 +538,11 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 		}
 
 		public void register(T mapping, Object handler, Method method) {
+			// handler === "beanName0"
+			// mapping === org.springframework.web.servlet.mvc.method.RequestMappingInfo  -- @RequestMapping注解信息
 			this.readWriteLock.writeLock().lock();
 			try {
-				HandlerMethod handlerMethod = createHandlerMethod(handler, method);
+				HandlerMethod handlerMethod = createHandlerMethod(handler, method); // 方法信息
 				assertUniqueMethodMapping(handlerMethod, mapping);
 
 				if (logger.isInfoEnabled()) {
@@ -544,23 +550,24 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 				}
 				this.mappingLookup.put(mapping, handlerMethod);
 
-				List<String> directUrls = getDirectUrls(mapping);
+				List<String> directUrls = getDirectUrls(mapping); // 获取 @RequestMapping注解上配置的path，要求path不是带*或者？
 				for (String url : directUrls) {
 					this.urlLookup.add(url, mapping);
 				}
 
 				String name = null;
-				if (getNamingStrategy() != null) {
+				if (getNamingStrategy() != null) { 
+					// org.springframework.web.servlet.mvc.method.RequestMappingInfoHandlerMethodMappingNamingStrategy，生成规则是："类名中的每个大写字符"+"#"+"方法名"
 					name = getNamingStrategy().getName(handlerMethod, mapping);
 					addMappingName(name, handlerMethod);
 				}
 
-				CorsConfiguration corsConfig = initCorsConfiguration(handler, method, mapping);
+				CorsConfiguration corsConfig = initCorsConfiguration(handler, method, mapping); // 跨域配置
 				if (corsConfig != null) {
 					this.corsLookup.put(handlerMethod, corsConfig);
 				}
 
-				this.registry.put(mapping, new MappingRegistration<T>(mapping, handlerMethod, directUrls, name));
+				this.registry.put(mapping, new MappingRegistration<T>(mapping, handlerMethod, directUrls, name)); // 
 			}
 			finally {
 				this.readWriteLock.writeLock().unlock();
@@ -578,9 +585,10 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 		}
 
 		private List<String> getDirectUrls(T mapping) {
+			// mapping === org.springframework.web.servlet.mvc.method.RequestMappingInfo
 			List<String> urls = new ArrayList<String>(1);
-			for (String path : getMappingPathPatterns(mapping)) {
-				if (!getPathMatcher().isPattern(path)) {
+			for (String path : getMappingPathPatterns(mapping)) { // 匹配表达式
+				if (!getPathMatcher().isPattern(path)) { // 不是表示式， 存在  * 或者 ？，就是表达式
 					urls.add(path);
 				}
 			}

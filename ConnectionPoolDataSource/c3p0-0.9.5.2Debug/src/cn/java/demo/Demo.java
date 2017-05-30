@@ -1,6 +1,5 @@
 package cn.java.demo;
 
-import java.beans.PropertyVetoException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,7 +18,7 @@ public class Demo {
 		dataSource.setMinPoolSize(5);
 		dataSource.setInitialPoolSize(2);
 		dataSource.setMaxIdleTime(5);
-		dataSource.setAcquireIncrement(5);
+		dataSource.setAcquireIncrement(3); // 尝试次数
 		
 		// 使用
 		{

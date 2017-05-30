@@ -110,7 +110,7 @@ public class ReflectiveMethodInvocation implements ProxyMethodInvocation, Clonea
 		this.targetClass = targetClass;
 		this.method = BridgeMethodResolver.findBridgedMethod(method);
 		this.arguments = AopProxyUtils.adaptArgumentsIfNecessary(method, arguments);
-		this.interceptorsAndDynamicMethodMatchers = interceptorsAndDynamicMethodMatchers;
+		this.interceptorsAndDynamicMethodMatchers = interceptorsAndDynamicMethodMatchers; // 拦截器列表
 	}
 
 
@@ -161,8 +161,8 @@ public class ReflectiveMethodInvocation implements ProxyMethodInvocation, Clonea
 		}
 
 		Object interceptorOrInterceptionAdvice =
-				this.interceptorsAndDynamicMethodMatchers.get(++this.currentInterceptorIndex); // 获取某个通知者
-		if (interceptorOrInterceptionAdvice instanceof InterceptorAndDynamicMethodMatcher) {
+				this.interceptorsAndDynamicMethodMatchers.get(++this.currentInterceptorIndex); // 获取下一个通知者
+		if (interceptorOrInterceptionAdvice instanceof InterceptorAndDynamicMethodMatcher) { // 拦截器实现了InterceptorAndDynamicMethodMatcher接口
 			// Evaluate dynamic method matcher here: static part will already have
 			// been evaluated and found to match.
 			InterceptorAndDynamicMethodMatcher dm =

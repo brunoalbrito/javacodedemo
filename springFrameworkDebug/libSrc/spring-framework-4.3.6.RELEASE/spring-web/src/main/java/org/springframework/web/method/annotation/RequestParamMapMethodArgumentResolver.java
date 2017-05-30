@@ -63,7 +63,7 @@ public class RequestParamMapMethodArgumentResolver implements HandlerMethodArgum
 			NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
 
 		Class<?> paramType = parameter.getParameterType();
-
+		// webRequest === org.springframework.web.context.request.ServletWebRequest
 		Map<String, String[]> parameterMap = webRequest.getParameterMap();
 		if (MultiValueMap.class.isAssignableFrom(paramType)) {
 			MultiValueMap<String, String> result = new LinkedMultiValueMap<String, String>(parameterMap.size());

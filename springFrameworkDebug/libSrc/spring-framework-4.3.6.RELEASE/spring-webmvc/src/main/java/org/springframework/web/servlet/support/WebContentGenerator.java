@@ -396,7 +396,7 @@ public abstract class WebContentGenerator extends WebApplicationObjectSupport {
 			applyCacheControl(response, this.cacheControl);
 		}
 		else {
-			applyCacheSeconds(response, this.cacheSeconds);
+			applyCacheSeconds(response, this.cacheSeconds); // 发送控制“浏览器缓存”的Header
 		}
 		if (servlet3Present && this.varyByRequestHeaders != null) {
 			for (String value : getVaryRequestHeadersToAdd(response)) {
@@ -412,6 +412,7 @@ public abstract class WebContentGenerator extends WebApplicationObjectSupport {
 	 * @since 4.2
 	 */
 	protected final void applyCacheControl(HttpServletResponse response, CacheControl cacheControl) {
+		// cControl === org.springframework.http.CacheControl
 		String ccValue = cacheControl.getHeaderValue();
 		if (ccValue != null) {
 			// Set computed HTTP 1.1 Cache-Control header
@@ -457,12 +458,13 @@ public abstract class WebContentGenerator extends WebApplicationObjectSupport {
 				}
 			}
 			else if (cacheSeconds == 0) {
+				// cControl === org.springframework.http.CacheControl
 				cControl = (this.useCacheControlNoStore ? CacheControl.noStore() : CacheControl.noCache());
 			}
 			else {
 				cControl = CacheControl.empty();
 			}
-			applyCacheControl(response, cControl);
+			applyCacheControl(response, cControl); // 发送控制“浏览器缓存”的Header
 		}
 	}
 
@@ -492,8 +494,8 @@ public abstract class WebContentGenerator extends WebApplicationObjectSupport {
 			HttpServletRequest request, HttpServletResponse response, int cacheSeconds, boolean lastModified)
 			throws ServletException {
 
-		checkRequest(request);
-		applyCacheSeconds(response, cacheSeconds);
+		checkRequest(request); // 请求方式和Session的检查
+		applyCacheSeconds(response, cacheSeconds);// 应用缓存控制
 	}
 
 	/**

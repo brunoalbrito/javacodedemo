@@ -188,9 +188,9 @@ public abstract class AbstractJackson2View extends AbstractView {
 	 * @throws IOException if writing failed
 	 */
 	protected void writeContent(OutputStream stream, Object object) throws IOException {
-		JsonGenerator generator = this.objectMapper.getFactory().createGenerator(stream, this.encoding);
+		JsonGenerator generator = this.objectMapper.getFactory().createGenerator(stream, this.encoding); // 生成器
 
-		writePrefix(generator, object);
+		writePrefix(generator, object); // 前缀
 		Class<?> serializationView = null;
 		FilterProvider filters = null;
 		Object value = object;
@@ -210,8 +210,8 @@ public abstract class AbstractJackson2View extends AbstractView {
 		else {
 			this.objectMapper.writeValue(generator, value);
 		}
-		writeSuffix(generator, object);
-		generator.flush();
+		writeSuffix(generator, object); // 后缀
+		generator.flush(); // 刷出
 	}
 
 

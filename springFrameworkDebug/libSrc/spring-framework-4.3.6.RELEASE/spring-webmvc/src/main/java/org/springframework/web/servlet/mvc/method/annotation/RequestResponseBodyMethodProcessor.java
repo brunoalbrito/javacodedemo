@@ -125,10 +125,10 @@ public class RequestResponseBodyMethodProcessor extends AbstractMessageConverter
 			NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
 
 		parameter = parameter.nestedIfOptional();
-		Object arg = readWithMessageConverters(webRequest, parameter, parameter.getNestedGenericParameterType());
+		Object arg = readWithMessageConverters(webRequest, parameter, parameter.getNestedGenericParameterType()); // !!!! 读取http中body的数据
 		String name = Conventions.getVariableNameForParameter(parameter);
-
-		WebDataBinder binder = binderFactory.createBinder(webRequest, arg, name);
+		// binderFactory === org.springframework.web.servlet.mvc.method.annotation.ServletRequestDataBinderFactory
+		WebDataBinder binder = binderFactory.createBinder(webRequest, arg, name); // webRequest,target,objectName
 		if (arg != null) {
 			validateIfApplicable(binder, parameter);
 			if (binder.getBindingResult().hasErrors() && isBindExceptionRequired(binder, parameter)) {
@@ -147,7 +147,7 @@ public class RequestResponseBodyMethodProcessor extends AbstractMessageConverter
 		HttpServletRequest servletRequest = webRequest.getNativeRequest(HttpServletRequest.class);
 		ServletServerHttpRequest inputMessage = new ServletServerHttpRequest(servletRequest);
 
-		Object arg = readWithMessageConverters(inputMessage, parameter, paramType);
+		Object arg = readWithMessageConverters(inputMessage, parameter, paramType); // !!!
 		if (arg == null) {
 			if (checkRequired(parameter)) {
 				throw new HttpMessageNotReadableException("Required request body is missing: " +

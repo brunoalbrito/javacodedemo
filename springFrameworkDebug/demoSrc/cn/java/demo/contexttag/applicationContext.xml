@@ -4,9 +4,28 @@
 	xsi:schemaLocation="    
     http://www.springframework.org/schema/beans        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd    
     http://www.springframework.org/schema/context                http://www.springframework.org/schema/context/spring-context-3.0.xsd">
-
+	
+    <!-- 以下为被依赖的bean -->
+	<bean id="beanToBeInject0" class="cn.java.demo.contexttag.bean.BeanToBeInject">
+    	<constructor-arg index="0" type="java.lang.Integer" name="beanId"  value="0"/>
+    	<constructor-arg index="1" type="java.lang.String"  name="beanName"  value="beanName0"/>
+    </bean>
+	<bean id="beanToBeInject1" class="cn.java.demo.contexttag.bean.BeanToBeInject">
+    	<constructor-arg index="0" type="java.lang.Integer" name="beanId"  value="1"/>
+    	<constructor-arg index="1" type="java.lang.String"  name="beanName"  value="beanName1"/>
+    </bean>
+	<bean id="beanToBeInject2" class="cn.java.demo.contexttag.bean.BeanToBeInject">
+    	<constructor-arg index="0" type="java.lang.Integer" name="beanId"  value="2"/>
+    	<constructor-arg index="1" type="java.lang.String"  name="beanName"  value="beanName2"/>
+    </bean>
+	<bean id="beanToBeInject3" class="cn.java.demo.contexttag.bean.BeanToBeInject">
+    	<constructor-arg index="0" type="java.lang.Integer" name="beanId"  value="3"/>
+    	<constructor-arg index="1" type="java.lang.String"  name="beanName"  value="beanName3"/>
+    </bean>
+     
      <!-- resource-pattern不是正则表达式 -->
     <context:component-scan 
+        annotation-config="true"
         use-default-filters="true" 
         resource-pattern="*Component.class"
         base-package="cn.java.demo.contexttag.bean,cn.java.demo.contexttag.component.impl"

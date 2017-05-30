@@ -59,30 +59,30 @@ public class ProductsSerlvet extends AdminCommonSerlvet {
 	 * @throws IOException
 	 */
 	public void add() throws ServletException, IOException {
-		if (request.getMethod().equals("GET")) {
+		if (getRequest().getMethod().equals("GET")) {
 			this.display("Pro-add.jsp");
 		} else {
 			Connection connection = null;
 			PreparedStatement statement = null;
 			try {
 				connection = DBHelper.getConnect();
-				String cateId = request.getParameter("cate_id");
+				String cateId = getRequest().getParameter("cate_id");
 				if (!this.checkCate(cateId, connection)) {//分类不存在
 					HashMap hashMap = new HashMap();
-					hashMap.put("product_name", request.getParameter("product_name"));
+					hashMap.put("product_name", getRequest().getParameter("product_name"));
 					this.assign("item", hashMap);
 					this.display("Pro-add.jsp");
 				} else {//分类存在
 					String sql = "INSERT INTO " + DBHelper.normalTableName("products") + "(product_name,cate_id,addtime) VALUES(?,?,?)";
 					statement = connection.prepareStatement(sql);
-					statement.setString(1, request.getParameter("product_name"));
+					statement.setString(1, getRequest().getParameter("product_name"));
 					statement.setString(2, cateId);
 					statement.setString(3, String.valueOf(System.currentTimeMillis() / 1000));
 					statement.executeUpdate();
 					int affectedRowCount = statement.getUpdateCount();// 影响的行数
 					if (affectedRowCount > 0) {
 						DBHelper.close(statement, connection);
-						request.getRequestDispatcher(UrlHelper.url("admin", "pro", "index")).forward(request, response);//到文章列表页
+						getRequest().getRequestDispatcher(UrlHelper.url("admin", "pro", "index")).forward(getRequest(), getResponse());//到文章列表页
 					} else {
 						this.display("Pro-add.jsp");
 					}
@@ -128,8 +128,8 @@ public class ProductsSerlvet extends AdminCommonSerlvet {
 		if (totalRows > 0) {
 			int perPageShowCount = 10;
 			int page = 1;
-			if (request.getParameter("page") != null && (!request.getParameter("page").equals(""))) {
-				page = Integer.valueOf(request.getParameter("page"));
+			if (getRequest().getParameter("page") != null && (!getRequest().getParameter("page").equals(""))) {
+				page = Integer.valueOf(getRequest().getParameter("page"));
 			}
 			String sql = "select * from " + DBHelper.normalTableName("products") + " where status=? LIMIT ?,?";// 查询列表
 			try {
@@ -169,7 +169,7 @@ public class ProductsSerlvet extends AdminCommonSerlvet {
 	 * @throws IOException
 	 */
 	public void delete() throws ServletException, IOException {
-		String id = request.getParameter("id");
+		String id = getRequest().getParameter("id");
 		String sql = "DELETE FROM " + DBHelper.normalTableName("products") + " WHERE id=?";
 		Connection connection = null;
 		PreparedStatement statement = null;
@@ -202,24 +202,24 @@ public class ProductsSerlvet extends AdminCommonSerlvet {
 	 * @throws IOException
 	 */
 	public void update() throws ServletException, IOException {
-		String method = request.getMethod();
-		String id = request.getParameter("id");
+		String method = getRequest().getMethod();
+		String id = getRequest().getParameter("id");
 		if (method.equals("POST")) {
 			//修改文章
 			PreparedStatement statement = null;
 			Connection connection = null;
 			try {
-				String cateId = request.getParameter("cate_id");
+				String cateId = getRequest().getParameter("cate_id");
 				if (!this.checkCate(cateId, connection)) {//分类不存在
 					HashMap hashMap = new HashMap();
-					hashMap.put("product_name", request.getParameter("product_name"));
+					hashMap.put("product_name", getRequest().getParameter("product_name"));
 					this.assign("item", hashMap);
 					this.display("Pro-add.jsp");
 				} else {//分类存在
 					String sql = "UPDATE " + DBHelper.normalTableName("products") + " SET product_name=?,cate_id=? where id=? ";
 					connection = DBHelper.getConnect();
 					statement = connection.prepareStatement(sql);
-					statement.setString(1, request.getParameter("product_name"));
+					statement.setString(1, getRequest().getParameter("product_name"));
 					statement.setString(2, cateId);
 					statement.setString(3, id);
 					statement.executeUpdate();

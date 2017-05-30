@@ -74,15 +74,53 @@ public class HandlerMethodReturnValueHandlerComposite implements AsyncHandlerMet
 	public void handleReturnValue(Object returnValue, MethodParameter returnType,
 			ModelAndViewContainer mavContainer, NativeWebRequest webRequest) throws Exception {
 
-		HandlerMethodReturnValueHandler handler = selectHandler(returnValue, returnType);
+		HandlerMethodReturnValueHandler handler = selectHandler(returnValue, returnType); // !!! 选择一个返回值处理器
 		if (handler == null) {
 			throw new IllegalArgumentException("Unknown return value type: " + returnType.getParameterType().getName());
 		}
-		handler.handleReturnValue(returnValue, returnType, mavContainer, webRequest);
+		handler.handleReturnValue(returnValue, returnType, mavContainer, webRequest); // 处理返回值
 	}
 
 	private HandlerMethodReturnValueHandler selectHandler(Object value, MethodParameter returnType) {
 		boolean isAsyncValue = isAsyncReturnValue(value, returnType);
+		/*
+		 	  返回值处理器
+		 	  
+		 	  // Single-purpose return value types
+                handlers.add(new ModelAndViewMethodReturnValueHandler());
+                handlers.add(new ModelMethodProcessor());
+                handlers.add(new ViewMethodReturnValueHandler());
+                handlers.add(new ResponseBodyEmitterReturnValueHandler(getMessageConverters()));
+                handlers.add(new StreamingResponseBodyReturnValueHandler());
+                handlers.add(new HttpEntityMethodProcessor(getMessageConverters(),
+                                this.contentNegotiationManager, this.requestResponseBodyAdvice));
+                handlers.add(new HttpHeadersReturnValueHandler());
+                handlers.add(new CallableMethodReturnValueHandler());
+                handlers.add(new DeferredResultMethodReturnValueHandler());
+                handlers.add(new AsyncTaskMethodReturnValueHandler(this.beanFactory));
+
+                // Annotation-based return value types
+                handlers.add(new ModelAttributeMethodProcessor(false));
+                handlers.add(new RequestResponseBodyMethodProcessor(getMessageConverters(),
+                                this.contentNegotiationManager, this.requestResponseBodyAdvice));
+
+                // Multi-purpose return value types
+                handlers.add(new ViewNameMethodReturnValueHandler());
+                handlers.add(new MapMethodProcessor());
+
+                // Custom return value types
+                if (getCustomReturnValueHandlers() != null) {
+                        handlers.addAll(getCustomReturnValueHandlers());
+                }
+
+                // Catch-all
+                if (!CollectionUtils.isEmpty(getModelAndViewResolvers())) {
+                        handlers.add(new ModelAndViewResolverMethodReturnValueHandler(getModelAndViewResolvers()));
+                }
+                else {
+                        handlers.add(new ModelAttributeMethodProcessor(true));
+                }
+		 */
 		for (HandlerMethodReturnValueHandler handler : this.returnValueHandlers) {
 			if (isAsyncValue && !(handler instanceof AsyncHandlerMethodReturnValueHandler)) {
 				continue;

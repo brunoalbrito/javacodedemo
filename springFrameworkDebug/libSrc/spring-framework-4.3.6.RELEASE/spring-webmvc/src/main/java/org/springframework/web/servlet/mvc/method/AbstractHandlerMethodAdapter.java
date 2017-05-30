@@ -81,7 +81,7 @@ public abstract class AbstractHandlerMethodAdapter extends WebContentGenerator i
 	@Override
 	public final ModelAndView handle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
-
+		// handler === 处理器
 		return handleInternal(request, response, (HandlerMethod) handler);
 	}
 

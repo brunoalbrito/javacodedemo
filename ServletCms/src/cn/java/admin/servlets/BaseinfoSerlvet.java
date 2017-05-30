@@ -32,12 +32,12 @@ public class BaseinfoSerlvet extends AdminCommonSerlvet {
 	}
 	
 	public void clearcacheAction(){
-		if("true".equals(request.getParameter("isClearCache"))){
+		if("true".equals(getRequest().getParameter("isClearCache"))){
 			this.redirect("/admin/baseinfo/?act=index");
 		}
 		else{
 			try {
-				request.setAttribute("isClearCache",true);
+				getRequest().setAttribute("isClearCache",true);
 				this.display("Baseinfo-index.jsp");
 			} catch (ServletException e) {
 				e.printStackTrace();

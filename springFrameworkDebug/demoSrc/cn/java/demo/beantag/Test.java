@@ -12,17 +12,23 @@ import cn.java.demo.beantag.bean.AutowireByTypeBean;
 import cn.java.demo.beantag.bean.ConfiguredLookupMethodBean;
 import cn.java.demo.beantag.bean.ConfiguredReplacedMethodBean;
 import cn.java.demo.beantag.bean.CreatedByFactoryBean;
-import cn.java.demo.beantag.bean.DefineInitMethodBean;
 import cn.java.demo.beantag.bean.FooBean;
-import cn.java.demo.beantag.bean.NeedAwareBean;
 import cn.java.demo.beantag.bean.StandardBean;
 import cn.java.demo.beantag.bean.UseCustomScopeBean;
 import cn.java.demo.beantag.bean.UseInstancePoolScopeBean;
+import cn.java.demo.beantag.bean.applicationlistener.FooEventTriggerBean;
+import cn.java.demo.beantag.bean.aware.NeedAwareBean;
+import cn.java.demo.beantag.bean.initmehtod.DemoInitMethodBean;
+import cn.java.demo.beantag.bean.initmehtod.DemoInitializingBean;
 import cn.java.demo.beantag.bean.lookupmethod.Property1;
 import cn.java.demo.beantag.bean.methodreplacer.MethodReplacerImpl;
 import cn.java.demo.beantag.beandefinition_property.StupidRootBeanDefinitionInJavaTest;
-import cn.java.demo.internal.ExpressionParserTest;
-import cn.java.demo.internal.StandardTypeConverterTest;
+import cn.java.demo.beantag.internal.AnnotationUtilsTest;
+import cn.java.demo.beantag.internal.BeanUtilsTest;
+import cn.java.demo.beantag.internal.ExpressionParserTest;
+import cn.java.demo.beantag.internal.ObjectUtilsTest;
+import cn.java.demo.beantag.internal.ReflectionUtilsTest;
+import cn.java.demo.beantag.internal.TypeConverterTest;
 import cn.java.demo.util.ApplicationContextUtil;
 
 
@@ -128,8 +134,9 @@ public class Test {
 		
 		System.out.println("-------------bean配置了“初始化方法”-------------------");
 		{ // bean配置了“初始化方法”
-			DefineInitMethodBean defineInitMethodBean = context.getBean("defineInitMethodBean", DefineInitMethodBean.class);
-			defineInitMethodBean.testMethod();
+			DemoInitMethodBean demoInitMethodBean = context.getBean("demoInitMethodBean", DemoInitMethodBean.class);
+			demoInitMethodBean.testMethod();
+			DemoInitializingBean demoInitializingBean = context.getBean("demoInitializingBean",DemoInitializingBean.class);
 		}
 		
 		System.out.println("-------------bean实现了“感知接口”-------------------");
@@ -185,12 +192,29 @@ public class Test {
 			System.out.println(beanPlaceholderTest1);
 		}
 		
+		System.out.println("-------------使用ClassPathXmlApplicationContext的事件管理器-------------------");
+		{
+			FooEventTriggerBean fooEventTriggerBean = context.getBean("fooEventTriggerBean", FooEventTriggerBean.class);
+			fooEventTriggerBean.testTriggerEvent();
+		}
+		
 		System.out.println("-------------其他-------------------");
 		{ // 其他
 			
-			StandardTypeConverterTest.testStandardTypeConverterTest();
+			// 类型转换器
+			TypeConverterTest.testStandardTypeConverterTest();
+			
+			// 使用表达式访问bean对象
 			ExpressionParserTest.testStandardBeanExpressionResolverResultString((AbstractRefreshableConfigApplicationContext) context);
 			ExpressionParserTest.testStandardBeanExpressionResolverResultBeanObject((AbstractRefreshableConfigApplicationContext) context);
+			
+			// 实例化bean
+			BeanUtilsTest.testInstantiateClass((AbstractRefreshableConfigApplicationContext) context);
+			BeanUtilsTest.testIsPresent((AbstractRefreshableConfigApplicationContext) context);
+			
+			ReflectionUtilsTest.testReflectionUtils((AbstractRefreshableConfigApplicationContext) context);
+			AnnotationUtilsTest.testAnnotationUtils((AbstractRefreshableConfigApplicationContext) context);
+			ObjectUtilsTest.testObjectUtils((AbstractRefreshableConfigApplicationContext) context);
 		}
 		
 	}

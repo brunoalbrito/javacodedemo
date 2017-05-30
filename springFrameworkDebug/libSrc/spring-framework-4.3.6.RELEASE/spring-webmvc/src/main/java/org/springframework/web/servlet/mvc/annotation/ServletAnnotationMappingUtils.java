@@ -118,8 +118,8 @@ abstract class ServletAnnotationMappingUtils {
 					String key = !negated ? header.substring(0, separator) : header.substring(0, separator - 1);
 					String value = header.substring(separator + 1);
 					if (isMediaTypeHeader(key)) {
-						List<MediaType> requestMediaTypes = MediaType.parseMediaTypes(request.getHeader(key));
-						List<MediaType> valueMediaTypes = MediaType.parseMediaTypes(value);
+						List<MediaType> requestMediaTypes = MediaType.parseMediaTypes(request.getHeader(key)); // 传递上来的值
+						List<MediaType> valueMediaTypes = MediaType.parseMediaTypes(value); // 用户配置的值
 						boolean found = false;
 						for (Iterator<MediaType> valIter = valueMediaTypes.iterator(); valIter.hasNext() && !found;) {
 							MediaType valueMediaType = valIter.next();

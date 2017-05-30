@@ -59,9 +59,9 @@ public class InternalResourceViewResolver extends UrlBasedViewResolver {
 	 * is present.
 	 */
 	public InternalResourceViewResolver() {
-		Class<?> viewClass = requiredViewClass();
+		Class<?> viewClass = requiredViewClass(); // org.springframework.web.servlet.view.InternalResourceView
 		if (InternalResourceView.class == viewClass && jstlPresent) {
-			viewClass = JstlView.class;
+			viewClass = JstlView.class; // !!!!
 		}
 		setViewClass(viewClass);
 	}

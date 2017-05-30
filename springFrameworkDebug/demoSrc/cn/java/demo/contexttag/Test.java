@@ -5,6 +5,7 @@ import org.springframework.context.support.AbstractRefreshableConfigApplicationC
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import cn.java.demo.contexttag.component.api.FooComponent;
+import cn.java.demo.contexttag.component.impl.NeedAutowireComponent;
 import cn.java.demo.contexttag.internal.ReflectionUtilsTest;
 import cn.java.demo.contexttag.internal.asm.ClassMetadataTest;
 import cn.java.demo.contexttag.internal.enhancer.FooServiceMustNeedBeanFactoryEnhancerTest;
@@ -48,20 +49,30 @@ public class Test {
 			System.out.println("identityHashCode = " + System.identityHashCode(implTwoFooComponent1));
 		}
 		
-		System.out.println("\n----------访问类的class文件（不走反射），获取信息--------------");
+		
+		System.out.println("\n----------@Autowired注解的使用--------------");
 		{
-			ClassMetadataTest.testGetClassMetadataInfoByParseBytecode();
-			ClassMetadataTest.testGetClassMetadataInfoByReflectClass();
+			NeedAutowireComponent needAutowireComponent = (NeedAutowireComponent) context.getBean("needAutowireComponent");
+			System.out.println(needAutowireComponent);
 		}
 		
-		System.out.println("\n----------自动生成子类（Enhancer）--------------");
 		{
-			FooServiceMustNeedBeanFactoryEnhancerTest.testFooServiceWithImplBeanFactoryAware();
-			FooServiceMustNeedBeanFactoryEnhancerTest.testFooServiceWithOutImplBeanFactoryAware();
-		}
-		System.out.println("\n----------反射@Autowired注解--------------");
-		{
-			ReflectionUtilsTest.testReflectionAutowired();
+			System.out.println("\n----------自动生成子类（Enhancer）--------------");
+			{
+				FooServiceMustNeedBeanFactoryEnhancerTest.testFooServiceWithImplBeanFactoryAware();
+				FooServiceMustNeedBeanFactoryEnhancerTest.testFooServiceWithOutImplBeanFactoryAware();
+			}
+			
+			System.out.println("\n----------访问类的class文件（不走反射），获取信息--------------");
+			{
+				ClassMetadataTest.testGetClassMetadataInfoByParseBytecode();
+				ClassMetadataTest.testGetClassMetadataInfoByReflectClass();
+			}
+			
+			System.out.println("\n----------解析@Autowired注解--------------");
+			{
+				ReflectionUtilsTest.testReflectionAutowired();
+			}
 		}
 	}
 }

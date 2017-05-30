@@ -101,7 +101,7 @@ public final class ThreadPoolAsynchronousRunner implements AsynchronousRunner
 
 		this.threadLabel = threadLabel;
 
-		recreateThreadsAndTasks();
+		recreateThreadsAndTasks(); // !!!! 接受任务 - 初始化连接池
 
 		myTimer.schedule( deadlockDetector, deadlock_detector_interval, deadlock_detector_interval );
 
@@ -230,7 +230,7 @@ public final class ThreadPoolAsynchronousRunner implements AsynchronousRunner
 	{
 		try
 		{
-			pendingTasks.add( r );
+			pendingTasks.add( r );  // 创建连接池
 			this.notifyAll();
 
 			if (Debug.DEBUG && logger.isLoggable(MLevel.FINEST))
@@ -530,10 +530,10 @@ public final class ThreadPoolAsynchronousRunner implements AsynchronousRunner
 		this.pendingTasks = new LinkedList();
 		for (int i = 0; i < num_threads; ++i)
 		{
-			Thread t = new PoolThread(i, daemon);
+			Thread t = new PoolThread(i, daemon); // 轮询pendingTasks接受任务 - 创建连接池
 			managed.add( t );
 			available.add( t );
-			t.start();
+			t.start();  // 启动线程
 		}
 	}
 
@@ -628,7 +628,7 @@ public final class ThreadPoolAsynchronousRunner implements AsynchronousRunner
 
 		PoolThread(int index, boolean daemon)
 		{
-			this.setName( (threadLabel == null ? this.getClass().getName() : threadLabel) + "-#" + index);
+			this.setName( (threadLabel == null ? this.getClass().getName() : threadLabel) + "-#" + index); // 会初始化连接池
 			this.setDaemon( daemon );
 			this.index = index;
 		}
@@ -681,7 +681,7 @@ public final class ThreadPoolAsynchronousRunner implements AsynchronousRunner
 						synchronized ( ThreadPoolAsynchronousRunner.this )
 						{
 							while ( !should_stop && pendingTasks.size() == 0 )
-								ThreadPoolAsynchronousRunner.this.wait( POLL_FOR_STOP_INTERVAL );
+								ThreadPoolAsynchronousRunner.this.wait( POLL_FOR_STOP_INTERVAL ); // 异步获取
 							if (should_stop) 
 								break thread_loop;
 
@@ -694,7 +694,7 @@ public final class ThreadPoolAsynchronousRunner implements AsynchronousRunner
 						{ 
 							if (max_individual_task_time > 0)
 								setMaxIndividualTaskTimeEnforcer();
-							myTask.run(); 
+							myTask.run(); // !!!! 会创建连接，并把连接放入连接池
 						}
 						catch ( RuntimeException e )
 						{

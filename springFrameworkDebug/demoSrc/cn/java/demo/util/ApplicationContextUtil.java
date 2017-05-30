@@ -22,6 +22,7 @@ public class ApplicationContextUtil {
 	public static ConfigurableListableBeanFactory getBeanFactoryAndTryCastTypeToConfigurableListableBeanFactory(
 			AbstractRefreshableConfigApplicationContext context) {
 		if (context instanceof AbstractRefreshableApplicationContext) {
+			// org.springframework.beans.factory.support.DefaultListableBeanFactory
 			return ((AbstractRefreshableApplicationContext) context).getBeanFactory();
 		}
 		return null;

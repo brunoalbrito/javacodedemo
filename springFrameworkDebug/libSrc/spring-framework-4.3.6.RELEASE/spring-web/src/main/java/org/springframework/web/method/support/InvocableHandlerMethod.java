@@ -125,12 +125,12 @@ public class InvocableHandlerMethod extends HandlerMethod {
 	public Object invokeForRequest(NativeWebRequest request, ModelAndViewContainer mavContainer,
 			Object... providedArgs) throws Exception {
 
-		Object[] args = getMethodArgumentValues(request, mavContainer, providedArgs);
+		Object[] args = getMethodArgumentValues(request, mavContainer, providedArgs); // 参数值
 		if (logger.isTraceEnabled()) {
 			logger.trace("Invoking '" + ClassUtils.getQualifiedMethodName(getMethod(), getBeanType()) +
 					"' with arguments " + Arrays.toString(args));
 		}
-		Object returnValue = doInvoke(args);
+		Object returnValue = doInvoke(args); // 传递参数，调用方法
 		if (logger.isTraceEnabled()) {
 			logger.trace("Method [" + ClassUtils.getQualifiedMethodName(getMethod(), getBeanType()) +
 					"] returned [" + returnValue + "]");
@@ -144,19 +144,21 @@ public class InvocableHandlerMethod extends HandlerMethod {
 	private Object[] getMethodArgumentValues(NativeWebRequest request, ModelAndViewContainer mavContainer,
 			Object... providedArgs) throws Exception {
 
-		MethodParameter[] parameters = getMethodParameters();
+		MethodParameter[] parameters = getMethodParameters(); // 目标方法的参数
 		Object[] args = new Object[parameters.length];
 		for (int i = 0; i < parameters.length; i++) {
 			MethodParameter parameter = parameters[i];
-			parameter.initParameterNameDiscovery(this.parameterNameDiscoverer);
+			// parameterNameDiscoverer === org.springframework.core.DefaultParameterNameDiscoverer
+			parameter.initParameterNameDiscovery(this.parameterNameDiscoverer); 
 			args[i] = resolveProvidedArgument(parameter, providedArgs);
 			if (args[i] != null) {
 				continue;
 			}
-			if (this.argumentResolvers.supportsParameter(parameter)) {
+			// argumentResolvers === org.springframework.web.method.support.HandlerMethodArgumentResolverComposite
+			if (this.argumentResolvers.supportsParameter(parameter)) { // 支持此种类型的参数
 				try {
 					args[i] = this.argumentResolvers.resolveArgument(
-							parameter, mavContainer, request, this.dataBinderFactory);
+							parameter, mavContainer, request, this.dataBinderFactory); // 获取指定类型的参数的值
 					continue;
 				}
 				catch (Exception ex) {
@@ -202,7 +204,7 @@ public class InvocableHandlerMethod extends HandlerMethod {
 	protected Object doInvoke(Object... args) throws Exception {
 		ReflectionUtils.makeAccessible(getBridgedMethod());
 		try {
-			return getBridgedMethod().invoke(getBean(), args);
+			return getBridgedMethod().invoke(getBean(), args); // 调用方法
 		}
 		catch (IllegalArgumentException ex) {
 			assertTargetBean(getBridgedMethod(), getBean(), args);
