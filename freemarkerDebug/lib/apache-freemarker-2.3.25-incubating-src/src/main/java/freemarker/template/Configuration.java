@@ -826,13 +826,13 @@ public class Configuration extends Configurable implements Cloneable, ParserConf
         // We postpone this until here (rather that doing this in static initializer) for two reason:
         // - Class initialization errors are often not reported very well
         // - This way we avoid the error if FM isn't actually used
-        checkFreeMarkerVersionClash();
+        checkFreeMarkerVersionClash(); // 检查版本冲突
         
         NullArgumentException.check("incompatibleImprovements", incompatibleImprovements);
         this.incompatibleImprovements = incompatibleImprovements;
         
         createTemplateCache();
-        loadBuiltInSharedVariables();
+        loadBuiltInSharedVariables(); // 加载内建的共享变量
     }
 
     private static void checkFreeMarkerVersionClash() {
@@ -2311,7 +2311,7 @@ public class Configuration extends Configurable implements Cloneable, ParserConf
      */
     public Template getTemplate(String name, Locale locale, String encoding)
             throws TemplateNotFoundException, MalformedTemplateNameException, ParseException, IOException {
-        return getTemplate(name, locale, null, encoding, true, false);
+        return getTemplate(name, locale, null, encoding, true, false); // !!!
     }
     
     /**
@@ -2428,14 +2428,15 @@ public class Configuration extends Configurable implements Cloneable, ParserConf
     public Template getTemplate(String name, Locale locale, Object customLookupCondition,
             String encoding, boolean parseAsFTL, boolean ignoreMissing)
             throws TemplateNotFoundException, MalformedTemplateNameException, ParseException, IOException {
-        if (locale == null) {
+        // getTemplate("test.ftl", Locale.CHINESE, null, "UTF-8", true, false)
+    	if (locale == null) {
             locale = getLocale();
         }
         if (encoding == null) {
             encoding = getEncoding(locale);
         }
-        
-        final MaybeMissingTemplate maybeTemp = cache.getTemplate(name, locale, customLookupCondition, encoding, parseAsFTL);
+        // cache === freemarker.cache.TemplateCache
+        final MaybeMissingTemplate maybeTemp = cache.getTemplate(name, locale, customLookupCondition, encoding, parseAsFTL); //!!!
         final Template temp = maybeTemp.getTemplate();
         if (temp == null) {
             if (ignoreMissing) {

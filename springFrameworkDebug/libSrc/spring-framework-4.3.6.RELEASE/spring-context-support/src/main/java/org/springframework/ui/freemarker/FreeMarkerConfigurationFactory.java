@@ -290,7 +290,7 @@ public class FreeMarkerConfigurationFactory {
 				templateLoaders.add(getTemplateLoaderForPath(path));
 			}
 		}
-		postProcessTemplateLoaders(templateLoaders);
+		postProcessTemplateLoaders(templateLoaders); // 子类重写
 
 		// Register template loaders that are supposed to kick in late.
 		if (this.postTemplateLoaders != null) {

@@ -269,10 +269,10 @@ public class TemplateCache {
     public MaybeMissingTemplate getTemplate(String name, Locale locale, Object customLookupCondition,
             String encoding, boolean parseAsFTL)
     throws IOException {
+    	// getTemplate("test.ftl", Locale.CHINESE, null, "UTF-8", true);
         NullArgumentException.check("name", name);
         NullArgumentException.check("locale", locale);
         NullArgumentException.check("encoding", encoding);
-        
         try {
             name = templateNameFormat.normalizeAbsoluteName(name);
         } catch (MalformedTemplateNameException e) {
@@ -288,7 +288,7 @@ public class TemplateCache {
             return new MaybeMissingTemplate(name, "The TemplateLoader was null.");
         }
         
-        Template template = getTemplateInternal(name, locale, customLookupCondition, encoding, parseAsFTL);
+        Template template = getTemplateInternal(name, locale, customLookupCondition, encoding, parseAsFTL); // !!!
         return template != null ? new MaybeMissingTemplate(template) : new MaybeMissingTemplate(name, (String) null);
     }    
 
@@ -322,6 +322,7 @@ public class TemplateCache {
             final String name, final Locale locale, final Object customLookupCondition,
             final String encoding, final boolean parseAsFTL)
     throws IOException {
+    	// getTemplateInternal("test.ftl", Locale.CHINESE, null, "UTF-8", true);
         final boolean debug = LOG.isDebugEnabled();
         final String debugName = debug
                 ? buildDebugName(name, locale, customLookupCondition, encoding, parseAsFTL)
@@ -416,7 +417,7 @@ public class TemplateCache {
                 cachedTemplate = new CachedTemplate();
                 cachedTemplate.lastChecked = now;
                 
-                newLookupResult = lookupTemplate(name, locale, customLookupCondition);
+                newLookupResult = lookupTemplate(name, locale, customLookupCondition); // !!!! 定位模板 freemarker.cache.TemplateLookupResult.PositiveTemplateLookupResult
                 
                 if (!newLookupResult.isPositive()) {
                     storeNegativeLookup(tk, cachedTemplate, null);
@@ -426,7 +427,7 @@ public class TemplateCache {
                 cachedTemplate.lastModified = lastModified = Long.MIN_VALUE;
             }
 
-            Object source = newLookupResult.getTemplateSource();
+            Object source = newLookupResult.getTemplateSource(); // java.io.File
             cachedTemplate.source = source;
             
             // If we get here, then we need to (re)load the template
@@ -651,7 +652,7 @@ public class TemplateCache {
     public void clear() {
         synchronized (storage) {
             storage.clear();
-            if (templateLoader instanceof StatefulTemplateLoader) {
+            if (templateLoader instanceof StatefulTemplateLoader) { // freemarker.template.Configuration.LegacyDefaultFileTemplateLoader
                 ((StatefulTemplateLoader) templateLoader).resetState();
             }
         }
@@ -733,12 +734,13 @@ public class TemplateCache {
 
     private TemplateLookupResult lookupTemplate(String name, Locale locale, Object customLookupCondition)
             throws IOException {
+    	// templateLookupStrategy === freemarker.cache.TemplateLookupStrategy.Default020300
         final TemplateLookupResult lookupResult = templateLookupStrategy.lookup(
                 new TemplateCacheTemplateLookupContext(name, locale, customLookupCondition));
         if (lookupResult == null) {
             throw new NullPointerException("Lookup result shouldn't be null");
         }
-        return lookupResult;
+        return lookupResult; // freemarker.cache.TemplateLookupResult.PositiveTemplateLookupResult
     }
 
     private TemplateLookupResult lookupTemplateWithAcquisitionStrategy(String path) throws IOException {
@@ -785,7 +787,7 @@ public class TemplateCache {
     }
 
     private Object findTemplateSource(String path) throws IOException {
-        final Object result = templateLoader.findTemplateSource(path);
+        final Object result = templateLoader.findTemplateSource(path); // templateLoader === freemarker.cache.FileTemplateLoader
         if (LOG.isDebugEnabled()) {
             LOG.debug("TemplateLoader.findTemplateSource(" +  StringUtil.jQuote(path) + "): "
                     + (result == null ? "Not found" : "Found"));
@@ -922,15 +924,15 @@ public class TemplateCache {
                     return lookupWithAcquisitionStrategy(templateName);
                 }
                 
-                int lastDot = templateName.lastIndexOf('.');
-                String prefix = lastDot == -1 ? templateName : templateName.substring(0, lastDot);
-                String suffix = lastDot == -1 ? "" : templateName.substring(lastDot);
-                String localeName = LOCALE_PART_SEPARATOR + templateLocale.toString();
+                int lastDot = templateName.lastIndexOf('.'); // templateName === "ctrl/test.ftl"
+                String prefix = lastDot == -1 ? templateName : templateName.substring(0, lastDot); // 前缀
+                String suffix = lastDot == -1 ? "" : templateName.substring(lastDot); // 后缀
+                String localeName = LOCALE_PART_SEPARATOR + templateLocale.toString(); // test_zh_CN
                 StringBuilder buf = new StringBuilder(templateName.length() + localeName.length());
                 buf.append(prefix);
                 tryLocaleNameVariations: while (true) {
-                    buf.setLength(prefix.length());
-                    String path = buf.append(localeName).append(suffix).toString();
+                    buf.setLength(prefix.length()); // 截断
+                    String path = buf.append(localeName).append(suffix).toString(); // 查找方式（根据“_”一个个去除）：1、 "ctrl/test_zh_CN.ftl" ；2、"ctrl/test_zh.ftl" ；3、"ctrl/test.ftl"
                     TemplateLookupResult lookupResult = lookupWithAcquisitionStrategy(path);
                     if (lookupResult.isPositive()) {
                         return lookupResult;
@@ -942,7 +944,7 @@ public class TemplateCache {
                     }
                     localeName = localeName.substring(0, lastUnderscore);
                 }
-                return createNegativeLookupResult();
+                return createNegativeLookupResult(); // 没有找到模板
         }
         
     }

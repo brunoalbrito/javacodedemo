@@ -145,17 +145,17 @@ public class ResponseBodyEmitterReturnValueHandler implements AsyncHandlerMethod
 		ServletRequest request = webRequest.getNativeRequest(ServletRequest.class);
 		ShallowEtagHeaderFilter.disableContentCaching(request);
 
-		ResponseBodyEmitterAdapter adapter = getAdapterFor(returnValue.getClass());
+		ResponseBodyEmitterAdapter adapter = getAdapterFor(returnValue.getClass()); // 获得适配器
 		Assert.notNull(adapter);
-		ResponseBodyEmitter emitter = adapter.adaptToEmitter(returnValue, outputMessage);
+		ResponseBodyEmitter emitter = adapter.adaptToEmitter(returnValue, outputMessage); // 适配处理
 		emitter.extendResponse(outputMessage);
 
 		// Commit the response and wrap to ignore further header changes
-		outputMessage.getBody();
-		outputMessage.flush();
+		outputMessage.getBody(); // 发送头、获取输出流
+		outputMessage.flush(); // 发送头
 		outputMessage = new StreamingServletServerHttpResponse(outputMessage);
 
-		DeferredResult<?> deferredResult = new DeferredResult<Object>(emitter.getTimeout());
+		DeferredResult<?> deferredResult = new DeferredResult<Object>(emitter.getTimeout()); // 超时时间
 		WebAsyncUtils.getAsyncManager(webRequest).startDeferredResultProcessing(deferredResult, mavContainer);
 
 		HttpMessageConvertingHandler handler = new HttpMessageConvertingHandler(outputMessage, deferredResult);
@@ -196,9 +196,9 @@ public class ResponseBodyEmitterReturnValueHandler implements AsyncHandlerMethod
 
 		@SuppressWarnings("unchecked")
 		private <T> void sendInternal(T data, MediaType mediaType) throws IOException {
-			for (HttpMessageConverter<?> converter : ResponseBodyEmitterReturnValueHandler.this.messageConverters) {
-				if (converter.canWrite(data.getClass(), mediaType)) {
-					((HttpMessageConverter<T>) converter).write(data, mediaType, this.outputMessage);
+			for (HttpMessageConverter<?> converter : ResponseBodyEmitterReturnValueHandler.this.messageConverters) { // 消息转换器
+				if (converter.canWrite(data.getClass(), mediaType)) {// 可以转换此种消息
+					((HttpMessageConverter<T>) converter).write(data, mediaType, this.outputMessage); // 输出数据
 					this.outputMessage.flush();
 					if (logger.isDebugEnabled()) {
 						logger.debug("Written [" + data + "] using [" + converter + "]");
