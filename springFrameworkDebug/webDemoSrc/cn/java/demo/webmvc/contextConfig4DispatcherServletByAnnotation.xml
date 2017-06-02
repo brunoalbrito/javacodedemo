@@ -58,16 +58,26 @@
     
     
 	<!-- 视图渲染器 -->
-    <bean id="viewResolver0" class="org.springframework.web.servlet.view.InternalResourceViewResolver" autowire="byName"> <!-- JSP和jstl的支持 -->
-        <property  name="order" value="0" />
-        <property  name="prefix" value="/WEB-INF/templates" />
-    	<property  name="suffix" value=".jsp" />
+    <bean id="freeMarkerConfigurer" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer" autowire="byName"><!-- FreeMarker配置 ，优先级别应该高于jsp的模板引擎 -->
+    	<property  name="templateLoaderPaths">
+    		<array value-type="java.lang.String" merge="false">
+			 	<value type="java.lang.String">/WEB-INF/templates</value>
+	     	    <value type="java.lang.String">/WEB-INF/templates0</value>
+		 	</array>
+	 	</property>
     </bean>
-    <bean id="freeMarkerConfigurer" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer" /><!-- FreeMarker配置 -->
     <bean id="viewResolver1" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver" autowire="byName"> <!-- FreeMarker的支持 -->
-        <property  name="order" value="1" />
-    	<property  name="prefix" value="/WEB-INF/templates" />
+        <property  name="order" value="0" />
+    	<property  name="prefix" value="" />
     	<property  name="suffix" value=".ftl" />
+    	<property  name="contentType" value="text/html; charset=UTF-8" />
+    	<property name="requestContextAttribute" value="requestContext" />
+    </bean>
+    <bean id="viewResolver0" class="org.springframework.web.servlet.view.InternalResourceViewResolver" autowire="byName"> <!-- JSP和jstl的支持 -->
+        <property  name="order" value="1" />
+        <property  name="prefix" value="/WEB-INF/templates/" />
+    	<property  name="suffix" value=".jsp" />
+    	<property  name="contentType" value="text/html; charset=UTF-8" />
     </bean>
     
 </beans>

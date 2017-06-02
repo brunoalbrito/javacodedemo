@@ -106,7 +106,7 @@ public class ResponseBodyEmitter {
 		this.handler = handler;
 
 		for (DataWithMediaType sendAttempt : this.earlySendAttempts) {
-			sendInternal(sendAttempt.getData(), sendAttempt.getMediaType());
+			sendInternal(sendAttempt.getData(), sendAttempt.getMediaType()); // 发送数据
 		}
 		this.earlySendAttempts.clear();
 

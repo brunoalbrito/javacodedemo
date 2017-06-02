@@ -102,6 +102,7 @@ public abstract class TemplateLookupStrategy {
         
         @Override
         public TemplateLookupResult lookup(TemplateLookupContext ctx) throws IOException {
+        	// ctx === freemarker.cache.TemplateCache.TemplateCacheTemplateLookupContext
             return ctx.lookupWithLocalizedThenAcquisitionStrategy(ctx.getTemplateName(), ctx.getTemplateLocale());
         }
         

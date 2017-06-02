@@ -1,6 +1,8 @@
-package cn.java.test;
+package cn.java.test.bean;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable{
 	private int  id;
 	private String username;
 	public String getUsername() {
@@ -14,6 +16,10 @@ public class User {
 	}
 	public void setId(int id) {
 		this.id = id;
+	}
+	
+	public User() {
+		super();
 	}
 	public User(int id, String username) {
 		super();

@@ -48,6 +48,7 @@ public class HelloServlet extends CommonServlet   {
 	}
 	
 	public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
+		
 		super.service(req, res);
 		
 	}
@@ -149,7 +150,7 @@ public class HelloServlet extends CommonServlet   {
 				Locale locale = localeResolver.resolveLocale(req);
 				System.out.println("locale.getCountry() : "+locale.getCountry());
 				System.out.println("locale.getLanguage() : "+locale.getLanguage());
-				System.out.println("locale.toString() : "+locale.toString());
+				System.out.println("locale.toString() : "+locale.toString()); // zh_CN
 				resp.setLocale(locale);
 			}
 			
