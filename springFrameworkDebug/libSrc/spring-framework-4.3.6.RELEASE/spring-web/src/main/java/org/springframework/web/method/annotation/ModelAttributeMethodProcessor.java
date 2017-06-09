@@ -100,24 +100,24 @@ public class ModelAttributeMethodProcessor
 	public final Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
 			NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
 //		webRequest === org.springframework.web.context.request.ServletWebRequest
-		String name = ModelFactory.getNameForParameter(parameter); // 变量名
+		String name = ModelFactory.getNameForParameter(parameter); // 注解@ModelAttribute上配置的名称，不然就使用变量名
 		Object attribute = (mavContainer.containsAttribute(name) ? mavContainer.getModel().get(name) :
 				createAttribute(name, parameter, binderFactory, webRequest)); // 创建参数类型的对象 attribute === target === cn.java.demo.webmvc.form.UserLoginForm
 
 		if (!mavContainer.isBindingDisabled(name)) {
 			ModelAttribute ann = parameter.getParameterAnnotation(ModelAttribute.class);
-			if (ann != null && !ann.binding()) {
+			if (ann != null && !ann.binding()) { // 不需要自动填充表单的数据
 				mavContainer.setBindingDisabled(name);
 			}
 		}
 		// binderFactory == org.springframework.web.servlet.mvc.method.annotation.ServletRequestDataBinderFactory
 		WebDataBinder binder = binderFactory.createBinder(webRequest, attribute, name); // 迭代调用“带@InitBinder注解的方法”
 		if (binder.getTarget() != null) {
-			if (!mavContainer.isBindingDisabled(name)) {
+			if (!mavContainer.isBindingDisabled(name)) { // 需要自动填充表单的数据
 				bindRequestParameters(binder, webRequest); // 把webRequest.getNativeRequest(ServletRequest.class)的值设置到target
 			}
 			validateIfApplicable(binder, parameter); // 校验!!!!
-			if (binder.getBindingResult().hasErrors() && isBindExceptionRequired(binder, parameter)) { // 如果校验不通过
+			if (binder.getBindingResult().hasErrors() && isBindExceptionRequired(binder, parameter)) { // 如果校验不通过，如果后一个参数没有实现Errors接口，那么以抛异常的方式结束业务
 				throw new BindException(binder.getBindingResult());
 			}
 		}

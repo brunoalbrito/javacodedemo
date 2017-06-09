@@ -133,9 +133,9 @@ public abstract class AbstractHandlerExceptionResolver implements HandlerExcepti
 				this.logger.debug("Resolving exception from handler [" + handler + "]: " + ex);
 			}
 			prepareResponse(ex, response);
-			ModelAndView result = doResolveException(request, response, handler, ex);
+			ModelAndView result = doResolveException(request, response, handler, ex); // !!!!
 			if (result != null) {
-				logException(ex, request);
+				logException(ex, request); // 记录异常
 			}
 			return result;
 		}

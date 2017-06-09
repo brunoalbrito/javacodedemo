@@ -522,7 +522,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 	protected WebApplicationContext initWebApplicationContext() {
 		// !!! rootContext = servletContext.getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);
 		WebApplicationContext rootContext =
-				WebApplicationContextUtils.getWebApplicationContext(getServletContext()); // !!!! 获取在ContextLoaderListener初始化的 XmlWebApplicationContext
+				WebApplicationContextUtils.getWebApplicationContext(getServletContext()); // !!!! 获取在ContextLoaderListener初始化的 XmlWebApplicationContext（根级的WebApplicationContext）
 		WebApplicationContext wac = null;
 
 		if (this.webApplicationContext != null) {
@@ -551,7 +551,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		}
 		if (wac == null) {
 			// No context instance is defined for this servlet -> create a local one
-			wac = createWebApplicationContext(rootContext); // !!!
+			wac = createWebApplicationContext(rootContext); // !!! 创建二级的 WebApplicationContext
 		}
 
 		if (!this.refreshEventReceived) {

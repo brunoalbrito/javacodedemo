@@ -177,11 +177,11 @@ public class SimpleMappingExceptionResolver extends AbstractHandlerExceptionReso
 			Object handler, Exception ex) {
 
 		// Expose ModelAndView for chosen error view.
-		String viewName = determineViewName(ex, request);
+		String viewName = determineViewName(ex, request); // 匹配出模板
 		if (viewName != null) {
 			// Apply HTTP status code for error views, if specified.
 			// Only apply it if we're processing a top-level request.
-			Integer statusCode = determineStatusCode(request, viewName);
+			Integer statusCode = determineStatusCode(request, viewName); // 状态码
 			if (statusCode != null) {
 				applyStatusCodeIfPossible(request, response, statusCode);
 			}
@@ -204,7 +204,7 @@ public class SimpleMappingExceptionResolver extends AbstractHandlerExceptionReso
 	protected String determineViewName(Exception ex, HttpServletRequest request) {
 		String viewName = null;
 		if (this.excludedExceptions != null) {
-			for (Class<?> excludedEx : this.excludedExceptions) {
+			for (Class<?> excludedEx : this.excludedExceptions) { // 不能处理的异常
 				if (excludedEx.equals(ex.getClass())) {
 					return null;
 				}
@@ -212,7 +212,7 @@ public class SimpleMappingExceptionResolver extends AbstractHandlerExceptionReso
 		}
 		// Check for specific exception mappings.
 		if (this.exceptionMappings != null) {
-			viewName = findMatchingViewName(this.exceptionMappings, ex);
+			viewName = findMatchingViewName(this.exceptionMappings, ex); // 指定异常的类的模板
 		}
 		// Return default error view else, if defined.
 		if (viewName == null && this.defaultErrorView != null) {
@@ -243,7 +243,7 @@ public class SimpleMappingExceptionResolver extends AbstractHandlerExceptionReso
 					dominantMapping != null && exceptionMapping.length() > dominantMapping.length()))) {
 				deepest = depth;
 				dominantMapping = exceptionMapping;
-				viewName = exceptionMappings.getProperty(exceptionMapping);
+				viewName = exceptionMappings.getProperty(exceptionMapping); // 指定异常的模板
 			}
 		}
 		if (viewName != null && logger.isDebugEnabled()) {

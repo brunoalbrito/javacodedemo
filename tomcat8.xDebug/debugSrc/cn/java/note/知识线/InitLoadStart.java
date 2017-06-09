@@ -6,6 +6,7 @@ import java.net.Socket;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -274,6 +275,7 @@ public class InitLoadStart {
 																            // 创建文件中声明的类型对象，并把创建对象转成ServletContainerInitializer类型的引用
 																            detectedScis = loader.load(ServletContainerInitializer.class); // 检测到的 ServletContainerInitializer
 															            	for (ServletContainerInitializer sci : detectedScis) { // sci是对象
+															            		initializerClassMap.put(sci, new HashSet<Class<?>>()); // 要调用的初始化器!!!
 																            	// 查看是否有注解  @HandlesTypes(MyAnnotation1.class)
 	                															ht = sci.getClass().getAnnotation(HandlesTypes.class); 
 															            	}
@@ -314,9 +316,9 @@ public class InitLoadStart {
 																//	        	<servlet>
 																//	        		<multipart-config>
 																//		            <!-- 50MB max -->
-																//		            <max-file-size>52428800</max-file-size>
-																//		            <max-request-size>52428800</max-request-size>
-																//		            <file-size-threshold>0</file-size-threshold>
+																//		            <max-file-size>52428800</max-file-size>  // 最大文件大小
+																//		            <max-request-size>52428800</max-request-size>   // 允许的body大小
+																//		            <file-size-threshold>0</file-size-threshold> // 超过多少阈值，文件写入硬盘
 																//		          </multipart-config>
 																//	        	</servlet>
 																//	        </web-app>
@@ -363,11 +365,9 @@ public class InitLoadStart {
 															//            }
 															            for (Map.Entry<ServletContainerInitializer,Set<Class<?>>> entry : initializerClassMap.entrySet()) {
 															                if (entry.getValue().isEmpty()) { // 添加Servlet容器初始化器到StandardContext
-															                    context.addServletContainerInitializer(
-															                            entry.getKey(), null);
+															                    context.addServletContainerInitializer(entry.getKey(), null);  // StandardContext.initializers.put(sci, classes);
 															                } else {
-															                    context.addServletContainerInitializer(
-															                            entry.getKey(), entry.getValue());
+															                    context.addServletContainerInitializer(entry.getKey(), entry.getValue());
 															                }
 															            }
 															        }
@@ -480,8 +480,7 @@ public class InitLoadStart {
 											                InstanceManagerBindings.bind(getLoader().getClassLoader(), getInstanceManager());
 											            }
 											            
-											            for (Map.Entry<ServletContainerInitializer, Set<Class<?>>> entry :
-											                initializers.entrySet()) { // 调用容器初始化器 ，
+											            for (Map.Entry<ServletContainerInitializer, Set<Class<?>>> entry : initializers.entrySet()) { // 调用容器初始化器 ，
 											            	// org.apache.jasper.servlet.JasperInitializer  jasper.jar
 											                // org.apache.tomcat.websocket.server.WsSci    tomcat-websocket.jar
 											            	 org.apache.jasper.servlet.JasperInitializer.onStartup(); { // --- 对jsp文件的支持

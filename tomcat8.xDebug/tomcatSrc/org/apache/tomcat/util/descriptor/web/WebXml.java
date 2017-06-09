@@ -378,6 +378,14 @@ public class WebXml {
     // jsp-config/taglib or taglib (2.3 and earlier)
     private final Map<String,String> taglibs = new HashMap<>();
     public void addTaglib(String uri, String location) {
+    	/*
+    	 	uri = "http://cn.java.janchou/jsp/core"
+    	 	location = "/WEB-INF/taglib/janchou-taglib.tld"
+    	 	
+    	 	taglibs = {
+    	 		"http://cn.java.janchou/jsp/core" : "/WEB-INF/taglib/janchou-taglib.tld"
+    	 	}
+    	 */
         if (taglibs.containsKey(uri)) {
             // Taglib URIs must be unique within a web(-fragment).xml
             throw new IllegalArgumentException(

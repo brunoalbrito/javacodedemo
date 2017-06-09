@@ -163,4 +163,7 @@
     	<constructor-arg index="1" type="java.lang.String"  name="beanName"  value="beanName0"/>
 	</bean>
 	
+	<!-- 国际化，bean名是常量：org.springframework.context.support.AbstractApplicationContext.MESSAGE_SOURCE_BEAN_NAME -->
+	<bean id="messageSource" class="cn.java.demo.beantag.message_source.DelegatingMessageSourceExtend" />
+	
 </beans>  

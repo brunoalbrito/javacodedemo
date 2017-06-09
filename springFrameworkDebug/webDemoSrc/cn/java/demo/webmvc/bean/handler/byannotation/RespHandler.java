@@ -1,13 +1,20 @@
 package cn.java.demo.webmvc.bean.handler.byannotation;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.core.task.AsyncTaskExecutor;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,12 +26,17 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.async.DeferredResult;
 import org.springframework.web.context.request.async.WebAsyncTask;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import org.springframework.web.servlet.view.InternalResourceView;
+import org.springframework.web.util.WebUtils;
+
+import cn.java.demo.web.util.WebUtilx;
+import net.sf.jasperreports.engine.JREmptyDataSource;
 
 /**
  * @author zhouzhian
@@ -37,9 +49,11 @@ import org.springframework.web.servlet.view.InternalResourceView;
 public class RespHandler {
 	
 	/**
-	 * 有jsp模板，会直接使用
-	 * 赋值数据、并进行渲染
-	 * localhost:8080/springwebmvc/resp-handler/return-model-and-view0
+	 * 《jsp、jstl》
+	 * 返回“模板+模板数据”
+	 * 		有jsp模板，会直接使用
+	 * 		赋值数据、并进行渲染
+	 * 		localhost:8080/springwebmvc/resp-handler/return-model-and-view0
 	 */
 	@RequestMapping(path={"/return-model-and-view0"},method={RequestMethod.GET})
 	public ModelAndView returnModelAndView0(HttpServletRequest request,HttpServletResponse response) throws Exception{ 
@@ -53,9 +67,11 @@ public class RespHandler {
 	}
 	
 	/**
-	 * 没有jsp模板，会使用freemark的模板
-	 * 赋值数据、并进行渲染 - 
-	 * localhost:8080/springwebmvc/resp-handler/return-model-and-view1
+	 * 《freemark》
+	 * 返回“模板+模板数据”
+	 * 		没有jsp模板，会使用freemark的模板
+	 * 		赋值数据、并进行渲染 - 
+	 * 			/resp-handler/return-model-and-view1
 	 */
 	@RequestMapping(path={"/return-model-and-view1"},method={RequestMethod.GET})
 	public ModelAndView returnModelAndView1(HttpServletRequest request,HttpServletResponse response) throws Exception{ 
@@ -73,6 +89,22 @@ public class RespHandler {
 					JspTaglibs、Application(访问的是attributes)、Session(访问的是attributes)、Request(访问的是attributes)、RequestParameters(访问的是attributes)
 
 		 */
+		return modelAndView;
+	}
+	
+	/**
+	 * 《pdf文件》
+	 * /resp-handler/return-model-and-view1
+	 */
+	@RequestMapping(path={"/return-model-and-view2"},method={RequestMethod.GET})
+	public ModelAndView returnModelAndView2(HttpServletRequest request,HttpServletResponse response) throws Exception{ 
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("resp-handler/return-model-and-view2");
+		ModelMap modelMap = new ModelMap();
+		modelMap.put("parameter0", "parameter0value"); // 模板变量
+		modelMap.put("parameter1", "parameter1value");
+		modelMap.put("reportData", new JREmptyDataSource()); // 模板数据源
+		modelAndView.addAllObjects(modelMap);
 		return modelAndView;
 	}
 	
@@ -138,8 +170,8 @@ public class RespHandler {
 		return null;
 	}
 	
-	@RequestMapping(path={"/method3"},method={RequestMethod.GET})
-	public ResponseEntity method3(HttpServletRequest request,HttpServletResponse response) throws Exception{ 
+	@RequestMapping(path={"/returnResponseEntity"},method={RequestMethod.GET})
+	public ResponseEntity returnResponseEntity(HttpServletRequest request,HttpServletResponse response) throws Exception{ 
 		// 头
 		MultiValueMap<String, String> headers = new LinkedMultiValueMap();
 		headers.set("X-Sender-By", "JanChou");
@@ -152,56 +184,172 @@ public class RespHandler {
 		return new ResponseEntity(responseBodyEmitter,headers,status);
 	}
 	
-	@RequestMapping(path={"/method4"},method={RequestMethod.GET})
-	public StreamingResponseBody method4(HttpServletRequest request,HttpServletResponse response) throws Exception{ 
-		return null;
+	@RequestMapping(path={"/returnStreamingResponseBody"},method={RequestMethod.GET})
+	public StreamingResponseBody returnStreamingResponseBody(HttpServletRequest request,HttpServletResponse response) throws Exception{ 
+		
+		class StreamingResponseBodyImpl implements StreamingResponseBody {
+
+			@Override
+			public void writeTo(OutputStream outputStream) throws IOException {
+				outputStream.write("{status:200;message:'hello message...'}".getBytes());
+			}
+		}
+		return (new StreamingResponseBodyImpl());
 	}
 	
-	@RequestMapping(path={"/method5"},method={RequestMethod.GET})
-	public HttpEntity method5(HttpServletRequest request,HttpServletResponse response) throws Exception{ 
-		return null;
+	@RequestMapping(path={"/returnHttpEntity"},method={RequestMethod.GET})
+	public HttpEntity returnHttpEntity(HttpServletRequest request,HttpServletResponse response) throws Exception{ 
+		// 头
+		MultiValueMap<String, String> headers = new LinkedMultiValueMap();
+		headers.set("X-Sender-By", "JanChou");
+		// 体部
+		String body = "{status:200;message:'hello message...'}";
+		return (new HttpEntity(body,headers));
 	}
 	
-	@RequestMapping(path={"/method6"},method={RequestMethod.GET})
-	public Callable method6(HttpServletRequest request,HttpServletResponse response) throws Exception{ 
-		return null;
+	@RequestMapping(path={"/returnHttpHeaders"},method={RequestMethod.GET})
+	public HttpHeaders returnHttpHeaders(HttpServletRequest request,HttpServletResponse response) throws Exception{ 
+		HttpHeaders httpHeaders = new HttpHeaders();
+		List<String> list = new ArrayList();
+		list.add("JanChou");
+		httpHeaders.put("X-Sender-By", list);
+		return httpHeaders;
 	}
 	
-	@RequestMapping(path={"/method7"},method={RequestMethod.GET})
-	public WebAsyncTask method7(HttpServletRequest request,HttpServletResponse response) throws Exception{ 
-		return null;
+	@RequestMapping(path={"/returnCallable"},method={RequestMethod.GET})
+	public Callable returnCallable(HttpServletRequest request,HttpServletResponse response) throws Exception{ 
+		class StreamingResponseBodyTask implements Callable<Void> {
+
+			private final HttpServletRequest request;
+			private final HttpServletResponse response;
+
+			public StreamingResponseBodyTask(HttpServletRequest request, HttpServletResponse response) {
+				this.request = request;
+				this.response = response;
+			}
+
+			@Override
+			public Void call() throws Exception {
+				this.response.getOutputStream().write("{status:200;message:'hello message...'}".getBytes());
+				return null;
+			}
+		}
+		return new StreamingResponseBodyTask(request,response);
 	}
 	
-	@RequestMapping(path={"/method8"},method={RequestMethod.GET})
-	public @ModelAttribute Object method8(HttpServletRequest request,HttpServletResponse response) throws Exception{ 
-		return null;
+	@RequestMapping(path={"/retunSimpleDeferredResultAdapter"},method={RequestMethod.GET})
+	public DeferredResult returnSimpleDeferredResultAdapter(HttpServletRequest request,HttpServletResponse response) throws Exception{ 
+		DeferredResult deferredResult = new DeferredResult();
+		deferredResult.setResult("{status:200;message:'hello message...'}");
+		return deferredResult;
 	}
 	
-	@RequestMapping(path={"/method9"},method={RequestMethod.GET})
-	public @ResponseBody Object method9(HttpServletRequest request,HttpServletResponse response) throws Exception{ 
-		return null;
-	}
-	
-	@RequestMapping(path={"/method10"},method={RequestMethod.GET})
-	public String method10(HttpServletRequest request,HttpServletResponse response) throws Exception{ 
-		return null;
-	}
-	
-	@RequestMapping(path={"/method11"},method={RequestMethod.GET})
-	public Map method11(HttpServletRequest request,HttpServletResponse response) throws Exception{ 
-		return null;
-	}
-	
-	@RequestMapping(path={"/method12"},method={RequestMethod.GET})
-	public String method12(HttpServletRequest request,HttpServletResponse response) throws Exception{ 
-		return "redirect:http://www.baidu.com";
+	@RequestMapping(path={"/returnWebAsyncTask"},method={RequestMethod.GET})
+	public WebAsyncTask returnWebAsyncTask(HttpServletRequest request,HttpServletResponse response) throws Exception{ 
+		Long timeout = 3600L;
+		AsyncTaskExecutor executor = new SimpleAsyncTaskExecutor(this.getClass().getSimpleName());
+		class StreamingResponseBodyTask implements Callable<Void> {
+
+			private final HttpServletRequest request;
+			private final HttpServletResponse response;
+
+			public StreamingResponseBodyTask(HttpServletRequest request, HttpServletResponse response) {
+				this.request = request;
+				this.response = response;
+			}
+
+			@Override
+			public Void call() throws Exception {
+				this.response.getOutputStream().write("{status:200;message:'hello message...'}".getBytes());
+				return null;
+			}
+		}
+		Callable callable = new StreamingResponseBodyTask(request,response);
+		WebAsyncTask webAsyncTask = new WebAsyncTask(timeout,executor,callable);
+		return webAsyncTask;
 		
 	}
 	
-	@RequestMapping(path={"/method13"},method={RequestMethod.GET})
-	public String method13(HttpServletRequest request,HttpServletResponse response) throws Exception{ 
-		return "forward:/resp-handler/method13";
+	/**
+	 * 只返回“单条模板数据”
+	 * 		把返回值放入指定的键
+	 */
+	@RequestMapping(path={"/method8"},method={RequestMethod.GET})
+	public @ModelAttribute(value="tplParam0") Object returnWithModelAttributeAnnotation(HttpServletRequest request,HttpServletResponse response) throws Exception{ 
+		return "指定键tplParam0的值";
+	}
+	
+	/**
+	 * 查找消息转换器，使用消息转换器进行输出
+	 */
+	@RequestMapping(path={"/method9"},method={RequestMethod.GET})
+	public @ResponseBody Object returnWithResponseBodyAnnotation(HttpServletRequest request,HttpServletResponse response) throws Exception{
+		return "";
+	}
+	
+	/**
+	 * 只返回“模板名称”
+	 */
+	@RequestMapping(path={"/returnViewName0"},method={RequestMethod.GET})
+	public String returnViewName0(HttpServletRequest request,HttpServletResponse response) throws Exception{ 
+		return "resp-handler/return-model-and-view0";
+	}
+	
+	/**
+	 * 转发，只支持JSP类型的模板引擎
+	 * 		/resp-handler/returnViewName1
+	 * 		只返回“模板名称”
+	 */
+	@RequestMapping(path={"/returnViewName1"},method={RequestMethod.GET})
+	public String returnViewName1(HttpServletRequest request,HttpServletResponse response) throws Exception{
+		return "forward:" + WebUtilx.getContextUrl(WebUtilx.getPathToServlet(request) +"/resp-handler/return-model-and-view0",request,response); // 只支持JSP类型的模板引擎
+	}
+	
+	/**
+	 * 重定向
+	 * 		/resp-handler/returnViewName2
+	 * 		只返回“模板名称”
+	 */
+	@RequestMapping(path={"/returnViewName2"},method={RequestMethod.GET})
+	public String returnViewName2(HttpServletRequest request,HttpServletResponse response) throws Exception{ 
+		return "redirect:http://www.baidu.com"; // 重定向
+		
+	}
+	
+	/**
+	 * 重定向
+	 * 		/resp-handler/returnViewName3
+	 * 		只返回“模板名称”
+	 */
+	@RequestMapping(path={"/returnViewName3"},method={RequestMethod.GET})
+	public String returnViewName3(HttpServletRequest request,HttpServletResponse response) throws Exception{
+		return "redirect:" + WebUtilx.getContextUrl(WebUtilx.getPathToServlet(request) +"/resp-handler/return-model-and-view0",request,response); // 只支持JSP类型的模板引擎
 	}
 
+	/**
+	 * 只返回“模板数据”
+	 */
+	@RequestMapping(path={"/returnMap"},method={RequestMethod.GET})
+	public Map returnMap(HttpServletRequest request,HttpServletResponse response) throws Exception{ 
+		ModelMap modelMap = new ModelMap();
+		modelMap.put("attr1", "value1");
+		return modelMap;
+	}
+	
+	/**
+	 * /resp-handler/returnNull
+	 */
+	@RequestMapping(path={"/returnNull"},method={RequestMethod.GET})
+	public Map returnNull(HttpServletRequest request,HttpServletResponse response) throws Exception{ 
+		return null; // 返回null不会进行任何渲染
+	}
+	
+	/**
+	 *  /resp-handler/returnModelAndView
+	 */
+	@RequestMapping(path={"/returnModelAndView"},method={RequestMethod.GET})
+	public ModelAndView returnModelAndView(HttpServletRequest request,HttpServletResponse response) throws Exception{ 
+		return new ModelAndView(); // 返回一个空对象，会被自动填充视图，视图的名称和访问的地址相关，即 “resp-handler/returnModelAndView.jsp”
+	}
 
 }

@@ -2,25 +2,36 @@ package cn.java.demo.web.util;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.Collection;
+import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
+import org.springframework.util.StringUtils;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.request.ServletWebRequest;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 import org.springframework.web.cors.CorsUtils;
-import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.web.util.HtmlUtils;
+import org.springframework.web.util.UriTemplate;
+import org.springframework.web.util.UriUtils;
+import org.springframework.web.util.UrlPathHelper;
 import org.springframework.web.util.WebUtils;
 
 public class WebUtilx {
 	
 	public static final String X_REQUESTED_WITH = "X-Requested-With";
+	private static final UrlPathHelper URL_PATH_HELPER = new UrlPathHelper();
 	
 	/**
 	 * 获取根XmlWebApplicationContext对象
@@ -187,5 +198,155 @@ public class WebUtilx {
 		}
 		else{
 		}
+	}
+	
+	public static UrlPathHelper getUrlPathHelper() {
+		return URL_PATH_HELPER;
+	}
+	
+	/**
+	 * 上下文路径，如“空” 或者 “/webapp1”
+	 */
+	public static String getContextPath(HttpServletRequest request) {
+		return URL_PATH_HELPER.getOriginatingContextPath(request);
+	}
+	
+	/**
+	 * 相对上下文路径的地址，如“空” 或者 “/webapp1/front-servlet/servlet1”
+	 */
+	public static String getContextUrl(String relativeUrl,HttpServletRequest request,HttpServletResponse response) {
+		String url = getContextPath(request) + relativeUrl;
+		if (response != null) {
+			url = response.encodeURL(url);
+		}
+		return url;
+	}
+	/**
+	 * 相对上下文路径的地址，如“空” 或者 “/webapp1/front-servlet/servlet1”
+	 */
+	public static String getContextUrl(String relativeUrl,WebRequest webRequest) {
+		if(!(webRequest instanceof ServletWebRequest)){
+			throw new RuntimeException("webRequest is not instanceof ServletWebRequest");
+		}
+		ServletWebRequest servletWebRequest = (ServletWebRequest)webRequest;
+		return getContextUrl(relativeUrl,servletWebRequest.getNativeRequest(HttpServletRequest.class),servletWebRequest.getNativeResponse(HttpServletResponse.class));
+	}
+	
+	/**
+	 * 相对上下文路径的地址，如 “/webapp1/front-servlet/servlet1/param0/param1”
+	 */
+	public static String getContextUrl(String relativeUrl, Map<String, ?> params,HttpServletRequest request,HttpServletResponse response) {
+		String url = getContextPath(request) + relativeUrl;
+		UriTemplate template = new UriTemplate(url);
+		url = template.expand(params).toASCIIString();
+		if (response != null) {
+			url = response.encodeURL(url);
+		}
+		return url;
+	}
+	
+	/**
+	 * 相对上下文路径的地址，如 “/front-servlet”
+	 */
+	public static String getPathToServlet(WebRequest webRequest) {
+		if(!(webRequest instanceof ServletWebRequest)){
+			throw new RuntimeException("webRequest is not instanceof ServletWebRequest");
+		}
+		ServletWebRequest servletWebRequest = (ServletWebRequest)webRequest;
+		return getPathToServlet(servletWebRequest.getNativeRequest(HttpServletRequest.class));
+	}
+	/**
+	 * 相对上下文路径的地址，如 “/front-servlet”
+	 */
+	public static String getPathToServlet(HttpServletRequest request) {
+		String path = URL_PATH_HELPER.getOriginatingContextPath(request);
+		if (StringUtils.hasText(URL_PATH_HELPER.getPathWithinServletMapping(request))) {
+			path += URL_PATH_HELPER.getOriginatingServletPath(request);
+		}
+		return path;
+	}
+	
+	public static String getRequestUri(HttpServletRequest request) {
+		return URL_PATH_HELPER.getOriginatingRequestUri(request);
+	}
+	
+	public static String getQueryString(HttpServletRequest request) {
+		return URL_PATH_HELPER.getOriginatingQueryString(request);
+	}
+	
+	public static String htmlEscape(String content,HttpServletResponse response) {
+		return HtmlUtils.htmlEscape(content, response.getCharacterEncoding());
+	}
+	public static String htmlEscape(String content) {
+		return HtmlUtils.htmlEscape(content);
+	}
+	
+	public static String encode(String source, String encoding) throws UnsupportedEncodingException{
+		return UriUtils.encode(source,encoding);
+	}
+	public static String decode(String source, String encoding) throws UnsupportedEncodingException{
+		return UriUtils.decode(source,encoding);
+	}
+	
+	/**
+	 * 获取上传文件的文件名
+	 * part.getSubmittedFileName() 在不同平台下有兼容性的问题
+	 * 在jetty中没有实现part.getSubmittedFileName()，方法是part.getContentDispositionFilename()
+	 * 在tomcat中有实现方法part.getSubmittedFileName()
+	 */
+	public static String getSubmittedFileName(Part part){
+		String disposition = part.getHeader("content-disposition");
+		String filename = extractFilename(disposition,"filename="); // 文件名
+		if (filename == null) {
+			filename = extractFilename(disposition, "filename*=");
+			if (filename == null) {
+				return null;
+			}
+			int index = filename.indexOf("'");
+			if (index != -1) {
+				Charset charset = null;
+				try {
+					charset = Charset.forName(filename.substring(0, index));
+				}
+				catch (IllegalArgumentException ex) {
+					// ignore
+				}
+				filename = filename.substring(index + 1);
+				// Skip language information..
+				index = filename.indexOf("'");
+				if (index != -1) {
+					filename = filename.substring(index + 1);
+				}
+				if (charset != null) {
+					filename = new String(filename.getBytes(Charset.forName("us-ascii")), charset);
+				}
+			}
+			return filename;
+		}
+		return filename;
+	}
+	
+	private static String extractFilename(String contentDisposition, String key) {
+		if (contentDisposition == null) {
+			return null;
+		}
+		int startIndex = contentDisposition.indexOf(key); // key === "filename="
+		if (startIndex == -1) {
+			return null;
+		}
+		String filename = contentDisposition.substring(startIndex + key.length());
+		if (filename.startsWith("\"")) {
+			int endIndex = filename.indexOf("\"", 1);
+			if (endIndex != -1) {
+				return filename.substring(1, endIndex);
+			}
+		}
+		else {
+			int endIndex = filename.indexOf(";");
+			if (endIndex != -1) {
+				return filename.substring(0, endIndex);
+			}
+		}
+		return filename;
 	}
 }

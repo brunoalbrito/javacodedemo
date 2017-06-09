@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="hello" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="761ac2a3-d6ed-4a5e-b00e-0a42c96858b3">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="parameter0" class="java.lang.String"/>
+	<parameter name="parameter1" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="35" splitType="Stretch">
+			<staticText>
+				<reportElement x="211" y="5" width="113" height="30" forecolor="#000099" uuid="d91ed968-d7fd-4c2a-9a14-bdba82d2cea3"/>
+				<textElement>
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[This is Title]]></text>
+			</staticText>
+			<textField pattern="yyyy/MM/dd">
+				<reportElement x="345" y="5" width="100" height="20" uuid="f611afbf-084f-4d62-8207-aa847d9f850d"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch">
+			<staticText>
+				<reportElement x="171" y="4" width="203" height="28" forecolor="#CC00CC" uuid="e58f784d-76e9-49c9-b0e4-f415bef975ba"/>
+				<textElement>
+					<font size="15" isBold="false"/>
+				</textElement>
+				<text><![CDATA[This is PageHeader]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch">
+			<staticText>
+				<reportElement x="171" y="15" width="169" height="26" forecolor="#FF6633" uuid="50c197ee-1c4d-44f5-8287-89a190518f41"/>
+				<textElement>
+					<font size="15"/>
+				</textElement>
+				<text><![CDATA[This is ColumnHeader]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch">
+			<textField isStretchWithOverflow="true">
+				<reportElement stretchType="RelativeToBandHeight" x="94" y="13" width="230" height="28" forecolor="#003333" uuid="5a46fe2b-d19b-4ac3-8085-c6a9d7784c29"/>
+				<textElement>
+					<font size="13"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{parameter0}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="94" y="58" width="100" height="20" uuid="c97217b9-239e-430b-a145-2177697a8217"/>
+				<textFieldExpression><![CDATA[$P{parameter1}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch">
+			<staticText>
+				<reportElement x="176" y="10" width="169" height="26" forecolor="#FF6600" uuid="0014b3a9-92c0-470e-9772-e6b58b291dce"/>
+				<textElement>
+					<font size="15"/>
+				</textElement>
+				<text><![CDATA[This is ColumnFooter]]></text>
+			</staticText>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch">
+			<staticText>
+				<reportElement x="177" y="-38" width="203" height="28" forecolor="#990099" uuid="aa93eaad-d095-48fa-9716-20a82f5b0049"/>
+				<textElement>
+					<font size="15"/>
+				</textElement>
+				<text><![CDATA[This is PageFooter]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="211" y="12" width="163" height="20" forecolor="#009999" uuid="c1722fde-c190-4b8e-9742-403b014d9961"/>
+				<textElement>
+					<font size="13"/>
+				</textElement>
+				<text><![CDATA[this is summary]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

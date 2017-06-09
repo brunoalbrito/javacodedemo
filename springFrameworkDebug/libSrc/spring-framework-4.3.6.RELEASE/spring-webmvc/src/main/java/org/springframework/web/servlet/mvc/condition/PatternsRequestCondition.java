@@ -205,9 +205,10 @@ public final class PatternsRequestCondition extends AbstractRequestCondition<Pat
 		if (this.patterns.isEmpty()) {
 			return this;
 		}
-
+		// pathHelper === org.springframework.web.util.UrlPathHelper
+		// pathMatcher === org.springframework.util.AntPathMatcher
 		String lookupPath = this.pathHelper.getLookupPathForRequest(request);
-		List<String> matches = getMatchingPatterns(lookupPath);
+		List<String> matches = getMatchingPatterns(lookupPath); // 匹配到的地址列表
 
 		return matches.isEmpty() ? null :
 			new PatternsRequestCondition(matches, this.pathHelper, this.pathMatcher, this.useSuffixPatternMatch,

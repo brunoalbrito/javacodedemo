@@ -1,10 +1,11 @@
 package cn.java.demo.webmvc.validator;
 
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.ConfigurablePropertyAccessor;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
-import org.springframework.web.context.request.ServletWebRequest;
 
 import cn.java.demo.webmvc.form.UserLoginForm;
 
@@ -23,17 +24,24 @@ public class UserLoginFormValidator implements Validator {
 		}
 		
 		if(errors instanceof BeanPropertyBindingResult){
-
+//			BeanPropertyBindingResult beanPropertyBindingResult = (BeanPropertyBindingResult)errors;
+//			ConfigurablePropertyAccessor configurablePropertyAccessor = beanPropertyBindingResult.getPropertyAccessor();
+//			if(configurablePropertyAccessor instanceof BeanWrapper){
+//				
+//			}
+//			configurablePropertyAccessor.setPropertyValue("propertyName0", "propertyName0Value");
+//			configurablePropertyAccessor.getPropertyValue("propertyName0");
 		}
 		
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "username", "field.required");
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "field.required");
-		UserLoginForm login = (UserLoginForm) target;
-		if (login.getPassword() != null
-				&& login.getPassword().trim().length() < MINIMUM_PASSWORD_LENGTH) {
-			errors.rejectValue("password", "field.min.length",
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "username", "userLoginFormValidator.username.required"); // 必须通过用户名
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "userLoginFormValidator.password.required"); // 必须通过密码
+		
+		UserLoginForm userLoginForm = (UserLoginForm) target;
+		if((userLoginForm.getPassword() != null)&&(userLoginForm.getPassword().trim().length() < MINIMUM_PASSWORD_LENGTH)){ // 密码长度
+			errors.rejectValue("password", "userLoginFormValidator.username.minLength",
 					new Object[]{Integer.valueOf(MINIMUM_PASSWORD_LENGTH)},
-					"The password must be at least [" + MINIMUM_PASSWORD_LENGTH + "] characters in length.");
+					"密码至少需要[" + MINIMUM_PASSWORD_LENGTH + "]个字符");
 		}
+		
 	}
 }

@@ -127,7 +127,7 @@ public abstract class MessageSourceSupport {
 			}
 			if (messageFormat == null) {
 				try {
-					messageFormat = createMessageFormat(msg, locale);
+					messageFormat = createMessageFormat(msg, locale); // !!!
 				}
 				catch (IllegalArgumentException ex) {
 					// Invalid message format - probably not intended for formatting,

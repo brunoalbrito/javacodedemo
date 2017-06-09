@@ -206,7 +206,7 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
 			// therefore no MessageFormat needs to be involved.
 			// Note that the default implementation still uses MessageFormat;
 			// this can be overridden in specific subclasses.
-			String message = resolveCodeWithoutArguments(code, locale);
+			String message = resolveCodeWithoutArguments(code, locale); // 解析code获取消息  ResourceBundleMessageSource.resolveCodeWithoutArguments()
 			if (message != null) {
 				return message;
 			}

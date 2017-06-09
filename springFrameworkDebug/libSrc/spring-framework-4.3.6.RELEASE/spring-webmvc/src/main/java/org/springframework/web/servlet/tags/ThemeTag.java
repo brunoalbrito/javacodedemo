@@ -52,6 +52,9 @@ public class ThemeTag extends MessageTag {
 	 */
 	@Override
 	protected MessageSource getMessageSource() {
+		// XmlWebApplicationContext.themeSource === org.springframework.ui.context.support.ResourceBundleThemeSource
+		// getRequestContext().getTheme() === XmlWebApplicationContext.themeSource.getTheme(themeName);
+		// getRequestContext().getTheme().getMessageSource() === org.springframework.context.support.ResourceBundleMessageSource
 		return getRequestContext().getTheme().getMessageSource();
 	}
 

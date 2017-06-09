@@ -103,6 +103,7 @@ public abstract class AbstractMultipartHttpServletRequest extends HttpServletReq
 
 	@Override
 	public MultiValueMap<String, MultipartFile> getMultiFileMap() {
+		// org.springframework.util.LinkedMultiValueMap
 		return getMultipartFiles();
 	}
 

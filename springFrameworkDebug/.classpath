@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="libSrc/spring-framework-4.3.6.RELEASE/spring-web/src/main/java"/>
 	<classpathentry kind="src" path="libSrc/spring-framework-4.3.6.RELEASE/spring-beans/src/main/java"/>
 	<classpathentry kind="src" path="libSrc/spring-framework-4.3.6.RELEASE/spring-context-support/src/main/java"/>
 	<classpathentry kind="src" path="libSrc/spring-framework-4.3.6.RELEASE/spring-core/src/main/java"/>
@@ -12,6 +11,7 @@
 	<classpathentry kind="src" path="libSrc/spring-framework-4.3.6.RELEASE/spring-aspects/src/main/java"/>
 	<classpathentry kind="src" path="libSrc/spring-framework-4.3.6.RELEASE/spring-webmvc/src/main/java"/>
 	<classpathentry kind="src" path="webDemoSrc"/>
+	<classpathentry kind="src" path="libSrc/spring-framework-4.3.6.RELEASE/spring-web/src/main/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/aspectjweaver-1.8.10.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/commons-logging-1.2.jar"/>
@@ -30,6 +30,22 @@
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/spring-webmvc-4.3.6.RELEASE.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/validation-api-1.1.0.Final.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/jetty-server-8.1.8.jar"/>
+	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/jackson-annotations-2.8.8.jar"/>
+	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/jackson-core-2.8.8.jar"/>
+	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/jackson-core-asl-1.9.13.jar"/>
+	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/jackson-databind-2.8.8.jar"/>
+	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/jackson-dataformat-xml-2.8.8.jar"/>
+	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/jackson-mapper-asl-1.9.13.jar"/>
+	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/jackson-module-jaxb-annotations-2.8.8.jar"/>
+	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/stax2-api-4.0.0.jar"/>
+	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/woodstox-core-asl-4.4.1.jar"/>
+	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/jasperreports-6.3.0.jar"/>
+	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/commons-beanutils-1.9.3.jar"/>
+	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/commons-collections-3.2.2.jar"/>
+	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/commons-digester-2.1.jar"/>
+	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/groovy-2.4.11.jar"/>
+	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/itext-4.2.0.jar"/>
+	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/jstl-1.2.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="lib" path="D:/javacodedemo/springFrameworkDebug/WebRoot/WEB-INF/classes"/>
 	<classpathentry kind="output" path="WebRoot/WEB-INF/classes"/>

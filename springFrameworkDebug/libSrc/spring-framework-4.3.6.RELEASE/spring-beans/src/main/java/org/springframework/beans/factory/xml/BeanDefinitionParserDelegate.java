@@ -478,7 +478,8 @@ public class BeanDefinitionParserDelegate {
 								beanDefinition, this.readerContext.getRegistry(), true);
 					}
 					else {
-						beanName = this.readerContext.generateBeanName(beanDefinition);
+						// org.springframework.beans.factory.xml.XmlReaderContext.generateBeanName(beanDefinition);
+						beanName = this.readerContext.generateBeanName(beanDefinition); // 自动生成beanName
 						// Register an alias for the plain bean class name, if still possible,
 						// if the generator returned the class name plus a suffix.
 						// This is expected for Spring 1.2/2.0 backwards compatibility.
@@ -627,7 +628,7 @@ public class BeanDefinitionParserDelegate {
 			String candidatePattern = this.defaults.getAutowireCandidates();
 			if (candidatePattern != null) {
 				String[] patterns = StringUtils.commaDelimitedListToStringArray(candidatePattern);
-				bd.setAutowireCandidate(PatternMatchUtils.simpleMatch(patterns, beanName));
+				bd.setAutowireCandidate(PatternMatchUtils.simpleMatch(patterns, beanName)); // 如果beanName，符合自动装配表达式，自动设置为true
 			}
 		}
 		else {

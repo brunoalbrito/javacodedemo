@@ -181,10 +181,10 @@ public class ReloadableResourceBundleMessageSource extends AbstractResourceBased
 		}
 		else {
 			for (String basename : getBasenameSet()) {
-				List<String> filenames = calculateAllFilenames(basename, locale);
+				List<String> filenames = calculateAllFilenames(basename, locale); //  解析code获取消息
 				for (String filename : filenames) {
-					PropertiesHolder propHolder = getProperties(filename);
-					String result = propHolder.getProperty(code);
+					PropertiesHolder propHolder = getProperties(filename); // 迭代每个文件
+					String result = propHolder.getProperty(code); // 获取指定键的值
 					if (result != null) {
 						return result;
 					}
@@ -279,7 +279,7 @@ public class ReloadableResourceBundleMessageSource extends AbstractResourceBased
 			}
 		}
 		List<String> filenames = new ArrayList<String>(7);
-		filenames.addAll(calculateFilenamesForLocale(basename, locale));
+		filenames.addAll(calculateFilenamesForLocale(basename, locale)); // 计算文件名   xxx_zh_CN
 		if (isFallbackToSystemLocale() && !locale.equals(Locale.getDefault())) {
 			List<String> fallbackFilenames = calculateFilenamesForLocale(basename, Locale.getDefault());
 			for (String fallbackFilename : fallbackFilenames) {
@@ -313,20 +313,20 @@ public class ReloadableResourceBundleMessageSource extends AbstractResourceBased
 	 */
 	protected List<String> calculateFilenamesForLocale(String basename, Locale locale) {
 		List<String> result = new ArrayList<String>(3);
-		String language = locale.getLanguage();
-		String country = locale.getCountry();
-		String variant = locale.getVariant();
+		String language = locale.getLanguage(); // zh
+		String country = locale.getCountry(); // CN
+		String variant = locale.getVariant(); 
 		StringBuilder temp = new StringBuilder(basename);
 
 		temp.append('_');
-		if (language.length() > 0) {
+		if (language.length() > 0) { // xxx_zh
 			temp.append(language);
 			result.add(0, temp.toString());
 		}
 
 		temp.append('_');
 		if (country.length() > 0) {
-			temp.append(country);
+			temp.append(country); // xxx_zh_CN
 			result.add(0, temp.toString());
 		}
 
@@ -358,7 +358,7 @@ public class ReloadableResourceBundleMessageSource extends AbstractResourceBased
 		}
 		else {
 			propHolder = new PropertiesHolder();
-			PropertiesHolder existingHolder = this.cachedProperties.putIfAbsent(filename, propHolder);
+			PropertiesHolder existingHolder = this.cachedProperties.putIfAbsent(filename, propHolder); // !!!
 			if (existingHolder != null) {
 				propHolder = existingHolder;
 			}

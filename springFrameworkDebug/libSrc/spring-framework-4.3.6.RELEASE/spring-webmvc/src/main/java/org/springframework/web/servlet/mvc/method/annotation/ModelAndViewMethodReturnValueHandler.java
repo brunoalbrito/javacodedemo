@@ -91,7 +91,7 @@ public class ModelAndViewMethodReturnValueHandler implements HandlerMethodReturn
 		}
 		else {
 			View view = mav.getView();
-			mavContainer.setView(view);
+			mavContainer.setView(view); // 把值设置到mavContainer对象
 			if (view instanceof SmartView) {
 				if (((SmartView) view).isRedirectView()) {
 					mavContainer.setRedirectModelScenario(true);
@@ -99,7 +99,7 @@ public class ModelAndViewMethodReturnValueHandler implements HandlerMethodReturn
 			}
 		}
 		mavContainer.setStatus(mav.getStatus());
-		mavContainer.addAllAttributes(mav.getModel());
+		mavContainer.addAllAttributes(mav.getModel()); // 把值设置到mavContainer对象
 	}
 
 	/**

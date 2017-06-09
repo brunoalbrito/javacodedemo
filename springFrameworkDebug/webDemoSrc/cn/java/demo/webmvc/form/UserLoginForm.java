@@ -16,4 +16,10 @@ public class UserLoginForm {
 		this.password = password;
 	}
 	
+	@Override
+	public String toString() {
+		return "UserLoginForm [username=" + username + ", password=" + password + "]";
+	}
+	
+	
 }

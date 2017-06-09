@@ -154,8 +154,8 @@ public class DefaultHandlerExceptionResolver extends AbstractHandlerExceptionRes
 				return handleMissingServletRequestPartException((MissingServletRequestPartException) ex, request,
 						response, handler);
 			}
-			else if (ex instanceof BindException) {
-				return handleBindException((BindException) ex, request, response, handler);
+			else if (ex instanceof BindException) { // !!!
+				return handleBindException((BindException) ex, request, response, handler);  // 发送400 状态码
 			}
 			else if (ex instanceof NoHandlerFoundException) {
 				return handleNoHandlerFoundException((NoHandlerFoundException) ex, request, response, handler);
@@ -458,7 +458,7 @@ public class DefaultHandlerExceptionResolver extends AbstractHandlerExceptionRes
 	protected ModelAndView handleBindException(BindException ex, HttpServletRequest request,
 			HttpServletResponse response, Object handler) throws IOException {
 
-		response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+		response.sendError(HttpServletResponse.SC_BAD_REQUEST); // 发送400 状态码
 		return new ModelAndView();
 	}
 

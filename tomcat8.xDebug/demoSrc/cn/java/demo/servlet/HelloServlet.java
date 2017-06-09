@@ -1,9 +1,15 @@
 package cn.java.demo.servlet;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.util.Collection;
 import java.util.Enumeration;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -25,9 +31,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
 import javax.xml.ws.WebServiceRef;
 
 import org.apache.tomcat.InstanceManager;
+
+import cn.java.demo.util.WebUtilx;
+import cn.java.demo.web.multipart.support.StandardServletMultipartResolverX;
+import cn.java.demo.web.multipart.support.StandardServletMultipartResolverX.StandardMultipartFileX;
+import cn.java.demo.web.multipart.support.StandardServletMultipartResolverX.StandardMultipartHttpServletRequestX;
 
 public class HelloServlet extends HttpServlet {
 
@@ -383,7 +395,25 @@ public class HelloServlet extends HttpServlet {
 		// 提交类型是multipart/form-data，有配置<multipart-config>，在Servlet中使用了req.getParameter("lname")取得到数据，req.getInputStream() 或者 req.getReader()取不到数据
 		// 提交类型是application/x-www-form-urlencoded，如果在Servlet中使用了req.getInputStream() 或者 req.getReader(),那么req.getParameter("lname")取不到数据
 		// 提交类型是application/x-www-form-urlencoded，如果在Servlet中使用了req.getParameter("lname")，那么req.getInputStream() 或者 req.getReader()取不到数据
-
+		// this.multipartPost(request, resposne);
+		if (("post".equals(req.getMethod().toLowerCase())) && ((req.getContentType() != null && req.getContentType().toLowerCase().startsWith("multipart/")))) {
+			// org.apache.catalina.connector.Request.parseParts(boolean explicit)
+			Collection<Part> parts = req.getParts();
+			for (Part part : parts) {
+				String originalFilename = WebUtilx.getSubmittedFileName(part); // part.getSubmittedFileName() 在不同平台下有兼容性的问题
+				if (originalFilename != null) { // 是“文件上传字段”；其他普通变量还是通过request.getParameter("lname")获取
+//					part.getSize(); // 文件大小
+//					part.getInputStream(); // 文件输入流
+//					part.getName(); // 字段名
+//					part.delete(); // 删除临时目录的的文件
+					String saveFileName = WebUtilx.getSaveFileName(req,originalFilename);
+					System.out.println("saveFileName = " + saveFileName);
+					WebUtilx.copy(part.getInputStream(),new FileOutputStream(new File(saveFileName)));
+					System.out.println("WebUtilx.getSubmittedFileName(part) = " + WebUtilx.getSubmittedFileName(part) + " ,part.getName() = " + part.getName());
+				}
+			}
+		}
+		
 		// req.getParameter("lname") = "lname1"
 		String lname = req.getParameter("lname");
 		this.consoleWrite(System.out, "req.getParameter(\"lname\")" ,lname);
@@ -440,5 +470,59 @@ public class HelloServlet extends HttpServlet {
 		resp.sendRedirect(req.getContextPath()+"/index.html"); 
 		req.getRequestDispatcher("/index.html").forward(req, resp);
 		req.getRequestDispatcher("/index.html").include(req, resp);
+	}
+	
+	/**
+	 * 文件上传
+	 */
+	protected void multipartPost(HttpServletRequest request, HttpServletResponse resposne) throws ServletException, IOException {
+		StandardServletMultipartResolverX resolver = new StandardServletMultipartResolverX();
+		if(resolver.isMultipart(request)){
+			// 解析上传的文件
+			StandardMultipartHttpServletRequestX multipartRequest = resolver.resolveMultipart(request);
+			
+			// “上传文件字段”的获取方式
+			Map<String, List<StandardMultipartFileX>> multiFileMap = multipartRequest.getMultiFileMap();
+			for (Entry<String, List<StandardMultipartFileX>> entry : multiFileMap.entrySet()) {
+				entry.getKey();
+				if(entry.getValue().size()==1){ // 单个文件
+					StandardMultipartFileX multipartFile = entry.getValue().get(0);
+					multipartFile.getInputStream(); // 上传文件的输入流
+					// multipartFile.getOriginalFilename() = 新建文本文档.txt ,multipartFile.getName() = filename0
+					System.out.println("multipartFile.getOriginalFilename() = " + multipartFile.getOriginalFilename() + " ,multipartFile.getName() = " + multipartFile.getName());
+//					Streams.copy(multipartFile.getInputStream(),new FileOutputStream(new File("desfile.jpg")), true);
+				}
+				else{
+					System.out.println("多个文件");
+				}
+			}
+			
+			// “非上传文件字段”的获取方式
+			{
+				// 获取方式1
+				{
+					Map<String, String[]> parameterMap = multipartRequest.getParameterMap();
+					for (Entry<String, String[]> entry : parameterMap.entrySet()) {
+						entry.getKey();
+						if(entry.getValue().length==1){ // 单个值
+							String[] values = entry.getValue();
+							System.out.println(values[0]);
+						}
+						else{
+							System.out.println("多个值");
+						}
+					}
+				}
+				
+				// 获取方式2
+				{
+					multipartRequest.getParameterValues("param0");
+					multipartRequest.getParameter("param0");
+				}
+			}
+		}
+		else{
+			System.out.println("不是文件上传操作");
+		}
 	}
 }

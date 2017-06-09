@@ -53,7 +53,7 @@ public class DelegatingMessageSource extends MessageSourceSupport implements Hie
 	@Override
 	public String getMessage(String code, Object[] args, String defaultMessage, Locale locale) {
 		if (this.parentMessageSource != null) {
-			return this.parentMessageSource.getMessage(code, args, defaultMessage, locale);
+			return this.parentMessageSource.getMessage(code, args, defaultMessage, locale); // 优先使用父类的
 		}
 		else {
 			return renderDefaultMessage(defaultMessage, args, locale);

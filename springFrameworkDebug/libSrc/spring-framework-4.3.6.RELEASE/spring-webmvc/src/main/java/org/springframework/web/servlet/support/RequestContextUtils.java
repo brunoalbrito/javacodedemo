@@ -244,11 +244,15 @@ public abstract class RequestContextUtils {
 	 * @see #getThemeResolver
 	 */
 	public static Theme getTheme(HttpServletRequest request) {
+		// themeResolver === org.springframework.web.servlet.theme.FixedThemeResolver
 		ThemeResolver themeResolver = getThemeResolver(request);
+		// themeSource === org.springframework.web.context.support.XmlWebApplicationContext
 		ThemeSource themeSource = getThemeSource(request);
 		if (themeResolver != null && themeSource != null) {
 			String themeName = themeResolver.resolveThemeName(request);
-			return themeSource.getTheme(themeName);
+			// XmlWebApplicationContext.themeSource === org.springframework.ui.context.support.ResourceBundleThemeSource
+			// XmlWebApplicationContext.themeSource.getTheme(themeName);
+			return themeSource.getTheme(themeName); 
 		}
 		else {
 			return null;

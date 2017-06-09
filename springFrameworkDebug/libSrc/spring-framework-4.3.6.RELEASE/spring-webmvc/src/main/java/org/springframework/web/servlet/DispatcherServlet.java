@@ -995,7 +995,7 @@ public class DispatcherServlet extends FrameworkServlet {
 					return;
 				}
 
-				applyDefaultViewName(processedRequest, mv); // 应用“默认视图”
+				applyDefaultViewName(processedRequest, mv); // 如果没有设置“视图”信息，会自动应用“视图”
 				mappedHandler.applyPostHandle(processedRequest, response, mv);  // 调用 HandlerExecutionChain 的applyPostHandle方法 ，迭代调用Handler的拦截器的postHandle方法
 			}
 			catch (Exception ex) {
@@ -1006,7 +1006,7 @@ public class DispatcherServlet extends FrameworkServlet {
 				// making them available for @ExceptionHandler methods and other scenarios.
 				dispatchException = new NestedServletException("Handler dispatch failed", err);
 			}
-			processDispatchResult(processedRequest, response, mappedHandler, mv, dispatchException); // 处理转发
+			processDispatchResult(processedRequest, response, mappedHandler, mv, dispatchException); // 处理转发、渲染模板
 		}
 		catch (Exception ex) {
 			triggerAfterCompletion(processedRequest, response, mappedHandler, ex);
@@ -1036,7 +1036,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	 */
 	private void applyDefaultViewName(HttpServletRequest request, ModelAndView mv) throws Exception {
 		if (mv != null && !mv.hasView()) {
-			mv.setViewName(getDefaultViewName(request));
+			mv.setViewName(getDefaultViewName(request)); // 如果没有设置“视图”信息，会自动应用“视图”
 		}
 	}
 
@@ -1246,8 +1246,14 @@ public class DispatcherServlet extends FrameworkServlet {
 
 		// Check registered HandlerExceptionResolvers...
 		ModelAndView exMv = null;
-		for (HandlerExceptionResolver handlerExceptionResolver : this.handlerExceptionResolvers) {
-			exMv = handlerExceptionResolver.resolveException(request, response, handler, ex);
+		/*
+		 	<bean class="org.springframework.web.servlet.mvc.annotation.SimpleMappingExceptionResolver" />	
+		 	<bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver" />
+		    <bean class="org.springframework.web.servlet.mvc.annotation.ResponseStatusExceptionResolver" />
+		    <bean class="org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver" />
+		 */
+		for (HandlerExceptionResolver handlerExceptionResolver : this.handlerExceptionResolvers) { // 迭代异常解析器列表
+			exMv = handlerExceptionResolver.resolveException(request, response, handler, ex); // 解析异常
 			if (exMv != null) {
 				break;
 			}
@@ -1259,12 +1265,12 @@ public class DispatcherServlet extends FrameworkServlet {
 			}
 			// We might still need view name translation for a plain error model...
 			if (!exMv.hasView()) {
-				exMv.setViewName(getDefaultViewName(request));
+				exMv.setViewName(getDefaultViewName(request)); // 异常模板
 			}
 			if (logger.isDebugEnabled()) {
 				logger.debug("Handler execution resulted in exception - forwarding to resolved error view: " + exMv, ex);
 			}
-			WebUtils.exposeErrorRequestAttributes(request, ex, getServletName());
+			WebUtils.exposeErrorRequestAttributes(request, ex, getServletName()); // 一些数据设置到request对象
 			return exMv;
 		}
 

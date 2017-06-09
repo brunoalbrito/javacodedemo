@@ -194,12 +194,12 @@ public class AntPathMatcher implements PathMatcher {
 			return false;
 		}
 
-		String[] pattDirs = tokenizePattern(pattern);
+		String[] pattDirs = tokenizePattern(pattern); // == {"dri1","dir2","{dir3}"}  {"dri1","dir2","*"}   {"dri1","dir2","?dir3"}
 		if (fullMatch && this.caseSensitive && !isPotentialMatch(path, pattDirs)) {
 			return false;
 		}
 
-		String[] pathDirs = tokenizePath(path);
+		String[] pathDirs = tokenizePath(path); // 实际访问的地址  == {"dri1","dir2","dir3x"}
 
 		int pattIdxStart = 0;
 		int pattIdxEnd = pattDirs.length - 1;
@@ -212,17 +212,17 @@ public class AntPathMatcher implements PathMatcher {
 			if ("**".equals(pattDir)) {
 				break;
 			}
-			if (!matchStrings(pattDir, pathDirs[pathIdxStart], uriTemplateVariables)) {
+			if (!matchStrings(pattDir, pathDirs[pathIdxStart], uriTemplateVariables)) { // 正则表达式匹配
 				return false;
 			}
 			pattIdxStart++;
 			pathIdxStart++;
 		}
 
-		if (pathIdxStart > pathIdxEnd) {
+		if (pathIdxStart > pathIdxEnd) { // 表达式还没有结束
 			// Path is exhausted, only match if rest of pattern is * or **'s
 			if (pattIdxStart > pattIdxEnd) {
-				return (pattern.endsWith(this.pathSeparator) ? path.endsWith(this.pathSeparator) :
+				return (pattern.endsWith(this.pathSeparator) ? path.endsWith(this.pathSeparator) :  // 如果表达式以“/”结尾，那么访问地址要以“/”结尾
 						!path.endsWith(this.pathSeparator));
 			}
 			if (!fullMatch) {
@@ -325,6 +325,9 @@ public class AntPathMatcher implements PathMatcher {
 			for (String pattDir : pattDirs) {
 				int skipped = skipSeparator(path, pos, this.pathSeparator);
 				pos += skipped;
+				// pattDir = "*dir2"
+				// pattDir = "{dir1}"
+				// pattDir = "?dir1"
 				skipped = skipSegment(pathChars, pos, pattDir);
 				if (skipped < pattDir.length()) {
 					if (skipped > 0) {
@@ -341,7 +344,7 @@ public class AntPathMatcher implements PathMatcher {
 	private int skipSegment(char[] chars, int pos, String prefix) {
 		int skipped = 0;
 		for (char c : prefix.toCharArray()) {
-			if (isWildcardChar(c)) {
+			if (isWildcardChar(c)) { // * ? { 之一
 				return skipped;
 			}
 			else if (pos + skipped >= chars.length) {
@@ -693,7 +696,7 @@ public class AntPathMatcher implements PathMatcher {
 					}
 					for (int i = 1; i <= matcher.groupCount(); i++) {
 						String name = this.variableNames.get(i - 1);
-						String value = matcher.group(i);
+						String value = matcher.group(i); // 地址
 						uriTemplateVariables.put(name, value);
 					}
 				}

@@ -48,6 +48,13 @@
 			<param-name>servletInitParam1</param-name>
 			<param-value>servletInitParam1Value</param-value>
 		</init-param>
+		<!--  文件上传配置 
+		<multipart-config>
+	       <max-file-size>52428800</max-file-size>  最大文件大小,50MB
+	       <max-request-size>52428800</max-request-size> 允许的body大小
+	       <file-size-threshold>0</file-size-threshold> 超过多少阈值，文件写入硬盘
+	    </multipart-config> 
+	    -->
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>HelloServlet</servlet-name>
@@ -96,4 +103,5 @@
 			<default-content-type>text/html; charset=utf-8</default-content-type><!-- 输出内容的编码类型 -->
 		</jsp-property-group>
 	</jsp-config>
+	
 </web-app>

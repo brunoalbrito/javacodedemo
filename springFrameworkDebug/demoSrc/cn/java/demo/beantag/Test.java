@@ -24,8 +24,10 @@ import cn.java.demo.beantag.bean.lookupmethod.Property1;
 import cn.java.demo.beantag.bean.methodreplacer.MethodReplacerImpl;
 import cn.java.demo.beantag.beandefinition_property.StupidRootBeanDefinitionInJavaTest;
 import cn.java.demo.beantag.internal.AnnotationUtilsTest;
+import cn.java.demo.beantag.internal.BeanNameGeneratorTest;
 import cn.java.demo.beantag.internal.BeanUtilsTest;
 import cn.java.demo.beantag.internal.ExpressionParserTest;
+import cn.java.demo.beantag.internal.I18nTest;
 import cn.java.demo.beantag.internal.ObjectUtilsTest;
 import cn.java.demo.beantag.internal.ReflectionUtilsTest;
 import cn.java.demo.beantag.internal.TypeConverterTest;
@@ -201,20 +203,27 @@ public class Test {
 		System.out.println("-------------其他-------------------");
 		{ // 其他
 			
-			// 类型转换器
+			System.out.println("******类型转换器");
 			TypeConverterTest.testStandardTypeConverterTest();
 			
-			// 使用表达式访问bean对象
+			System.out.println("******使用表达式访问bean对象");
 			ExpressionParserTest.testStandardBeanExpressionResolverResultString((AbstractRefreshableConfigApplicationContext) context);
 			ExpressionParserTest.testStandardBeanExpressionResolverResultBeanObject((AbstractRefreshableConfigApplicationContext) context);
 			
-			// 实例化bean
+			System.out.println("******实例化bean");
 			BeanUtilsTest.testInstantiateClass((AbstractRefreshableConfigApplicationContext) context);
 			BeanUtilsTest.testIsPresent((AbstractRefreshableConfigApplicationContext) context);
 			
+			System.out.println("******反射工具、注解工具、对象工具");
 			ReflectionUtilsTest.testReflectionUtils((AbstractRefreshableConfigApplicationContext) context);
 			AnnotationUtilsTest.testAnnotationUtils((AbstractRefreshableConfigApplicationContext) context);
 			ObjectUtilsTest.testObjectUtils((AbstractRefreshableConfigApplicationContext) context);
+			
+			System.out.println("******自动生成beanName");
+			BeanNameGeneratorTest.testBeanNameGenerator((AbstractRefreshableConfigApplicationContext) context);
+			
+			System.out.println("******国际化");
+			I18nTest.testI18n((AbstractRefreshableConfigApplicationContext) context);
 		}
 		
 	}

@@ -139,8 +139,11 @@ public class ResourceBundleThemeSource implements HierarchicalThemeSource, BeanC
 			synchronized (this.themeCache) {
 				theme = this.themeCache.get(themeName);
 				if (theme == null) {
+					// basenamePrefix = "themes."
+					// themeName = "theme0"
+					// basename = "themes.theme0"
 					String basename = this.basenamePrefix + themeName;
-					MessageSource messageSource = createMessageSource(basename);
+					MessageSource messageSource = createMessageSource(basename); //!!!!
 					theme = new SimpleTheme(themeName, messageSource);
 					initParent(theme);
 					this.themeCache.put(themeName, theme);

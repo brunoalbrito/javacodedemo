@@ -8,18 +8,53 @@ import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.context.support.MessageSourceAccessor;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.support.RequestContext;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
+import freemarker.ext.servlet.AllHttpScopesHashModel;
+import freemarker.ext.servlet.FreemarkerServlet;
+import freemarker.ext.servlet.HttpRequestHashModel;
+import freemarker.ext.servlet.HttpRequestParametersHashModel;
 import freemarker.template.SimpleHash;
 
 public class 模板的渲染_freemarker {
 	/*
+		org.springframework.web.servlet.view.freemarker.FreeMarkerView
+		
+		//-------------------部分初始化------------------------
+		org.springframework.context.support.ApplicationObjectSupport.setApplicationContext(ApplicationContext context)
+		{
+			this.applicationContext = context; // === org.springframework.web.context.support.XmlWebApplicationContext
+			this.messageSourceAccessor = new MessageSourceAccessor(context);
+			ApplicationObjectSupport.initApplicationContext(context);
+			{
+				org.springframework.web.context.support.WebApplicationObjectSupport.initApplicationContext(ApplicationContext context)
+				{
+					super.initApplicationContext(context);
+					{
+						org.springframework.context.support.ApplicationObjectSupport.initApplicationContext(ApplicationContext context)
+						{
+							ApplicationObjectSupport.initApplicationContext() // 空方法
+						}
+					}
+					if ((this.servletContext == null) && (context instanceof WebApplicationContext)) {
+						this.servletContext = ((WebApplicationContext) context).getServletContext();
+						if (this.servletContext != null)
+							initServletContext(this.servletContext);
+					}
+				}
+				
+			}
+		}
+		
+		//---------------------渲染的过程----------------------
 		org.springframework.web.servlet.view.AbstractView.render(Map<String, ?> model, HttpServletRequest request, HttpServletResponse response)
 		{
-			Map<String, Object> mergedModel = createMergedOutputModel(model, request, response);
+			Map<String, Object> mergedModel = AbstractView.createMergedOutputModel(model, request, response);
 			{
 				Map<String, Object> pathVars = (this.exposePathVariables ?
 				(Map<String, Object>) request.getAttribute(View.PATH_VARIABLES) : null);
@@ -40,19 +75,20 @@ public class 模板的渲染_freemarker {
 		
 				// Expose RequestContext?
 				if (this.requestContextAttribute != null) {
-					mergedModel.put(this.requestContextAttribute, createRequestContext(request, response, mergedModel));
+					mergedModel.put(this.requestContextAttribute, createRequestContext(request, response, mergedModel)); // !!!! 设置请求上下文
 				}
 		
 				return mergedModel;
 			}
-			prepareResponse(request, response);
+			AbstractView.prepareResponse(request, response);
 			{
 				if (generatesDownloadContent()) {
 					response.setHeader("Pragma", "private");
 					response.setHeader("Cache-Control", "private, must-revalidate");
 				}
 			}
-			renderMergedOutputModel(mergedModel, getRequestToExpose(request), response);
+			// org.springframework.web.servlet.view.AbstractTemplateView
+			AbstractTemplateView.renderMergedOutputModel(mergedModel, getRequestToExpose(request), response);
 			{
 				org.springframework.web.servlet.view.AbstractTemplateView.renderMergedOutputModel(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) 
 				{
@@ -81,30 +117,50 @@ public class 模板的渲染_freemarker {
 								new RequestContext(request, response, getServletContext(), model));
 					}
 			
-					applyContentType(response);
+					AbstractTemplateView.applyContentType(response); // 输出内容类型
 					{
 						if (response.getContentType() == null) {
 							response.setContentType(getContentType());
 						}
 					}
 			
-					renderMergedTemplateModel(model, request, response);
+					FreeMarkerView.renderMergedTemplateModel(model, request, response);
 					{
-						org.springframework.web.servlet.view.freemarker.FreeMarkerView.renderMergedTemplateModel(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) 
+						FreeMarkerView.renderMergedTemplateModel(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) 
 						{
-							FreeMarkerView.exposeHelpers(model, request); // !!!
+							FreeMarkerView.exposeHelpers(model, request); // !!! 空方法
 							FreeMarkerView.doRender(model, request, response); // !!!
 							{
 								// Expose model to JSP tags (as request attributes).
-								exposeModelAsRequestAttributes(model, request);
+								AbstractView.exposeModelAsRequestAttributes(model, request);
+								{
+									for (Map.Entry<String, Object> entry : model.entrySet()) {
+										String modelName = entry.getKey();
+										Object modelValue = entry.getValue();
+										if (modelValue != null) {
+											request.setAttribute(modelName, modelValue); // !!!! 所有的属性值，放入request
+										}
+										else {
+											request.removeAttribute(modelName);
+										}
+									}
+								}
+								
 								// Expose all standard FreeMarker hash models.
-								SimpleHash fmModel = buildTemplateModel(model, request, response);
-						
-								if (logger.isDebugEnabled()) {
-									logger.debug("Rendering FreeMarker template [" + getUrl() + "] in FreeMarkerView '" + getBeanName() + "'");
+								SimpleHash fmModel = buildTemplateModel(model, request, response); // 内置的一些对象
+								{
+									AllHttpScopesHashModel fmModel = new AllHttpScopesHashModel(getObjectWrapper(), getServletContext(), request);
+									// JspTaglibs、Application、Session、Request、RequestParameters
+									fmModel.put(FreemarkerServlet.KEY_JSP_TAGLIBS, this.taglibFactory);
+									fmModel.put(FreemarkerServlet.KEY_APPLICATION, this.servletContextHashModel);
+									fmModel.put(FreemarkerServlet.KEY_SESSION, buildSessionModel(request, response));
+									fmModel.put(FreemarkerServlet.KEY_REQUEST, new HttpRequestHashModel(request, response, getObjectWrapper()));
+									fmModel.put(FreemarkerServlet.KEY_REQUEST_PARAMETERS, new HttpRequestParametersHashModel(request));
+									fmModel.putAll(model);
+									return fmModel;
 								}
 								// Grab the locale-specific version of the template.
-								Locale locale = RequestContextUtils.getLocale(request);
+								Locale locale = RequestContextUtils.getLocale(request); // 识别出本地语言
 								FreeMarkerView.processTemplate(getTemplate(locale){
 									return FreeMarkerView.getTemplate(getUrl(), locale);
 									{

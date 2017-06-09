@@ -1,2 +1,7 @@
 eclipse.preferences.version=1
+encoding//WebRoot/WEB-INF/templates/exception/index.jsp=UTF-8
+encoding//WebRoot/WEB-INF/templates/resp-handler/return-model-and-view0.jsp=UTF-8
+encoding//WebRoot/WEB-INF/templates/theme-handler/method0.jsp=UTF-8
+encoding//WebRoot/WEB-INF/templates/upload-handler/upload0.jsp=UTF-8
+encoding//WebRoot/WEB-INF/templates/upload-handler/upload1.jsp=UTF-8
 encoding//WebRoot/WEB-INF/web.xml=UTF-8

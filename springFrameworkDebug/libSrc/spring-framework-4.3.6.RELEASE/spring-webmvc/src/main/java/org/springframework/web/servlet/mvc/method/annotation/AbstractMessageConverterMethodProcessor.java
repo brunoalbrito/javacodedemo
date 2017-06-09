@@ -219,17 +219,17 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 
 		if (selectedMediaType != null) {
 			selectedMediaType = selectedMediaType.removeQualityValue();
-			for (HttpMessageConverter<?> messageConverter : this.messageConverters) {
+			for (HttpMessageConverter<?> messageConverter : this.messageConverters) { // 迭代配置的消息转换器
 				if (messageConverter instanceof GenericHttpMessageConverter) {
 					if (((GenericHttpMessageConverter) messageConverter).canWrite(
-							declaredType, valueType, selectedMediaType)) {
+							declaredType, valueType, selectedMediaType)) { // 消息转换器，可以写消息
 						outputValue = (T) getAdvice().beforeBodyWrite(outputValue, returnType, selectedMediaType,
 								(Class<? extends HttpMessageConverter<?>>) messageConverter.getClass(),
 								inputMessage, outputMessage);
 						if (outputValue != null) {
 							addContentDispositionHeader(inputMessage, outputMessage);
 							((GenericHttpMessageConverter) messageConverter).write(
-									outputValue, declaredType, selectedMediaType, outputMessage);
+									outputValue, declaredType, selectedMediaType, outputMessage); // 写消息
 							if (logger.isDebugEnabled()) {
 								logger.debug("Written [" + outputValue + "] as \"" + selectedMediaType +
 										"\" using [" + messageConverter + "]");
@@ -238,13 +238,13 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 						return;
 					}
 				}
-				else if (messageConverter.canWrite(valueType, selectedMediaType)) {
+				else if (messageConverter.canWrite(valueType, selectedMediaType)) { // 消息转换器，可以写消息
 					outputValue = (T) getAdvice().beforeBodyWrite(outputValue, returnType, selectedMediaType,
 							(Class<? extends HttpMessageConverter<?>>) messageConverter.getClass(),
 							inputMessage, outputMessage);
 					if (outputValue != null) {
 						addContentDispositionHeader(inputMessage, outputMessage);
-						((HttpMessageConverter) messageConverter).write(outputValue, selectedMediaType, outputMessage);
+						((HttpMessageConverter) messageConverter).write(outputValue, selectedMediaType, outputMessage);// 写消息
 						if (logger.isDebugEnabled()) {
 							logger.debug("Written [" + outputValue + "] as \"" + selectedMediaType +
 									"\" using [" + messageConverter + "]");

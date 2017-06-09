@@ -100,7 +100,7 @@ public abstract class AbstractNamedValueMethodArgumentResolver implements Handle
 					"Specified name must not resolve to null: [" + namedValueInfo.name + "]");
 		}
 
-		Object arg = resolveName(resolvedName.toString(), nestedParameter, webRequest); // 子类实现
+		Object arg = resolveName(resolvedName.toString(), nestedParameter, webRequest); // 子类实现，获取“参数值”
 		if (arg == null) {
 			if (namedValueInfo.defaultValue != null) {
 				arg = resolveStringValue(namedValueInfo.defaultValue);
@@ -143,7 +143,7 @@ public abstract class AbstractNamedValueMethodArgumentResolver implements Handle
 		NamedValueInfo namedValueInfo = this.namedValueInfoCache.get(parameter);
 		if (namedValueInfo == null) {
 			namedValueInfo = createNamedValueInfo(parameter); // !!! 子类实现
-			namedValueInfo = updateNamedValueInfo(parameter, namedValueInfo);
+			namedValueInfo = updateNamedValueInfo(parameter, namedValueInfo); // 创建NamedValueInfo对象
 			this.namedValueInfoCache.put(parameter, namedValueInfo);
 		}
 		return namedValueInfo;

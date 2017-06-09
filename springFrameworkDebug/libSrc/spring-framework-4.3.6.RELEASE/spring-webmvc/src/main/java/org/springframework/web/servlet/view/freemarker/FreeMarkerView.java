@@ -230,7 +230,7 @@ public class FreeMarkerView extends AbstractTemplateView {
 	protected void renderMergedTemplateModel(
 			Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-		exposeHelpers(model, request); // !!!
+		exposeHelpers(model, request); // !!! 空方法
 		doRender(model, request, response); // !!!
 	}
 
@@ -272,15 +272,15 @@ public class FreeMarkerView extends AbstractTemplateView {
 	 */
 	protected void doRender(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// Expose model to JSP tags (as request attributes).
-		exposeModelAsRequestAttributes(model, request);
+		exposeModelAsRequestAttributes(model, request); // !!!! 所有的属性值，放入request
 		// Expose all standard FreeMarker hash models.
-		SimpleHash fmModel = buildTemplateModel(model, request, response);
+		SimpleHash fmModel = buildTemplateModel(model, request, response); // 设置一些内置对象
 
 		if (logger.isDebugEnabled()) {
 			logger.debug("Rendering FreeMarker template [" + getUrl() + "] in FreeMarkerView '" + getBeanName() + "'");
 		}
 		// Grab the locale-specific version of the template.
-		Locale locale = RequestContextUtils.getLocale(request);
+		Locale locale = RequestContextUtils.getLocale(request); // 识别出本地语言
 		processTemplate(getTemplate(locale), fmModel, response); // !!!! getTemplate(...)
 	}
 
@@ -292,7 +292,7 @@ public class FreeMarkerView extends AbstractTemplateView {
 	 * @param response current servlet response
 	 * @return the FreeMarker template model, as a {@link SimpleHash} or subclass thereof
 	 */
-	protected SimpleHash buildTemplateModel(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) {
+	protected SimpleHash buildTemplateModel(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) { // 内置的一些对象
 		AllHttpScopesHashModel fmModel = new AllHttpScopesHashModel(getObjectWrapper(), getServletContext(), request);
 		// JspTaglibs、Application、Session、Request、RequestParameters
 		fmModel.put(FreemarkerServlet.KEY_JSP_TAGLIBS, this.taglibFactory);
