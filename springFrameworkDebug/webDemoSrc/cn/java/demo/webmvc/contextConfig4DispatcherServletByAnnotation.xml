@@ -57,22 +57,22 @@
     
     
     <!-- ******关于“自定义配置”的配置******bof****** -->
-    <bean id="propertySourcesPropertyResolver" class="org.springframework.core.env.PropertySourcesPropertyResolver"><!-- 多配置文件解析器 -->
+    <!-- <bean id="propertySourcesPropertyResolver" class="org.springframework.core.env.PropertySourcesPropertyResolver">
         <constructor-arg index="0" type="org.springframework.core.env.PropertySources" name="propertySources">
-            <bean class="org.springframework.core.env.MutablePropertySources"><!-- 多配置文件 -->
-		        <constructor-arg index="0" type="org.springframework.core.env.PropertySources" name="propertySources">
+            <bean class="cn.java.demo.core.env.MutablePropertySourcesExtend">
+		        <constructor-arg index="0" type="org.springframework.core.env.PropertySource[]" name="propertySources">
 		            <array value-type="org.springframework.core.env.PropertySource" merge="true">
-					    <bean class="org.springframework.core.io.support.ResourcePropertySource"><!-- 配置文件1 -->
+					    <bean class="org.springframework.core.io.support.ResourcePropertySource">
 					        <constructor-arg index="0" type="java.lang.String" name="location" value="classpath:/configures/global.properties" />
 					    </bean>
-					    <bean class="org.springframework.core.io.support.ResourcePropertySource"><!-- 配置文件2 -->
+					    <bean class="org.springframework.core.io.support.ResourcePropertySource">
 					        <constructor-arg index="0" type="java.lang.String" name="location" value="classpath:/configures/configure0.properties" />
 					    </bean>
 				    </array>
 				</constructor-arg>
 		    </bean>
         </constructor-arg>
-    </bean>
+    </bean> -->
     <!-- ******关于“自定义配置”的配置******eof****** -->
 
     <!-- ******关于“多语言”的配置******bof****** -->
