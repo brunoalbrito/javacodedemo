@@ -22,23 +22,13 @@ import org.springframework.web.servlet.HandlerMapping;
 public class ThrowExceptionHandler {
 	
 	/**
-	 * /throw-exception-handler
+	 * /throw-exception-handler/index
 	 */
 	@RequestMapping(path = { "/index" }, method = {RequestMethod.GET})
 	public String index(HttpServletRequest request,HttpServletResponse response) throws BindException{
 		debugPrint(request);
 		if(true){
 			throw new RuntimeException("测试异常拦截");
-		}
-		try {
-			ResourcePropertySource resourcePropertySource0 = new ResourcePropertySource("classpath:/configures/global.properties");
-			ResourcePropertySource resourcePropertySource1 = new ResourcePropertySource("classpath:/configures/configure0.properties");
-			PropertySource[] propertySources= {resourcePropertySource0,resourcePropertySource1};
-			ArrayList<PropertySource> propertySourceList = new ArrayList<PropertySource>();
-			MutablePropertySources mutablePropertySources = new MutablePropertySources(propertySourceList);
-			PropertySourcesPropertyResolver propertySourcesPropertyResolver  = new PropertySourcesPropertyResolver(mutablePropertySources);
-		} catch (Exception e) {
-			// TODO: handle exception
 		}
 		return "";
 	}

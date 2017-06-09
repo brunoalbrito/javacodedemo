@@ -11,7 +11,7 @@ import org.springframework.web.HttpRequestHandler;
 import cn.java.demo.web.util.WebUtilx;
 
 /**
- *
+ * http://localhost:8080/springwebmvc/
  */
 public class DefaultHandler implements HttpRequestHandler {
 

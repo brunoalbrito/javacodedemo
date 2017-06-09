@@ -16,6 +16,7 @@
 	<!-- ******关于“文件上传”的配置******eof****** -->
 	
 	<!-- ******关于“Hanlder列表”的配置******bof****** -->
+	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.PropertyHandler" />
 	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.CrudHandler" />
 	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.DownloadHandler" />
 	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.ThrowExceptionHandler" />
@@ -57,7 +58,7 @@
     
     
     <!-- ******关于“自定义配置”的配置******bof****** -->
-    <!-- <bean id="propertySourcesPropertyResolver" class="org.springframework.core.env.PropertySourcesPropertyResolver">
+    <bean id="propertySourcesPropertyResolver" class="org.springframework.core.env.PropertySourcesPropertyResolver">
         <constructor-arg index="0" type="org.springframework.core.env.PropertySources" name="propertySources">
             <bean class="cn.java.demo.core.env.MutablePropertySourcesExtend">
 		        <constructor-arg index="0" type="org.springframework.core.env.PropertySource[]" name="propertySources">
@@ -72,7 +73,7 @@
 				</constructor-arg>
 		    </bean>
         </constructor-arg>
-    </bean> -->
+    </bean>
     <!-- ******关于“自定义配置”的配置******eof****** -->
 
     <!-- ******关于“多语言”的配置******bof****** -->
