@@ -124,7 +124,7 @@ public class ResourceBundleMessageSource extends AbstractResourceBasedMessageSou
 	 */
 	@Override
 	protected String resolveCodeWithoutArguments(String code, Locale locale) {
-		Set<String> basenames = getBasenameSet();
+		Set<String> basenames = getBasenameSet(); // 前缀
 		for (String basename : basenames) {
 			ResourceBundle bundle = getResourceBundle(basename, locale);
 			if (bundle != null) {
@@ -169,7 +169,7 @@ public class ResourceBundleMessageSource extends AbstractResourceBasedMessageSou
 		if (getCacheMillis() >= 0) {
 			// Fresh ResourceBundle.getBundle call in order to let ResourceBundle
 			// do its native caching, at the expense of more extensive lookup steps.
-			return doGetBundle(basename, locale);
+			return doGetBundle(basename, locale); // !!!!
 		}
 		else {
 			// Cache forever: prefer locale cache over repeated getBundle calls.
@@ -322,8 +322,13 @@ public class ResourceBundleMessageSource extends AbstractResourceBasedMessageSou
 
 			// Special handling of default encoding
 			if (format.equals("java.properties")) {
-				String bundleName = toBundleName(baseName, locale);
-				final String resourceName = toResourceName(bundleName, "properties");
+				
+				// baseName == "themes.theme0"
+				// bundleName == "themes.theme0_zh_CN"
+				String bundleName = toBundleName(baseName, locale); // 以下划线拼接
+				
+				// bundleName == "themes/theme0_zh_CN.properties"
+				final String resourceName = toResourceName(bundleName, "properties"); // 替换“.”成“_”
 				final ClassLoader classLoader = loader;
 				final boolean reloadFlag = reload;
 				InputStream stream;

@@ -1260,7 +1260,7 @@ public class ContextConfig implements LifecycleListener {
             for (Map.Entry<ServletContainerInitializer,Set<Class<?>>> entry : initializerClassMap.entrySet()) {
                 if (entry.getValue().isEmpty()) { // 添加Servlet容器初始化器到StandardContext
                     context.addServletContainerInitializer(
-                            entry.getKey(), null);
+                            entry.getKey(), null); // StandardContext.initializers.put(sci, classes);
                 } else {
                     context.addServletContainerInitializer(
                             entry.getKey(), entry.getValue());
@@ -1760,7 +1760,7 @@ public class ContextConfig implements LifecycleListener {
         }
 
         for (ServletContainerInitializer sci : detectedScis) {
-            initializerClassMap.put(sci, new HashSet<Class<?>>()); // 要调用的初始化器
+            initializerClassMap.put(sci, new HashSet<Class<?>>()); // 要调用的初始化器!!!
 
             HandlesTypes ht;
             try {

@@ -176,7 +176,7 @@ public abstract class AbstractTemplateView extends AbstractUrlBasedView {
 	 * @param response current HTTP response
 	 * @see #setContentType
 	 */
-	protected void applyContentType(HttpServletResponse response)	{
+	protected void applyContentType(HttpServletResponse response)	{  // 输出内容类型
 		if (response.getContentType() == null) {
 			response.setContentType(getContentType());
 		}

@@ -212,7 +212,8 @@ public class MessageTag extends HtmlEscapingAwareTag implements ArgumentAware {
 	 * The returned message String should be unescaped.
 	 */
 	protected String resolveMessage() throws JspException, NoSuchMessageException {
-		MessageSource messageSource = getMessageSource();
+		// 当加载主题包时，org.springframework.context.support.ResourceBundleMessageSource
+		MessageSource messageSource = getMessageSource(); 
 		if (messageSource == null) {
 			throw new JspTagException("No corresponding MessageSource found");
 		}

@@ -22,11 +22,33 @@ ${map["key1"]}
 
 -------输出对象------------
 不支持的访问方式：object["property1"]
-${user["username"]} , ${user.username}
+-->获取对象属性
+${user["id"]} , ${user["username"]} , ${user.username} , ${user.getUsername("prefix_")}
+-->调用对象方法，带参数
+ ${user.testMethod0("testMethod0...")}
+-->调用对象方法，动态参数
+ ${user.testMethod0("${user.username}_testMethod0...")}
 
 -------指令------------
+-->指令 assign
+- 普通类型
+<#assign intTemp=23 />
+${intTemp}
+
+- list类型
+<#assign listTemp=[1,2,"item3"] />
+<#list listTemp as itemValue>
+	${itemValue}
+</#list>
+
+- map类型
+<#assign mapTemp={"key1":"value1","key2":"valu2"} />
+<#list mapTemp?keys as key>
+	${key} ---> ${mapTemp[key]!("null")}
+</#list>
+
 -->指令 if
-<#assign age=23>
+<#assign age=23 />
 <#if (age>60)>老年人
 	<#elseif (age>40)>中年人
 	<#elseif (age>20)>青年人
@@ -58,7 +80,7 @@ include 指令的作用类似于JSP的包含指令
 -->指令 include
 import指令用于导入FreeMarker模板中的所有变量,并将该变量放置在指定的Map对象中
 <#import "./commonMap.ftl" as import0> 
-<@import0.common_macro common_macro_param0="common_macro_param0_value" /> 
+<@import0.common_macro common_macro_param0="common_macro_param0_value" />
 
 -->指令 Macro宏、return
 定义
@@ -75,3 +97,6 @@ import指令用于导入FreeMarker模板中的所有变量,并将该变量放置
 -->指令 escape , noescape
 <#assign htmlcode="<test>">
 ${htmlcode}<#-- 默认会自动转义--> 
+
+-->指令 noparse不解析指令
+<#noparse>${requestContext.contextPath}</#noparse>

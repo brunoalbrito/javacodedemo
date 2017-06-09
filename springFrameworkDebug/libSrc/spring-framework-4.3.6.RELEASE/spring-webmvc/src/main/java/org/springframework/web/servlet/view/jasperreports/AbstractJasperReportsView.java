@@ -479,6 +479,7 @@ public abstract class AbstractJasperReportsView extends AbstractUrlBasedView {
 		if (url == null) {
 			return null;
 		}
+		// org.springframework.web.context.support.XmlWebApplicationContext
 		Resource mainReport = getApplicationContext().getResource(url);
 		return loadReport(mainReport);
 	}
@@ -501,7 +502,7 @@ public abstract class AbstractJasperReportsView extends AbstractUrlBasedView {
 					}
 					InputStream is = resource.getInputStream();
 					try {
-						return (JasperReport) JRLoader.loadObject(is);
+						return (JasperReport) JRLoader.loadObject(is); // "xxxx.jasper"
 					}
 					finally {
 						is.close();
@@ -514,7 +515,7 @@ public abstract class AbstractJasperReportsView extends AbstractUrlBasedView {
 					}
 					InputStream is = resource.getInputStream();
 					try {
-						JasperDesign design = JRXmlLoader.load(is);
+						JasperDesign design = JRXmlLoader.load(is); // "xxxx.jrxml"
 						return JasperCompileManager.compileReport(design);
 					}
 					finally {
@@ -563,11 +564,11 @@ public abstract class AbstractJasperReportsView extends AbstractUrlBasedView {
 		exposeLocalizationContext(model, request);
 
 		// Fill the report.
-		JasperPrint filledReport = fillReport(model);
-		postProcessReport(filledReport, model);
+		JasperPrint filledReport = fillReport(model); // 填充报表
+		postProcessReport(filledReport, model); // 空方法
 
 		// Prepare response and render report.
-		populateHeaders(response);
+		populateHeaders(response); // 填充头
 		renderReport(filledReport, model, response);
 	}
 

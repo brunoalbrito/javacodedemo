@@ -8,20 +8,34 @@
     <!-- 全局@InitBinder、@ModelAttribute配置 -->
 	<bean id="controllerAdviceImpl0" class="cn.java.demo.webmvc.bean.controlleradvice.byannotation.ControllerAdviceImpl0" />
 	
-	<!-- Hanlder列表 -->
+	<!-- ******关于“文件上传”的配置******bof****** -->
+	<!-- id名固定为"multipartResolver" -->
+  	<bean id="multipartResolver" class="org.springframework.web.multipart.support.StandardServletMultipartResolver">
+    	<property name="resolveLazily" value="true" />
+	</bean>
+	<!-- ******关于“文件上传”的配置******eof****** -->
+	
+	<!-- ******关于“Hanlder列表”的配置******bof****** -->
+	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.CrudHandler" />
+	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.DownloadHandler" />
+	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.ThrowExceptionHandler" />
 	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.Handler0" />
 	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.Handler1" />
+	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.HaveAwareHandler" />
+	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.I18nHandler" />
 	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.ReqParamHandler" />
-	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.ReqRespJsonHandler" />
 	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.RespHandler" />
+	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.RespJsonHandler" />
 	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.RespXmlHandler" />
 	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.RestHandler" />
 	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.TestHandler" />
+	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.ThemeJstlHandler" />
 	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.UploadHandler" />
 	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.ValidHandler" />
-	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.DownloadHandler" />
+	<!-- ******关于“Hanlder列表”的配置******eof****** -->
 	
-	<!-- 拦截器映射器  bof -->
+	<!-- ******关于“拦截器映射器”的配置******bof****** -->
+	<!-- 符合条件的请求，才会应用本拦截器 -->
     <bean class="org.springframework.web.servlet.handler.MappedInterceptor">
       	<constructor-arg index="0" type="java.lang.String[]" name="includePatterns"><!-- 只要有一个符合条件 -->
       	    <array value-type="java.lang.String" merge="false">
@@ -39,26 +53,133 @@
       		<bean class="cn.java.demo.webmvc.bean.interceptor.MappedInterceptorWithHandlerInterceptorImpl1" /> <!-- 只能是实现HandlerInterceptor接口的拦截器 -->
       	</constructor-arg>
     </bean>
+    <!-- ******关于“拦截器映射器”的配置******eof****** -->
     
-	<!-- 请求匹配器 -->
+    
+    <!-- ******关于“自定义配置”的配置******bof****** -->
+    <bean id="propertySourcesPropertyResolver" class="org.springframework.core.env.PropertySourcesPropertyResolver"><!-- 多配置文件解析器 -->
+        <constructor-arg index="0" type="org.springframework.core.env.PropertySources" name="propertySources">
+            <bean class="org.springframework.core.env.MutablePropertySources"><!-- 多配置文件 -->
+		        <constructor-arg index="0" type="org.springframework.core.env.PropertySources" name="propertySources">
+		            <array value-type="org.springframework.core.env.PropertySource" merge="true">
+					    <bean class="org.springframework.core.io.support.ResourcePropertySource"><!-- 配置文件1 -->
+					        <constructor-arg index="0" type="java.lang.String" name="location" value="classpath:/configures/global.properties" />
+					    </bean>
+					    <bean class="org.springframework.core.io.support.ResourcePropertySource"><!-- 配置文件2 -->
+					        <constructor-arg index="0" type="java.lang.String" name="location" value="classpath:/configures/configure0.properties" />
+					    </bean>
+				    </array>
+				</constructor-arg>
+		    </bean>
+        </constructor-arg>
+    </bean>
+    <!-- ******关于“自定义配置”的配置******eof****** -->
+
+    <!-- ******关于“多语言”的配置******bof****** -->
+    <!-- 多语言，id名固定为"messageSource" -->
+	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="fallbackToSystemLocale" value="true" />
+		<property name="useCodeAsDefaultMessage" value="false" />
+		<property name="defaultEncoding" value="UTF-8" />
+		<property name="basenames">
+	        <list>
+	            <value>classpath:languages/module0</value>  
+	            <value>classpath:languages/module1</value>
+	        </list>  
+	    </property>
+	</bean>
+	<!-- ******关于“多语言”的配置******eof****** -->
+	
+	<!-- ******关于“theme”的配置******bof****** -->
+    <!-- theme解析器，id名固定为"themeResolver" -->
+	<bean id="themeResolver" class="org.springframework.web.servlet.theme.FixedThemeResolver">
+         <property name="defaultThemeName" value="default" />  <!-- 通过url上的theme参数切换主题 -->
+	</bean>
+	<!-- theme切换拦截器 -->
+	<bean id="themeChangeInterceptor" class="org.springframework.web.servlet.theme.ThemeChangeInterceptor">  
+         <property name="paramName" value="theme" />  <!-- 通过url上的theme参数切换主题 -->
+  	</bean>
+  	<!-- 主题包，id名固定为"themeSource" -->
+  	<bean id="themeSource" class="org.springframework.ui.context.support.ResourceBundleThemeSource">
+    	<property name="basenamePrefix" value="themes."></property>
+	</bean>
+	<!-- ******关于“theme”的配置******eof****** -->
+  
+	
+	<!-- ******关于“请求匹配器”的配置******bof****** -->
+	<!-- 匹配出来的是org.springframework.web.method.HandlerMethod接口的handler -->
 	<bean id="handlerMapping1" class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
-	    <property  name="defaultHandler"> 
+		<property  name="defaultHandler"> 
 	    	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.DefaultHandler" /> <!-- 默认Hanlder-->
 	    </property>
 	    <property  name="interceptors"> <!-- 方法拦截器 -->
 	        <array merge="false">
 			 	<bean class="cn.java.demo.webmvc.bean.interceptor.HandlerInterceptorImpl0" />
     			<bean class="cn.java.demo.webmvc.bean.interceptor.WebRequestInterceptorImpl0" />
+    			<ref local="themeChangeInterceptor"/><!-- 模板主题的识别 -->
 		 	</array>
 	    </property>
+	    <property  name="urlPathHelper">
+	        <bean class="org.springframework.web.util.UrlPathHelper" />
+	    </property>
+	    <property  name="pathMatcher">
+	        <bean class="org.springframework.util.AntPathMatcher" />
+	    </property>
+	    <property  name="contentNegotiationManager"> 
+	    	<bean class="org.springframework.web.accept.ContentNegotiationManager" /> <!-- 默认Hanlder-->
+	    </property>
+	    <property  name="useSuffixPatternMatch" value="true" /> 
+	    <property  name="useTrailingSlashMatch" value="true" /> 
+	    <property  name="useRegisteredSuffixPatternMatch" value="false" /> 
     </bean>
+    <!-- ******关于“请求匹配器”的配置******eof****** -->
+   
+   <!-- ******关于“Hanlder适配器”的配置******bof****** -->
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter"> <!-- 实现org.springframework.web.method.HandlerMethod接口的handler的适配器 -->
+    	<property  name="messageConverters"><!-- 消息转换器 -->
+    	    <list>
+    	       <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"><!-- 消息转换器 -->
+                    <property name="objectMapper">
+                        <bean class="com.fasterxml.jackson.databind.ObjectMapper">
+                            <property name="dateFormat">
+                                <bean class="java.text.SimpleDateFormat">
+                                    <constructor-arg type="java.lang.String" value="yyyy-MM-dd HH:mm:ss" />
+                                </bean>
+                            </property>
+                        </bean>
+                    </property>
+                    <property name="supportedMediaTypes">
+                        <list>
+                            <value>application/json;charset=UTF-8</value>
+                        </list>
+                    </property>
+                </bean>
+                <bean class="cn.java.demo.webmvc.http.converter.fastjson.FastJsonObjectHttpMessageConverter" /><!-- 消息转换器 -->
+    	    </list>
+    	</property>
+    </bean>
+    <bean class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter" /> <!-- 实现org.springframework.web.servlet.mvc.Controller接口的handler的适配器 -->
+    <bean class="org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter" /> <!-- 实现org.springframework.web.HttpRequestHandler接口的handler的适配器 -->
+    <!-- ******关于“Hanlder适配器”的配置******eof****** -->
+  
+    <!-- ******关于“异常处理器”的配置******bof****** -->
+    <bean class="org.springframework.web.servlet.mvc.annotation.ResponseStatusExceptionResolver"><!-- 处理有注解@ResponseStatus的异常类 -->
+        <property  name="order" value="1" />
+    </bean>
+    <bean class="org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver">
+    	<property  name="order" value="3" />
+    </bean>
+    <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <property  name="order" value="5" />
+        <property  name="defaultErrorView" value="exception/index" /> <!-- 默认模板 -->
+        <property  name="defaultStatusCode" value="404" /> <!-- 默认状态码-->
+        <property  name="exceptionAttribute" value="exception" /> <!-- 异常对象存放在哪个字段 -->
+    </bean>
+    <!-- ******关于“异常处理器”的配置******eof****** -->
     
-    <!-- Hanlder适配器 -->
-    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter" />
-    
-    
-	<!-- 视图渲染器 -->
-    <bean id="freeMarkerConfigurer" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer" autowire="byName"><!-- FreeMarker配置 ，优先级别应该高于jsp的模板引擎 -->
+    <!-- ******关于“视图解析器”的配置******bof****** -->
+	<!-- 视图解析器，实现org.springframework.web.servlet.ViewResolver接口 -->
+    <bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer" autowire="byName"><!-- FreeMarker配置 ，优先级别应该高于jsp的模板引擎 -->
     	<property  name="templateLoaderPaths">
     		<array value-type="java.lang.String" merge="false">
 			 	<value type="java.lang.String">/WEB-INF/templates</value>
@@ -66,18 +187,32 @@
 		 	</array>
 	 	</property>
     </bean>
-    <bean id="viewResolver1" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver" autowire="byName"> <!-- FreeMarker的支持 -->
-        <property  name="order" value="0" />
+    <!-- FreeMarker的支持，会检查模板的存在性-->
+    <bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver" autowire="byName"> 
+        <property  name="order" value="1" />
     	<property  name="prefix" value="" />
     	<property  name="suffix" value=".ftl" />
     	<property  name="contentType" value="text/html; charset=UTF-8" />
     	<property name="requestContextAttribute" value="requestContext" />
     </bean>
-    <bean id="viewResolver0" class="org.springframework.web.servlet.view.InternalResourceViewResolver" autowire="byName"> <!-- JSP和jstl的支持 -->
-        <property  name="order" value="1" />
+    
+    <!-- JasperReports的支持(pdf)，默认不会检查模板的存在性  -->
+    <bean class="org.springframework.web.servlet.view.jasperreports.JasperReportsViewResolver" autowire="byName"> 
+        <property  name="order" value="3" />
+        <property  name="prefix" value="/WEB-INF/templates/" />
+    	<property  name="suffix" value=".jrxml" />
+    	<property  name="reportDataKey" value="reportData" />
+    	<property  name="viewClass" value="cn.java.demo.webmvc.servlet.view.jasperreports.JasperReportsPdfViewExtend" /><!-- 重写，增加"检查模板的存在性 " -->
+    </bean>
+    
+    <!-- JSP和jstl的支持，不会检查模板的存在性 -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" autowire="byName"> 
+        <property  name="order" value="10" />
         <property  name="prefix" value="/WEB-INF/templates/" />
     	<property  name="suffix" value=".jsp" />
     	<property  name="contentType" value="text/html; charset=UTF-8" />
     </bean>
+    <!-- ******关于“视图解析器”的配置******eof****** -->
+    
     
 </beans>

@@ -61,7 +61,7 @@ public abstract class AbstractJasperReportsSingleFormatView extends AbstractJasp
 	protected void renderReport(JasperPrint populatedReport, Map<String, Object> model, HttpServletResponse response)
 			throws Exception {
 
-		net.sf.jasperreports.engine.JRExporter exporter = createExporter();
+		net.sf.jasperreports.engine.JRExporter exporter = createExporter(); // 创建生成器
 
 		Map<net.sf.jasperreports.engine.JRExporterParameter, Object> mergedExporterParameters = getConvertedExporterParameters();
 		if (!CollectionUtils.isEmpty(mergedExporterParameters)) {
@@ -69,10 +69,10 @@ public abstract class AbstractJasperReportsSingleFormatView extends AbstractJasp
 		}
 
 		if (useWriter()) {
-			renderReportUsingWriter(exporter, populatedReport, response);
+			renderReportUsingWriter(exporter, populatedReport, response); // 使用writer写数据
 		}
 		else {
-			renderReportUsingOutputStream(exporter, populatedReport, response);
+			renderReportUsingOutputStream(exporter, populatedReport, response); // 使用流写数据
 		}
 	}
 
@@ -98,7 +98,7 @@ public abstract class AbstractJasperReportsSingleFormatView extends AbstractJasp
 		response.setContentType(contentType);
 
 		// Render report into HttpServletResponse's Writer.
-		JasperReportsUtils.render(exporter, populatedReport, response.getWriter());
+		JasperReportsUtils.render(exporter, populatedReport, response.getWriter()); // 渲染
 	}
 
 	/**

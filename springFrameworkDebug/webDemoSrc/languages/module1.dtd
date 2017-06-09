@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module1 [
+	<!ELEMENT module1 (controller0)>
+	<!ELEMENT controller0(method0,method1)>
+	<!ELEMENT method0 (message0)>
+	<!ELEMENT method1 (message0)>
+	
+]>

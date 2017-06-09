@@ -5,6 +5,33 @@ import org.springframework.web.servlet.ViewResolver;
 
 public class 模板的渲染_jsp {
 	/*
+ 		
+ 		//-------------------部分初始化------------------------
+		org.springframework.context.support.ApplicationObjectSupport.setApplicationContext(ApplicationContext context)
+		{
+			this.applicationContext = context; // === org.springframework.web.context.support.XmlWebApplicationContext
+			this.messageSourceAccessor = new MessageSourceAccessor(context);
+			ApplicationObjectSupport.initApplicationContext(context);
+			{
+				org.springframework.web.context.support.WebApplicationObjectSupport.initApplicationContext(ApplicationContext context)
+				{
+					super.initApplicationContext(context);
+					{
+						org.springframework.context.support.ApplicationObjectSupport.initApplicationContext(ApplicationContext context)
+						{
+							ApplicationObjectSupport.initApplicationContext() // 空方法
+						}
+					}
+					if ((this.servletContext == null) && (context instanceof WebApplicationContext)) {
+						this.servletContext = ((WebApplicationContext) context).getServletContext();
+						if (this.servletContext != null)
+							initServletContext(this.servletContext);
+					}
+				}
+				
+			}
+		}
+ 		
  		----------------“根据模板名称实例化模板”---------------------
 		org.springframework.web.servlet.view.InternalResourceViewResolver.InternalResourceViewResolver()
 		{

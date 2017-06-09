@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+    <entry key="module1.controller0.method0.message0"><![CDATA[xml->模块module1，控制器controller0，方法method0，消息message0]]></entry>
+    <entry key="module1.controller0.method1.message0"><![CDATA[xml->模块module1，控制器controller0，方法method1，消息message0]]></entry>
+    <entry key="module1.controller1.method0.message0"><![CDATA[xml->模块module1，控制器controller1，方法method0，消息message0]]></entry>
+    <entry key="module1.controller1.method1.message0"><![CDATA[xml->模块module1，控制器controller1，方法method1，消息message0]]></entry>
+</properties>

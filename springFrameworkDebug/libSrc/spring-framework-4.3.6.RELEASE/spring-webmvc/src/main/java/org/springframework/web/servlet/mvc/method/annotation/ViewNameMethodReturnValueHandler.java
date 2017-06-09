@@ -70,7 +70,7 @@ public class ViewNameMethodReturnValueHandler implements HandlerMethodReturnValu
 	@Override
 	public boolean supportsReturnType(MethodParameter returnType) {
 		Class<?> paramType = returnType.getParameterType();
-		return (void.class == paramType || CharSequence.class.isAssignableFrom(paramType));
+		return (void.class == paramType || CharSequence.class.isAssignableFrom(paramType)); // 返回值是void或者String
 	}
 
 	@Override

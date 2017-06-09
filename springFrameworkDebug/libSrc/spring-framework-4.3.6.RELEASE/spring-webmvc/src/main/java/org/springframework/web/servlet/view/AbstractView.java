@@ -330,7 +330,7 @@ public abstract class AbstractView extends WebApplicationObjectSupport implement
 
 		// Expose RequestContext?
 		if (this.requestContextAttribute != null) {
-			mergedModel.put(this.requestContextAttribute, createRequestContext(request, response, mergedModel)); // !!!!
+			mergedModel.put(this.requestContextAttribute, createRequestContext(request, response, mergedModel)); // !!!! 设置请求上下文
 		}
 
 		return mergedModel;

@@ -1,5 +1,8 @@
 package cn.java.demo.util;
 
+import java.text.MessageFormat;
+import java.util.Locale;
+
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -15,7 +18,6 @@ import org.springframework.core.PriorityOrdered;
 public class ApplicationContextUtil {
 	/**
 	 * 转成ConfigurableListableBeanFactory类型
-	 * 
 	 * @param context
 	 * @return
 	 */
@@ -57,6 +59,7 @@ public class ApplicationContextUtil {
 		return null;
 	}
 
+	
 	/**
 	 * 打印所有的BeanDefinition
 	 * @param context
@@ -68,6 +71,7 @@ public class ApplicationContextUtil {
 		if(beanDefinitionRegistry==null){
 			return;
 		}
+		printBeanDefinitionInRegistry(beanDefinitionRegistry);
 	}
 	
 	/**

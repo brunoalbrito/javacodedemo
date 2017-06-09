@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+    <entry key="module1.controller0.method0.message0"><![CDATA[xml->moduleName module1 ,controllerName controller0 ,methodName method0 ,message message0]]></entry>
+    <entry key="module1.controller0.method1.message0"><![CDATA[xml->moduleName module1 ,controllerName controller0 ,methodName method1 ,message message0]]></entry>
+    <entry key="module1.controller1.method0.message0"><![CDATA[xml->moduleName module1 ,controllerName controller1 ,methodName method0 ,message message0]]></entry>
+    <entry key="module1.controller1.method1.message0"><![CDATA[xml->moduleName module1 ,controllerName controller1 ,methodName method1 ,message message0]]></entry>
+</properties>

@@ -16,7 +16,6 @@ public class UrlPathHelperTest {
 		{
 			System.out.println(UriUtils.encode("paramvalue", WebUtils.DEFAULT_CHARACTER_ENCODING));
 			System.out.println(UriUtils.decode("paramvalue", WebUtils.DEFAULT_CHARACTER_ENCODING));
-			
 		}
 		
 		// 编码/解码
@@ -30,10 +29,20 @@ public class UrlPathHelperTest {
 
 	public static void test() {
 		HttpServletRequest request = null;
-		Map<String, String> uriVariables = null;
+		
 		
 		UrlPathHelper urlPathHelper = new UrlPathHelper();
-		Map<String, String> decodedUriVariables = urlPathHelper.decodePathVariables(request, uriVariables);
+		// 请求地址
+		{
+			String lookupPath = urlPathHelper.getLookupPathForRequest(request);
+		}
+		
+		// 解码地址中的变量
+		{
+			Map<String, String> uriVariables = null;
+			Map<String, String> decodedUriVariables = urlPathHelper.decodePathVariables(request, uriVariables);
+		}
+		
 	}
 	
 	

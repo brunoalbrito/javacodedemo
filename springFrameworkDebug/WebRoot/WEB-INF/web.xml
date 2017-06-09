@@ -40,6 +40,12 @@
 	        <param-name>contextConfigLocation</param-name>
        		<param-value>/WEB-INF/classes/cn/java/demo/webmvc/applicationContext.xml</param-value>
      	</init-param>
+     	<!-- 文件上传配置 -->
+		<multipart-config>
+	       <max-file-size>52428800</max-file-size>  <!-- 最大文件大小,50MB -->
+	       <max-request-size>52428800</max-request-size> <!-- 允许的body大小,50MB -->
+	       <file-size-threshold>10485760</file-size-threshold><!-- 超过多少阈值，文件写入硬盘,10MB -->
+	    </multipart-config>
     </servlet>
     <servlet-mapping>
         <servlet-name>springwebmvc_DispatcherServlet</servlet-name>
@@ -57,4 +63,14 @@
         <servlet-name>springwebmvc_DispatcherServlet</servlet-name>
         <url-pattern>/springwebmvc/*.do</url-pattern>
 　　</servlet-mapping>
+        
+    <!-- JSP页面的相关配置 -->
+	<jsp-config>
+		<jsp-property-group>
+			<url-pattern>/*</url-pattern> <!-- JSP访问URL地址的配置 -->
+			<page-encoding>UTF-8</page-encoding><!-- jsp文件的编码类型 -->
+			<trim-directive-whitespaces>true</trim-directive-whitespaces>
+		</jsp-property-group>
+	</jsp-config>
+	
 </web-app>

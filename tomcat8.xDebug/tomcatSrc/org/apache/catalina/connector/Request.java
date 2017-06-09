@@ -2747,7 +2747,7 @@ public class Request implements org.apache.catalina.servlet4preview.http.HttpSer
 //	    	</servlet>
 //	    </web-app>
         // org.apache.catalina.core.StandardWrapper.getMultipartConfigElement()
-        MultipartConfigElement mce = getWrapper().getMultipartConfigElement(); //如果有配置<multipart-config>标签,就不为null
+        MultipartConfigElement mce = getWrapper().getMultipartConfigElement(); // 如果有配置<multipart-config>标签,就不为null
 
         if (mce == null) { // 当有配置<multipart-config>标签时，这个条件为false
             if(context.getAllowCasualMultipartParsing()) { // false
@@ -2807,12 +2807,12 @@ public class Request implements org.apache.catalina.servlet4preview.http.HttpSer
                 partsParseException = ioe;
                 return;
             }
-            factory.setSizeThreshold(mce.getFileSizeThreshold()); // 设置请求大小阈值
+            factory.setSizeThreshold(mce.getFileSizeThreshold()); // 超过多少阈值，文件写入硬盘
 
             // 文件上传
             ServletFileUpload upload = new ServletFileUpload();
             upload.setFileItemFactory(factory);
-            upload.setFileSizeMax(mce.getMaxFileSize());
+            upload.setFileSizeMax(mce.getMaxFileSize()); // 最大文件大小
             upload.setSizeMax(mce.getMaxRequestSize()); // 允许的body大小
 
             parts = new ArrayList<>();

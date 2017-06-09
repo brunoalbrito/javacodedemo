@@ -1,8 +1,6 @@
 package cn.java.demo.webmvc.bean.handler.byannotation;
 
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Reader;
 import java.io.Writer;
 import java.security.Principal;
 import java.util.Locale;
@@ -26,8 +24,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.DataBinder;
-import org.springframework.validation.SmartValidator;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.MatrixVariable;
@@ -45,6 +43,7 @@ import org.springframework.web.bind.annotation.ValueConstants;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -72,23 +71,33 @@ public class ReqParamHandler {
 	 */
 	@InitBinder(value={"userLognForm","userLognForm0"})
 	public void initBinder(DataBinder binder) {
+		if(binder instanceof WebDataBinder){
+			
+		}
+		if("userLognForm".equals(binder.getObjectName())){
+			
+		}
+		else if("userLognForm0".equals(binder.getObjectName())){
+			
+		}
 		binder.setValidator(new UserLoginFormValidator()); // 添加校验器
 	}
 
 	
 	/**
-	 * http://localhost:8080/springwebmvc/req-param-handler/get
+	 * /req-param-handler/get
 	 */
 	@RequestMapping(path={"/get"},method={RequestMethod.GET})
 	public ModelAndView get(
-			@RequestParam(name="userId",required=false)String userId, // get、post
+			@RequestParam(name="userId",required=false,defaultValue="")Integer userId, // get、post ，不能使用原生类型int，要使用类Integer，不然出现null时，会出错
+			@RequestParam(name="userName",required=false,defaultValue="")String userName, // get、post
 			@RequestParam(name="",required=false)Map requestParamMap, 
 			@PathVariable(name="urlTplParam0",required=false)String urlTplParam0, // 地址中的模板变量
 			@PathVariable(name="",required=false)Map pathVariableMap,
 			@MatrixVariable(name="matrixVariableParam0",pathVar="pathVar0",required=false)String matrixVariableParam0,
 			@MatrixVariable(name="",pathVar="pathVar0",required=false)Map matrixVariableParamMap,
-			@ModelAttribute(name="username") String username, 
-			@ModelAttribute(name="userLognForm") @Validated() UserLoginForm userLogin, // 
+			@ModelAttribute(name="username") String username,  // 1.尝试从url模板中获取， 2.尝试request.getParameter(attributeName)获取， 3.尝试创建对象，自动注入
+			@ModelAttribute(name="userLognForm") @Validated() UserLoginForm userLoginForm, // 
 			BindingResult result, // Errors result, 必须紧跟在@ModelAttribute后面 - 存放校验结果
 			@RequestBody(required=false)String requestBody0, // !!! 读取http中body的数据，要首先配置转换器
 			@RequestPart(name="",required=false)String requestPart,  //  !!! 读取http中multipart的数据，要首先配置转换器
@@ -96,8 +105,8 @@ public class ReqParamHandler {
 			@RequestHeader(name="",required=false)Map requestHeaderMap,
 			@CookieValue(name="cookieValue0",required=false)Cookie cookieValue0,  // cookie
 			@Value(value="value值")String value0, // 常量
-			@SessionAttribute(name="sessionAttribute0",required=false)String sessionAttribute0, // session
-			@RequestAttribute(name="requestAttribute0",required=false)String requestAttribute0, 
+			@SessionAttribute(name="sessionAttribute0",required=false)String sessionAttribute0, // session --- request.getSession().getAttribute("sessionAttribute0")
+			@RequestAttribute(name="requestAttribute0",required=false)String requestAttribute0,  // request --- request.getAttribute("requestAttribute0")
 			WebRequest webRequest,  // 包装对象
 			HttpServletRequest request, // 原生对象
 			// MultipartRequest multipartRequest,
@@ -154,7 +163,7 @@ public class ReqParamHandler {
 			
 			// 获取方式2 -- 直接映射好
 			{
-				System.out.println(urlTplParam0);
+				System.out.println("urlTplParam0 = " + urlTplParam0);
 			}
 			
 			// 获取方式3  -- 通过map获取
@@ -196,6 +205,21 @@ public class ReqParamHandler {
 			// 3.尝试创建对象，自动注入
 			if(result instanceof BeanPropertyBindingResult){
 				
+			}
+			
+			// 表单校验
+			{
+				/*
+				 	创建 cn.java.demo.webmvc.form.UserLoginForm 对象
+				 	创建 org.springframework.web.bind.WebDataBinder 对象，维护对cn.java.demo.webmvc.form.UserLoginForm对象的依赖，和保存UserLoginForm对象的在“业务方法”上的参数名userLoginForm
+				 	调用“带@InitBinder注解的方法”，给WebDataBinder对象注入校验器对象
+				 	给UserLoginForm对象注入表单提交上来的值
+				 	检查参数上是否有“@Validated注解”，如果有，那么调用WebDataBinder对象的方法validate(...)
+				 */
+				System.out.println(userLoginForm);
+				if (result.hasErrors()) {
+					
+				}
 			}
 		}
 		
@@ -268,50 +292,59 @@ public class ReqParamHandler {
 		}
 		
 		// WebRequest webRequest
-		if(webRequest instanceof NativeWebRequest){ // webRequest = org.springframework.web.context.request.ServletWebRequest
-			NativeWebRequest nativeWebRequest = (NativeWebRequest) webRequest;
-			HttpServletRequest httpServletRequest = nativeWebRequest.getNativeRequest(HttpServletRequest.class);
-			HttpServletResponse httpServletResponse = nativeWebRequest.getNativeResponse(HttpServletResponse.class);
-			
-			// input
-			{
-				// header
-				httpServletRequest.getHeader("key0");
-				// get/post
-				httpServletRequest.getParameter("key0");
-				// session 
-				httpServletRequest.getSession().getAttribute("key0");
-				httpServletRequest.getSession().setAttribute("key0", "value0");
-				// cookie
-				httpServletRequest.getCookies();
-				// attribute
-				httpServletRequest.getAttribute("key0");
-				httpServletRequest.setAttribute("key0", "value0");
-				// InputStream
-				httpServletRequest.getInputStream();
-				// forward
-				// httpServletRequest.getRequestDispatcher("/index.html").forward(httpServletRequest, httpServletResponse);
+		{
+			if(webRequest instanceof ServletWebRequest){
+				
 			}
-			
-			// output
-			{
-				// CharacterEncoding
-				httpServletResponse.setCharacterEncoding("utf-8");
-				// header
-				httpServletResponse.addHeader("key0", "value0");
-				// cookie
-				Cookie cookie = new Cookie("cookieName0", "cookieValue0");
-				httpServletResponse.addCookie(cookie);
-				// Writer
-				// httpServletResponse.getWriter().write("{json:json}");
+			if(webRequest instanceof NativeWebRequest){ // webRequest = org.springframework.web.context.request.ServletWebRequest
+				NativeWebRequest nativeWebRequest = (NativeWebRequest) webRequest;
+				HttpServletRequest httpServletRequest = nativeWebRequest.getNativeRequest(HttpServletRequest.class);
+				HttpServletResponse httpServletResponse = nativeWebRequest.getNativeResponse(HttpServletResponse.class);
+				
+				// input
+				{
+					// header
+					httpServletRequest.getHeader("key0");
+					// get/post
+					httpServletRequest.getParameter("key0");
+					// session 
+					httpServletRequest.getSession().getAttribute("key0");
+					httpServletRequest.getSession().setAttribute("key0", "value0");
+					// cookie
+					httpServletRequest.getCookies();
+					// attribute
+					httpServletRequest.getAttribute("key0");
+					httpServletRequest.setAttribute("key0", "value0");
+					// InputStream
+					httpServletRequest.getInputStream();
+					// forward
+					// httpServletRequest.getRequestDispatcher("/index.html").forward(httpServletRequest, httpServletResponse);
+				}
+				
+				// output
+				{
+					// CharacterEncoding
+					httpServletResponse.setCharacterEncoding("utf-8");
+					// header
+					httpServletResponse.addHeader("key0", "value0");
+					// cookie
+					Cookie cookie = new Cookie("cookieName0", "cookieValue0");
+					httpServletResponse.addCookie(cookie);
+					// Writer
+					// httpServletResponse.getWriter().write("{json:json}");
+				}
 			}
 		}
+		
 		
 		// HttpServletRequest request
 		{
 			{
 				// 匹配的表达式
-				String bestPattern = (String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE); 
+				String bestMatchingPattern = (String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
+				String pathWithinMapping = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
+				System.out.println("bestMatchingPattern : " + bestMatchingPattern); // 内部路由路径  “/valid-handler/*”
+				System.out.println("pathWithinMapping : " + pathWithinMapping); // 用户访问路径  “/valid-handler/login”
 			}
 			{
 				// 地址  param0=value0&param1=value1

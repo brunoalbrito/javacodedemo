@@ -74,7 +74,7 @@ public final class RequestMappingInfo implements RequestCondition<RequestMapping
 			ProducesRequestCondition produces, RequestCondition<?> custom) {
 
 		this.name = (StringUtils.hasText(name) ? name : null);
-		this.patternsCondition = (patterns != null ? patterns : new PatternsRequestCondition());
+		this.patternsCondition = (patterns != null ? patterns : new PatternsRequestCondition()); // org.springframework.web.servlet.mvc.condition.PatternsRequestCondition
 		this.methodsCondition = (methods != null ? methods : new RequestMethodsRequestCondition());
 		this.paramsCondition = (params != null ? params : new ParamsRequestCondition());
 		this.headersCondition = (headers != null ? headers : new HeadersRequestCondition());
@@ -217,7 +217,8 @@ public final class RequestMappingInfo implements RequestCondition<RequestMapping
 			return null;
 		}
 
-		PatternsRequestCondition patterns = this.patternsCondition.getMatchingCondition(request);
+		// patternsCondition == org.springframework.web.servlet.mvc.condition.PatternsRequestCondition
+		PatternsRequestCondition patterns = this.patternsCondition.getMatchingCondition(request); 
 		if (patterns == null) {
 			return null;
 		}

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletConfig;
@@ -25,6 +26,7 @@ import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 import org.springframework.web.cors.CorsUtils;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 import org.springframework.web.util.CookieGenerator;
@@ -32,10 +34,14 @@ import org.springframework.web.util.HtmlUtils;
 import org.springframework.web.util.JavaScriptUtils;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 
 import cn.java.demo.util.ApplicationContextUtil;
 import cn.java.demo.web.bean.NeedAwareBean;
+import cn.java.demo.web.multipart.support.StandardServletMultipartResolverX;
+import cn.java.demo.web.multipart.support.StandardServletMultipartResolverX.StandardMultipartFileX;
+import cn.java.demo.web.multipart.support.StandardServletMultipartResolverX.StandardMultipartHttpServletRequestX;
 import cn.java.demo.web.util.WebUtilx;
 
 @SuppressWarnings(value={  "serial" })
@@ -148,9 +154,10 @@ public class HelloServlet extends CommonServlet   {
 			{
 				LocaleResolver localeResolver = new AcceptHeaderLocaleResolver();
 				Locale locale = localeResolver.resolveLocale(req);
-				System.out.println("locale.getCountry() : "+locale.getCountry());
-				System.out.println("locale.getLanguage() : "+locale.getLanguage());
+				System.out.println("locale.getCountry() : "+locale.getCountry()); // CN
+				System.out.println("locale.getLanguage() : "+locale.getLanguage()); // zh
 				System.out.println("locale.toString() : "+locale.toString()); // zh_CN
+				System.out.println("locale.getVariant() : "+locale.getVariant()); // 空
 				resp.setLocale(locale);
 			}
 			
@@ -215,13 +222,15 @@ public class HelloServlet extends CommonServlet   {
 //				this.render("/WEB-INF/template/index.jsp", model, req, resp, null);
 			}
 			
+			// 编解码
+			{
+				System.out.println(WebUtilx.encode("paramvalue", WebUtils.DEFAULT_CHARACTER_ENCODING));
+				System.out.println(WebUtilx.decode("paramvalue", WebUtils.DEFAULT_CHARACTER_ENCODING));
+			}
+			
 		}
 	}
 	
-	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		
-	}
 	
 	
 }

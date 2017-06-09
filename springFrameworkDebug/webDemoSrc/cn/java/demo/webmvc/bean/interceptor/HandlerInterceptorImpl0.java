@@ -1,5 +1,7 @@
 package cn.java.demo.webmvc.bean.interceptor;
 
+import java.util.Enumeration;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -10,8 +12,6 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
-
-import cn.java.demo.web.util.WebUtilx;
 
 public class HandlerInterceptorImpl0 implements HandlerInterceptor {
 
@@ -43,11 +43,18 @@ public class HandlerInterceptorImpl0 implements HandlerInterceptor {
 			// 后面的调用方式是 ((HttpRequestHandler) handler).handleRequest(request, response); // 没有返回值
 			String bestMatchingPattern = (String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
 			String pathWithinMapping = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
-			System.out.println("bestMatchingPattern : " + bestMatchingPattern);
-			System.out.println("pathWithinMapping : " + pathWithinMapping);
+			System.out.println("bestMatchingPattern : " + bestMatchingPattern); // 内部路由路径  “/valid-handler/*”
+			System.out.println("pathWithinMapping : " + pathWithinMapping); // 用户访问路径  “/valid-handler/login”
 			if("/ctrl1/method0".equals(pathWithinMapping)){
 				response.getWriter().write("{status=299,message='not authorization access.'}");
 				return false; // 没有权限访问
+			}
+			
+			{
+				System.out.println("request.getServletContext().getContextPath() = " + request.getServletContext().getContextPath());
+				System.out.println("request.getServletContext().getRealPath(\"/\") = "+ request.getServletContext().getRealPath("/"));
+				System.out.println("request.getRequestURL() = " + request.getRequestURL());
+				System.out.println("request.getRequestURI() = " + request.getRequestURI());
 			}
 		}
 		
@@ -70,6 +77,21 @@ public class HandlerInterceptorImpl0 implements HandlerInterceptor {
 			System.out.println("handler instanceof HandlerMethod");
 		}
 		
+		{
+			System.out.println("--->请求的参数");
+			Enumeration enumeration = request.getParameterNames();
+			while (enumeration.hasMoreElements()) {
+				String paramName = (String) enumeration.nextElement();
+				String[] values = request.getParameterValues(paramName);
+				StringBuilder stringBuilder = new StringBuilder();
+				stringBuilder.append(paramName);
+				stringBuilder.append(" = ");
+				for (String string : values) {
+					stringBuilder.append(string);
+				}
+				System.out.println(stringBuilder);
+			}
+		}
 		return true;
 	}
 

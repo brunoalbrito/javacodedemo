@@ -283,7 +283,7 @@ public final class WebAsyncManager {
 		interceptors.addAll(this.callableInterceptors.values());
 		interceptors.add(timeoutCallableInterceptor);
 
-		final Callable<?> callable = webAsyncTask.getCallable();
+		final Callable<?> callable = webAsyncTask.getCallable(); // !!!!
 		final CallableInterceptorChain interceptorChain = new CallableInterceptorChain(interceptors);
 
 		this.asyncWebRequest.addTimeoutHandler(new Runnable() {
@@ -313,7 +313,7 @@ public final class WebAsyncManager {
 					Object result = null;
 					try {
 						interceptorChain.applyPreProcess(asyncWebRequest, callable);
-						result = callable.call();
+						result = callable.call(); // 处理请求
 					}
 					catch (Throwable ex) {
 						result = ex;

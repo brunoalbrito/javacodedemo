@@ -527,13 +527,13 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				registerBeanPostProcessors(beanFactory); // 扫描applicationContext.xml中实现了BeanPostProcessor接口的bean，并实例化添加到beanFactory
 
 				// Initialize message source for this context.
-				initMessageSource(); // 设置bean工厂的一些属性
+				initMessageSource(); // 初始化消息源
 
 				// Initialize event multicaster for this context.
 				initApplicationEventMulticaster(); // 创建应用事件多播器
 
 				// Initialize other special beans in specific context subclasses.
-				onRefresh();
+				onRefresh(); // 失败themeSource对象
 
 				// Check for listener beans and register them.
 				registerListeners();
@@ -708,7 +708,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 */
 	protected void initMessageSource() {
 		ConfigurableListableBeanFactory beanFactory = getBeanFactory();
-		if (beanFactory.containsLocalBean(MESSAGE_SOURCE_BEAN_NAME)) {
+		if (beanFactory.containsLocalBean(MESSAGE_SOURCE_BEAN_NAME)) { // 获取messageSource对象
 			this.messageSource = beanFactory.getBean(MESSAGE_SOURCE_BEAN_NAME, MessageSource.class);
 			// Make MessageSource aware of parent MessageSource.
 			if (this.parent != null && this.messageSource instanceof HierarchicalMessageSource) {
@@ -1270,6 +1270,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * @throws IllegalStateException if the context has not been initialized yet
 	 */
 	private MessageSource getMessageSource() throws IllegalStateException {
+		// org.springframework.context.support.DelegatingMessageSource
 		if (this.messageSource == null) {
 			throw new IllegalStateException("MessageSource not initialized - " +
 					"call 'refresh' before accessing messages via the context: " + this);

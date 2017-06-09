@@ -708,6 +708,7 @@ public class RequestContext {
 	 * @throws org.springframework.context.NoSuchMessageException if not found
 	 */
 	public String getMessage(String code, Object[] args, boolean htmlEscape) throws NoSuchMessageException {
+		// webApplicationContext === org.springframework.web.context.support.XmlWebApplicationContext
 		String msg = this.webApplicationContext.getMessage(code, args, this.locale);
 		return (htmlEscape ? HtmlUtils.htmlEscape(msg) : msg);
 	}

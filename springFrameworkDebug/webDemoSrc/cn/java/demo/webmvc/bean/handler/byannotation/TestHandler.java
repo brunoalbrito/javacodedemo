@@ -33,10 +33,9 @@ import org.springframework.web.util.WebUtils;
 import cn.java.demo.webmvc.internal.BeanExpressionResolverTest;
 import cn.java.demo.webmvc.internal.BeanWrapperInMvcTest;
 
-@RequestMapping(path={"/test",""})
+@RequestMapping(path={"/test-handler"})
 public class TestHandler {
 	
-	@SuppressWarnings("unused")
 	@RequestMapping(path={"/test"})
 	public ModelAndView test(HttpServletRequest request,HttpServletResponse response,WebRequest webRequest) throws Exception{
 		
@@ -82,6 +81,14 @@ public class TestHandler {
 					}
 				}
 			}
+			
+			// 国际化
+			{
+				WebApplicationContext webApplicationContext = (WebApplicationContext) request.getAttribute(DispatcherServlet.WEB_APPLICATION_CONTEXT_ATTRIBUTE); // 子上下文
+				Object[] args = { new Long(1273), "DiskOne" };
+				String message = webApplicationContext.getMessage("module0.ctrl0.action0", args, "硬盘\"{1}\"有{0}个文件。", Locale.CHINESE);
+				System.out.println(message);
+			}
 		}
 		
 		
@@ -114,13 +121,16 @@ public class TestHandler {
 			ServletContext servletContext = request.getServletContext();
 			XmlWebApplicationContext rootApplicationContext = (XmlWebApplicationContext) servletContext.getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE); // 根上下文
 			WebApplicationContext webApplicationContext = (WebApplicationContext) request.getAttribute(DispatcherServlet.WEB_APPLICATION_CONTEXT_ATTRIBUTE); // 子上下文
-			// 解析表达式
+			
+			System.out.println("--------解析表达式--------");
 			{
 				BeanExpressionResolverTest.testBeanExpressionResolver(rootApplicationContext);
 			}
 			
+			System.out.println("--------BeanWrapper--------");
 			{
-				BeanWrapperInMvcTest.testPropertyAccessorFactory();
+				BeanWrapperInMvcTest.testPropertyAccessorFactory1();
+				BeanWrapperInMvcTest.testPropertyAccessorFactory2();
 			}
 		}
 		return null;
