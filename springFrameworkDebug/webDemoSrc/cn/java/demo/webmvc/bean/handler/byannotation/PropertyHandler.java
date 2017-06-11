@@ -33,8 +33,10 @@ public class PropertyHandler implements ApplicationContextAware {
 		{
 			ApplicationContext applicationContext = getApplicationContext();
 			PropertySourcesPropertyResolver propertySourcesPropertyResolver = applicationContext.getBean("propertySourcesPropertyResolver",PropertySourcesPropertyResolver.class);
+			
 			System.out.println(propertySourcesPropertyResolver.getProperty("SPRING_PROJECT_DEBUG", Boolean.class));
 			System.out.println(propertySourcesPropertyResolver.getProperty("property0"));
+			System.out.println(propertySourcesPropertyResolver.getProperty("property1"));
 		}
 		return null;
 	}

@@ -110,7 +110,7 @@ class BeanDefinitionValueResolver {
 		else if (value instanceof RuntimeBeanNameReference) {
 			String refName = ((RuntimeBeanNameReference) value).getBeanName();
 			refName = String.valueOf(doEvaluate(refName));
-			if (!this.beanFactory.containsBean(refName)) { // 不存在bean名称就出错
+			if (!this.beanFactory.containsBean(refName)) { // 不存在指定名称的bean，就出错
 				throw new BeanDefinitionStoreException(
 						"Invalid bean name '" + refName + "' in bean reference for " + argName);
 			}

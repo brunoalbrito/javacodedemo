@@ -389,13 +389,14 @@ public class FormTag extends AbstractHtmlElementTag {
 		}
 
 		// Expose the form object name for nested tags...
-		String modelAttribute = resolveModelAttribute();
+		String modelAttribute = resolveModelAttribute(); // userLoginForm
 		this.pageContext.setAttribute(MODEL_ATTRIBUTE_VARIABLE_NAME, modelAttribute, PageContext.REQUEST_SCOPE);
 
 		// Save previous nestedPath value, build and expose current nestedPath value.
 		// Use request scope to expose nestedPath to included pages too.
 		this.previousNestedPath =
 				(String) this.pageContext.getAttribute(NESTED_PATH_VARIABLE_NAME, PageContext.REQUEST_SCOPE);
+		// userLoginForm.
 		this.pageContext.setAttribute(NESTED_PATH_VARIABLE_NAME,
 				modelAttribute + PropertyAccessor.NESTED_PROPERTY_SEPARATOR, PageContext.REQUEST_SCOPE);
 

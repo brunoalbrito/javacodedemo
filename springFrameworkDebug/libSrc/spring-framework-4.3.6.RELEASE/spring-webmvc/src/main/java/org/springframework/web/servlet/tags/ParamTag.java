@@ -70,7 +70,7 @@ public class ParamTag extends BodyTagSupport {
 		}
 
 		// Find a param aware ancestor
-		ParamAware paramAwareTag = (ParamAware) findAncestorWithClass(this, ParamAware.class);
+		ParamAware paramAwareTag = (ParamAware) findAncestorWithClass(this, ParamAware.class); // 迭代父类对象，直到找到实现ParamAware接口的对象
 		if (paramAwareTag == null) {
 			throw new JspException("The param tag must be a descendant of a tag that supports parameters");
 		}

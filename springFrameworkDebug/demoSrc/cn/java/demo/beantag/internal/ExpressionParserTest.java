@@ -22,14 +22,10 @@ import cn.java.demo.util.ApplicationContextUtil;
 public class ExpressionParserTest {
 
 	public void note() {
-		/*
-		 * org.springframework.expression.common.CompositeStringExpression.
-		 * getValue(EvaluationContext context)
-		 * org.springframework.expression.common.LiteralExpression.getValue(
-		 * context, String.class) --- 简单文本
-		 * org.springframework.expression.spel.standard.SpelExpression.getValue(
-		 * context, String.class) --- 抽象语法树
-		 */
+//		  org.springframework.expression.common.CompositeStringExpression.getValue(EvaluationContext context)
+//		  org.springframework.expression.common.LiteralExpression.getValue(context, String.class) --- 简单文本
+//		  org.springframework.expression.spel.standard.SpelExpression.getValue(ontext, String.class) --- 抽象语法树
+		
 	}
 
 	/**

@@ -103,15 +103,15 @@ public class UrlTag extends HtmlEscapingAwareTag implements ParamAware {
 	 * Sets the value of the URL
 	 */
 	public void setValue(String value) {
-		if (value.contains(URL_TYPE_ABSOLUTE)) {
+		if (value.contains(URL_TYPE_ABSOLUTE)) { // 绝对路径
 			this.type = UrlType.ABSOLUTE;
 			this.value = value;
 		}
-		else if (value.startsWith("/")) {
+		else if (value.startsWith("/")) { // 相对上下文
 			this.type = UrlType.CONTEXT_RELATIVE;
 			this.value = value;
 		}
-		else {
+		else { // 相对地址
 			this.type = UrlType.RELATIVE;
 			this.value = value;
 		}
@@ -168,7 +168,7 @@ public class UrlTag extends HtmlEscapingAwareTag implements ParamAware {
 
 	@Override
 	public int doEndTag() throws JspException {
-		String url = createUrl();
+		String url = createUrl(); // 创建地址
 
 		RequestDataValueProcessor processor = getRequestContext().getRequestDataValueProcessor();
 		ServletRequest request = this.pageContext.getRequest();
@@ -219,8 +219,8 @@ public class UrlTag extends HtmlEscapingAwareTag implements ParamAware {
 		if (this.type != UrlType.RELATIVE && this.type != UrlType.ABSOLUTE && !this.value.startsWith("/")) {
 			url.append("/");
 		}
-		url.append(replaceUriTemplateParams(this.value, this.params, this.templateParams));
-		url.append(createQueryString(this.params, this.templateParams, (url.indexOf("?") == -1)));
+		url.append(replaceUriTemplateParams(this.value, this.params, this.templateParams)); // 替换地址中的模板变量
+		url.append(createQueryString(this.params, this.templateParams, (url.indexOf("?") == -1))); // 查询参数
 
 		String urlStr = url.toString();
 		if (this.type != UrlType.ABSOLUTE) {
@@ -289,6 +289,7 @@ public class UrlTag extends HtmlEscapingAwareTag implements ParamAware {
 
 		String encoding = pageContext.getResponse().getCharacterEncoding();
 		for (Param param : params) {
+			// {param0}
 			String template = URL_TEMPLATE_DELIMITER_PREFIX + param.getName() + URL_TEMPLATE_DELIMITER_SUFFIX;
 			if (uri.contains(template)) {
 				usedParams.add(param.getName());

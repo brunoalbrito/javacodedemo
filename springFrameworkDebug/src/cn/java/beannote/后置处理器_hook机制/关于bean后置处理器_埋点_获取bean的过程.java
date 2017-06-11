@@ -11,12 +11,25 @@ import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.PropertyValue;
 import org.springframework.beans.factory.Aware;
 import org.springframework.beans.factory.BeanClassLoaderAware;
+import org.springframework.beans.factory.BeanDefinitionStoreException;
 import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.config.DependencyDescriptor;
+import org.springframework.beans.factory.config.RuntimeBeanNameReference;
+import org.springframework.beans.factory.config.RuntimeBeanReference;
+import org.springframework.beans.factory.config.TypedStringValue;
 import org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory;
+import org.springframework.beans.factory.support.BeanDefinitionValueResolver;
+import org.springframework.beans.factory.support.ManagedArray;
+import org.springframework.beans.factory.support.ManagedList;
+import org.springframework.beans.factory.support.ManagedMap;
+import org.springframework.beans.factory.support.ManagedProperties;
+import org.springframework.beans.factory.support.ManagedSet;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.AutowireByTypeDependencyDescriptor;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory.OptionalDependencyFactory;
@@ -185,9 +198,55 @@ public class 关于bean后置处理器_埋点_获取bean的过程 {
 							
 								org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.applyPropertyValues(beanName, mbd, bw, pvs); // 设置属性值  bw === org.springframework.beans.BeanWrapperImpl
 								{
+									BeanDefinitionValueResolver valueResolver = new BeanDefinitionValueResolver(this, beanName, mbd, converter);
 									for (PropertyValue pv : original) { // 属性列表
 										String propertyName = pv.getName(); // 属性名
 										Object originalValue = pv.getValue(); // 属性值
+										// org.springframework.beans.factory.support.BeanDefinitionValueResolver
+										Object resolvedValue = valueResolver.resolveValueIfNecessary(pv, originalValue); // 解析依赖值
+										{
+											if (value instanceof RuntimeBeanReference) { // 是运行时引用，获取bean对象
+												RuntimeBeanReference ref = (RuntimeBeanReference) value;
+												return resolveReference(argName, ref);
+											}
+											else if (value instanceof RuntimeBeanNameReference) {
+												String refName = ((RuntimeBeanNameReference) value).getBeanName();
+												refName = String.valueOf(doEvaluate(refName));
+												if (!this.beanFactory.containsBean(refName)) { // 不存在bean名称就出错
+													throw new BeanDefinitionStoreException(
+															"Invalid bean name '" + refName + "' in bean reference for " + argName);
+												}
+												return refName;
+											}
+											else if (value instanceof BeanDefinitionHolder) {
+												// Resolve BeanDefinitionHolder: contains BeanDefinition with name and aliases.
+												BeanDefinitionHolder bdHolder = (BeanDefinitionHolder) value;
+												return resolveInnerBean(argName, bdHolder.getBeanName(), bdHolder.getBeanDefinition());
+											}
+											else if (value instanceof BeanDefinition) {
+												// Resolve plain BeanDefinition, without contained name: use dummy name.
+												BeanDefinition bd = (BeanDefinition) value;
+												String innerBeanName = "(inner bean)" + BeanFactoryUtils.GENERATED_BEAN_NAME_SEPARATOR +
+														ObjectUtils.getIdentityHexString(bd);
+												return resolveInnerBean(argName, innerBeanName, bd);
+											}
+											else if (value instanceof ManagedArray) {
+											}
+											else if (value instanceof ManagedList) {
+											}
+											else if (value instanceof ManagedSet) {
+											}
+											else if (value instanceof ManagedMap) {
+											}
+											else if (value instanceof ManagedProperties) {
+											}
+											else if (value instanceof TypedStringValue) {
+											}
+											else {
+												return evaluate(value);
+											}
+											
+										}
 									}
 									bw.setPropertyValues(new MutablePropertyValues(deepCopy)); // 设置值
 								}

@@ -107,6 +107,7 @@ public class MvcUriComponentsBuilder {
 	static {
 		defaultUriComponentsContributor = new CompositeUriComponentsContributor(
 				new PathVariableMethodArgumentResolver(), new RequestParamMethodArgumentResolver(false));
+
 	}
 
 	private final UriComponentsBuilder baseUrl;
@@ -328,6 +329,7 @@ public class MvcUriComponentsBuilder {
 	 */
 	public static MethodArgumentBuilder fromMappingName(UriComponentsBuilder builder, String name) {
 		RequestMappingInfoHandlerMapping handlerMapping = getRequestMappingInfoHandlerMapping();
+		
 		List<HandlerMethod> handlerMethods = handlerMapping.getHandlerMethodsForMappingName(name);
 		if (handlerMethods == null) {
 			throw new IllegalArgumentException("Mapping mappingName not found: " + name);
@@ -337,8 +339,8 @@ public class MvcUriComponentsBuilder {
 					name + ": " + handlerMethods);
 		}
 		HandlerMethod handlerMethod = handlerMethods.get(0);
-		Class<?> controllerType = handlerMethod.getBeanType();
-		Method method = handlerMethod.getMethod();
+		Class<?> controllerType = handlerMethod.getBeanType(); // 控制器类
+		Method method = handlerMethod.getMethod(); // 控制器中的方法
 		return new MethodArgumentBuilder(builder, controllerType, method);
 	}
 
@@ -400,7 +402,9 @@ public class MvcUriComponentsBuilder {
 		String methodPath = getMethodRequestMapping(method);
 		String path = pathMatcher.combine(typePath, methodPath);
 		baseUrl.path(path);
-		UriComponents uriComponents = applyContributors(baseUrl, method, args);
+		UriComponents uriComponents = applyContributors(baseUrl, method, args); // !!! 应用“促成因素”
+		// uriComponents === org.springframework.web.util.HierarchicalUriComponents.FullPathComponent
+		//  org.springframework.web.util.UriComponentsBuilder.uriComponents(uriComponents);
 		return UriComponentsBuilder.newInstance().uriComponents(uriComponents);
 	}
 
@@ -469,11 +473,14 @@ public class MvcUriComponentsBuilder {
 		}
 	}
 
+	/**
+	 * 应用“促成因素”
+	 */
 	private static UriComponents applyContributors(UriComponentsBuilder builder, Method method, Object... args) {
 		CompositeUriComponentsContributor contributor = getConfiguredUriComponentsContributor();
 		if (contributor == null) {
 			logger.debug("Using default CompositeUriComponentsContributor");
-			contributor = defaultUriComponentsContributor;
+			contributor = defaultUriComponentsContributor; // org.springframework.web.method.support.CompositeUriComponentsContributor
 		}
 
 		int paramCount = method.getParameterTypes().length;
@@ -487,10 +494,11 @@ public class MvcUriComponentsBuilder {
 		for (int i = 0; i < paramCount; i++) {
 			MethodParameter param = new SynthesizingMethodParameter(method, i);
 			param.initParameterNameDiscovery(parameterNameDiscoverer);
-			contributor.contributeMethodArgument(param, args[i], builder, uriVars);
+			contributor.contributeMethodArgument(param, args[i], builder, uriVars); // 归类“模板参数、查询参数”
 		}
 
 		// We may not have all URI var values, expand only what we have
+		// !!!! org.springframework.web.util.HierarchicalUriComponents.expand(...)
 		return builder.build().expand(new UriComponents.UriTemplateVariables() {
 			@Override
 			public Object getValue(String name) {
@@ -766,7 +774,7 @@ public class MvcUriComponentsBuilder {
 		public MethodArgumentBuilder(UriComponentsBuilder baseUrl, Class<?> controllerType, Method method) {
 			Assert.notNull(controllerType, "'controllerType' is required");
 			Assert.notNull(method, "'method' is required");
-			this.baseUrl = (baseUrl != null ? baseUrl : initBaseUrl());
+			this.baseUrl = (baseUrl != null ? baseUrl : initBaseUrl()); // !!!!
 			this.controllerType = controllerType;
 			this.method = method;
 			this.argumentValues = new Object[method.getParameterTypes().length];
@@ -795,6 +803,9 @@ public class MvcUriComponentsBuilder {
 		}
 
 		public String build() {
+			// org.springframework.web.util.UriComponentsBuilder.build(false).encode().toUriString();
+			// org.springframework.web.util.HierarchicalUriComponents.encode().toUriString();
+			// org.springframework.web.util.HierarchicalUriComponents.toUriString();
 			return fromMethodInternal(this.baseUrl, this.controllerType, this.method,
 					this.argumentValues).build(false).encode().toUriString();
 		}

@@ -57,8 +57,8 @@
 		<constructor-arg index="1" type="" name="" value="" /><!-- value = org.springframework.beans.factory.config.TypedStringValue -->
 		<constructor-arg index="2"  type="" name="" >
 		    <bean> .... </bean>
-		 	<ref bean=""></ref>
-		 	<idref bean="" />
+		 	<ref bean=""></ref><!-- 后期给bean对象注入的属性是bean对象 -->
+		 	<idref bean="" /><!-- 后期给bean对象注入的属性是bean的名称 -->
 		 	<value type="" />
 		 	<null />
 		 	<array value-type="" merge="false">

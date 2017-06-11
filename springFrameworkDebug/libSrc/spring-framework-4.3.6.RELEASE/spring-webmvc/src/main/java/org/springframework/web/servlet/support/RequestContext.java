@@ -846,7 +846,8 @@ public class RequestContext {
 		Errors errors = this.errorsMap.get(name);
 		boolean put = false;
 		if (errors == null) {
-			errors = (Errors) getModelObject(BindingResult.MODEL_KEY_PREFIX + name);
+			// org.springframework.validation.BindingResult.field0
+			errors = (Errors) getModelObject(BindingResult.MODEL_KEY_PREFIX + name); // 从model中取出来错误信息
 			// Check old BindException prefix for backwards compatibility.
 			if (errors instanceof BindException) {
 				errors = ((BindException) errors).getBindingResult();

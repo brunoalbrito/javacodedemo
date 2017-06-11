@@ -71,7 +71,8 @@ public class EvalTag extends HtmlEscapingAwareTag {
 	 * Set the expression to evaluate.
 	 */
 	public void setExpression(String expression) {
-		this.expression = this.expressionParser.parseExpression(expression);
+		// org.springframework.expression.spel.standard.SpelExpressionParser
+		this.expression = this.expressionParser.parseExpression(expression); //  org.springframework.expression.spel.standard.SpelExpression
 	}
 
 	/**
@@ -109,16 +110,16 @@ public class EvalTag extends HtmlEscapingAwareTag {
 		EvaluationContext evaluationContext =
 				(EvaluationContext) this.pageContext.getAttribute(EVALUATION_CONTEXT_PAGE_ATTRIBUTE);
 		if (evaluationContext == null) {
-			evaluationContext = createEvaluationContext(this.pageContext);
-			this.pageContext.setAttribute(EVALUATION_CONTEXT_PAGE_ATTRIBUTE, evaluationContext);
+			evaluationContext = createEvaluationContext(this.pageContext); // 创建执行上下文
+			this.pageContext.setAttribute(EVALUATION_CONTEXT_PAGE_ATTRIBUTE, evaluationContext); // !!!
 		}
 		if (this.var != null) {
 			Object result = this.expression.getValue(evaluationContext);
-			this.pageContext.setAttribute(this.var, result, this.scope);
+			this.pageContext.setAttribute(this.var, result, this.scope); // 把值放入scope
 		}
 		else {
 			try {
-				String result = this.expression.getValue(evaluationContext, String.class);
+				String result = this.expression.getValue(evaluationContext, String.class); // 在指定上下文获取值
 				result = ObjectUtils.getDisplayString(result);
 				result = htmlEscape(result);
 				result = (this.javaScriptEscape ? JavaScriptUtils.javaScriptEscape(result) : result);

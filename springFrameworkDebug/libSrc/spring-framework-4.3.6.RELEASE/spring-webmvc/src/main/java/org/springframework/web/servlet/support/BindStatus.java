@@ -102,7 +102,7 @@ public class BindStatus {
 			this.expression = path.substring(dotPos + 1);
 		}
 
-		this.errors = requestContext.getErrors(beanName, false);
+		this.errors = requestContext.getErrors(beanName, false); // org.springframework.validation.BeanPropertyBindingResult
 
 		if (this.errors != null) {
 			// Usual case: A BindingResult is available as request attribute.
@@ -113,11 +113,11 @@ public class BindStatus {
 					this.objectErrors = this.errors.getAllErrors();
 				}
 				else if (this.expression.endsWith("*")) {
-					this.objectErrors = this.errors.getFieldErrors(this.expression);
+					this.objectErrors = this.errors.getFieldErrors(this.expression); // 错误列表
 				}
 				else {
 					this.objectErrors = this.errors.getFieldErrors(this.expression);
-					this.value = this.errors.getFieldValue(this.expression);
+					this.value = this.errors.getFieldValue(this.expression); // 错误值
 					this.valueType = this.errors.getFieldType(this.expression);
 					if (this.errors instanceof BindingResult) {
 						this.bindingResult = (BindingResult) this.errors;
@@ -146,8 +146,8 @@ public class BindStatus {
 			}
 			if (this.expression != null && !"*".equals(this.expression) && !this.expression.endsWith("*")) {
 				BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(target);
-				this.value = bw.getPropertyValue(this.expression);
-				this.valueType = bw.getPropertyType(this.expression);
+				this.value = bw.getPropertyValue(this.expression); // 对象值
+				this.valueType = bw.getPropertyType(this.expression); // 对象值类型
 				this.actualValue = this.value;
 			}
 			this.errorCodes = new String[0];

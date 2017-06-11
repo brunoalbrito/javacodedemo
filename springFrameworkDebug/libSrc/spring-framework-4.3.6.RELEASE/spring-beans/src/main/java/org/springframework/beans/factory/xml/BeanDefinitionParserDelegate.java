@@ -613,7 +613,7 @@ public class BeanDefinitionParserDelegate {
 		bd.setLazyInit(TRUE_VALUE.equals(lazyInit));
 
 		String autowire = ele.getAttribute(AUTOWIRE_ATTRIBUTE);
-		bd.setAutowireMode(getAutowireMode(autowire));
+		bd.setAutowireMode(getAutowireMode(autowire)); // 自动装配方式：属性名、属性类型、构造函数
 
 		String dependencyCheck = ele.getAttribute(DEPENDENCY_CHECK_ATTRIBUTE);
 		bd.setDependencyCheck(getDependencyCheck(dependencyCheck));
@@ -927,7 +927,7 @@ public class BeanDefinitionParserDelegate {
 				error("Multiple 'property' definitions for property '" + propertyName + "'", ele);
 				return;
 			}
-			Object val = parsePropertyValue(ele, bd, propertyName);
+			Object val = parsePropertyValue(ele, bd, propertyName); // 属性值
 			PropertyValue pv = new PropertyValue(propertyName, val);
 			parseMetaElements(ele, pv);
 			pv.setSource(extractSource(ele));
@@ -1008,6 +1008,8 @@ public class BeanDefinitionParserDelegate {
 		/**
 		 	ref=""  org.springframework.beans.factory.config.RuntimeBeanReference
 		 	value=""  org.springframework.beans.factory.config.TypedStringValue
+		 	<property name="" ref="" />
+		 	<property name="" value="" />
 		 */
 		boolean hasRefAttribute = ele.hasAttribute(REF_ATTRIBUTE);
 		boolean hasValueAttribute = ele.hasAttribute(VALUE_ATTRIBUTE);
@@ -1022,12 +1024,12 @@ public class BeanDefinitionParserDelegate {
 			if (!StringUtils.hasText(refName)) {
 				error(elementName + " contains empty 'ref' attribute", ele);
 			}
-			RuntimeBeanReference ref = new RuntimeBeanReference(refName);
+			RuntimeBeanReference ref = new RuntimeBeanReference(refName); // 引用的方式
 			ref.setSource(extractSource(ele));
 			return ref;
 		}
 		else if (hasValueAttribute) {
-			TypedStringValue valueHolder = new TypedStringValue(ele.getAttribute(VALUE_ATTRIBUTE));
+			TypedStringValue valueHolder = new TypedStringValue(ele.getAttribute(VALUE_ATTRIBUTE)); // 值的方式
 			valueHolder.setSource(extractSource(ele));
 			return valueHolder;
 		}
@@ -1114,6 +1116,9 @@ public class BeanDefinitionParserDelegate {
 			return nestedBd;
 		}
 		else if (nodeNameEquals(ele, REF_ELEMENT)) {
+			/*
+			 	<ref bean=""></ref>
+			 */
 			// A generic reference to any name of any bean.
 			String refName = ele.getAttribute(BEAN_REF_ATTRIBUTE);
 			boolean toParent = false;
@@ -1134,7 +1139,7 @@ public class BeanDefinitionParserDelegate {
 				error("<ref> element contains empty target attribute", ele);
 				return null;
 			}
-			RuntimeBeanReference ref = new RuntimeBeanReference(refName, toParent);
+			RuntimeBeanReference ref = new RuntimeBeanReference(refName, toParent); // 后期给bean对象注入的属性是bean对象
 			ref.setSource(extractSource(ele));
 			return ref;
 		}
@@ -1191,7 +1196,7 @@ public class BeanDefinitionParserDelegate {
 			error("<idref> element contains empty target attribute", ele);
 			return null;
 		}
-		RuntimeBeanNameReference ref = new RuntimeBeanNameReference(refName);
+		RuntimeBeanNameReference ref = new RuntimeBeanNameReference(refName); // 后期给bean对象注入的属性是bean的名称
 		ref.setSource(extractSource(ele));
 		return ref;
 	}

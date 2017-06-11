@@ -304,9 +304,26 @@ public class Interceptor的识别_Handler的识别_AnnotationMapper {
 								
 												String name = null;
 												if (getNamingStrategy() != null) { 
-													// org.springframework.web.servlet.mvc.method.RequestMappingInfoHandlerMethodMappingNamingStrategy，生成规则是："类名中的每个大写字符"+"#"+"方法名"
+													// !!! org.springframework.web.servlet.mvc.method.RequestMappingInfoHandlerMethodMappingNamingStrategy，生成规则是："类名中的每个大写字符"+"#"+"方法名"
 													name = getNamingStrategy().getName(handlerMethod, mapping);
 													addMappingName(name, handlerMethod);
+													{
+														List<HandlerMethod> oldList = this.nameLookup.get(name);
+														if (oldList == null) {
+															oldList = Collections.<HandlerMethod>emptyList();
+														}
+														
+														for (HandlerMethod current : oldList) {
+															if (handlerMethod.equals(current)) {
+																return;
+															}
+														}
+														
+														List<HandlerMethod> newList = new ArrayList<HandlerMethod>(oldList.size() + 1);
+														newList.addAll(oldList);
+														newList.add(handlerMethod);
+														this.nameLookup.put(name, newList); // !!!
+													}
 												}
 								
 												CorsConfiguration corsConfig = initCorsConfiguration(handler, method, mapping); // 跨域配置

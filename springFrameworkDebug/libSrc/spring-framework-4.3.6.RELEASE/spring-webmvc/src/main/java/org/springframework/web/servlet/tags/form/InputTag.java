@@ -143,9 +143,9 @@ public class InputTag extends AbstractHtmlInputElementTag {
 		if (!hasDynamicTypeAttribute()) {
 			tagWriter.writeAttribute("type", getType());
 		}
-		writeValue(tagWriter);
+		writeValue(tagWriter); // 写值
 
-		// custom optional attributes
+		// custom optional attributes 可选属性
 		writeOptionalAttribute(tagWriter, SIZE_ATTRIBUTE, getSize());
 		writeOptionalAttribute(tagWriter, MAXLENGTH_ATTRIBUTE, getMaxlength());
 		writeOptionalAttribute(tagWriter, ALT_ATTRIBUTE, getAlt());

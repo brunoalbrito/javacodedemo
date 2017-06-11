@@ -213,7 +213,7 @@ public abstract class AbstractBindingResult extends AbstractErrors implements Bi
 		for (ObjectError objectError : this.errors) {
 			if (objectError instanceof FieldError) {
 				FieldError fieldError = (FieldError) objectError;
-				if (isMatchingFieldError(fixedField, fieldError)) {
+				if (isMatchingFieldError(fixedField, fieldError)) { // 匹配的错误列表
 					return fieldError;
 				}
 			}

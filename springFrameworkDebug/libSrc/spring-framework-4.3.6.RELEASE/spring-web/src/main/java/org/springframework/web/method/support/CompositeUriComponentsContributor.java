@@ -38,6 +38,8 @@ import org.springframework.web.util.UriComponentsBuilder;
  */
 public class CompositeUriComponentsContributor implements UriComponentsContributor {
 
+//	org.springframework.web.servlet.mvc.method.annotation.PathVariableMethodArgumentResolver
+//	org.springframework.web.method.annotation.RequestParamMethodArgumentResolver
 	private final List<Object> contributors = new LinkedList<Object>();
 
 	private final ConversionService conversionService;
@@ -119,6 +121,8 @@ public class CompositeUriComponentsContributor implements UriComponentsContribut
 
 		for (Object contributor : this.contributors) {
 			if (contributor instanceof UriComponentsContributor) {
+//		org.springframework.web.servlet.mvc.method.annotation.PathVariableMethodArgumentResolver
+//		org.springframework.web.method.annotation.RequestParamMethodArgumentResolver
 				UriComponentsContributor ucc = (UriComponentsContributor) contributor;
 				if (ucc.supportsParameter(parameter)) {
 					ucc.contributeMethodArgument(parameter, value, builder, uriVariables, conversionService);

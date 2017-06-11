@@ -16,7 +16,6 @@
 	<!-- ******关于“文件上传”的配置******eof****** -->
 	
 	<!-- ******关于“Hanlder列表”的配置******bof****** -->
-	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.PropertyHandler" />
 	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.CrudHandler" />
 	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.DownloadHandler" />
 	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.ThrowExceptionHandler" />
@@ -24,6 +23,7 @@
 	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.Handler1" />
 	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.HaveAwareHandler" />
 	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.I18nHandler" />
+	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.PropertyHandler" />
 	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.ReqParamHandler" />
 	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.RespHandler" />
 	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.RespJsonHandler" />
@@ -212,6 +212,7 @@
         <property  name="prefix" value="/WEB-INF/templates/" />
     	<property  name="suffix" value=".jsp" />
     	<property  name="contentType" value="text/html; charset=UTF-8" />
+    	<property name="requestContextAttribute" value="requestContext" />
     </bean>
     <!-- ******关于“视图解析器”的配置******eof****** -->
     

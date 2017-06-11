@@ -177,7 +177,7 @@ public class MessageTag extends HtmlEscapingAwareTag implements ArgumentAware {
 	public int doEndTag() throws JspException {
 		try {
 			// Resolve the unescaped message.
-			String msg = resolveMessage();
+			String msg = resolveMessage(); // !!!
 
 			// HTML and/or JavaScript escape, if demanded.
 			msg = htmlEscape(msg);

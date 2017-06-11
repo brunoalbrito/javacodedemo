@@ -229,13 +229,13 @@ public abstract class UriComponents implements Serializable {
 		while (matcher.find()) {
 			String match = matcher.group(1);
 			String variableName = getVariableName(match);
-			Object variableValue = uriVariables.getValue(variableName);
+			Object variableValue = uriVariables.getValue(variableName); // 指定变量的值
 			if (UriTemplateVariables.SKIP_VALUE.equals(variableValue)) {
 				continue;
 			}
 			String variableValueString = getVariableValueAsString(variableValue);
 			String replacement = Matcher.quoteReplacement(variableValueString);
-			matcher.appendReplacement(sb, replacement);
+			matcher.appendReplacement(sb, replacement); // 以实际值替换模板变量的值
 		}
 		matcher.appendTail(sb);
 		return sb.toString();

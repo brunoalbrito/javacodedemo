@@ -18,6 +18,13 @@ public class StupidRootBeanDefinitionInJavaTest {
 	public void note(AbstractRefreshableConfigApplicationContext context){
 		/**
 			org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveValueIfNecessary(Object argName, Object value)
+		 	
+		 	// ----
+		 	context === org.springframework.web.context.support.XmlWebApplicationContext
+		 	registry === org.springframework.beans.factory.support.DefaultListableBeanFactory 
+		 	beanFactory === org.springframework.beans.factory.support.DefaultListableBeanFactory 
+		 	// ---
+		 	RuntimeBeanNameReference 和 RuntimeBeanReference 的差异
 		 */
 	}
 	

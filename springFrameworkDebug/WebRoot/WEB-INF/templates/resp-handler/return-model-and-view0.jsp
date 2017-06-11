@@ -7,6 +7,11 @@
 <%@ page import="java.util.Locale" %>
 <%@ page import="org.springframework.ui.context.Theme" %>
 <%@ page import="org.springframework.context.MessageSource" %>
+<%@ page import="org.springframework.validation.BindingResult" %>
+<%@ page import="org.springframework.validation.BeanPropertyBindingResult" %>
+<%@ page import="org.springframework.validation.Errors" %>
+<%@ page import="org.springframework.validation.BindException" %>
+<%@ page import="cn.java.demo.webmvc.form.UserLoginForm" %>
 
 this is jsp template.<br />
 hello , attr0 = <%=request.getAttribute("attr0") %> , attr1 = <%=request.getAttribute("attr1") %>
@@ -24,5 +29,22 @@ System.out.println(webApplicationContext.getMessage("module1.controller0.method0
 Theme theme = RequestContextUtils.getTheme(request);
 MessageSource messageSource = theme.getMessageSource();
 System.out.println(messageSource.getMessage("themes.message.message0",null,locale)); // “themes/default.properties” 或者 “themes/theme0.xml”
+
+// 校验错误
+Errors errors = (Errors) request.getAttribute(BindingResult.MODEL_KEY_PREFIX + "objectName0");
+if (errors instanceof BindException) {
+	errors = ((BindException) errors).getBindingResult();
+}
+if (errors != null) {
+	if(errors instanceof BeanPropertyBindingResult){
+		BeanPropertyBindingResult beanPropertyBindingResult = (BeanPropertyBindingResult)errors;
+		String objectName = beanPropertyBindingResult.getObjectName();
+		Object target = beanPropertyBindingResult.getTarget();
+		if(target instanceof UserLoginForm){
+			UserLoginForm userLoginForm = (UserLoginForm)target;
+		}
+	}
+}
+
 %>
 <%@ include file="/WEB-INF/templates/common/common-footer.jsp" %>

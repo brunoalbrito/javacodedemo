@@ -152,7 +152,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	MappingRegistry getMappingRegistry() {
 		return this.mappingRegistry;
 	}
-
+	
 	/**
 	 * Register the given mapping.
 	 * <p>This method may be invoked at runtime after initialization has completed.
@@ -514,7 +514,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 		public List<HandlerMethod> getHandlerMethodsByMappingName(String mappingName) {
 			return this.nameLookup.get(mappingName);
 		}
-
+		
 		/**
 		 * Return CORS configuration. Thread-safe for concurrent use.
 		 */
