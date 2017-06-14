@@ -23,13 +23,14 @@ import cn.java.demo.beantag.bean.initmehtod.DemoInitializingBean;
 import cn.java.demo.beantag.bean.lookupmethod.Property1;
 import cn.java.demo.beantag.bean.methodreplacer.MethodReplacerImpl;
 import cn.java.demo.beantag.beandefinition_property.StupidRootBeanDefinitionInJavaTest;
-import cn.java.demo.beantag.internal.AnnotationUtilsTest;
+import cn.java.demo.beantag.internal.InternalUtils_AnnotationUtilsTest;
 import cn.java.demo.beantag.internal.BeanNameGeneratorTest;
-import cn.java.demo.beantag.internal.BeanUtilsTest;
+import cn.java.demo.beantag.internal.InternalUtils_BeanUtilsTest;
+import cn.java.demo.beantag.internal.InternalUtils_ClassUtils;
 import cn.java.demo.beantag.internal.ExpressionParserTest;
 import cn.java.demo.beantag.internal.I18nTest;
-import cn.java.demo.beantag.internal.ObjectUtilsTest;
-import cn.java.demo.beantag.internal.ReflectionUtilsTest;
+import cn.java.demo.beantag.internal.InternalUtils_ObjectUtilsTest;
+import cn.java.demo.beantag.internal.InternalUtils_ReflectionUtilsTest;
 import cn.java.demo.beantag.internal.TypeConverterTest;
 import cn.java.demo.util.ApplicationContextUtil;
 
@@ -210,14 +211,23 @@ public class Test {
 			ExpressionParserTest.testStandardBeanExpressionResolverResultString((AbstractRefreshableConfigApplicationContext) context);
 			ExpressionParserTest.testStandardBeanExpressionResolverResultBeanObject((AbstractRefreshableConfigApplicationContext) context);
 			
-			System.out.println("******实例化bean");
-			BeanUtilsTest.testInstantiateClass((AbstractRefreshableConfigApplicationContext) context);
-			BeanUtilsTest.testIsPresent((AbstractRefreshableConfigApplicationContext) context);
-			
-			System.out.println("******反射工具、注解工具、对象工具");
-			ReflectionUtilsTest.testReflectionUtils((AbstractRefreshableConfigApplicationContext) context);
-			AnnotationUtilsTest.testAnnotationUtils((AbstractRefreshableConfigApplicationContext) context);
-			ObjectUtilsTest.testObjectUtils((AbstractRefreshableConfigApplicationContext) context);
+			{
+				System.out.println("******BeanUtils工具类");
+				InternalUtils_BeanUtilsTest.testInstantiateClass((AbstractRefreshableConfigApplicationContext) context);
+				InternalUtils_BeanUtilsTest.testIsPresent((AbstractRefreshableConfigApplicationContext) context);
+				
+				System.out.println("******ClassUtils工具类");
+				InternalUtils_ClassUtils.testClassUtils((AbstractRefreshableConfigApplicationContext) context);
+				
+				System.out.println("******ObjectUtils工具类");
+				InternalUtils_ObjectUtilsTest.testObjectUtils((AbstractRefreshableConfigApplicationContext) context);
+				
+				System.out.println("******AnnotationUtils工具类");
+				InternalUtils_AnnotationUtilsTest.testAnnotationUtils((AbstractRefreshableConfigApplicationContext) context);
+				
+				System.out.println("******ReflectionUtils工具类");
+				InternalUtils_ReflectionUtilsTest.testReflectionUtils((AbstractRefreshableConfigApplicationContext) context);
+			}
 			
 			System.out.println("******自动生成beanName");
 			BeanNameGeneratorTest.testBeanNameGenerator((AbstractRefreshableConfigApplicationContext) context);

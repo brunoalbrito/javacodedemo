@@ -243,7 +243,7 @@ public class EhCacheFactoryBean extends CacheConfiguration implements FactoryBea
 			if (logger.isDebugEnabled()) {
 				logger.debug("Using default EhCache CacheManager for cache region '" + cacheName + "'");
 			}
-			this.cacheManager = CacheManager.getInstance();
+			this.cacheManager = CacheManager.newInstance();
 		}
 
 		synchronized (this.cacheManager) {

@@ -63,9 +63,9 @@ public abstract class AbstractSingleBeanDefinitionParser extends AbstractBeanDef
 		if (parentName != null) {
 			builder.getRawBeanDefinition().setParentName(parentName);
 		}
-		Class<?> beanClass = getBeanClass(element);
+		Class<?> beanClass = getBeanClass(element); // !!!
 		if (beanClass != null) {
-			builder.getRawBeanDefinition().setBeanClass(beanClass);
+			builder.getRawBeanDefinition().setBeanClass(beanClass); // !!!
 		}
 		else {
 			String beanClassName = getBeanClassName(element);
@@ -82,7 +82,7 @@ public abstract class AbstractSingleBeanDefinitionParser extends AbstractBeanDef
 			// Default-lazy-init applies to custom bean definitions as well.
 			builder.setLazyInit(true);
 		}
-		doParse(element, parserContext, builder);
+		doParse(element, parserContext, builder); // !!! 子类
 		return builder.getBeanDefinition();
 	}
 

@@ -103,6 +103,7 @@ public abstract class AopProxyUtils {
 	 */
 	static Class<?>[] completeProxiedInterfaces(AdvisedSupport advised, boolean decoratingProxy) {
 		// advised === org.springframework.aop.framework.ProxyFactory
+		// advised === org.springframework.aop.framework.ProxyCreatorSupport
 		Class<?>[] specifiedInterfaces = advised.getProxiedInterfaces(); //　用户接口
 		if (specifiedInterfaces.length == 0) {
 			// No user-specified interfaces: check whether target class is an interface.

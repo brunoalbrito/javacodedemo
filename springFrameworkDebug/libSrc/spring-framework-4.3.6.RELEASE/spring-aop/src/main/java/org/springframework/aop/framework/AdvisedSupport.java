@@ -264,7 +264,7 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 		if (advisor instanceof IntroductionAdvisor) {
 			validateIntroductionAdvisor((IntroductionAdvisor) advisor);
 		}
-		addAdvisorInternal(pos, advisor);
+		addAdvisorInternal(pos, advisor); // !!!
 	}
 
 	@Override

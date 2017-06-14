@@ -161,10 +161,10 @@ public class OptionTag extends AbstractHtmlElementBodyTag implements BodyTag {
 
 	@Override
 	protected void exposeAttributes() throws JspException {
-		Object value = resolveValue();
-		this.oldValue = this.pageContext.getAttribute(VALUE_VARIABLE_NAME);
+		Object value = resolveValue(); // 值
+		this.oldValue = this.pageContext.getAttribute(VALUE_VARIABLE_NAME); // "value"
 		this.pageContext.setAttribute(VALUE_VARIABLE_NAME, value);
-		this.oldDisplayValue = this.pageContext.getAttribute(DISPLAY_VALUE_VARIABLE_NAME);
+		this.oldDisplayValue = this.pageContext.getAttribute(DISPLAY_VALUE_VARIABLE_NAME); // "displayValue"
 		this.pageContext.setAttribute(DISPLAY_VALUE_VARIABLE_NAME, getDisplayString(value, getBindStatus().getEditor()));
 	}
 

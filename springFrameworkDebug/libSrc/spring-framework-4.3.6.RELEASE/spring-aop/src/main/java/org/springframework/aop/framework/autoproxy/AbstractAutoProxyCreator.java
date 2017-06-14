@@ -310,7 +310,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		if (bean != null) {
 			Object cacheKey = getCacheKey(bean.getClass(), beanName);
 			if (!this.earlyProxyReferences.contains(cacheKey)) {
-				return wrapIfNecessary(bean, beanName, cacheKey);
+				return wrapIfNecessary(bean, beanName, cacheKey); //!!!
 			}
 		}
 		return bean;
@@ -361,10 +361,10 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		}
 
 		// Create proxy if we have advice.
-		Object[] specificInterceptors = getAdvicesAndAdvisorsForBean(bean.getClass(), beanName, null); // 获取指定类的“接受通知者”
+		Object[] specificInterceptors = getAdvicesAndAdvisorsForBean(bean.getClass(), beanName, null); // 获取指定类的“接受通知者”!!!
 		if (specificInterceptors != DO_NOT_PROXY) {
 			this.advisedBeans.put(cacheKey, Boolean.TRUE);
-			Object proxy = createProxy( // 创建代理
+			Object proxy = createProxy( // 创建代理!!!
 					bean.getClass(), beanName, specificInterceptors, new SingletonTargetSource(bean));
 			this.proxyTypes.put(cacheKey, proxy.getClass());
 			return proxy;
@@ -467,13 +467,13 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 				proxyFactory.setProxyTargetClass(true);
 			}
 			else {
-				evaluateProxyInterfaces(beanClass, proxyFactory); // 添加接口信息
+				evaluateProxyInterfaces(beanClass, proxyFactory); // 添加接口信息到proxyFactory对象
 			}
 		}
 
 		Advisor[] advisors = buildAdvisors(beanName, specificInterceptors); // 通用“通知接收器”列表 + 特殊“通知接收器”列表
 		for (Advisor advisor : advisors) {
-			proxyFactory.addAdvisor(advisor);
+			proxyFactory.addAdvisor(advisor); // !!!
 		}
 
 		proxyFactory.setTargetSource(targetSource);
@@ -548,7 +548,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 
 		Advisor[] advisors = new Advisor[allInterceptors.size()];
 		for (int i = 0; i < allInterceptors.size(); i++) {
-			advisors[i] = this.advisorAdapterRegistry.wrap(allInterceptors.get(i));
+			advisors[i] = this.advisorAdapterRegistry.wrap(allInterceptors.get(i)); // 包装
 		}
 		return advisors;
 	}

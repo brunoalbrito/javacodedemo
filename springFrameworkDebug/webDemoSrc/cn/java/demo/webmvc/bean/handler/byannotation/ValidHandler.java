@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ExtendedServletRequestDataBinder;
 
 import cn.java.demo.web.util.WebUtilx;
 import cn.java.demo.webmvc.form.UserLoginForm;
@@ -30,10 +31,16 @@ public class ValidHandler {
 	/**
 	 * @param binder
 	 */
-	@InitBinder(value={"objectName0","objectName1"}) // 要@ModelAttribute的name值，在集合{"objectName0","objectName1"}中
+	@InitBinder(value={"userLoginForm","objectName1"}) // 要@ModelAttribute的name值，在集合{"objectName0","objectName1"}中
 	public void initBinder(DataBinder binder) {
-		if(binder instanceof WebDataBinder){
-			
+		if(binder instanceof ExtendedServletRequestDataBinder){
+			System.out.println("-->binder instanceof ExtendedServletRequestDataBinder");
+			if(binder.getTarget() instanceof UserLoginForm){
+				
+			}
+			if("objectName0".equals(binder.getObjectName())){
+				
+			}
 		}
 		binder.setValidator(new UserLoginFormValidator()); // 添加校验器
 	}
@@ -53,30 +60,18 @@ public class ValidHandler {
 	 */
 	@RequestMapping(path = { "/*" }, method = {RequestMethod.POST})
 	public String login(
-		@ModelAttribute(name="objectName0") @Validated() UserLoginForm userLoginForm, 
+		@ModelAttribute(name="userLoginForm") @Validated() UserLoginForm userLoginForm, 
 		BindingResult result,
 		WebRequest webRequest
 	) throws Exception {
 		
-		System.out.println(userLoginForm);
-		if(result instanceof BeanPropertyBindingResult){
+		{
+			UserLoginFormValidator.debugBeanPropertyBindingResult(result);
 		}
 		
 		if (result.hasErrors()) {
-			System.out.println("--> 错误信息");
-			List<ObjectError> errorList = result.getAllErrors();
-			for (ObjectError objectError : errorList) {
-				if (objectError instanceof FieldError) {
-					FieldError fieldError = (FieldError)objectError;
-					System.out.println(fieldError.getField() +" = "+ fieldError.getDefaultMessage());
-				}
-				else{
-					System.out.println(objectError.getDefaultMessage());
-				}
-			}
 			return "redirect:login";
 		}
-		
 		if("username1".equals(userLoginForm.getUsername()) && "password1".equals(userLoginForm.getPassword())){
 			System.out.println("登录成功...");
 			return "redirect:" + WebUtilx.getContextUrl(WebUtilx.getPathToServlet(webRequest) + "/", webRequest);

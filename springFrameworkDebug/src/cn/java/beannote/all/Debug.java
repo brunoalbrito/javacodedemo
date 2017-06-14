@@ -1,6 +1,6 @@
 package cn.java.beannote.all;
 
-public class 关于主配置文件解析Debug {
+public class Debug {
 
 	/**
 	 * https://github.com/spring-projects

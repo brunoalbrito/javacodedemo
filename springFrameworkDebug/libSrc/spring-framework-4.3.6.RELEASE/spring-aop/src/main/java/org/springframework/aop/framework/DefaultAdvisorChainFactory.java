@@ -50,6 +50,7 @@ public class DefaultAdvisorChainFactory implements AdvisorChainFactory, Serializ
 	public List<Object> getInterceptorsAndDynamicInterceptionAdvice(
 			Advised config, Method method, Class<?> targetClass) {
 		
+		// config === org.springframework.aop.framework.ProxyCreatorSupport
 		//!! config === org.springframework.aop.framework.ProxyFactory
 		
 		// This is somewhat tricky... We have to process introductions first,

@@ -128,7 +128,7 @@ public class 关于bean后置处理器_埋点_获取bean的过程 {
 												// Do not allow eager init for type matching in case of a prioritized post-processor.
 												boolean eager = !PriorityOrdered.class.isAssignableFrom(bw.getWrappedClass()); // 不继承自PriorityOrdered，就是饥渴模式
 												DependencyDescriptor desc = new AutowireByTypeDependencyDescriptor(methodParam, eager);
-												Object autowiredArgument = resolveDependency(desc, beanName, autowiredBeanNames, converter); // !!! 解析参数类型--- org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(...)
+												Object autowiredArgument = DefaultListableBeanFactory.resolveDependency(desc, beanName, autowiredBeanNames, converter); // !!! 解析参数类型--- org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(...)
 												{
 													if (javaUtilOptionalClass == descriptor.getDependencyType()) {// !!! 参数类型是 Optional
 														return new OptionalDependencyFactory().createOptionalDependency(descriptor, requestingBeanName); // 返回bean实例
@@ -138,7 +138,7 @@ public class 关于bean后置处理器_埋点_获取bean的过程 {
 														Object result = getAutowireCandidateResolver().getLazyResolutionProxyIfNecessary(
 																descriptor, requestingBeanName); // org.springframework.beans.factory.support.SimpleAutowireCandidateResolver
 														if (result == null) {
-															result = doResolveDependency(descriptor, requestingBeanName, autowiredBeanNames, typeConverter);// !!!
+															result = DefaultListableBeanFactory.doResolveDependency(descriptor, requestingBeanName, autowiredBeanNames, typeConverter);// !!!
 															{
 																...
 																Class<?> type = descriptor.getDependencyType(); // 方法参数类型，如： Optional、Bean1、
@@ -148,7 +148,12 @@ public class 关于bean后置处理器_埋点_获取bean的过程 {
 																if (multipleBeans != null) {
 																	return multipleBeans;
 																}
+																
 																Map<String, Object> matchingBeans = findAutowireCandidates(beanName, type, descriptor);
+																{
+																
+																}
+																
 																if (matchingBeans.isEmpty()) {
 																	if (descriptor.isRequired()) {
 																		raiseNoMatchingBeanFound(type, descriptor.getResolvableType(), descriptor);// !!!!

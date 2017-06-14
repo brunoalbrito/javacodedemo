@@ -1261,6 +1261,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 	@Override
 	public String getMessage(MessageSourceResolvable resolvable, Locale locale) throws NoSuchMessageException {
+		// resolvable === org.springframework.validation.FieldError
+		// getMessageSource() === org.springframework.context.support.ReloadableResourceBundleMessageSource
 		return getMessageSource().getMessage(resolvable, locale);
 	}
 

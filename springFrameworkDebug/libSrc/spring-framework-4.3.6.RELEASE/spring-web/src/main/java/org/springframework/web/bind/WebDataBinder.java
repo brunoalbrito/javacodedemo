@@ -187,8 +187,8 @@ public class WebDataBinder extends DataBinder {
 	 */
 	@Override
 	protected void doBind(MutablePropertyValues mpvs) {
-		checkFieldDefaults(mpvs);
-		checkFieldMarkers(mpvs);
+		checkFieldDefaults(mpvs); // 默认值
+		checkFieldMarkers(mpvs); // 空值
 		super.doBind(mpvs);
 	}
 
@@ -206,9 +206,9 @@ public class WebDataBinder extends DataBinder {
 			PropertyValue[] pvArray = mpvs.getPropertyValues();
 			for (PropertyValue pv : pvArray) {
 				if (pv.getName().startsWith(fieldDefaultPrefix)) {
-					String field = pv.getName().substring(fieldDefaultPrefix.length());
+					String field = pv.getName().substring(fieldDefaultPrefix.length()); // 去除掉“!”前缀
 					if (getPropertyAccessor().isWritableProperty(field) && !mpvs.contains(field)) {
-						mpvs.add(field, pv.getValue());
+						mpvs.add(field, pv.getValue()); // 默认值
 					}
 					mpvs.removePropertyValue(pv);
 				}
@@ -236,7 +236,7 @@ public class WebDataBinder extends DataBinder {
 					String field = pv.getName().substring(fieldMarkerPrefix.length());
 					if (getPropertyAccessor().isWritableProperty(field) && !mpvs.contains(field)) {
 						Class<?> fieldType = getPropertyAccessor().getPropertyType(field);
-						mpvs.add(field, getEmptyValue(field, fieldType));
+						mpvs.add(field, getEmptyValue(field, fieldType)); // 空值
 					}
 					mpvs.removePropertyValue(pv);
 				}

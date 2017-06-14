@@ -5,7 +5,7 @@ import org.springframework.context.support.AbstractRefreshableConfigApplicationC
 import org.springframework.util.ClassUtils;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
-public class BeanUtilsTest {
+public class InternalUtils_BeanUtilsTest {
 
 	public static void testIsPresent(AbstractRefreshableConfigApplicationContext context) {
 		boolean jstlPresent = ClassUtils.isPresent(
@@ -14,7 +14,7 @@ public class BeanUtilsTest {
 	}
 	
 	public static void testInstantiateClass(AbstractRefreshableConfigApplicationContext context) {
-		FooService fooService = BeanUtils.instantiateClass(cn.java.demo.beantag.internal.BeanUtilsTest.FooService.class);
+		FooService fooService = BeanUtils.instantiateClass(cn.java.demo.beantag.internal.InternalUtils_BeanUtilsTest.FooService.class);
 		System.out.println(fooService);
 
 	}

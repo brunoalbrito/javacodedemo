@@ -37,11 +37,14 @@ import org.springframework.transaction.interceptor.TransactionAttribute;
 @SuppressWarnings("serial")
 public class SpringTransactionAnnotationParser implements TransactionAnnotationParser, Serializable {
 
+	/**
+	 * 解析关于事务的注解
+	 */
 	@Override
 	public TransactionAttribute parseTransactionAnnotation(AnnotatedElement ae) {
 		AnnotationAttributes attributes = AnnotatedElementUtils.getMergedAnnotationAttributes(ae, Transactional.class);
 		if (attributes != null) {
-			return parseTransactionAnnotation(attributes);
+			return parseTransactionAnnotation(attributes); // 解析注解信息
 		}
 		else {
 			return null;

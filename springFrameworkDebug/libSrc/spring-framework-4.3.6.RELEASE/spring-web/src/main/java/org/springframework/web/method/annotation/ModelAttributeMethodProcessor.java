@@ -100,7 +100,7 @@ public class ModelAttributeMethodProcessor
 	public final Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
 			NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
 //		webRequest === org.springframework.web.context.request.ServletWebRequest
-		String name = ModelFactory.getNameForParameter(parameter); // 注解@ModelAttribute上配置的名称，不然就使用变量名
+		String name = ModelFactory.getNameForParameter(parameter); // 1.尝试使用注解@ModelAttribute上配置的名称，2.尝试使用“参数类型的缩略名”
 		Object attribute = (mavContainer.containsAttribute(name) ? mavContainer.getModel().get(name) :
 				createAttribute(name, parameter, binderFactory, webRequest)); // 创建参数类型的对象 attribute === target === cn.java.demo.webmvc.form.UserLoginForm
 
@@ -111,7 +111,7 @@ public class ModelAttributeMethodProcessor
 			}
 		}
 		// binderFactory == org.springframework.web.servlet.mvc.method.annotation.ServletRequestDataBinderFactory
-		WebDataBinder binder = binderFactory.createBinder(webRequest, attribute, name); // 迭代调用“带@InitBinder注解的方法”
+		WebDataBinder binder = binderFactory.createBinder(webRequest, attribute, name); // 创建binder对象，迭代调用“带@InitBinder注解的方法”可以给binder对象设置校验器
 		if (binder.getTarget() != null) {
 			if (!mavContainer.isBindingDisabled(name)) { // 需要自动填充表单的数据
 				bindRequestParameters(binder, webRequest); // 把webRequest.getNativeRequest(ServletRequest.class)的值设置到target
@@ -126,6 +126,12 @@ public class ModelAttributeMethodProcessor
 		// binder === org.springframework.web.servlet.mvc.method.annotation.ExtendedServletRequestDataBinder
 		// binder.getBindingResult() === org.springframework.validation.BeanPropertyBindingResult
 		Map<String, Object> bindingResultModel = binder.getBindingResult().getModel(); // model.put(attribute,webRequest);  // model.put("org.springframework.validation.BindingResult.attribute",org.springframework.validation.BeanPropertyBindingResult对象)
+		/*
+		 	bindingResultModel = {
+				"userLoginForm" : cn.java.demo.webmvc.form.UserLoginForm对象
+				"org.springframework.validation.BindingResult.userLoginForm" : org.springframework.validation.BeanPropertyBindingResult对象
+			}
+		 */
 		mavContainer.removeAttributes(bindingResultModel);
 		mavContainer.addAllAttributes(bindingResultModel); // 绑定结果放入mavContainer
 
@@ -169,7 +175,7 @@ public class ModelAttributeMethodProcessor
 		for (Annotation ann : annotations) {
 			
 			Validated validatedAnn = AnnotationUtils.getAnnotation(ann, Validated.class); // 注解类上的注解
-			if (validatedAnn != null || ann.annotationType().getSimpleName().startsWith("Valid")) {
+			if (validatedAnn != null || ann.annotationType().getSimpleName().startsWith("Valid")) { // 含有 “@Valid”开头的注解
 				Object hints = (validatedAnn != null ? validatedAnn.value() : AnnotationUtils.getValue(ann));
 				Object[] validationHints = (hints instanceof Object[] ? (Object[]) hints : new Object[] {hints});
 				// binder === org.springframework.web.bind.support.WebRequestDataBinder

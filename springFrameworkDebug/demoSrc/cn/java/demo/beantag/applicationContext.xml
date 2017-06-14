@@ -9,6 +9,13 @@
 	<bean id="helloService" class="cn.java.demo.beantag.bean.HelloServiceImpl" />
 	<bean id="standardBean0" class="cn.java.demo.beantag.bean.StandardBean" />
 	
+	<!-- 修饰符qualifier -->
+	<bean class="cn.java.demo.beantag.bean.HelloServiceImpl">
+	    <qualifier type="java.lang.String" value="qualifier0">
+	        <attribute key="" value="" />
+	    </qualifier>
+    </bean>
+	
 	<!-- 标准bean -->
 	<bean id="fooBean" name="fooBeanAlias0" class="cn.java.demo.beantag.bean.FooBean" autowire="constructor"/>
 	

@@ -161,6 +161,7 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
 
 	@Override
 	public final String getMessage(MessageSourceResolvable resolvable, Locale locale) throws NoSuchMessageException {
+		// resolvable === org.springframework.validation.FieldError
 		String[] codes = resolvable.getCodes();
 		if (codes != null) {
 			for (String code : codes) {
@@ -206,12 +207,14 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
 			// therefore no MessageFormat needs to be involved.
 			// Note that the default implementation still uses MessageFormat;
 			// this can be overridden in specific subclasses.
-			String message = resolveCodeWithoutArguments(code, locale); // 解析code获取消息  ResourceBundleMessageSource.resolveCodeWithoutArguments()
+
+			// 解析code获取消息  ResourceBundleMessageSource.resolveCodeWithoutArguments()
+			// 解析code获取消息  ReloadableResourceBundleMessageSource.resolveCodeWithoutArguments()
+			String message = resolveCodeWithoutArguments(code, locale); 
 			if (message != null) {
 				return message;
 			}
 		}
-
 		else {
 			// Resolve arguments eagerly, for the case where the message
 			// is defined in a parent MessageSource but resolvable arguments
@@ -227,7 +230,7 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
 		}
 
 		// Check locale-independent common messages for the given message code.
-		Properties commonMessages = getCommonMessages();
+		Properties commonMessages = getCommonMessages(); // 通用消息
 		if (commonMessages != null) {
 			String commonMessage = commonMessages.getProperty(code);
 			if (commonMessage != null) {
@@ -235,7 +238,7 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
 			}
 		}
 
-		// Not found -> check parent, if any.
+		// Not found -> check parent, if any. 从父级对象获取
 		return getMessageFromParent(code, argsToUse, locale);
 	}
 

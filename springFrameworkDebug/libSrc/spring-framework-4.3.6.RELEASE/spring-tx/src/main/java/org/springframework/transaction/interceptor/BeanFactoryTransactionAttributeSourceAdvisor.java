@@ -38,7 +38,7 @@ public class BeanFactoryTransactionAttributeSourceAdvisor extends AbstractBeanFa
 	private final TransactionAttributeSourcePointcut pointcut = new TransactionAttributeSourcePointcut() {
 		@Override
 		protected TransactionAttributeSource getTransactionAttributeSource() {
-			return transactionAttributeSource;
+			return transactionAttributeSource; // org.springframework.transaction.annotation.AnnotationTransactionAttributeSource
 		}
 	};
 

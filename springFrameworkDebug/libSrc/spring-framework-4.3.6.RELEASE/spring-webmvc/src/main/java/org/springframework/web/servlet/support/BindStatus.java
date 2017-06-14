@@ -104,7 +104,7 @@ public class BindStatus {
 
 		this.errors = requestContext.getErrors(beanName, false); // org.springframework.validation.BeanPropertyBindingResult
 
-		if (this.errors != null) {
+		if (this.errors != null) { // 校验出错
 			// Usual case: A BindingResult is available as request attribute.
 			// Can determine error codes and messages for the given expression.
 			// Can use a custom PropertyEditor, as registered by a form controller.
@@ -117,12 +117,12 @@ public class BindStatus {
 				}
 				else {
 					this.objectErrors = this.errors.getFieldErrors(this.expression);
-					this.value = this.errors.getFieldValue(this.expression); // 错误值
+					this.value = this.errors.getFieldValue(this.expression); // 用户提供的值
 					this.valueType = this.errors.getFieldType(this.expression);
 					if (this.errors instanceof BindingResult) {
 						this.bindingResult = (BindingResult) this.errors;
 						this.actualValue = this.bindingResult.getRawFieldValue(this.expression);
-						this.editor = this.bindingResult.findEditor(this.expression, null);
+						this.editor = this.bindingResult.findEditor(this.expression, null); // 可编辑属性
 					}
 					else {
 						this.actualValue = this.value;
@@ -135,7 +135,7 @@ public class BindStatus {
 			initErrorCodes();
 		}
 
-		else {
+		else { // 校验没错
 			// No BindingResult available as request attribute:
 			// Probably forwarded directly to a form view.
 			// Let's do the best we can: extract a plain target if appropriate.
@@ -146,8 +146,8 @@ public class BindStatus {
 			}
 			if (this.expression != null && !"*".equals(this.expression) && !this.expression.endsWith("*")) {
 				BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(target);
-				this.value = bw.getPropertyValue(this.expression); // 对象值
-				this.valueType = bw.getPropertyType(this.expression); // 对象值类型
+				this.value = bw.getPropertyValue(this.expression); // 用户提供的值
+				this.valueType = bw.getPropertyType(this.expression); // 值类型
 				this.actualValue = this.value;
 			}
 			this.errorCodes = new String[0];

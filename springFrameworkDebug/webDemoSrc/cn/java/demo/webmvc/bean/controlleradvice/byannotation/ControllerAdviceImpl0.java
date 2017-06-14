@@ -1,7 +1,5 @@
 package cn.java.demo.webmvc.bean.controlleradvice.byannotation;
 
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.Writer;
 
 import javax.servlet.ServletRequest;
@@ -10,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.DataBinder;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -21,14 +20,18 @@ import org.springframework.web.servlet.mvc.method.annotation.ExtendedServletRequ
 
 import cn.java.demo.webmvc.form.UserLoginForm;
 
-@ControllerAdvice(basePackages={"cn.java.controller0","cn.java.controller1."},assignableTypes={},annotations={})
+@ControllerAdvice(basePackages={"cn.java.demo.webmvc.bean.handler.byannotation.","cn.java.controller1."},assignableTypes={},annotations={})
 public class ControllerAdviceImpl0 {
 	
 	@ModelAttribute
-	public void modelAttribute0(
-			ServletRequest servletRequest,HttpSession httpSession,InputStream inputStream,HttpServletRequest request,
-			ServletResponse servletResponse,Writer writer,OutputStream outputStream,HttpServletResponse reponse,
+	public void modelAttribute0(ModelMap model,
+			ServletRequest servletRequest,
+			HttpSession httpSession,HttpServletRequest request,
+			ServletResponse servletResponse,
+			Writer writer,HttpServletResponse reponse,
 			WebRequest webRequest) throws Exception{
+		
+		System.out.println("--->code in : "+this.getClass().getSimpleName()+":modelAttribute0(...)");
 		
 		boolean result = false;
 		if(result){
@@ -105,14 +108,18 @@ public class ControllerAdviceImpl0 {
 	}
 	
 	@ModelAttribute
-	public void modelAttribute1(HttpServletRequest httpServletRequest,HttpServletResponse httpServletResponse) throws Exception{
+	public void modelAttribute1(ModelMap model,
+			HttpServletRequest httpServletRequest,
+			HttpServletResponse httpServletResponse) throws Exception{
+		System.out.println("--->code in : "+this.getClass().getSimpleName()+":modelAttribute1(...)");
 	}
 	
 	/**
 	 * 带@InitBinder注解的方法，必须返回void
 	 */
-	@InitBinder
+	@InitBinder(value={"springformTagForm","springformTagForm1"}) 
 	public void initBinder0(HttpServletRequest httpServletRequest,HttpServletResponse httpServletResponse,DataBinder dataBinder){
+		System.out.println("--->code in : "+this.getClass().getSimpleName()+":initBinder0(...)");
 		if(dataBinder instanceof ExtendedServletRequestDataBinder){
 			
 		}
@@ -127,7 +134,7 @@ public class ControllerAdviceImpl0 {
 		System.out.println("dataBinder.getObjectName() = "+dataBinder.getObjectName());
 	}
 	
-	@InitBinder
+	@InitBinder(value={"objectName0","objectName1"}) 
 	public void initBinder1(DataBinder dataBinder){
 		
 	}

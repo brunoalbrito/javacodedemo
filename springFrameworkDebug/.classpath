@@ -12,6 +12,7 @@
 	<classpathentry kind="src" path="libSrc/spring-framework-4.3.6.RELEASE/spring-webmvc/src/main/java"/>
 	<classpathentry kind="src" path="webDemoSrc"/>
 	<classpathentry kind="src" path="libSrc/spring-framework-4.3.6.RELEASE/spring-web/src/main/java"/>
+	<classpathentry kind="src" path="libSrc/spring-framework-4.3.6.RELEASE/spring-tx/src/main/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/aspectjweaver-1.8.10.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/commons-logging-1.2.jar"/>
@@ -46,6 +47,8 @@
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/groovy-2.4.11.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/itext-4.2.0.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/jstl-1.2.jar"/>
+	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/spring-tx-4.3.6.RELEASE.jar"/>
+	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/mysql-connector-java-5.1.41-bin.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="lib" path="D:/javacodedemo/springFrameworkDebug/WebRoot/WEB-INF/classes"/>
 	<classpathentry kind="output" path="WebRoot/WEB-INF/classes"/>

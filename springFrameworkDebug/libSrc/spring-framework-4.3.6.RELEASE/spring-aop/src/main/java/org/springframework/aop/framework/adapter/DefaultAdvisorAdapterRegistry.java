@@ -76,11 +76,11 @@ public class DefaultAdvisorAdapterRegistry implements AdvisorAdapterRegistry, Se
 	}
 
 	@Override
-	public MethodInterceptor[] getInterceptors(Advisor advisor) throws UnknownAdviceTypeException {
+	public MethodInterceptor[] getInterceptors(Advisor advisor) throws UnknownAdviceTypeException { // 做适配
 		List<MethodInterceptor> interceptors = new ArrayList<MethodInterceptor>(3);
 		// advisor === org.springframework.aop.aspectj.AspectJPointcutAdvisor 
 		Advice advice = advisor.getAdvice();//!!!
-		
+		// 可能是自定义的 advice === cn.java.demo.aoptag.advice.AspectJMethodBeforeAdviceMock
 		// <before ...> advice == org.springframework.aop.aspectj.AspectJMethodBeforeAdvice
 		// <after ...> advice === org.springframework.aop.aspectj.AspectJAfterAdvice
 		// <after-returning ...> advice === org.springframework.aop.aspectj.AspectJAfterReturningAdvice

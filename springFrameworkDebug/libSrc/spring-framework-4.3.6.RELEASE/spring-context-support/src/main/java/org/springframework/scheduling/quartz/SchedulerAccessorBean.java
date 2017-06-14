@@ -103,7 +103,7 @@ public class SchedulerAccessorBean extends SchedulerAccessor implements BeanFact
 				}
 			}
 		}
-		Scheduler schedulerInRepo = SchedulerRepository.getInstance().lookup(schedulerName);
+		Scheduler schedulerInRepo = SchedulerRepository.newInstance().lookup(schedulerName);
 		if (schedulerInRepo == null) {
 			throw new IllegalStateException("No Scheduler named '" + schedulerName + "' found");
 		}
