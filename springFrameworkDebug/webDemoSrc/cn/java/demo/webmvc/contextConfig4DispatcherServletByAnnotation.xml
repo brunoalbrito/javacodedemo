@@ -17,6 +17,7 @@
 	
 	<!-- ******关于“Hanlder列表”的配置******bof****** -->
 	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.CrudHandler" />
+	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.CsrfHandler" />
 	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.DownloadHandler" />
 	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.ThrowExceptionHandler" />
 	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.Handler0" />
@@ -37,7 +38,7 @@
 	
 	<!-- ******关于“拦截器映射器”的配置******bof****** -->
 	<!-- 符合条件的请求，才会应用本拦截器 -->
-    <bean class="org.springframework.web.servlet.handler.MappedInterceptor">
+    <bean class="org.springframework.web.servlet.handler.MappedInterceptor"><!-- 都不在excludePatterns访问内，有一个includePatterns符合或者includePatterns为空，都算匹配 -->
       	<constructor-arg index="0" type="java.lang.String[]" name="includePatterns"><!-- 只要有一个符合条件 -->
       	    <array value-type="java.lang.String" merge="false">
       	        <value type="java.lang.String">/req-param-handler/get</value>
@@ -51,7 +52,32 @@
 		 	</array>
     	</constructor-arg>
       	<constructor-arg index="2" type="org.springframework.web.servlet.HandlerInterceptor" name="interceptor">
-      		<bean class="cn.java.demo.webmvc.bean.interceptor.MappedInterceptorWithHandlerInterceptorImpl1" /> <!-- 只能是实现HandlerInterceptor接口的拦截器 -->
+      		<bean class="cn.java.demo.webmvc.bean.interceptor.PatternsUseHandlerInterceptorImpl1" /> <!-- 只能是实现HandlerInterceptor接口的拦截器 -->
+      	</constructor-arg>
+    </bean>
+    <!-- ******关于“拦截器映射器”的配置******eof****** -->
+    
+    <!-- ******关于“CSRF”的配置******bof****** -->
+	<!-- 符合条件的请求，才会应用本拦截器 -->
+    <bean id="csrfMappedInterceptor" class="org.springframework.web.servlet.handler.MappedInterceptor"><!-- 都不在excludePatterns访问内，有一个includePatterns符合或者includePatterns为空，都算匹配 -->
+      	<constructor-arg index="0" type="java.lang.String[]" name="includePatterns">
+      	    <array value-type="java.lang.String" merge="false">
+      	        <value type="java.lang.String">/csrf-handler/*</value>
+		 	</array>
+    	</constructor-arg>
+   		<constructor-arg index="1" type="java.lang.String[]" name="excludePatterns">
+   		    <null />
+   		</constructor-arg>   
+      	<constructor-arg index="2" type="org.springframework.web.servlet.HandlerInterceptor" name="interceptor">
+      		<bean class="cn.java.demo.webmvc.bean.interceptor.CookieCsrfHandlerInterceptor">
+      		    <property name="pageCsrfTokenKeyName" value="_csrfToken" />
+      		    <property name="publicKey">
+      		        <value type="java.lang.String">MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAKHGwq7q2RmwuRgKxBypQHw0mYu4BQZ3eMsTrdK8E6igRcxsobUC7uT0SoxIjl1WveWniCASejoQtn/BY6hVKWsCAwEAAQ==</value>
+      		    </property>
+      		    <property name="privateKey">
+      		        <value type="java.lang.String">MIIBVAIBADANBgkqhkiG9w0BAQEFAASCAT4wggE6AgEAAkEAocbCrurZGbC5GArEHKlAfDSZi7gFBnd4yxOt0rwTqKBFzGyhtQLu5PRKjEiOXVa95aeIIBJ6OhC2f8FjqFUpawIDAQABAkAPejKaBYHrwUqUEEOe8lpnB6lBAsQIUFnQI/vXU4MV+MhIzW0BLVZCiarIQqUXeOhThVWXKFt8GxCykrrUsQ6BAiEA4vMVxEHBovz1di3aozzFvSMdsjTcYRRo82hS5Ru2/OECIQC2fAPoXixVTVY7bNMeuxCP4954ZkXp7fEPDINCjcQDywIgcc8XLkkPcs3Jxk7uYofaXaPbg39wuJpEmzPIxi3k0OECIGubmdpOnin3HuCP/bbjbJLNNoUdGiEmFL5hDI4UdwAdAiEAtcAwbm08bKN7pwwvyqaCBC//VnEWaq39DCzxr+Z2EIk=</value>
+      		    </property>
+      		</bean>
       	</constructor-arg>
     </bean>
     <!-- ******关于“拦截器映射器”的配置******eof****** -->
@@ -86,6 +112,7 @@
 	        <list>
 	            <value>classpath:languages/module0</value>  
 	            <value>classpath:languages/module1</value>
+	            <value>classpath:languages/validator0</value>  
 	        </list>  
 	    </property>
 	</bean>
@@ -93,10 +120,16 @@
 	
 	<!-- ******关于“theme”的配置******bof****** -->
     <!-- theme解析器，id名固定为"themeResolver" -->
-	<bean id="themeResolver" class="org.springframework.web.servlet.theme.FixedThemeResolver">
-         <property name="defaultThemeName" value="default" />  <!-- 通过url上的theme参数切换主题 -->
+	<!-- 
+	<bean id="themeResolver" class="org.springframework.web.servlet.theme.CookieThemeResolver">
+         <property name="defaultThemeName" value="default" /> 默认主题
+         <property name="cookieName" value="theme" />
 	</bean>
-	<!-- theme切换拦截器 -->
+	-->
+	<bean id="themeResolver" class="org.springframework.web.servlet.theme.FixedThemeResolver">
+         <property name="defaultThemeName" value="default" />  <!-- 默认主题 -->
+	</bean>
+	<!-- theme切换拦截器 ，用来篡改themeResolver解析出来的主题-->
 	<bean id="themeChangeInterceptor" class="org.springframework.web.servlet.theme.ThemeChangeInterceptor">  
          <property name="paramName" value="theme" />  <!-- 通过url上的theme参数切换主题 -->
   	</bean>

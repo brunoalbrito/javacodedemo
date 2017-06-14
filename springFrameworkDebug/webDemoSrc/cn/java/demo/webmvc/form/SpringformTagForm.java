@@ -56,6 +56,12 @@ public class SpringformTagForm {
 		this.description = description;
 	}
 	
+	@Override
+	public String toString() {
+		return "SpringformTagForm [username=" + username + ", password=" + password + ", csrfToken=" + csrfToken
+				+ ", city=" + city + ", sex=" + sex + ", likes=" + likes + ", description=" + description + "]";
+	}
+	
 	
 	
 }

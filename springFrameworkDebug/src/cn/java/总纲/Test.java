@@ -1,5 +1,7 @@
 package cn.java.总纲;
 
+import org.springframework.transaction.annotation.Transactional;
+
 public class Test {
 
 	public static void main(String[] args) {
@@ -97,7 +99,7 @@ public class Test {
 					类上使用的注解：
 						@RequestMapping、@SessionAttributes注解 
 					方法上使用的注解：
-						@RequestMapping、@InitBinder、@ModelAttribute注解
+						@RequestMapping、@InitBinder(参数校验器)、@ModelAttribute（用于设置model）注解
 					参数上使用的注解：
 						// param0 配置了获取方式，默认值，校验器
 						@RequestParam(name="param0",required=true,defaultValue="defaultValue0") @Value(value="defaultValue") @Validated(value={ValidatorRegForm.class})Object param0,
@@ -111,8 +113,17 @@ public class Test {
 					org.springframework.web.HttpRequestHandler
 					org.springframework.web.servlet.mvc.Controller
 					org.springframework.web.servlet.mvc.LastModified
+			《tx》：	
+				hook机制是：
+					走的是AOP的机制，所以要得到AOP的支持
 					
+				tx的配置 - 使用xml配置
+					<tx:advice id="advice0" transaction-manager="transactionManagerx">
 					
+				tx的配置 - 使用注解配置
+					<tx:annotation-driven transaction-manager="transactionManagerx" mode="proxy" />
+					@Transactional
+					<aop:config>
 		 */
 	}
 

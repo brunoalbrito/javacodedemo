@@ -585,7 +585,7 @@ public class Interceptor的识别_Handler的识别_AnnotationMapper {
 										{
 											ServletWebRequest webRequest = new ServletWebRequest(request, response);
 											try {
-												WebDataBinderFactory binderFactory = getDataBinderFactory(handlerMethod); // !!! 归类带@InitBinder注解的方法
+												WebDataBinderFactory binderFactory = RequestMappingHandlerAdapter.getDataBinderFactory(handlerMethod); // !!! 归类带@InitBinder注解的方法
 												ModelFactory modelFactory = getModelFactory(handlerMethod, binderFactory); // !!! 归类带@ModelAttribute注解的方法
 									
 												ServletInvocableHandlerMethod invocableMethod = createInvocableHandlerMethod(handlerMethod);
@@ -622,6 +622,7 @@ public class Interceptor的识别_Handler的识别_AnnotationMapper {
 													
 																Object returnValue = modelMethod.invokeForRequest(request, container); // !!!!调用带@ModelAttribute注解的方法
 																{
+																	// providedArgs === null
 																	Object[] args = getMethodArgumentValues(request, mavContainer, providedArgs); // 参数值
 																	{
 																		MethodParameter[] parameters = getMethodParameters(); // 目标方法的参数
@@ -764,7 +765,7 @@ public class Interceptor的识别_Handler的识别_AnnotationMapper {
 																								if (this.initializer != null) {
 																									this.initializer.initBinder(dataBinder, webRequest);
 																								}
-																								initBinder(dataBinder, webRequest);//!!!!
+																								InitBinderDataBinderFactory.initBinder(dataBinder, webRequest);//!!!!
 																								{
 																									org.springframework.web.method.annotation.InitBinderDataBinderFactory.initBinder(WebDataBinder binder, NativeWebRequest request)
 																									{
@@ -774,7 +775,50 @@ public class Interceptor的识别_Handler的识别_AnnotationMapper {
 																												Collection<String> names = Arrays.asList(annot.value());
 																												return (names.size() == 0 || names.contains(binder.getObjectName()));
 																											}) { // !!!!
+																												// org.springframework.web.method.support.InvocableHandlerMethod
 																												Object returnValue = binderMethod.invokeForRequest(request, null, binder); // !!!
+																												{
+																													Object[] args = getMethodArgumentValues(request, mavContainer, providedArgs); // 参数值
+																													{
+																														MethodParameter[] parameters = getMethodParameters(); // 目标方法的参数
+																														Object[] args = new Object[parameters.length];
+																														for (int i = 0; i < parameters.length; i++) {
+																															MethodParameter parameter = parameters[i];
+																															// parameterNameDiscoverer === org.springframework.core.DefaultParameterNameDiscoverer
+																															parameter.initParameterNameDiscovery(this.parameterNameDiscoverer); 
+																															args[i] = resolveProvidedArgument(parameter, providedArgs);
+																															if (args[i] != null) {
+																																continue;
+																															}
+																															// argumentResolvers === org.springframework.web.method.support.HandlerMethodArgumentResolverComposite
+																															if (this.argumentResolvers.supportsParameter(parameter)) { // 支持此种类型的参数
+																																try {
+																																	args[i] = this.argumentResolvers.resolveArgument(
+																																			parameter, mavContainer, request, this.dataBinderFactory); // 获取指定类型的参数的值
+																																	continue;
+																																}
+																																catch (Exception ex) {
+																																	throw ex;
+																																}
+																															}
+																															if (args[i] == null) {
+																																throw new IllegalStateException("Could not resolve method parameter at index " +
+																																		parameter.getParameterIndex() + " in " + parameter.getMethod().toGenericString() +
+																																		": " + getArgumentResolutionErrorMessage("No suitable resolver for", i));
+																															}
+																														}
+																														return args;
+																													}
+																													
+																													Object returnValue = doInvoke(args); // 传递参数，调用方法
+																													{
+																														ReflectionUtils.makeAccessible(getBridgedMethod());
+																														try {
+																															return getBridgedMethod().invoke(getBean(), args); // 调用方法
+																														}
+																													}
+																													return returnValue;
+																												}
 																												if (returnValue != null) { //不能有返回值
 																													throw new IllegalStateException("@InitBinder methods should return void: " + binderMethod);
 																												}
@@ -1102,7 +1146,7 @@ public class Interceptor的识别_Handler的识别_AnnotationMapper {
 					resolvers.add(new RedirectAttributesMethodArgumentResolver());
 					resolvers.add(new ModelMethodProcessor());
 					resolvers.add(new MapMethodProcessor());
-					resolvers.add(new ErrorsMethodArgumentResolver());
+					resolvers.add(new ErrorsMethodArgumentResolver()); // 处理“校验结果”参数注入 org.springframework.validation.BindingResult
 					resolvers.add(new SessionStatusMethodArgumentResolver());
 					resolvers.add(new UriComponentsBuilderMethodArgumentResolver());
 			

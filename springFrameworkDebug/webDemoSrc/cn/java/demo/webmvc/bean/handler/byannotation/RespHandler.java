@@ -15,6 +15,7 @@ import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,7 @@ import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -36,6 +38,7 @@ import org.springframework.web.servlet.view.InternalResourceView;
 import org.springframework.web.util.WebUtils;
 
 import cn.java.demo.web.util.WebUtilx;
+import cn.java.demo.webmvc.form.SpringformTagForm;
 import net.sf.jasperreports.engine.JREmptyDataSource;
 
 /**
@@ -48,6 +51,12 @@ import net.sf.jasperreports.engine.JREmptyDataSource;
 )
 public class RespHandler {
 	
+	@ModelAttribute(name="modelAttribute0")
+	public void modelAttribute(ModelMap model) throws Exception{
+		System.out.println("--->code in : "+this.getClass().getSimpleName()+":modelAttribute(HttpMethod httpMethod,ModelMap model)");
+		model.put("userLoginInfo", "用户登录信息...");
+	}
+	
 	/**
 	 * 《jsp、jstl》
 	 * 返回“模板+模板数据”
@@ -56,13 +65,14 @@ public class RespHandler {
 	 * 		localhost:8080/springwebmvc/resp-handler/return-model-and-view0
 	 */
 	@RequestMapping(path={"/return-model-and-view0"},method={RequestMethod.GET})
-	public ModelAndView returnModelAndView0(HttpServletRequest request,HttpServletResponse response) throws Exception{ 
+	public ModelAndView returnModelAndView0(HttpServletRequest request,HttpServletResponse response,ModelMap model) throws Exception{ 
 		request.setAttribute("attr0","value0");
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("resp-handler/return-model-and-view0");
 		ModelMap modelMap = new ModelMap();
 		modelMap.put("attr1", "value1");
 		modelAndView.addAllObjects(modelMap);
+		System.out.println(model.get("userLoginInfo"));
 		return modelAndView;
 	}
 	

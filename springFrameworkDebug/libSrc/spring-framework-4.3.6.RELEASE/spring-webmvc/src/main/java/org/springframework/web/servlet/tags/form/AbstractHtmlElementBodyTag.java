@@ -45,7 +45,7 @@ public abstract class AbstractHtmlElementBodyTag extends AbstractHtmlElementTag 
 		onWriteTagContent();
 		this.tagWriter = tagWriter;
 		if (shouldRender()) {
-			exposeAttributes();
+			exposeAttributes(); // 把属性设置到pageContext
 			return EVAL_BODY_BUFFERED;
 		}
 		else {

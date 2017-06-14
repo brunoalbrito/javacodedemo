@@ -57,7 +57,7 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 	 */
 	@Override
 	public BeanDefinition parse(Element element, ParserContext parserContext) {
-		registerTransactionalEventListenerFactory(parserContext);
+		registerTransactionalEventListenerFactory(parserContext); // 注册TransactionalEventListenerFactory对象到BeanDefinition容器
 		String mode = element.getAttribute("mode");
 		if ("aspectj".equals(mode)) {
 			// mode="aspectj"
@@ -91,7 +91,7 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 		RootBeanDefinition def = new RootBeanDefinition();
 		def.setBeanClass(TransactionalEventListenerFactory.class);
 		parserContext.registerBeanComponent(new BeanComponentDefinition(def,
-				TransactionManagementConfigUtils.TRANSACTIONAL_EVENT_LISTENER_FACTORY_BEAN_NAME));
+				TransactionManagementConfigUtils.TRANSACTIONAL_EVENT_LISTENER_FACTORY_BEAN_NAME)); 
 	}
 
 
@@ -101,7 +101,7 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 	private static class AopAutoProxyConfigurer {
 
 		public static void configureAutoProxyCreator(Element element, ParserContext parserContext) {
-			AopNamespaceUtils.registerAutoProxyCreatorIfNecessary(parserContext, element);
+			AopNamespaceUtils.registerAutoProxyCreatorIfNecessary(parserContext, element);  // 注册“BeanPostProcessor”钩子
 
 			String txAdvisorBeanName = TransactionManagementConfigUtils.TRANSACTION_ADVISOR_BEAN_NAME;
 			if (!parserContext.getRegistry().containsBeanDefinition(txAdvisorBeanName)) {
@@ -112,16 +112,30 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 						"org.springframework.transaction.annotation.AnnotationTransactionAttributeSource");
 				sourceDef.setSource(eleSource);
 				sourceDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
-				String sourceName = parserContext.getReaderContext().registerWithGeneratedName(sourceDef);
+				String sourceName = parserContext.getReaderContext().registerWithGeneratedName(sourceDef); // 生成beanName，并注册到BeanDefinition容器
 
 				// Create the TransactionInterceptor definition.
 				RootBeanDefinition interceptorDef = new RootBeanDefinition(TransactionInterceptor.class);
 				interceptorDef.setSource(eleSource);
 				interceptorDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
-				registerTransactionManager(element, interceptorDef);
+				registerTransactionManager(element, interceptorDef);//!!!!
 				interceptorDef.getPropertyValues().add("transactionAttributeSource", new RuntimeBeanReference(sourceName));
-				String interceptorName = parserContext.getReaderContext().registerWithGeneratedName(interceptorDef);
+				String interceptorName = parserContext.getReaderContext().registerWithGeneratedName(interceptorDef); // 生成beanName，并注册到BeanDefinition容器
 
+				/*
+				 	adviceBeanName(接受通知的对象，beanName自动生成) == org.springframework.transaction.interceptor.TransactionInterceptor
+				 	{
+				 		transactionManagerBeanName : "transactionManagerx"
+				 		transactionAttributeSource : org.springframework.transaction.annotation.AnnotationTransactionAttributeSource对象
+				 	}
+				 	
+				 	advisor(beanName自动生成) = org.springframework.transaction.interceptor.BeanFactoryTransactionAttributeSourceAdvisor
+				 	{
+				 		transactionAttributeSource : org.springframework.transaction.annotation.AnnotationTransactionAttributeSource对象
+				 		adviceBeanName ：adviceBeanName(接受通知的对象，beanName自动生成)
+				 	}
+				 	
+				 */
 				// Create the TransactionAttributeSourceAdvisor definition.
 				RootBeanDefinition advisorDef = new RootBeanDefinition(BeanFactoryTransactionAttributeSourceAdvisor.class);
 				advisorDef.setSource(eleSource);
@@ -131,7 +145,7 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 				if (element.hasAttribute("order")) {
 					advisorDef.getPropertyValues().add("order", element.getAttribute("order"));
 				}
-				parserContext.getRegistry().registerBeanDefinition(txAdvisorBeanName, advisorDef);
+				parserContext.getRegistry().registerBeanDefinition(txAdvisorBeanName, advisorDef); // 注册到BeanDefinition容器
 
 				CompositeComponentDefinition compositeDef = new CompositeComponentDefinition(element.getTagName(), eleSource);
 				compositeDef.addNestedComponent(new BeanComponentDefinition(sourceDef, sourceName));

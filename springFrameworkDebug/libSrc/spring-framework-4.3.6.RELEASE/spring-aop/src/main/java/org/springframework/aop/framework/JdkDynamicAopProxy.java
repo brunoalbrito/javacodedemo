@@ -103,7 +103,7 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 		if (config.getAdvisors().length == 0 && config.getTargetSource() == AdvisedSupport.EMPTY_TARGET_SOURCE) {
 			throw new AopConfigException("No advisors and no TargetSource specified");
 		}
-		this.advised = config;
+		this.advised = config; // advised === org.springframework.aop.framework.ProxyCreatorSupport
 	}
 
 
@@ -117,6 +117,7 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 		if (logger.isDebugEnabled()) {
 			logger.debug("Creating JDK dynamic proxy: target source is " + this.advised.getTargetSource());
 		}
+		// advised === org.springframework.aop.framework.ProxyCreatorSupport
 		Class<?>[] proxiedInterfaces = AopProxyUtils.completeProxiedInterfaces(this.advised, true); // 被代理的接口列表
 		findDefinedEqualsAndHashCodeMethods(proxiedInterfaces); //  // 有定义equals方法、有定义hashCode方法
 		return Proxy.newProxyInstance(classLoader, proxiedInterfaces, this);
@@ -155,7 +156,9 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 		MethodInvocation invocation;
 		Object oldProxy = null;
 		boolean setProxyContext = false;
-
+		
+		// advised === org.springframework.aop.framework.ProxyCreatorSupport
+		
 		TargetSource targetSource = this.advised.targetSource; // org.springframework.aop.target.SingletonTargetSource
 		Class<?> targetClass = null;
 		Object target = null;
@@ -197,6 +200,7 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 			
 			// advised === org.springframework.aop.framework.ProxyFactory
 			// Get the interception chain for this method.
+			// advised === org.springframework.aop.framework.ProxyCreatorSupport
 			List<Object> chain = this.advised.getInterceptorsAndDynamicInterceptionAdvice(method, targetClass); // 符合条件的“拦截器链条”
 
 			// Check whether we have any advice. If we don't, we can fallback on direct

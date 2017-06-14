@@ -150,16 +150,16 @@ public class DefaultMessageCodesResolver implements MessageCodesResolver, Serial
 		Set<String> codeList = new LinkedHashSet<String>();
 		List<String> fieldList = new ArrayList<String>();
 		buildFieldList(field, fieldList);
-		addCodes(codeList, errorCode, objectName, fieldList);
+		addCodes(codeList, errorCode, objectName, fieldList); // !!!  "errorCode.objectName.field"
 		int dotIndex = field.lastIndexOf('.');
 		if (dotIndex != -1) {
 			buildFieldList(field.substring(dotIndex + 1), fieldList);
 		}
-		addCodes(codeList, errorCode, null, fieldList);
+		addCodes(codeList, errorCode, null, fieldList); // !!!  "errorCode.field"
 		if (fieldType != null) {
 			addCode(codeList, errorCode, null, fieldType.getName());
 		}
-		addCode(codeList, errorCode, null, null);
+		addCode(codeList, errorCode, null, null); // !!!  "errorCode"
 		return StringUtils.toStringArray(codeList);
 	}
 
@@ -170,6 +170,7 @@ public class DefaultMessageCodesResolver implements MessageCodesResolver, Serial
 	}
 
 	private void addCode(Collection<String> codeList, String errorCode, String objectName, String field) {
+		// Format.PREFIX_ERROR_CODE
 		codeList.add(postProcessMessageCode(this.formatter.format(errorCode, objectName, field)));
 	}
 

@@ -47,6 +47,7 @@ public class BeanWrapperInMvcTest {
 			
 			// 反射注入属性值--方式1
 			{
+				String field = "str";
 				BeanPropertyBindingResult beanPropertyBindingResult = new BeanPropertyBindingResult(target,objectName, autoGrowNestedPaths, autoGrowCollectionLimit);
 				ConfigurablePropertyAccessor configurablePropertyAccessor = beanPropertyBindingResult.getPropertyAccessor(); 
 				boolean ignoreUnknownFields = true;
@@ -54,7 +55,10 @@ public class BeanWrapperInMvcTest {
 				// 设置属性值
 				configurablePropertyAccessor.setPropertyValues(mpvs, ignoreUnknownFields, ignoreInvalidFields);	
 				// 获取字段值
-				System.out.println(configurablePropertyAccessor.getPropertyValue("str"));
+				System.out.println(configurablePropertyAccessor.getPropertyValue(field));
+				if(configurablePropertyAccessor.isWritableProperty(field)){
+					
+				}
 			}
 			
 			// 反射注入属性值--方式2（方式1的代码展开）

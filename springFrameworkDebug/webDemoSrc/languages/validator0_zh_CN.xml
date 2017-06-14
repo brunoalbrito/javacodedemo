@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+    <entry key="validator.emptyOrWhitespace.userLoginForm.username"><![CDATA[用户名必须填写]]></entry>
+    <entry key="validator.emptyOrWhitespace.username"><![CDATA[用户名必须填写]]></entry>
+    <entry key="validator.emptyOrWhitespace.password"><![CDATA[密码必须填写]]></entry>
+    <entry key="validator.emptyOrWhitespace"><![CDATA[必须填写]]></entry>
+    
+    <entry key="validator.minLength.userLoginForm.password"><![CDATA[密码至少需要{0}个字符]]></entry>
+    <entry key="validator.minLength.password"><![CDATA[密码至少需要{0}个字符]]></entry>
+    <entry key="validator.minLength"><![CDATA[至少需要{0}个字符]]></entry>
+    
+    <entry key="validator.minChecked"><![CDATA[至少选中{0}个选项]]></entry>
+    
+    <entry key="validator.mustTelephone"><![CDATA[必须是电话]]></entry>
+    <entry key="validator.mustMobile"><![CDATA[必须是手机号]]></entry>
+    <entry key="validator.maxLength"><![CDATA[最大长度的是{0}个字符]]></entry>
+    <entry key="validator.betweenLength"><![CDATA[长度必须介于{0}和{1}之间]]></entry>
+    
+</properties>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+    <entry key="validator.emptyOrWhitespace.userLoginForm.username"><![CDATA[username is must not empty or whitespace]]></entry>
+    <entry key="validator.emptyOrWhitespace.password"><![CDATA[password is must not empty or whitespace]]></entry>
+    <entry key="validator.emptyOrWhitespace.username"><![CDATA[username is must not empty or whitespace]]></entry>
+    <entry key="validator.emptyOrWhitespace"><![CDATA[must not empty or whitespace]]></entry>
+    
+    <entry key="validator.minLength.userLoginForm.password"><![CDATA[password min length is {0} chars]]></entry>
+    <entry key="validator.minLength.password"><![CDATA[password min length is {0} chars]]></entry>
+    <entry key="validator.minLength"><![CDATA[min length is {0} chars]]></entry>
+    
+    <entry key="validator.minChecked"><![CDATA[min checked {0} items]]></entry>
+    
+    
+</properties>
+

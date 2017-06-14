@@ -86,10 +86,10 @@ public abstract class BeanFactoryAnnotationUtils {
 	 * @return the matching bean of type {@code T} (never {@code null})
 	 */
 	private static <T> T qualifiedBeanOfType(ConfigurableListableBeanFactory bf, Class<T> beanType, String qualifier) {
-		String[] candidateBeans = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(bf, beanType);
+		String[] candidateBeans = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(bf, beanType); // 获取实现指定接口的bean列表
 		String matchingBean = null;
 		for (String beanName : candidateBeans) {
-			if (isQualifierMatch(qualifier, beanName, bf)) {
+			if (isQualifierMatch(qualifier, beanName, bf)) { // 符合qualifier修饰符
 				if (matchingBean != null) {
 					throw new NoUniqueBeanDefinitionException(beanType, matchingBean, beanName);
 				}

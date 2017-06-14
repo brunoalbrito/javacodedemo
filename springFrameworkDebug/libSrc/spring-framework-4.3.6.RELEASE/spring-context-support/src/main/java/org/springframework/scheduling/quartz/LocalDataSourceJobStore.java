@@ -98,7 +98,7 @@ public class LocalDataSourceJobStore extends JobStoreCMT {
 		setDontSetAutoCommitFalse(true);
 
 		// Register transactional ConnectionProvider for Quartz.
-		DBConnectionManager.getInstance().addConnectionProvider(
+		DBConnectionManager.newInstance().addConnectionProvider(
 				TX_DATA_SOURCE_PREFIX + getInstanceName(),
 				new ConnectionProvider() {
 					@Override
@@ -126,7 +126,7 @@ public class LocalDataSourceJobStore extends JobStoreCMT {
 		setNonManagedTXDataSource(NON_TX_DATA_SOURCE_PREFIX + getInstanceName());
 
 		// Register non-transactional ConnectionProvider for Quartz.
-		DBConnectionManager.getInstance().addConnectionProvider(
+		DBConnectionManager.newInstance().addConnectionProvider(
 				NON_TX_DATA_SOURCE_PREFIX + getInstanceName(),
 				new ConnectionProvider() {
 					@Override

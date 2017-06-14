@@ -6,7 +6,7 @@ import java.nio.charset.Charset;
 
 import org.springframework.util.StreamUtils;
 
-public class StreamUtilsTest {
+public class InternalUtils_StreamUtilsTest {
 	public static void main(String[] args) throws Exception {
 		byte[] bytes = null;
 		InputStream inputStream = null;

@@ -100,9 +100,9 @@ public class ServletRequestDataBinder extends WebDataBinder {
 		MutablePropertyValues mpvs = new ServletRequestParameterPropertyValues(request); // request.getParameterNames()参数值放入mpvs
 		MultipartRequest multipartRequest = WebUtils.getNativeRequest(request, MultipartRequest.class);
 		if (multipartRequest != null) {
-			bindMultipart(multipartRequest.getMultiFileMap(), mpvs);
+			bindMultipart(multipartRequest.getMultiFileMap(), mpvs); // 文件上传的相关数据放入mpvs
 		}
-		addBindValues(mpvs, request); // 子类实现 ，request.getAttribute(attr)放入mpvs
+		addBindValues(mpvs, request); // 子类实现 ，url中的模板变量放入 mpvs
 		doBind(mpvs);
 	}
 

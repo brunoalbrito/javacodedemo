@@ -58,10 +58,10 @@ public abstract class AbstractBeanDefinitionParser implements BeanDefinitionPars
 
 	@Override
 	public final BeanDefinition parse(Element element, ParserContext parserContext) {
-		AbstractBeanDefinition definition = parseInternal(element, parserContext);
+		AbstractBeanDefinition definition = parseInternal(element, parserContext); // !!!
 		if (definition != null && !parserContext.isNested()) {
 			try {
-				String id = resolveId(element, definition, parserContext);
+				String id = resolveId(element, definition, parserContext); // 解析出ID
 				if (!StringUtils.hasText(id)) {
 					parserContext.getReaderContext().error(
 							"Id is required for element '" + parserContext.getDelegate().getLocalName(element)
@@ -75,7 +75,7 @@ public abstract class AbstractBeanDefinitionParser implements BeanDefinitionPars
 					}
 				}
 				BeanDefinitionHolder holder = new BeanDefinitionHolder(definition, id, aliases);
-				registerBeanDefinition(holder, parserContext.getRegistry());
+				registerBeanDefinition(holder, parserContext.getRegistry()); // 注册到BeanDefinition容器
 				if (shouldFireEvents()) {
 					BeanComponentDefinition componentDefinition = new BeanComponentDefinition(holder);
 					postProcessComponentDefinition(componentDefinition);

@@ -12,6 +12,8 @@
 <%@ page import="org.springframework.validation.Errors" %>
 <%@ page import="org.springframework.validation.BindException" %>
 <%@ page import="cn.java.demo.webmvc.form.UserLoginForm" %>
+<%@ page import="org.springframework.validation.ObjectError" %>
+<%@ page import="java.util.List" %>
 
 this is jsp template.<br />
 hello , attr0 = <%=request.getAttribute("attr0") %> , attr1 = <%=request.getAttribute("attr1") %>
@@ -31,19 +33,9 @@ MessageSource messageSource = theme.getMessageSource();
 System.out.println(messageSource.getMessage("themes.message.message0",null,locale)); // “themes/default.properties” 或者 “themes/theme0.xml”
 
 // 校验错误
-Errors errors = (Errors) request.getAttribute(BindingResult.MODEL_KEY_PREFIX + "objectName0");
-if (errors instanceof BindException) {
-	errors = ((BindException) errors).getBindingResult();
-}
+Errors errors = (Errors) request.getAttribute(BindingResult.MODEL_KEY_PREFIX + "userLoginForm");
 if (errors != null) {
-	if(errors instanceof BeanPropertyBindingResult){
-		BeanPropertyBindingResult beanPropertyBindingResult = (BeanPropertyBindingResult)errors;
-		String objectName = beanPropertyBindingResult.getObjectName();
-		Object target = beanPropertyBindingResult.getTarget();
-		if(target instanceof UserLoginForm){
-			UserLoginForm userLoginForm = (UserLoginForm)target;
-		}
-	}
+	cn.java.demo.webmvc.validator.UserLoginFormValidator.debugBeanPropertyBindingResult(errors);
 }
 
 %>

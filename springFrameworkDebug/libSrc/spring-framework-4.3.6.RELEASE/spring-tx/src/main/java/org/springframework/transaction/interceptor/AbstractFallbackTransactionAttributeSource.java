@@ -97,9 +97,12 @@ public abstract class AbstractFallbackTransactionAttributeSource implements Tran
 		}
 		else {
 			// We need to work it out.
-			TransactionAttribute txAttr = computeTransactionAttribute(method, targetClass);
+			TransactionAttribute txAttr = computeTransactionAttribute(method, targetClass); // 检查方法上的@Transactional注解信息 
+			
+			// txAttr === org.springframework.transaction.interceptor.RuleBasedTransactionAttribute
+			
 			// Put it in the cache.
-			if (txAttr == null) {
+			if (txAttr == null) { 
 				this.attributeCache.put(cacheKey, NULL_TRANSACTION_ATTRIBUTE);
 			}
 			else {
@@ -150,7 +153,7 @@ public abstract class AbstractFallbackTransactionAttributeSource implements Tran
 		specificMethod = BridgeMethodResolver.findBridgedMethod(specificMethod);
 
 		// First try is the method in the target class.
-		TransactionAttribute txAttr = findTransactionAttribute(specificMethod);
+		TransactionAttribute txAttr = findTransactionAttribute(specificMethod); // 检查方法上的@Transactional注解信息
 		if (txAttr != null) {
 			return txAttr;
 		}

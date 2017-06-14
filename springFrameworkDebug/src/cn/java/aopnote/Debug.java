@@ -18,7 +18,12 @@ import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 
 public class Debug {
-
+	public static void debug() {
+		/*
+		 	org.springframework.aop.config.AopNamespaceHandler 命名空间处理器
+		 */
+	}
+	
 	
 	
 	public static AbstractBeanDefinition createAdviceDefinition(String aspectName,int order,List<BeanReference> beanReferences,RootBeanDefinition methodDef, RootBeanDefinition aspectFactoryDef){

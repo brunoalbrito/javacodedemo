@@ -121,6 +121,7 @@ public class HelloServlet extends CommonServlet   {
 				// Cookie
 				{
 					Cookie cookie = WebUtils.getCookie(req, "cookieName0");
+					
 					CookieGenerator cookieGenerator = new CookieGenerator();
 					cookieGenerator.setCookieName("cookieName0");
 					cookieGenerator.addCookie(resp, "cookieValue0");

@@ -76,7 +76,7 @@ public class InitBinderDataBinderFactory extends DefaultDataBinderFactory {
 	protected boolean isBinderMethodApplicable(HandlerMethod initBinderMethod, WebDataBinder binder) {
 		InitBinder annot = initBinderMethod.getMethodAnnotation(InitBinder.class);
 		Collection<String> names = Arrays.asList(annot.value());
-		return (names.size() == 0 || names.contains(binder.getObjectName()));
+		return (names.size() == 0 || names.contains(binder.getObjectName())); // 注解@InitBinder中包含允许的objectName0
 	}
 
 }

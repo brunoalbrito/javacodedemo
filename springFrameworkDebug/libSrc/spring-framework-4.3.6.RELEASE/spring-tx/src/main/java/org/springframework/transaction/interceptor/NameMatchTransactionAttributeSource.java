@@ -61,7 +61,7 @@ public class NameMatchTransactionAttributeSource implements TransactionAttribute
 	 */
 	public void setNameMap(Map<String, TransactionAttribute> nameMap) {
 		for (Map.Entry<String, TransactionAttribute> entry : nameMap.entrySet()) {
-			addTransactionalMethod(entry.getKey(), entry.getValue());
+			addTransactionalMethod(entry.getKey(), entry.getValue()); // !!!!
 		}
 	}
 
@@ -106,13 +106,13 @@ public class NameMatchTransactionAttributeSource implements TransactionAttribute
 		}
 
 		// Look for direct name match.
-		String methodName = method.getName();
+		String methodName = method.getName(); // 方法名
 		TransactionAttribute attr = this.nameMap.get(methodName);
 
 		if (attr == null) {
 			// Look for most specific name match.
 			String bestNameMatch = null;
-			for (String mappedName : this.nameMap.keySet()) {
+			for (String mappedName : this.nameMap.keySet()) { // 匹配一个方法
 				if (isMatch(methodName, mappedName) &&
 						(bestNameMatch == null || bestNameMatch.length() <= mappedName.length())) {
 					attr = this.nameMap.get(mappedName);
@@ -121,7 +121,7 @@ public class NameMatchTransactionAttributeSource implements TransactionAttribute
 			}
 		}
 
-		return attr;
+		return attr; // org.springframework.transaction.interceptor.RuleBasedTransactionAttribute
 	}
 
 	/**

@@ -56,6 +56,7 @@ public class AopConfigTagMockInJavaTest {
 		
 		// 测试
 		registerBeanPostProcessorAliasHook(context); // 注册钩子
+		
 		// 在实例化任何bean之前，就要注入Advice对象，不然内部发现Advice后，会缓存Advice列表，会使Advice配置不成功
 		registerAspectAliasAccepter(registry,aspectName4AcceptAdvice,aspectName4AcceptAdviceClazz); // 注册“通知接受者”
 		registerAdviceAliasRuleAccepterRelate(registry,aspectName4AcceptAdvice,pointcutBeanName4Matcher); // 注册“通知接受者 - 方法”和“规则”的关系
@@ -167,10 +168,10 @@ public class AopConfigTagMockInJavaTest {
 //			adviceDefinition.getPropertyValues().add("argumentNames", adviceElement.getAttribute(ARG_NAMES));
 			// 构造函数的bean信息
 			ConstructorArgumentValues cav = adviceDefinition.getConstructorArgumentValues();
-			cav.addIndexedArgumentValue(0, methodDefinition); // 第一个参数
+			cav.addIndexedArgumentValue(0, methodDefinition); // 第一个参数，“接受报告的bean对象”的方法信息
 			RuntimeBeanReference pointcutRef = new RuntimeBeanReference((String) pointcutBeanName4Matcher); // 引用pointcutBeanName0匹配规则
-			cav.addIndexedArgumentValue(1, pointcutRef); // 第二个参数
-			cav.addIndexedArgumentValue(2, aspectFactoryDef); // 第三个参数
+			cav.addIndexedArgumentValue(1, pointcutRef); // 第二个参数，“规则匹配器”的信息
+			cav.addIndexedArgumentValue(2, aspectFactoryDef); // 第三个参数，“接受通知的对象”的信息
 			
 			// 
 			RootBeanDefinition advisorDefinition = new RootBeanDefinition(AspectJPointcutAdvisor.class);

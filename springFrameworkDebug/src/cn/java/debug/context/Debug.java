@@ -1,4 +1,4 @@
-package cn.java.contextnote;
+package cn.java.debug.context;
 
 import org.springframework.beans.factory.config.BeanDefinition;
 

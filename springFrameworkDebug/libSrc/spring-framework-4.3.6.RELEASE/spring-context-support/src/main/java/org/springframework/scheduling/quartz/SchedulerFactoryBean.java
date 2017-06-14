@@ -591,7 +591,7 @@ public class SchedulerFactoryBean extends SchedulerAccessor implements FactoryBe
 			currentThread.setContextClassLoader(this.resourceLoader.getClassLoader());
 		}
 		try {
-			SchedulerRepository repository = SchedulerRepository.getInstance();
+			SchedulerRepository repository = SchedulerRepository.newInstance();
 			synchronized (repository) {
 				Scheduler existingScheduler = (schedulerName != null ? repository.lookup(schedulerName) : null);
 				Scheduler newScheduler = schedulerFactory.getScheduler();
@@ -601,7 +601,7 @@ public class SchedulerFactoryBean extends SchedulerAccessor implements FactoryBe
 				}
 				if (!this.exposeSchedulerInRepository) {
 					// Need to remove it in this case, since Quartz shares the Scheduler instance by default!
-					SchedulerRepository.getInstance().remove(newScheduler.getSchedulerName());
+					SchedulerRepository.newInstance().remove(newScheduler.getSchedulerName());
 				}
 				return newScheduler;
 			}

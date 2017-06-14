@@ -1,21 +1,11 @@
 <%@ include file="/WEB-INF/templates/common/common-header.jsp" %>
 
-this is "theme-handler/method0.jsp" file.<br />
-
-<!-- *******************************jstl********************************** -->
-<!-- JSTL标准库，放到类路径，会被自动扫描到 -->
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>
-<%@ taglib prefix="x" uri="http://java.sun.com/jsp/jstl/xml" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<c:out value="Hello JSTL." /><br />
-${fn:toUpperCase('abc')}<br />
-
+this is "theme-handler/form0.jsp" file.<br />
 <!-- *******************************spring tag********************************** -->
 <!-- Spring对JSTL的值，放到类路径，会被自动扫描到 -->
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="springform" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!-- htmlEscape标签，对RequestContext对进行获取的对象，进行转义 -->
 <spring:htmlEscape defaultHtmlEscape="true" />
@@ -38,17 +28,6 @@ ${fn:toUpperCase('abc')}<br />
 <!-- theme标签，多主题标签 -->
 <spring:theme code="themes.message.message0" arguments="1,2,3" text="默认消息，参数是 {0},{1}..." argumentSeparator="," /> <br />
 <link rel="stylesheet" type="text/css" href="<spring:theme code='themes.csslink.link0'/>" /><br />
-
-<!-- 功能：输出值 -->
-
-<!-- hasBindErrors标签 -->
-<% 
-// 把 @ ModelAttribute(name="objectName0")注解的校验结果 org.springframework.validation.Errors放入request
-// 等价 request.setAttribute("errors",request.getAttribute("org.springframework.validation.BindingResult.objectName0")); 
-%>
-<spring:hasBindErrors name="objectName0" htmlEscape="true">
-	
-</spring:hasBindErrors>
 
 <!-- url标签 -->
 <!-- 生成的地址“/上下文地址/controller1/method0” -->
@@ -93,6 +72,71 @@ ${fn:toUpperCase('abc')}<br />
 ${spring:mvcUrl('TJH#method1').arg(0,'pathVar0_val').arg(2,'reqParam0_val').arg(3,'reqParam1_val').build()} <br />
 ${spring:mvcUrl('TJH#method1').arg(0,'pathVar0_val').arg(1,'pathVar1_val').arg(2,'reqParam0_val').arg(3,'reqParam1_val').build()} <br />
 ${spring:mvcUrl('TJH#method1').arg(0,'pathVar0_val').arg(2,'reqParam0_val').build()} <br />
+
+<br />
+
+
+<spring:hasBindErrors name="springTagForm">
+	
+</spring:hasBindErrors>
+<spring:nestedPath path="springTagForm.">
+	<form id="formId" class="formClass" style="height:auto;" action="${requestContext.getContextPath()}${requestContext.getPathToServlet()}/theme-jstl-handler/springtag-and-theme0" 
+		method="post" enctype="application/x-www-form-urlencoded">
+		<label for="username">用户名：</label>
+		<spring:bind path="username"  ignoreNestedPath="false" htmlEscape="false">
+			<input id="username" name="username" value="<spring:transform  value="${status.getValue()}"  />" type="text">
+			<c:if test="${status.isError()}">${status.getErrorMessagesAsString(',')}</c:if>
+		</spring:bind>
+		<br />
+		
+		<label for="password">密码：</label>
+		<spring:bind path="password"  ignoreNestedPath="false" htmlEscape="false">
+			<input id="password" name="password" value="" type="password">
+			<c:if test="${status.isError()}">${status.getErrorMessagesAsString(',')}</c:if>
+		</spring:bind>
+		<br />
+		
+		<spring:bind path="csrfToken"  ignoreNestedPath="false" htmlEscape="false">
+			<input id="csrfToken" name="csrfToken" value="<spring:transform  value="${status.getValue()}"  />" type="hidden">
+			<c:if test="${status.isError()}">${status.getErrorMessagesAsString(',')}</c:if>
+		</spring:bind>
+		<br />
+		
+		<spring:bind path="city"  ignoreNestedPath="false" htmlEscape="false">
+			<label for="city">所在城市：</label>
+			<select id="city" name="city">
+				<option value="<spring:transform  value="beijian" />" <c:if test="${status.getValue()}=='beijian'">selected="selected"</c:if>>北京</option>
+				<option value="<spring:transform  value="shanghai" />" <c:if test="${status.getValue()}=='shanghai'">selected="selected"</c:if>>上海</option>
+			</select>
+			<c:if test="${status.isError()}">${status.getErrorMessagesAsString(',')}</c:if>
+		</spring:bind>
+		<br />
+		
+		<spring:bind path="sex"  ignoreNestedPath="false" htmlEscape="false">
+			<label for="sex">性别：</label>
+			<input id="sex1" name="sex" value="nan" type="radio" <c:if test="${status.getValue()}=='nan'">checked="checked"</c:if>><label for="sex1">男</label>
+			<input id="sex2" name="sex" value="nv" type="radio" <c:if test="${status.getValue()}=='nv'">checked="checked"</c:if>><label for="sex2">女</label>
+			<c:if test="${status.isError()}">${status.getErrorMessagesAsString(',')}</c:if>
+		</spring:bind>
+		<br />
+		
+		<spring:bind path="likes"  ignoreNestedPath="false" htmlEscape="false">
+			<label for="likes">爱好：</label>
+			<input id="likes1" name="likes" value="sports" type="checkbox" <c:if test="${status.getValue().contains('sports')}">checked="checked"</c:if>> <label for="likes1">运动</label>
+			<input id="likes2" name="likes" value="reading" type="checkbox" <c:if test="${status.getValue().contains('reading')}">checked="checked"</c:if>> <label for="likes2">阅读</label>
+			<c:if test="${status.isError()}">${status.getErrorMessagesAsString(',')}</c:if>
+		</spring:bind>
+		<br />
+		
+		<spring:bind path="description"  ignoreNestedPath="false" htmlEscape="false">
+			<label for="description">简介：</label>
+			<textarea id="description" name="description" rows="3" cols="50"><spring:transform  value="${status.getValue()}"  /></textarea>
+			<c:if test="${status.isError()}">${status.getErrorMessagesAsString(',')}</c:if>
+		</spring:bind>
+		<br />
+		<button id="submitform" name="submitform" type="submit" value="submitform_val">提交</button>
+	</form>
+</spring:nestedPath>
 
 
 <%@ include file="/WEB-INF/templates/common/common-footer.jsp" %>

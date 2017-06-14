@@ -84,10 +84,10 @@ public abstract class AbstractSingleCheckedElementTag extends AbstractCheckedEle
 		writeOptionalAttribute(tagWriter, "id", id);
 		writeOptionalAttribute(tagWriter, "name", getName());
 		writeOptionalAttributes(tagWriter);
-		writeTagDetails(tagWriter);
+		writeTagDetails(tagWriter); // 写值
 		tagWriter.endTag();
 
-		Object resolvedLabel = evaluate("label", getLabel());
+		Object resolvedLabel = evaluate("label", getLabel()); // 写label
 		if (resolvedLabel != null) {
 			tagWriter.startTag("label");
 			tagWriter.writeAttribute("for", id);

@@ -86,6 +86,7 @@ public class AnnotationTransactionAttributeSource extends AbstractFallbackTransa
 	public AnnotationTransactionAttributeSource(boolean publicMethodsOnly) {
 		this.publicMethodsOnly = publicMethodsOnly;
 		this.annotationParsers = new LinkedHashSet<TransactionAnnotationParser>(2);
+		
 		this.annotationParsers.add(new SpringTransactionAnnotationParser());
 		if (jta12Present) {
 			this.annotationParsers.add(new JtaTransactionAnnotationParser());
@@ -130,7 +131,7 @@ public class AnnotationTransactionAttributeSource extends AbstractFallbackTransa
 
 	@Override
 	protected TransactionAttribute findTransactionAttribute(Method method) {
-		return determineTransactionAttribute(method);
+		return determineTransactionAttribute(method); // !!!
 	}
 
 	@Override
@@ -150,9 +151,16 @@ public class AnnotationTransactionAttributeSource extends AbstractFallbackTransa
 	 * or {@code null} if none was found
 	 */
 	protected TransactionAttribute determineTransactionAttribute(AnnotatedElement ae) {
-		if (ae.getAnnotations().length > 0) {
+		if (ae.getAnnotations().length > 0) { // 方法上有注解
+			/*
+			 	{
+			 		org.springframework.transaction.annotation.SpringTransactionAnnotationParser
+			 		org.springframework.transaction.annotation.JtaTransactionAnnotationParser
+			 		org.springframework.transaction.annotation.Ejb3TransactionAnnotationParser
+			 	}
+			 */
 			for (TransactionAnnotationParser annotationParser : this.annotationParsers) {
-				TransactionAttribute attr = annotationParser.parseTransactionAnnotation(ae);
+				TransactionAttribute attr = annotationParser.parseTransactionAnnotation(ae); // 检查方法上的@Transactional注解信息
 				if (attr != null) {
 					return attr;
 				}

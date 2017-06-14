@@ -87,8 +87,8 @@ public class TransformTag extends HtmlEscapingAwareTag {
 	protected final int doStartTagInternal() throws JspException {
 		if (this.value != null) {
 			// Find the containing EditorAwareTag (e.g. BindTag), if applicable.
-			EditorAwareTag tag = (EditorAwareTag) TagSupport.findAncestorWithClass(this, EditorAwareTag.class);  // 迭代父类对象，直到找到实现EditorAwareTag接口的对象
-			if (tag == null) {
+			EditorAwareTag tag = (EditorAwareTag) TagSupport.findAncestorWithClass(this, EditorAwareTag.class);  // 迭代父类对象，直到找到实现EditorAwareTag接口的对象 org.springframework.web.servlet.tags.BindTag
+			if (tag == null) { 
 				throw new JspException("TransformTag can only be used within EditorAwareTag (e.g. BindTag)");
 			}
 

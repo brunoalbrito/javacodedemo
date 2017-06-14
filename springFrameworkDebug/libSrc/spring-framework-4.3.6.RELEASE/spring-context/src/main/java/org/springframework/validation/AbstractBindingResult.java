@@ -133,6 +133,7 @@ public abstract class AbstractBindingResult extends AbstractErrors implements Bi
 	@Override
 	public String[] resolveMessageCodes(String errorCode, String field) {
 		Class<?> fieldType = getFieldType(field);
+		// org.springframework.validation.DefaultMessageCodesResolver
 		return getMessageCodesResolver().resolveMessageCodes(
 				errorCode, getObjectName(), fixedField(field), fieldType);
 	}
@@ -200,7 +201,7 @@ public abstract class AbstractBindingResult extends AbstractErrors implements Bi
 		List<FieldError> result = new LinkedList<FieldError>();
 		String fixedField = fixedField(field);
 		for (ObjectError objectError : this.errors) {
-			if (objectError instanceof FieldError && isMatchingFieldError(fixedField, (FieldError) objectError)) {
+			if (objectError instanceof FieldError && isMatchingFieldError(fixedField, (FieldError) objectError)) { // 匹配字段
 				result.add((FieldError) objectError);
 			}
 		}

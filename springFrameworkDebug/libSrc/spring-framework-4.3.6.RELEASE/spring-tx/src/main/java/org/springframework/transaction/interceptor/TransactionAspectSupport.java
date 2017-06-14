@@ -267,33 +267,39 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 	protected Object invokeWithinTransaction(Method method, Class<?> targetClass, final InvocationCallback invocation)
 			throws Throwable {
 
+		// getTransactionAttributeSource() === org.springframework.transaction.interceptor.NameMatchTransactionAttributeSource
+		// getTransactionAttributeSource() === org.springframework.transaction.annotation.AnnotationTransactionAttributeSource
+		
 		// If the transaction attribute is null, the method is non-transactional.
-		final TransactionAttribute txAttr = getTransactionAttributeSource().getTransactionAttribute(method, targetClass);
-		final PlatformTransactionManager tm = determineTransactionManager(txAttr);
-		final String joinpointIdentification = methodIdentification(method, targetClass, txAttr);
+		final TransactionAttribute txAttr = getTransactionAttributeSource().getTransactionAttribute(method, targetClass); // 查找符合条件的RuleBasedTransactionAttribute、或者方法上是否有@Transactional注解信息
+		final PlatformTransactionManager tm = determineTransactionManager(txAttr); // 事务管理器
+		final String joinpointIdentification = methodIdentification(method, targetClass, txAttr); // 生成方法的ID
 
-		if (txAttr == null || !(tm instanceof CallbackPreferringPlatformTransactionManager)) {
+		if (txAttr == null || !(tm instanceof CallbackPreferringPlatformTransactionManager)) { // 无需开启事务，或者其他
 			// Standard transaction demarcation with getTransaction and commit/rollback calls.
-			TransactionInfo txInfo = createTransactionIfNecessary(tm, txAttr, joinpointIdentification);
+			TransactionInfo txInfo = createTransactionIfNecessary(tm, txAttr, joinpointIdentification); // org.springframework.transaction.interceptor.TransactionAspectSupport.TransactionInfo
 			Object retVal = null;
 			try {
 				// This is an around advice: Invoke the next interceptor in the chain.
 				// This will normally result in a target object being invoked.
-				retVal = invocation.proceedWithInvocation();
+				retVal = invocation.proceedWithInvocation();  // 执行目标方法
 			}
 			catch (Throwable ex) {
 				// target invocation exception
-				completeTransactionAfterThrowing(txInfo, ex);
+				completeTransactionAfterThrowing(txInfo, ex);  // 根据异常配置进行“回滚、或者提交”
 				throw ex;
 			}
 			finally {
 				cleanupTransactionInfo(txInfo);
 			}
-			commitTransactionAfterReturning(txInfo);
+			commitTransactionAfterReturning(txInfo); // 提交事务
 			return retVal;
 		}
 
-		else {
+		else { // 需要开启事务
+			
+			// txAttr === org.springframework.transaction.interceptor.RuleBasedTransactionAttribute
+			
 			// It's a CallbackPreferringPlatformTransactionManager: pass a TransactionCallback in.
 			try {
 				Object result = ((CallbackPreferringPlatformTransactionManager) tm).execute(txAttr,
@@ -359,8 +365,8 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 		if (StringUtils.hasText(qualifier)) {
 			return determineQualifiedTransactionManager(qualifier);
 		}
-		else if (StringUtils.hasText(this.transactionManagerBeanName)) {
-			return determineQualifiedTransactionManager(this.transactionManagerBeanName);
+		else if (StringUtils.hasText(this.transactionManagerBeanName)) { // 事务管理器的beanName
+			return determineQualifiedTransactionManager(this.transactionManagerBeanName); // 检查修饰符
 		}
 		else {
 			PlatformTransactionManager defaultTransactionManager = getTransactionManager();
@@ -433,7 +439,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 
 		// If no name specified, apply method identification as transaction name.
 		if (txAttr != null && txAttr.getName() == null) {
-			txAttr = new DelegatingTransactionAttribute(txAttr) {
+			txAttr = new DelegatingTransactionAttribute(txAttr) { // !!!! 被代理了
 				@Override
 				public String getName() {
 					return joinpointIdentification;
@@ -453,7 +459,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 				}
 			}
 		}
-		return prepareTransactionInfo(tm, txAttr, joinpointIdentification, status);
+		return prepareTransactionInfo(tm, txAttr, joinpointIdentification, status); //!!!
 	}
 
 	/**
@@ -517,9 +523,10 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 				logger.trace("Completing transaction for [" + txInfo.getJoinpointIdentification() +
 						"] after exception: " + ex);
 			}
-			if (txInfo.transactionAttribute.rollbackOn(ex)) {
+			// txInfo.transactionAttribute === org.springframework.transaction.interceptor.RuleBasedTransactionAttribute
+			if (txInfo.transactionAttribute.rollbackOn(ex)) { // 出现异常需要回滚的
 				try {
-					txInfo.getTransactionManager().rollback(txInfo.getTransactionStatus());
+					txInfo.getTransactionManager().rollback(txInfo.getTransactionStatus()); // 进行回滚
 				}
 				catch (TransactionSystemException ex2) {
 					logger.error("Application exception overridden by rollback exception", ex);
@@ -535,11 +542,11 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 					throw err;
 				}
 			}
-			else {
+			else { // 出现异常不需要回滚的
 				// We don't roll back on this exception.
 				// Will still roll back if TransactionStatus.isRollbackOnly() is true.
 				try {
-					txInfo.getTransactionManager().commit(txInfo.getTransactionStatus());
+					txInfo.getTransactionManager().commit(txInfo.getTransactionStatus()); // 进行提交
 				}
 				catch (TransactionSystemException ex2) {
 					logger.error("Application exception overridden by commit exception", ex);
@@ -589,8 +596,8 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 		public TransactionInfo(PlatformTransactionManager transactionManager,
 				TransactionAttribute transactionAttribute, String joinpointIdentification) {
 
-			this.transactionManager = transactionManager;
-			this.transactionAttribute = transactionAttribute;
+			this.transactionManager = transactionManager; // 事务管理器
+			this.transactionAttribute = transactionAttribute; // org.springframework.transaction.interceptor.RuleBasedTransactionAttribute
 			this.joinpointIdentification = joinpointIdentification;
 		}
 

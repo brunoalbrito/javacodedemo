@@ -429,7 +429,7 @@ public abstract class AbstractHtmlElementTag extends AbstractDataBoundFormElemen
 	 * Called by {@link #writeDefaultAttributes(TagWriter)}.
 	 */
 	protected void writeOptionalAttributes(TagWriter tagWriter) throws JspException {
-		tagWriter.writeOptionalAttributeValue(CLASS_ATTRIBUTE, resolveCssClass());
+		tagWriter.writeOptionalAttributeValue(CLASS_ATTRIBUTE, resolveCssClass()); // class名称
 		tagWriter.writeOptionalAttributeValue(STYLE_ATTRIBUTE,
 				ObjectUtils.getDisplayString(evaluate("cssStyle", getCssStyle())));
 		writeOptionalAttribute(tagWriter, LANG_ATTRIBUTE, getLang());

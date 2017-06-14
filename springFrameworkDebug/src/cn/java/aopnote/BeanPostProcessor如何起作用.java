@@ -2,6 +2,7 @@ package cn.java.aopnote;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.aopalliance.intercept.MethodInterceptor;
@@ -13,7 +14,10 @@ import org.springframework.aop.ProxyMethodInvocation;
 import org.springframework.aop.aspectj.AspectJProxyUtils;
 import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.aop.framework.InterceptorAndDynamicMethodMatcher;
+import org.springframework.aop.framework.adapter.AdvisorAdapterRegistry;
+import org.springframework.aop.framework.adapter.GlobalAdvisorAdapterRegistry;
 import org.springframework.aop.interceptor.ExposeInvocationInterceptor;
+import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.core.BridgeMethodResolver;
 
 public class BeanPostProcessor如何起作用 {
@@ -40,6 +44,14 @@ public class BeanPostProcessor如何起作用 {
 								List<Advisor> candidateAdvisors = AbstractAdvisorAutoProxyCreator.findCandidateAdvisors(); // 扫描所有“通知接受者”列表
 								{
 									return this.advisorRetrievalHelper.findAdvisorBeans(); // 扫描bean容器，找出实现Advisor接口的bean列表，如果没实例化，就进行实例化
+									{
+										advisorNames = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(this.beanFactory, Advisor.class, true, false); // 扫描bean容器，找出实现Advisor接口的bean列表，如果没实例化，就进行实例化
+										List<Advisor> advisors = new LinkedList<Advisor>();
+										for (String name : advisorNames) {
+											advisors.add(this.beanFactory.getBean(name, Advisor.class)); // 进行实例化
+										}
+										return advisors;
+									}
 								}
 								List<Advisor> eligibleAdvisors = findAdvisorsThatCanApply(candidateAdvisors, beanClass, beanName); // 匹配“通知接受者”列表
 								{
@@ -212,6 +224,9 @@ public class BeanPostProcessor如何起作用 {
 									return ProxyFactory.advisorArray;
 								}.length); // “通知接受者”列表
 								
+								// registry == org.springframework.aop.framework.adapter.DefaultAdvisorAdapterRegistry
+								AdvisorAdapterRegistry registry = GlobalAdvisorAdapterRegistry.getInstance(); 
+								
 								for (Advisor advisor : config.getAdvisors()) { 
 									if (advisor instanceof PointcutAdvisor) {
 										// Add it conditionally.
@@ -223,6 +238,7 @@ public class BeanPostProcessor如何起作用 {
 												// advisor === org.springframework.aop.aspectj.AspectJPointcutAdvisor 
 												Advice advice = advisor.getAdvice();//!!!
 												
+												// 可能是自定义的 advice === cn.java.demo.aoptag.advice.AspectJMethodBeforeAdviceMock
 												// <before ...> advice == org.springframework.aop.aspectj.AspectJMethodBeforeAdvice
 												// <after ...> advice === org.springframework.aop.aspectj.AspectJAfterAdvice
 												// <after-returning ...> advice === org.springframework.aop.aspectj.AspectJAfterReturningAdvice

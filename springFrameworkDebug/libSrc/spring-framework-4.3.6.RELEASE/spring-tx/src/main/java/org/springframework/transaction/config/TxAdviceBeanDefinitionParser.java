@@ -73,9 +73,17 @@ class TxAdviceBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
 
 	@Override
 	protected void doParse(Element element, ParserContext parserContext, BeanDefinitionBuilder builder) {
+		/*
+		 	<tx:advice id="baseServiceAdvice" transaction-manager="transactionManager">
+		        <tx:attributes>
+		            <tx:method name="getDao" propagation="NOT_SUPPORTED"/>
+		            <tx:method name="getJdbcTemplate" propagation="NOT_SUPPORTED"/>
+		        </tx:attributes>
+		    </tx:advice>
+		 */
 		builder.addPropertyReference("transactionManager", TxNamespaceHandler.getTransactionManagerName(element));
 
-		List<Element> txAttributes = DomUtils.getChildElementsByTagName(element, ATTRIBUTES_ELEMENT);
+		List<Element> txAttributes = DomUtils.getChildElementsByTagName(element, ATTRIBUTES_ELEMENT); // <tx:attributes>
 		if (txAttributes.size() > 1) {
 			parserContext.getReaderContext().error(
 					"Element <attributes> is allowed at most once inside element <advice>", element);
@@ -83,7 +91,7 @@ class TxAdviceBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
 		else if (txAttributes.size() == 1) {
 			// Using attributes source.
 			Element attributeSourceElement = txAttributes.get(0);
-			RootBeanDefinition attributeSourceDefinition = parseAttributeSource(attributeSourceElement, parserContext);
+			RootBeanDefinition attributeSourceDefinition = parseAttributeSource(attributeSourceElement, parserContext); // !!! <tx:method name="getDao" propagation="NOT_SUPPORTED"/>
 			builder.addPropertyValue("transactionAttributeSource", attributeSourceDefinition);
 		}
 		else {
@@ -94,21 +102,21 @@ class TxAdviceBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
 	}
 
 	private RootBeanDefinition parseAttributeSource(Element attrEle, ParserContext parserContext) {
-		List<Element> methods = DomUtils.getChildElementsByTagName(attrEle, METHOD_ELEMENT);
+		List<Element> methods = DomUtils.getChildElementsByTagName(attrEle, METHOD_ELEMENT); // <tx:method name="getDao" propagation="NOT_SUPPORTED"/>
 		ManagedMap<TypedStringValue, RuleBasedTransactionAttribute> transactionAttributeMap =
 			new ManagedMap<TypedStringValue, RuleBasedTransactionAttribute>(methods.size());
 		transactionAttributeMap.setSource(parserContext.extractSource(attrEle));
 
-		for (Element methodEle : methods) {
+		for (Element methodEle : methods) { // 每个方法的隔离级别、回滚规则
 			String name = methodEle.getAttribute(METHOD_NAME_ATTRIBUTE);
 			TypedStringValue nameHolder = new TypedStringValue(name);
 			nameHolder.setSource(parserContext.extractSource(methodEle));
 
 			RuleBasedTransactionAttribute attribute = new RuleBasedTransactionAttribute();
 			String propagation = methodEle.getAttribute(PROPAGATION_ATTRIBUTE);
-			String isolation = methodEle.getAttribute(ISOLATION_ATTRIBUTE);
-			String timeout = methodEle.getAttribute(TIMEOUT_ATTRIBUTE);
-			String readOnly = methodEle.getAttribute(READ_ONLY_ATTRIBUTE);
+			String isolation = methodEle.getAttribute(ISOLATION_ATTRIBUTE); // 隔离级别
+			String timeout = methodEle.getAttribute(TIMEOUT_ATTRIBUTE); // 超时
+			String readOnly = methodEle.getAttribute(READ_ONLY_ATTRIBUTE); // 只读
 			if (StringUtils.hasText(propagation)) {
 				attribute.setPropagationBehaviorName(RuleBasedTransactionAttribute.PREFIX_PROPAGATION + propagation);
 			}
@@ -127,7 +135,7 @@ class TxAdviceBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
 				attribute.setReadOnly(Boolean.valueOf(methodEle.getAttribute(READ_ONLY_ATTRIBUTE)));
 			}
 
-			List<RollbackRuleAttribute> rollbackRules = new LinkedList<RollbackRuleAttribute>();
+			List<RollbackRuleAttribute> rollbackRules = new LinkedList<RollbackRuleAttribute>(); // 回滚规则
 			if (methodEle.hasAttribute(ROLLBACK_FOR_ATTRIBUTE)) {
 				String rollbackForValue = methodEle.getAttribute(ROLLBACK_FOR_ATTRIBUTE);
 				addRollbackRuleAttributesTo(rollbackRules,rollbackForValue);

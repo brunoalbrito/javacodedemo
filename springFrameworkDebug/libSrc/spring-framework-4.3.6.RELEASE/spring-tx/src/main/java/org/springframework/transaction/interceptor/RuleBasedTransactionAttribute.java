@@ -135,9 +135,9 @@ public class RuleBasedTransactionAttribute extends DefaultTransactionAttribute i
 		int deepest = Integer.MAX_VALUE;
 
 		if (this.rollbackRules != null) {
-			for (RollbackRuleAttribute rule : this.rollbackRules) {
+			for (RollbackRuleAttribute rule : this.rollbackRules) { // 迭代配置的异常列表
 				int depth = rule.getDepth(ex);
-				if (depth >= 0 && depth < deepest) {
+				if (depth >= 0 && depth < deepest) { // 会依次匹配父类名的特征，谁最接近本类谁优先级较高
 					deepest = depth;
 					winner = rule;
 				}
@@ -154,7 +154,7 @@ public class RuleBasedTransactionAttribute extends DefaultTransactionAttribute i
 			return super.rollbackOn(ex);
 		}
 
-		return !(winner instanceof NoRollbackRuleAttribute);
+		return !(winner instanceof NoRollbackRuleAttribute); // 不能是不回滚的类
 	}
 
 

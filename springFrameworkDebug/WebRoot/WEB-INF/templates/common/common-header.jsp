@@ -38,7 +38,7 @@ WebUtilx.getContextUrl(WebUtilx.getPathToServlet(request)+"/ctrl0-handler/method
 方式二（封装成对象）： <br />
 <%
 	RequestContext requestContext = (RequestContext)request.getAttribute("requestContext");
-	
+	out.write("requestContext.getContextPath()  ---> "); out.write(requestContext.getContextPath()); out.write("<br /> ");
 	out.write("requestContext.getContextUrl(\"relativeUrl\")  ---> "); out.write(requestContext.getContextUrl("relativeUrl")); out.write("<br /> ");
 	out.write("requestContext.getContextUrl(\"relativeUrl\",params)  ---> "); out.write(requestContext.getContextUrl("relativeUrl",params)); out.write("<br /> ");
 	out.write("requestContext.getPathToServlet()  ---> "); out.write(requestContext.getPathToServlet()); out.write("<br /> ");
@@ -47,12 +47,13 @@ WebUtilx.getContextUrl(WebUtilx.getPathToServlet(request)+"/ctrl0-handler/method
 	out.write("requestContext.getContextUrl(requestContext.getPathToServlet()+\"/ctrl0-handler/method0\")  ---> "); out.write(requestContext.getContextUrl(requestContext.getPathToServlet()+"/ctrl0-handler/method0")); out.write("<br /> ");
 %>
 方式三（EL表达式）： <br />	
+\${requestContext.getContextPath()}  ---> ${requestContext.getContextPath()}<br />	
 \${requestContext.getContextUrl("relativeUrl")}  ---> ${requestContext.getContextUrl("relativeUrl")}<br />	
 \${requestContext.getContextUrl("relativeUrl",params)}  ---> ${requestContext.getContextUrl("relativeUrl",params)}<br />	
 \${requestContext.getPathToServlet()}  ---> ${requestContext.getPathToServlet()}<br />	
 \${requestContext.getRequestUri()}  ---> ${requestContext.getRequestUri()}<br />	
 \${requestContext.getQueryString()}  ---> ${requestContext.getQueryString()}<br />	
-\${requestContext.getContextUrl("\${requestContext.getPathToServlet()}/ctrl0-handler/method0")}  ---> ${requestContext.getContextUrl("${requestContext.getPathToServlet(}/ctrl0-handler/method0")}<br />	
+\${requestContext.getContextPath()}\${requestContext.getPathToServlet()}/ctrl0-handler/method0  ---> ${requestContext.getContextPath()}${requestContext.getPathToServlet()}/ctrl0-handler/method0<br />
 <br /> <br />
 		
 			

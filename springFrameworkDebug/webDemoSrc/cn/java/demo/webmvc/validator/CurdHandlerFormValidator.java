@@ -29,13 +29,13 @@ public class CurdHandlerFormValidator implements Validator {
 		CurdHandlerForm curdHandlerForm = (CurdHandlerForm) target;
 		if (!isDoAdd) {
 			if (curdHandlerForm.getFooId() == null) { // 修改操作必须提供ID
-				ValidationUtils.rejectIfEmptyOrWhitespace(errors, "fooId", "curdHandlerFormValidator.fooId.required");
+				ValidationUtils.rejectIfEmptyOrWhitespace(errors, "fooId", "validator.emptyOrWhitespace");
 			}
 		}
 		
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "fooName", "curdHandlerFormValidator.fooName.required");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "fooName", "validator.emptyOrWhitespace");
 		if ((curdHandlerForm.getFooName() != null) && (curdHandlerForm.getFooName().trim().length() < MINIMUM_FOONAME_LENGTH)) { // restName长度
-			errors.rejectValue("fooName", "curdHandlerFormValidator.fooName.minLength",
+			errors.rejectValue("fooName", "validator.minLength",
 					new Object[] { Integer.valueOf(MINIMUM_FOONAME_LENGTH) },
 					"fooName至少需要[" + MINIMUM_FOONAME_LENGTH + "]个字符");
 		}

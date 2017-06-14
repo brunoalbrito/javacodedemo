@@ -108,17 +108,17 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 				new CompositeComponentDefinition(element.getTagName(), parserContext.extractSource(element)); // org.springframework.beans.factory.xml.ParserContext
 		parserContext.pushContainingComponent(compositeDef);
 
-		configureAutoProxyCreator(parserContext, element); // !!! 注册bean到全局
+		configureAutoProxyCreator(parserContext, element); // !!! 注册bean到全局，注册“BeanPostProcessor”钩子
 
 		/**
 		 	<aop:config proxy-target-class="false" expose-proxy="false">
-		 		<aop:pointcut id="" expression="" />
-		 		<aop:advisor id="" advice-ref="" pointcut="" pointcut-ref="" order="" />
+		 		<aop:pointcut id="" expression="" /> --- 匹配条件 --- org.springframework.aop.aspectj.AspectJExpressionPointcut
+		 		<aop:advisor id="" advice-ref="" pointcut="" pointcut-ref="" order="" />  --- org.springframework.aop.support.DefaultBeanFactoryPointcutAdvisor
 		 		<aop:aspect id="" ref="" order="">
-		 			<aop:pointcut id="" expression=""></aop:pointcut>
+		 			<aop:pointcut id="" expression=""></aop:pointcut>  ---- org.springframework.aop.aspectj.AspectJExpressionPointcut
 		 			<aop:declare-parents types-matching="" implement-interface="" default-impl="" delegate-ref="" />
-		 			<aop:before pointcut="" pointcut-ref="" method="" arg-names="" />
-		 			<aop:after pointcut="" pointcut-ref="" method="" arg-names="" />
+		 			<aop:before pointcut="" pointcut-ref="" method="" arg-names="" /> --- 符合<aop:before pointcut-ref="">条件的bean调用，就通知<aop:aspect ref="">指定对象的<aop:before method=""> --- org.springframework.aop.aspectj.AspectJPointcutAdvisor
+		 			<aop:after pointcut="" pointcut-ref="" method="" arg-names="" />  --- org.springframework.aop.aspectj.AspectJPointcutAdvisor
 		 			<aop:after-returning pointcut="" pointcut-ref="" method="" arg-names="" />
 		 			<aop:after-throwing   pointcut="" pointcut-ref="" method="" arg-names="" />
 		 			<aop:around pointcut="" pointcut-ref="" method="" arg-names="" ></aop:around>
@@ -208,7 +208,7 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 		}
 		else {
 			advisorDefinition.getPropertyValues().add(
-					ADVICE_BEAN_NAME, new RuntimeBeanNameReference(adviceRef));
+					ADVICE_BEAN_NAME, new RuntimeBeanNameReference(adviceRef));// !!!
 		}
 
 		if (advisorElement.hasAttribute(ORDER_PROPERTY)) {
@@ -240,7 +240,7 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 			boolean adviceFoundAlready = false;
 			for (int i = 0; i < nodeList.getLength(); i++) {
 				Node node = nodeList.item(i);
-				if (isAdviceNode(node, parserContext)) { // before/after/after-returning/after-throwing/around
+				if (isAdviceNode(node, parserContext)) { // before/after/after-returning/after-throwing/around标签
 					if (!adviceFoundAlready) {
 						adviceFoundAlready = true;
 						if (!StringUtils.hasText(aspectName)) {
@@ -523,8 +523,8 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 	 */
 	private Object parsePointcutProperty(Element element, ParserContext parserContext) {
 		/*
-		 	element === <aop:before method="aspectMethodBefore" pointcut-ref="pointcutRefId_0" />
-			element === <aop:after method="aspectMethodAfter" pointcut-ref="pointcutRefId_0" />
+		 	element === <aop:before  pointcut-ref="pointcutRefId_0" />
+			element === <aop:after pointcut-ref="pointcutRefId_0" />
 		 */
 		if (element.hasAttribute(POINTCUT) && element.hasAttribute(POINTCUT_REF)) {
 			parserContext.getReaderContext().error(

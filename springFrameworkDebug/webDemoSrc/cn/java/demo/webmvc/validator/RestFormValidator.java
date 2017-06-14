@@ -28,13 +28,13 @@ public class RestFormValidator implements Validator {
 		RestForm restForm = (RestForm) target;
 		if (!isRequestMethodPut) {
 			if (restForm.getRestId() == null) { // 修改操作必须提供ID
-				ValidationUtils.rejectIfEmptyOrWhitespace(errors, "restId", "restFormValidator.restId.required");
+				ValidationUtils.rejectIfEmptyOrWhitespace(errors, "restId", "validator.emptyOrWhitespace");
 			}
 		}
 
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "restName", "restFormValidator.restName.required");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "restName", "validator.emptyOrWhitespace");
 		if ((restForm.getRestName() != null) && (restForm.getRestName().trim().length() < MINIMUM_RESTNAME_LENGTH)) { // restName长度
-			errors.rejectValue("restName", "restFormValidator.restName.minLength",
+			errors.rejectValue("restName", "validator.minLength",
 					new Object[] { Integer.valueOf(MINIMUM_RESTNAME_LENGTH) },
 					"restName至少需要[" + MINIMUM_RESTNAME_LENGTH + "]个字符");
 		}
