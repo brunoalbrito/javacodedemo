@@ -33,7 +33,7 @@ public class JmsNamespaceHandler extends NamespaceHandlerSupport {
 	public void init() {
 		registerBeanDefinitionParser("listener-container", new JmsListenerContainerParser());
 		registerBeanDefinitionParser("jca-listener-container", new JcaListenerContainerParser());
-		registerBeanDefinitionParser("annotation-driven", new AnnotationDrivenJmsBeanDefinitionParser());
+		registerBeanDefinitionParser("annotation-driven", new AnnotationDrivenJmsBeanDefinitionParser()); // org.springframework.jms.annotation.JmsListenerAnnotationBeanPostProcessor
 	}
 
 }

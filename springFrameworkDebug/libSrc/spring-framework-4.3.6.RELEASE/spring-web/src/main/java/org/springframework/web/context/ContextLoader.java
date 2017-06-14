@@ -567,7 +567,7 @@ public class ContextLoader {
 				logger.debug("Getting parent context definition: using parent context key of '" +
 						parentContextKey + "' with BeanFactoryLocator");
 			}
-			this.parentContextRef = locator.useBeanFactory(parentContextKey);
+			this.parentContextRef = locator.useBeanFactory(parentContextKey); // !!!
 			parentContext = (ApplicationContext) this.parentContextRef.getFactory();
 		}
 

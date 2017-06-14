@@ -157,7 +157,7 @@ public class SpringBeanAutowiringInterceptor {
 	 */
 	protected BeanFactoryReference getBeanFactoryReference(Object target) {
 		String key = getBeanFactoryLocatorKey(target);
-		BeanFactoryReference ref = getBeanFactoryLocator(target).useBeanFactory(key);
+		BeanFactoryReference ref = getBeanFactoryLocator(target).useBeanFactory(key); // !!!
 		this.beanFactoryReferences.put(target, ref);
 		return ref;
 	}

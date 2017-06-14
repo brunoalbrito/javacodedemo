@@ -180,7 +180,8 @@ public class JmsListenerAnnotationBeanPostProcessor
 				this.endpointRegistry = this.beanFactory.getBean(
 						JmsListenerConfigUtils.JMS_LISTENER_ENDPOINT_REGISTRY_BEAN_NAME, JmsListenerEndpointRegistry.class);
 			}
-			this.registrar.setEndpointRegistry(this.endpointRegistry);
+			// endpointRegistry === org.springframework.jms.config.JmsListenerEndpointRegistry
+			this.registrar.setEndpointRegistry(this.endpointRegistry); // !!!!
 		}
 
 		if (this.containerFactoryBeanName != null) {
@@ -210,13 +211,13 @@ public class JmsListenerAnnotationBeanPostProcessor
 	@Override
 	public Object postProcessAfterInitialization(final Object bean, String beanName) throws BeansException {
 		if (!this.nonAnnotatedClasses.contains(bean.getClass())) {
-			Class<?> targetClass = AopUtils.getTargetClass(bean);
+			Class<?> targetClass = AopUtils.getTargetClass(bean); // 类名
 			Map<Method, Set<JmsListener>> annotatedMethods = MethodIntrospector.selectMethods(targetClass,
 					new MethodIntrospector.MetadataLookup<Set<JmsListener>>() {
 						@Override
 						public Set<JmsListener> inspect(Method method) {
 							Set<JmsListener> listenerMethods = AnnotatedElementUtils.getMergedRepeatableAnnotations(
-									method, JmsListener.class, JmsListeners.class);
+									method, JmsListener.class, JmsListeners.class); // 方法上有@JmsListener、或者@JmsListeners注解
 							return (!listenerMethods.isEmpty() ? listenerMethods : null);
 						}
 					});
@@ -230,7 +231,7 @@ public class JmsListenerAnnotationBeanPostProcessor
 				// Non-empty set of methods
 				for (Map.Entry<Method, Set<JmsListener>> entry : annotatedMethods.entrySet()) {
 					Method method = entry.getKey();
-					for (JmsListener listener : entry.getValue()) {
+					for (JmsListener listener : entry.getValue()) { // 注解列表
 						processJmsListener(listener, method, bean);
 					}
 				}
@@ -255,7 +256,7 @@ public class JmsListenerAnnotationBeanPostProcessor
 	protected void processJmsListener(JmsListener jmsListener, Method mostSpecificMethod, Object bean) {
 		Method invocableMethod = AopUtils.selectInvocableMethod(mostSpecificMethod, bean.getClass());
 
-		MethodJmsListenerEndpoint endpoint = createMethodJmsListenerEndpoint();
+		MethodJmsListenerEndpoint endpoint = createMethodJmsListenerEndpoint(); //  org.springframework.jms.config.MethodJmsListenerEndpoint
 		endpoint.setBean(bean);
 		endpoint.setMethod(invocableMethod);
 		endpoint.setMostSpecificMethod(mostSpecificMethod);
@@ -275,7 +276,7 @@ public class JmsListenerAnnotationBeanPostProcessor
 		}
 
 		JmsListenerContainerFactory<?> factory = null;
-		String containerFactoryBeanName = resolve(jmsListener.containerFactory());
+		String containerFactoryBeanName = resolve(jmsListener.containerFactory()); // 容器工厂
 		if (StringUtils.hasText(containerFactoryBeanName)) {
 			Assert.state(this.beanFactory != null, "BeanFactory must be set to obtain container factory by bean name");
 			try {
@@ -288,7 +289,8 @@ public class JmsListenerAnnotationBeanPostProcessor
 			}
 		}
 
-		this.registrar.registerEndpoint(endpoint, factory);
+		// registrar === org.springframework.jms.config.JmsListenerEndpointRegistrar
+		this.registrar.registerEndpoint(endpoint, factory); // !!!!
 	}
 
 	/**

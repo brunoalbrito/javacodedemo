@@ -60,7 +60,8 @@ class AnnotationDrivenJmsBeanDefinitionParser implements BeanDefinitionParser {
 				builder.addPropertyReference("endpointRegistry", endpointRegistry);
 			}
 			else {
-				registerDefaultEndpointRegistry(source, parserContext);
+				// 注册 org.springframework.jms.config.JmsListenerEndpointRegistry对象
+				registerDefaultEndpointRegistry(source, parserContext); // !!!!
 			}
 
 			String containerFactory = element.getAttribute("container-factory");
@@ -74,7 +75,7 @@ class AnnotationDrivenJmsBeanDefinitionParser implements BeanDefinitionParser {
 			}
 
 			registerInfrastructureBean(parserContext, builder,
-					JmsListenerConfigUtils.JMS_LISTENER_ANNOTATION_PROCESSOR_BEAN_NAME);
+					JmsListenerConfigUtils.JMS_LISTENER_ANNOTATION_PROCESSOR_BEAN_NAME); // 注册到BeanDefinition容器中
 		}
 
 		// Finally register the composite component.

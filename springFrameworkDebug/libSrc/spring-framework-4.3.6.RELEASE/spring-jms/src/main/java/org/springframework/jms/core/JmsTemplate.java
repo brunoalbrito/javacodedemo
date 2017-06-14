@@ -468,11 +468,12 @@ public class JmsTemplate extends JmsDestinationAccessor implements JmsOperations
 		Connection conToClose = null;
 		Session sessionToClose = null;
 		try {
+			// 创建Session!!!!
 			Session sessionToUse = ConnectionFactoryUtils.doGetTransactionalSession(
 					getConnectionFactory(), this.transactionalResourceFactory, startConnection);
 			if (sessionToUse == null) {
-				conToClose = createConnection();
-				sessionToClose = createSession(conToClose);
+				conToClose = createConnection(); // getConnectionFactory().createConnection()
+				sessionToClose = createSession(conToClose); // conToClose.createSession(isSessionTransacted(), getSessionAcknowledgeMode());
 				if (startConnection) {
 					conToClose.start();
 				}
@@ -648,7 +649,8 @@ public class JmsTemplate extends JmsDestinationAccessor implements JmsOperations
 		send(destination, new MessageCreator() {
 			@Override
 			public Message createMessage(Session session) throws JMSException {
-				return getRequiredMessageConverter().toMessage(message, session);
+				//  org.springframework.jms.support.converter.SimpleMessageConverter.toMessage(message, session);
+				return getRequiredMessageConverter().toMessage(message, session); // 调用session发送消息，如session.createTextMessage(text);
 			}
 		});
 	}
@@ -658,7 +660,7 @@ public class JmsTemplate extends JmsDestinationAccessor implements JmsOperations
 		send(destinationName, new MessageCreator() {
 			@Override
 			public Message createMessage(Session session) throws JMSException {
-				return getRequiredMessageConverter().toMessage(message, session);
+				return getRequiredMessageConverter().toMessage(message, session); // !!!
 			}
 		});
 	}

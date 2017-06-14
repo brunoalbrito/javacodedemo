@@ -106,7 +106,7 @@ class JmsListenerContainerParser extends AbstractListenerContainerParser {
 		}
 
 		// Parse listener specific settings
-		parseListenerConfiguration(listenerEle, parserContext, containerDef.getPropertyValues());
+		parseListenerConfiguration(listenerEle, parserContext, containerDef.getPropertyValues()); // 解析监听器的配置
 
 		return containerDef;
 	}

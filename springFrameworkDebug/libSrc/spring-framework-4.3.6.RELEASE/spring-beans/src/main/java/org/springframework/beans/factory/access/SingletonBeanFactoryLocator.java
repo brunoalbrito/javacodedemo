@@ -380,7 +380,7 @@ public class SingletonBeanFactoryLocator implements BeanFactoryLocator {
 				// mappings, the next time it will be found and simply have its
 				// reference count incremented.
 				try {
-					initializeDefinition(groupContext);
+					initializeDefinition(groupContext); // !!!!
 				}
 				catch (BeansException ex) {
 					this.bfgInstancesByKey.remove(this.resourceLocation);

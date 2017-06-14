@@ -7,6 +7,8 @@ public class Test {
 	public static void main(String[] args) {
 		/*
 		 	《bean命名空间》：
+		 		spring-core-4.3.6.RELEASE.jar、spring-beans-4.3.6.RELEASE.jar、
+		 		spring-expression-4.3.6.RELEASE.jar、spring-aspects-4.3.6.RELEASE.jar
 			 	hook机制是：
 			 		原生支持 - 无需hook
 			 	bean信息的定义 - 使用xml配置
@@ -26,6 +28,7 @@ public class Test {
 		 			实现ApplicationListener接口，用于感知应用的事件
 		 	
 		 	《context命名空间》：
+		 		spring-context-4.3.6.RELEASE.jar
 		 		hook机制是：
 		 			context标签在触发“命名空间的指定标签处理器”的时候，“命名空间的指定标签处理器”会扫描指定目录的下的，符合指定条件的Component类，并注册一些BeanPostProcessor
 			 			BeanFactory级别的hook - ConfigurationClassPostProcessor
@@ -76,6 +79,7 @@ public class Test {
 				 	}	
 		 	
 		 	《aop命名空间》：
+		 		spring-aop-4.3.6.RELEASE.jar、spring-aspects-4.3.6.RELEASE.jar
 	 			hook机制是：
 	 				aop的“命名空间的指定标签处理器”在处理指定标签的时候，会自动注册bean级别的hook - org.springframework.aop.aspectj.autoproxy.AspectJAwareAdvisorAutoProxyCreator
 	 			aop的配置 - 使用xml配置
@@ -86,12 +90,16 @@ public class Test {
 	 				<aop:include name="aspect4AspectJAutoProxyTag[0-9]" /> 正则表达式，用来匹配通知者的beanName，bean的必须scope="prototype"
 	 				@Aspect(...)、@Before(...)、@After(...)、@Around(...)、@AfterReturning(...)、@AfterThrowing(...)
 		 	《web》：
+		 		spring-web-4.3.6.RELEASE.jar
 		 		定义
 					<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 				使用 
 					XmlWebApplicationContext context = servletContext.getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);
 		 	
 		 	《webmvc》：
+		 		spring-webmvc-4.3.6.RELEASE.jar
+		 		stax2-api-4.0.0.jar、woodstox-core-asl-4.4.1.jar、jasperreports-6.3.0.jar
+		 		validation-api-1.1.0.Final.jar
 		 		定义
 					<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
 				
@@ -114,6 +122,7 @@ public class Test {
 					org.springframework.web.servlet.mvc.Controller
 					org.springframework.web.servlet.mvc.LastModified
 			《tx》：	
+				spring-tx-4.3.6.RELEASE.jar
 				hook机制是：
 					走的是AOP的机制，所以要得到AOP的支持
 					
@@ -124,6 +133,9 @@ public class Test {
 					<tx:annotation-driven transaction-manager="transactionManagerx" mode="proxy" />
 					@Transactional
 					<aop:config>
+			《jms》
+				spring-jms-4.3.6.RELEASE.jar、activemq-all-5.10.0.jar
+				
 		 */
 	}
 

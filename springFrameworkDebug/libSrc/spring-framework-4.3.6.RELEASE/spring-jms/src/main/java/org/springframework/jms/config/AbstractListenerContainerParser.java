@@ -107,16 +107,16 @@ abstract class AbstractListenerContainerParser implements BeanDefinitionParser {
 				new CompositeComponentDefinition(element.getTagName(), parserContext.extractSource(element));
 		parserContext.pushContainingComponent(compositeDef);
 
-		PropertyValues commonProperties = parseCommonContainerProperties(element, parserContext);
-		PropertyValues specificProperties = parseSpecificContainerProperties(element, parserContext);
+		PropertyValues commonProperties = parseCommonContainerProperties(element, parserContext); // !!!! 通用属性
+		PropertyValues specificProperties = parseSpecificContainerProperties(element, parserContext); // 特殊属性
 
-		String factoryId = element.getAttribute(FACTORY_ID_ATTRIBUTE);
+		String factoryId = element.getAttribute(FACTORY_ID_ATTRIBUTE); // !!!!
 		if (StringUtils.hasText(factoryId)) {
 			RootBeanDefinition beanDefinition = createContainerFactory(
-					factoryId, element, parserContext, commonProperties, specificProperties);
+					factoryId, element, parserContext, commonProperties, specificProperties); // 在子类实现
 			if (beanDefinition != null) {
 				beanDefinition.setSource(parserContext.extractSource(element));
-				parserContext.registerBeanComponent(new BeanComponentDefinition(beanDefinition, factoryId));
+				parserContext.registerBeanComponent(new BeanComponentDefinition(beanDefinition, factoryId)); // 注册到BeanDefinition容器中
 			}
 		}
 
@@ -126,7 +126,7 @@ abstract class AbstractListenerContainerParser implements BeanDefinitionParser {
 			if (child.getNodeType() == Node.ELEMENT_NODE) {
 				String localName = parserContext.getDelegate().getLocalName(child);
 				if (LISTENER_ELEMENT.equals(localName)) {
-					parseListener(element, (Element) child, parserContext, commonProperties, specificProperties);
+					parseListener(element, (Element) child, parserContext, commonProperties, specificProperties); // !!!
 				}
 			}
 		}
@@ -167,7 +167,7 @@ abstract class AbstractListenerContainerParser implements BeanDefinitionParser {
 		}
 
 		BeanDefinition containerDef = createContainer(
-				containerEle, listenerEle, parserContext, commonContainerProperties, specificContainerProperties);
+				containerEle, listenerEle, parserContext, commonContainerProperties, specificContainerProperties); // 在子类实现
 		containerDef.getPropertyValues().add("messageListener", listenerDef);
 
 		if (listenerEle.hasAttribute(RESPONSE_DESTINATION_ATTRIBUTE)) {
@@ -185,11 +185,11 @@ abstract class AbstractListenerContainerParser implements BeanDefinitionParser {
 		String containerBeanName = listenerEle.getAttribute(ID_ATTRIBUTE);
 		// If no bean id is given auto generate one using the ReaderContext's BeanNameGenerator
 		if (!StringUtils.hasText(containerBeanName)) {
-			containerBeanName = parserContext.getReaderContext().generateBeanName(containerDef);
+			containerBeanName = parserContext.getReaderContext().generateBeanName(containerDef); // 生成beanName
 		}
 
 		// Register the listener and fire event
-		parserContext.registerBeanComponent(new BeanComponentDefinition(containerDef, containerBeanName));
+		parserContext.registerBeanComponent(new BeanComponentDefinition(containerDef, containerBeanName)); // 注册到BeanDefinition容器中
 	}
 
 	protected void parseListenerConfiguration(Element ele, ParserContext parserContext, MutablePropertyValues configValues) {

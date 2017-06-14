@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:jms="http://www.springframework.org/schema/jms"
+	xsi:schemaLocation="    
+    http://www.springframework.org/schema/beans        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd    
+    http://www.springframework.org/schema/jms	http://www.springframework.org/schema/jms/spring-jms-4.2.xsd">
+	<!-- 使用xml配置**********bof*** -->
+	<bean id="connectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory" destroy-method="stop">
+        <property name="connectionFactory">
+            <bean class="org.apache.activemq.ActiveMQConnectionFactory">
+                <property name="brokerURL">
+                    <value>failover:(tcp://192.168.6.2:61616)</value>
+                </property>
+            </bean>
+        </property>
+    </bean>
+    <bean id="threadPoolTaskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+        <property name="corePoolSize" value="5"/>
+        <property name="maxPoolSize" value="20"/>
+        <property name="queueCapacity" value="1000"/>
+        <property name="threadNamePrefix" value="jmsTaskExecutor-"/>
+        <property name="allowCoreThreadTimeOut" value="true" />
+    </bean>
+    <bean id ="testMessageListener" class="org.springframework.jms.listener.adapter.MessageListenerAdapter">
+        <constructor-arg>
+            <bean class=" cn.java.demo.jmstag.byxml.listeners.FooMessageListener" />
+        </constructor-arg>
+    </bean>
+    <jms:listener-container concurrency="5-20" task-executor="threadPoolTaskExecutor">
+        <jms:listener destination="testqueue" ref="testMessageListener"/>
+    </jms:listener-container>
+    <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <property name="connectionFactory" ref="connectionFactory" />
+        <property name="defaultDestination">
+	        <bean id="jmsDestination" class="org.apache.activemq.command.ActiveMQQueue">
+		        <constructor-arg index="0" value="testqueue" />
+		    </bean>
+        </property>
+    </bean>
+	<!-- 使用xml配置**********eof*** -->
+
+	<!-- 使用注解配置,自动扫描 @JmsListener 或者 @JmsListeners 注解 -->
+	<!-- 
+	<bean id="endpointRegistry0" class="org.springframework.jms.config.JmsListenerEndpointRegistry" /> 
+	<jms:annotation-driven registry="endpointRegistry0" /> 
+	-->
+</beans>  

@@ -174,6 +174,7 @@ public class JmsListenerEndpointRegistrar implements BeanFactoryAware, Initializ
 
 		synchronized (this.mutex) {
 			if (this.startImmediately) {  // register and start immediately
+				//  endpointRegistry === org.springframework.jms.config.JmsListenerEndpointRegistry
 				this.endpointRegistry.registerListenerContainer(descriptor.endpoint,
 						resolveContainerFactory(descriptor), true);
 			}
