@@ -472,7 +472,8 @@ public class JmsTemplate extends JmsDestinationAccessor implements JmsOperations
 			Session sessionToUse = ConnectionFactoryUtils.doGetTransactionalSession(
 					getConnectionFactory(), this.transactionalResourceFactory, startConnection);
 			if (sessionToUse == null) {
-				conToClose = createConnection(); // getConnectionFactory().createConnection()
+				// getConnectionFactory() == org.springframework.jms.connection.CachingConnectionFactory
+				conToClose = createConnection(); //!!! getConnectionFactory().createConnection()
 				sessionToClose = createSession(conToClose); // conToClose.createSession(isSessionTransacted(), getSessionAcknowledgeMode());
 				if (startConnection) {
 					conToClose.start();

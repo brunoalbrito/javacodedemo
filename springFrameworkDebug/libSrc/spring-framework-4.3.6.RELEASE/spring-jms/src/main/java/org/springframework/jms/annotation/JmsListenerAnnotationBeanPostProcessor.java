@@ -232,7 +232,7 @@ public class JmsListenerAnnotationBeanPostProcessor
 				for (Map.Entry<Method, Set<JmsListener>> entry : annotatedMethods.entrySet()) {
 					Method method = entry.getKey();
 					for (JmsListener listener : entry.getValue()) { // 注解列表
-						processJmsListener(listener, method, bean);
+						processJmsListener(listener, method, bean); // !!!!
 					}
 				}
 				if (logger.isDebugEnabled()) {

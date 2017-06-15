@@ -1,13 +1,17 @@
 package cn.java.demo.jmstag.message;
-public class Email {
+
+import java.io.Serializable;
+
+@SuppressWarnings("serial")
+public class EmailMessage implements Serializable{
 
     private String to;
     private String body;
 
-    public Email() {
+    public EmailMessage() {
     }
 
-    public Email(String to, String body) {
+    public EmailMessage(String to, String body) {
         this.to = to;
         this.body = body;
     }
@@ -28,9 +32,10 @@ public class Email {
         this.body = body;
     }
 
-    @Override
-    public String toString() {
-        return String.format("Email{to=%s, body=%s}", getTo(), getBody());
-    }
+	@Override
+	public String toString() {
+		return "EmailMessage [to=" + to + ", body=" + body + "]";
+	}
+
 
 }

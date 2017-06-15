@@ -170,7 +170,7 @@ public class DefaultLifecycleProcessor implements LifecycleProcessor, BeanFactor
 					logger.debug("Starting bean '" + beanName + "' of type [" + bean.getClass() + "]");
 				}
 				try {
-					bean.start();
+					bean.start(); // !!!!
 				}
 				catch (Throwable ex) {
 					throw new ApplicationContextException("Failed to start bean '" + beanName + "'", ex);

@@ -354,11 +354,11 @@ public class SingleConnectionFactory implements ConnectionFactory, QueueConnecti
 	 * @throws javax.jms.JMSException if thrown by JMS API methods
 	 */
 	protected Connection doCreateConnection() throws JMSException {
-		ConnectionFactory cf = getTargetConnectionFactory();
-		if (Boolean.FALSE.equals(this.pubSubMode) && cf instanceof QueueConnectionFactory) {
+		ConnectionFactory cf = getTargetConnectionFactory(); // === org.apache.activemq.spring.ActiveMQConnectionFactory
+		if (Boolean.FALSE.equals(this.pubSubMode) && cf instanceof QueueConnectionFactory) { // 队列模式
 			return ((QueueConnectionFactory) cf).createQueueConnection();
 		}
-		else if (Boolean.TRUE.equals(this.pubSubMode) && cf instanceof TopicConnectionFactory) {
+		else if (Boolean.TRUE.equals(this.pubSubMode) && cf instanceof TopicConnectionFactory) { // 订阅模式
 			return ((TopicConnectionFactory) cf).createTopicConnection();
 		}
 		else {

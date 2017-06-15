@@ -135,6 +135,7 @@ public abstract class TransactionSynchronizationManager {
 	 */
 	public static Object getResource(Object key) {
 		Object actualKey = TransactionSynchronizationUtils.unwrapResourceIfNecessary(key);
+		// actualKey === org.springframework.jms.connection.CachingConnectionFactory
 		Object value = doGetResource(actualKey);
 		if (value != null && logger.isTraceEnabled()) {
 			logger.trace("Retrieved value [" + value + "] for key [" + actualKey + "] bound to thread [" +

@@ -276,6 +276,13 @@ public abstract class ConnectionFactoryUtils {
 	public static Session doGetTransactionalSession(
 			ConnectionFactory connectionFactory, ResourceFactory resourceFactory, boolean startConnection)
 			throws JMSException {
+		/*
+			connectionFactory === org.springframework.jms.connection.CachingConnectionFactory
+			resourceFactory ===	org.springframework.jms.core.JmsTemplate.JmsTemplateResourceFactory
+		 	startConnection === false
+		 	
+		 	
+		 */
 
 		Assert.notNull(connectionFactory, "ConnectionFactory must not be null");
 		Assert.notNull(resourceFactory, "ResourceFactory must not be null");
