@@ -92,7 +92,7 @@ public class SingleConnectionFactory implements ConnectionFactory, QueueConnecti
 	private Connection connection;
 
 	/** A hint whether to create a queue or topic connection */
-	private Boolean pubSubMode;
+	private Boolean pubSubMode; // false表示队列模式，true表示订阅模式，不设置表示其他
 
 	/** An internal aggregator allowing for per-connection ExceptionListeners */
 	private AggregatedExceptionListener aggregatedExceptionListener;

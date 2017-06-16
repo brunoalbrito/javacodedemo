@@ -166,6 +166,7 @@ abstract class AbstractListenerContainerParser implements BeanDefinitionParser {
 			listenerDef.getPropertyValues().addPropertyValue(messageConverterPv);
 		}
 
+		// org.springframework.jms.listener.SimpleMessageListenerContainer
 		BeanDefinition containerDef = createContainer(
 				containerEle, listenerEle, parserContext, commonContainerProperties, specificContainerProperties); // 在子类实现
 		containerDef.getPropertyValues().add("messageListener", listenerDef);
@@ -230,7 +231,23 @@ abstract class AbstractListenerContainerParser implements BeanDefinitionParser {
 
 	protected MutablePropertyValues parseCommonContainerProperties(Element containerEle, ParserContext parserContext) {
 		MutablePropertyValues properties = new MutablePropertyValues();
-
+		/*
+			commonProperties = {
+				"destination-type" : ""
+				"response-destination-type" : ""
+				"client-id" : ""
+				"message-converter" : ""
+			}
+			
+			commonProperties = {
+				pubSubDomain : '...'
+				subscriptionDurable : '...'
+				subscriptionShared : '...'
+				replyPubSubDomain : '...'
+				clientId : '...'
+				messageConverter : '...'
+			}
+		 */
 		String destinationType = containerEle.getAttribute(DESTINATION_TYPE_ATTRIBUTE);
 		boolean pubSubDomain = false;
 		boolean subscriptionDurable = false;

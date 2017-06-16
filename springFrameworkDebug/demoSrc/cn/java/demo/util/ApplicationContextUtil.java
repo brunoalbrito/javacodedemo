@@ -166,5 +166,9 @@ public class ApplicationContextUtil {
 			// beanFactory.addBeanPostProcessor(postProcessor);
 		}
 	}
+	
+	public static void debugPrintCodeIn(Class clazz, String methodName) {
+		System.out.println("code in : " + clazz.getName() + ":" + methodName);
+	}
 
 }

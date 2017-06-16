@@ -1,8 +1,12 @@
 package cn.java.demo.beantag;
 
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.LifecycleProcessor;
+import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.AbstractRefreshableConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.support.DefaultLifecycleProcessor;
 
 import cn.java.demo.beantag.api.HelloService;
 import cn.java.demo.beantag.bean.AliasTestBean;
@@ -23,12 +27,13 @@ import cn.java.demo.beantag.bean.initmehtod.DemoInitializingBean;
 import cn.java.demo.beantag.bean.lookupmethod.Property1;
 import cn.java.demo.beantag.bean.methodreplacer.MethodReplacerImpl;
 import cn.java.demo.beantag.beandefinition_property.StupidRootBeanDefinitionInJavaTest;
-import cn.java.demo.beantag.internal.InternalUtils_AnnotationUtilsTest;
 import cn.java.demo.beantag.internal.BeanNameGeneratorTest;
+import cn.java.demo.beantag.internal.ExpressionParserTest;
+import cn.java.demo.beantag.internal.GetBeanXTest;
+import cn.java.demo.beantag.internal.I18nTest;
+import cn.java.demo.beantag.internal.InternalUtils_AnnotationUtilsTest;
 import cn.java.demo.beantag.internal.InternalUtils_BeanUtilsTest;
 import cn.java.demo.beantag.internal.InternalUtils_ClassUtils;
-import cn.java.demo.beantag.internal.ExpressionParserTest;
-import cn.java.demo.beantag.internal.I18nTest;
 import cn.java.demo.beantag.internal.InternalUtils_ObjectUtilsTest;
 import cn.java.demo.beantag.internal.InternalUtils_ReflectionUtilsTest;
 import cn.java.demo.beantag.internal.TypeConverterTest;
@@ -201,11 +206,25 @@ public class Test {
 			fooEventTriggerBean.testTriggerEvent();
 		}
 		
+		System.out.println("-------------手动启动“不能自动启动bean”-------------------");
+		{
+			ConfigurableListableBeanFactory beanFactory = ApplicationContextUtil.getBeanFactoryAndTryCastTypeToConfigurableListableBeanFactory((AbstractRefreshableConfigApplicationContext) context);
+			LifecycleProcessor lifecycleProcessor = (LifecycleProcessor)beanFactory.getSingleton(AbstractApplicationContext.LIFECYCLE_PROCESSOR_BEAN_NAME);
+			if(lifecycleProcessor instanceof DefaultLifecycleProcessor){
+				DefaultLifecycleProcessor defaultLifecycleProcessor = (DefaultLifecycleProcessor)lifecycleProcessor;
+				defaultLifecycleProcessor.start(); // 启动那些不能自动启动的
+			}
+		}
+		
 		System.out.println("-------------其他-------------------");
 		{ // 其他
 			
+			
 			System.out.println("******类型转换器");
 			TypeConverterTest.testStandardTypeConverterTest();
+			
+			System.out.println("******获取bean的方式");
+			GetBeanXTest.testGetBeanX((AbstractRefreshableConfigApplicationContext) context);
 			
 			System.out.println("******使用表达式访问bean对象");
 			ExpressionParserTest.testStandardBeanExpressionResolverResultString((AbstractRefreshableConfigApplicationContext) context);

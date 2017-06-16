@@ -11,9 +11,7 @@
 	
 	<!-- 修饰符qualifier -->
 	<bean class="cn.java.demo.beantag.bean.HelloServiceImpl">
-	    <qualifier type="java.lang.String" value="qualifier0">
-	        <attribute key="" value="" />
-	    </qualifier>
+	    <qualifier type="java.lang.String" value="qualifier0" />
     </bean>
 	
 	<!-- 标准bean -->
@@ -39,7 +37,7 @@
     	<constructor-arg index="2" type="cn.java.demo.beantag.bean.FooBean" name="fooBean" ref="beanRefByConstructorParam" />
     </bean>
     
-	<!-- 属性注入(自动装配) - 根据setter的属性名byName -->
+	<!-- 属性注入(自动装配) - 根据setter的属性名autowire="byName" -->
 	<bean id="beanRefByAutowireByNameBean" class="cn.java.demo.beantag.bean.FooBean" />
 	<bean id="autowireByNameBean" class="cn.java.demo.beantag.bean.AutowireByNameBean" autowire="byName">
 	    <property  name="fooBean" ref="beanRefByAutowireByNameBean" />
@@ -47,7 +45,7 @@
 	 	<!-- .. 其他，根据setter的属性名byName注入 -->
     </bean>
     
-	<!-- 属性注入(自动装配) - 根据“构造函数”的参数 -->
+	<!-- 属性注入(自动装配) - 根据“构造函数”的参数autowire="constructor" -->
 	<!-- case.0 在配置文件中指定传值内容，此时scope=""，在预创建的时候，就会实例化本类 -->
 	<bean id="autowireByConstructor0" class="cn.java.demo.beantag.bean.AutowireByConstructor" autowire="constructor">
 	    <constructor-arg index="0" type="java.lang.Integer" value="1" />
@@ -57,7 +55,7 @@
 	<bean id="autowireByConstructor1" class="cn.java.demo.beantag.bean.AutowireByConstructor" autowire="constructor" scope="prototype" />
     
     <!-- 
-    	属性注入(自动装配) - 根据“成员方法”的参数类型byType
+    	属性注入(自动装配) - 根据“成员方法”的参数类型autowire="byType"
     	org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(....)
      -->
 	<bean id="autowireByTypeInjectedBean0" class="cn.java.demo.beantag.bean.AutowireByTypeToBeInjectedBean" primary="true"> <!-- primary="true"，在使用类型识别注入的时候，会被选中注入 -->
@@ -68,7 +66,8 @@
 		<constructor-arg index="0" type="java.lang.Integer" value="1" />
 	   	<constructor-arg index="1" type="java.lang.String" value="username is assign in xml - AutowireByTypeToBeInjectedBean autowireByTypeInjectedBean1" />
 	</bean> 
-	<bean id="fooBeanFactory" class="cn.java.demo.beantag.bean.autowirebytype.FooBeanFactory" /> <!-- 会自动注入  -->
+	<bean id="fooBeanFactory0" class="cn.java.demo.beantag.bean.autowirebytype.FooBeanFactory" autowire-candidate="true" /> <!-- 会自动注入,autowire-candidate="true"表示是成为自动装配候选人  -->
+	<bean id="fooBeanFactory1" class="cn.java.demo.beantag.bean.autowirebytype.FooBeanFactory" autowire-candidate="false" /> <!-- 不会自动注入,autowire-candidate="false"表示是不成为自动装配候选人  -->
 	<bean id="fooBeanProvider" class="cn.java.demo.beantag.bean.autowirebytype.FooBeanProvider" /> <!-- 会自动注入  -->
     <bean id="beanRefByAutowireByTypeBean" class="cn.java.demo.beantag.bean.FooBean" />
 	<bean id="autowireByTypeBean0" class="cn.java.demo.beantag.bean.AutowireByTypeBean" autowire="byType">
@@ -77,7 +76,7 @@
 	 	<!-- 
 	 		.. 其他，根据“成员方法”的参数类型byType注入，如果命中的bean有多个的时候，决策方案是：
 	 			1、检查有配置primary的bean，有且只能有一个设置为primary的bean； 
-		  		2、根据bean优先权，不能有两个一样优先权的bean   
+		  		2、根据bean优先权，不能有两个一样优先权的被依赖bean
 		  		3、根据参数名获取到bean
 	 	 -->
     </bean>
@@ -162,7 +161,7 @@
 		<property name="beanName" value="${beanPlaceholderTest1.beanName}" />
 	</bean>
 	
-	<!-- 实现ApplicationListener接口，用于感知应用的事件 -->
+	<!-- 实现ApplicationListener接口，用于感知应用的事件（实现监听器） -->
 	<bean id="applicationListenerWithPayloadApplicationEventParamBean" class="cn.java.demo.beantag.bean.applicationlistener.ApplicationListenerWithPayloadApplicationEventParamBean" />
 	<bean id="applicationListenerWithApplicationEventParamBean" class="cn.java.demo.beantag.bean.applicationlistener.ApplicationListenerWithApplicationEventParamBean" />
 	<bean id="fooEventTriggerBean"  class="cn.java.demo.beantag.bean.applicationlistener.FooEventTriggerBean">
@@ -173,4 +172,9 @@
 	<!-- 国际化，bean名是常量：org.springframework.context.support.AbstractApplicationContext.MESSAGE_SOURCE_BEAN_NAME -->
 	<bean id="messageSource" class="cn.java.demo.beantag.message_source.DelegatingMessageSourceExtend" />
 	
+	<!-- 带启动方法的bean，在jmx中的消费者就有应用到 -->
+	<bean id="fooOneLifecycle" class="cn.java.demo.beantag.lifecycle.FooOneLifecycle" />
+	<bean id="fooOneSmartLifecycle" class="cn.java.demo.beantag.lifecycle.FooOneSmartLifecycle">
+	    <property name="isAutoStartup" value="true" />
+    </bean>
 </beans>  

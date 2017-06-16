@@ -527,13 +527,13 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				registerBeanPostProcessors(beanFactory); // 扫描applicationContext.xml中实现了BeanPostProcessor接口的bean，并实例化添加到beanFactory
 
 				// Initialize message source for this context.
-				initMessageSource(); // 初始化消息源
+				initMessageSource(); // 初始化消息源，在国际化中会用到
 
 				// Initialize event multicaster for this context.
 				initApplicationEventMulticaster(); // 创建应用事件多播器
 
 				// Initialize other special beans in specific context subclasses.
-				onRefresh(); // 失败themeSource对象
+				onRefresh(); // 识别themeSource对象
 
 				// Check for listener beans and register them.
 				registerListeners();
@@ -852,7 +852,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 		// Initialize LoadTimeWeaverAware beans early to allow for registering their transformers early.
 		String[] weaverAwareNames = beanFactory.getBeanNamesForType(LoadTimeWeaverAware.class, false, false);
-		for (String weaverAwareName : weaverAwareNames) {
+		for (String weaverAwareName : weaverAwareNames) { // 在感知“加载时间”
 			getBean(weaverAwareName);
 		}
 

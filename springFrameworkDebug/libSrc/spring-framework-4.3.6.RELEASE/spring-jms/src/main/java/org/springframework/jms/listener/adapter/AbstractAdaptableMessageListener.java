@@ -215,7 +215,7 @@ public abstract class AbstractAdaptableMessageListener
 		try {
 			MessageConverter converter = getMessageConverter();
 			if (converter != null) {
-				return converter.fromMessage(message);
+				return converter.fromMessage(message);  // 使用“消息转换器”转换消息
 			}
 			return message;
 		}
@@ -243,10 +243,10 @@ public abstract class AbstractAdaptableMessageListener
 						"] - generating response message for it");
 			}
 			try {
-				Message response = buildMessage(session, result);
-				postProcessResponse(request, response);
-				Destination destination = getResponseDestination(request, response, session, result);
-				sendResponse(session, destination, response);
+				Message response = buildMessage(session, result); // 创建响应的消息
+				postProcessResponse(request, response); // 
+				Destination destination = getResponseDestination(request, response, session, result); // 目标对象
+				sendResponse(session, destination, response); // 把返回结果发送到新的队列
 			}
 			catch (Exception ex) {
 				throw new ReplyFailureException("Failed to send reply with payload [" + result + "]", ex);
@@ -396,10 +396,10 @@ public abstract class AbstractAdaptableMessageListener
 	 * @see javax.jms.MessageProducer#send
 	 */
 	protected void sendResponse(Session session, Destination destination, Message response) throws JMSException {
-		MessageProducer producer = session.createProducer(destination);
+		MessageProducer producer = session.createProducer(destination);  // 创建“生产者”
 		try {
 			postProcessProducer(producer, response);
-			producer.send(response);
+			producer.send(response);// 发送数据
 		}
 		finally {
 			JmsUtils.closeMessageProducer(producer);

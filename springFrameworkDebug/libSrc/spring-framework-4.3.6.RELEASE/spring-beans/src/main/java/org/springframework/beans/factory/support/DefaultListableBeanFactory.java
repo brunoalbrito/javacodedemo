@@ -1072,7 +1072,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 	public Object doResolveDependency(DependencyDescriptor descriptor, String beanName,
 			Set<String> autowiredBeanNames, TypeConverter typeConverter) throws BeansException {
-
+		// descriptor === cn.java.demo.beantag.internal.beanwrapper.AutowireByTypeDependencyDescriptor
 		InjectionPoint previousInjectionPoint = ConstructorResolver.setCurrentInjectionPoint(descriptor);
 		try {
 			Object shortcut = descriptor.resolveShortcut(this);
@@ -1081,8 +1081,8 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			}
 
 			Class<?> type = descriptor.getDependencyType(); // 方法参数类型，如： Optional、Bean1、
-			Object value = getAutowireCandidateResolver().getSuggestedValue(descriptor); // org.springframework.beans.factory.support.SimpleAutowireCandidateResolver
-			if (value != null) {
+			Object value = getAutowireCandidateResolver().getSuggestedValue(descriptor); //推荐值 org.springframework.beans.factory.support.SimpleAutowireCandidateResolver
+			if (value != null) { // value === null
 				if (value instanceof String) {
 					String strVal = resolveEmbeddedValue((String) value);
 					BeanDefinition bd = (beanName != null && containsBean(beanName) ? getMergedBeanDefinition(beanName) : null);
@@ -1095,7 +1095,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			}
 
 			Object multipleBeans = resolveMultipleBeans(descriptor, beanName, autowiredBeanNames, typeConverter); // 参数类型是 Array/Collection/Map
-			if (multipleBeans != null) {
+			if (multipleBeans != null) { // multipleBeans===null
 				return multipleBeans;
 			}
 

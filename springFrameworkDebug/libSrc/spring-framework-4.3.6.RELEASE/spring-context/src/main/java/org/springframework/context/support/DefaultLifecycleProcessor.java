@@ -88,7 +88,7 @@ public class DefaultLifecycleProcessor implements LifecycleProcessor, BeanFactor
 	 */
 	@Override
 	public void start() {
-		startBeans(false);
+		startBeans(false);//!!!
 		this.running = true;
 	}
 
@@ -136,17 +136,18 @@ public class DefaultLifecycleProcessor implements LifecycleProcessor, BeanFactor
 				int phase = getPhase(bean);
 				LifecycleGroup group = phases.get(phase);
 				if (group == null) {
-					group = new LifecycleGroup(phase, this.timeoutPerShutdownPhase, lifecycleBeans, autoStartupOnly);
+					group = new LifecycleGroup(phase, this.timeoutPerShutdownPhase, lifecycleBeans, autoStartupOnly); // !!!
 					phases.put(phase, group);
 				}
-				group.add(entry.getKey(), bean);
+				group.add(entry.getKey(), bean);//!!!
 			}
 		}
 		if (!phases.isEmpty()) {
 			List<Integer> keys = new ArrayList<Integer>(phases.keySet());
 			Collections.sort(keys);
 			for (Integer key : keys) {
-				phases.get(key).start();
+				// org.springframework.context.support.DefaultLifecycleProcessor.LifecycleGroup.start();
+				phases.get(key).start(); // 启动
 			}
 		}
 	}
@@ -161,7 +162,7 @@ public class DefaultLifecycleProcessor implements LifecycleProcessor, BeanFactor
 		Lifecycle bean = lifecycleBeans.remove(beanName);
 		if (bean != null && !this.equals(bean)) {
 			String[] dependenciesForBean = this.beanFactory.getDependenciesForBean(beanName);
-			for (String dependency : dependenciesForBean) {
+			for (String dependency : dependenciesForBean) { // 如果有依赖，进行递归
 				doStart(lifecycleBeans, dependency, autoStartupOnly);
 			}
 			if (!bean.isRunning() &&
@@ -190,16 +191,17 @@ public class DefaultLifecycleProcessor implements LifecycleProcessor, BeanFactor
 			int shutdownOrder = getPhase(bean);
 			LifecycleGroup group = phases.get(shutdownOrder);
 			if (group == null) {
-				group = new LifecycleGroup(shutdownOrder, this.timeoutPerShutdownPhase, lifecycleBeans, false);
+				group = new LifecycleGroup(shutdownOrder, this.timeoutPerShutdownPhase, lifecycleBeans, false); // !!!
 				phases.put(shutdownOrder, group);
 			}
-			group.add(entry.getKey(), bean);
+			group.add(entry.getKey(), bean); // !!!
 		}
 		if (!phases.isEmpty()) {
 			List<Integer> keys = new ArrayList<Integer>(phases.keySet());
 			Collections.sort(keys, Collections.reverseOrder());
 			for (Integer key : keys) {
-				phases.get(key).stop();
+				// org.springframework.context.support.DefaultLifecycleProcessor.LifecycleGroup.stop();
+				phases.get(key).stop(); // !!!
 			}
 		}
 	}
@@ -216,7 +218,7 @@ public class DefaultLifecycleProcessor implements LifecycleProcessor, BeanFactor
 		Lifecycle bean = lifecycleBeans.remove(beanName);
 		if (bean != null) {
 			String[] dependentBeans = this.beanFactory.getDependentBeans(beanName);
-			for (String dependentBean : dependentBeans) {
+			for (String dependentBean : dependentBeans) { // 如果有依赖，先关闭依赖对象
 				doStop(lifecycleBeans, dependentBean, latch, countDownBeanNames);
 			}
 			try {
@@ -226,7 +228,7 @@ public class DefaultLifecycleProcessor implements LifecycleProcessor, BeanFactor
 							logger.debug("Asking bean '" + beanName + "' of type [" + bean.getClass() + "] to stop");
 						}
 						countDownBeanNames.add(beanName);
-						((SmartLifecycle) bean).stop(new Runnable() {
+						((SmartLifecycle) bean).stop(new Runnable() { // 传递回调函数
 							@Override
 							public void run() {
 								latch.countDown();
@@ -241,7 +243,7 @@ public class DefaultLifecycleProcessor implements LifecycleProcessor, BeanFactor
 						if (logger.isDebugEnabled()) {
 							logger.debug("Stopping bean '" + beanName + "' of type [" + bean.getClass() + "]");
 						}
-						bean.stop();
+						bean.stop(); // 调用方法
 						if (logger.isDebugEnabled()) {
 							logger.debug("Successfully stopped bean '" + beanName + "'");
 						}
@@ -270,7 +272,7 @@ public class DefaultLifecycleProcessor implements LifecycleProcessor, BeanFactor
 	 */
 	protected Map<String, Lifecycle> getLifecycleBeans() {
 		Map<String, Lifecycle> beans = new LinkedHashMap<String, Lifecycle>();
-		String[] beanNames = this.beanFactory.getBeanNamesForType(Lifecycle.class, false, false);
+		String[] beanNames = this.beanFactory.getBeanNamesForType(Lifecycle.class, false, false); // 扫描实现Lifecycle接口的bean对象
 		for (String beanName : beanNames) {
 			String beanNameToRegister = BeanFactoryUtils.transformedBeanName(beanName);
 			boolean isFactoryBean = this.beanFactory.isFactoryBean(beanNameToRegister);
@@ -330,7 +332,7 @@ public class DefaultLifecycleProcessor implements LifecycleProcessor, BeanFactor
 			if (bean instanceof SmartLifecycle) {
 				this.smartMemberCount++;
 			}
-			this.members.add(new LifecycleGroupMember(name, bean));
+			this.members.add(new LifecycleGroupMember(name, bean));//!!!
 		}
 
 		public void start() {
@@ -343,7 +345,7 @@ public class DefaultLifecycleProcessor implements LifecycleProcessor, BeanFactor
 			Collections.sort(this.members);
 			for (LifecycleGroupMember member : this.members) {
 				if (this.lifecycleBeans.containsKey(member.name)) {
-					doStart(this.lifecycleBeans, member.name, this.autoStartupOnly);
+					doStart(this.lifecycleBeans, member.name, this.autoStartupOnly); // !!!!
 				}
 			}
 		}
@@ -360,7 +362,7 @@ public class DefaultLifecycleProcessor implements LifecycleProcessor, BeanFactor
 			Set<String> countDownBeanNames = Collections.synchronizedSet(new LinkedHashSet<String>());
 			for (LifecycleGroupMember member : this.members) {
 				if (this.lifecycleBeans.containsKey(member.name)) {
-					doStop(this.lifecycleBeans, member.name, latch, countDownBeanNames);
+					doStop(this.lifecycleBeans, member.name, latch, countDownBeanNames); // !!!!
 				}
 				else if (member.bean instanceof SmartLifecycle) {
 					// already removed, must have been a dependent

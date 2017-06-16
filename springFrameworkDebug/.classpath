@@ -52,8 +52,9 @@
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/mysql-connector-java-5.1.41-bin.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/spring-jms-4.3.6.RELEASE.jar" sourcepath="C:/Users/ADMINI~1/AppData/Local/Temp/decompiler/source/spring-jms-4.3.6.RELEASE-sources.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/activemq-all-5.10.0.jar" sourcepath="C:/Users/ADMINI~1/AppData/Local/Temp/decompiler/source/activemq-all-5.10.0-sources-1497531964274.jar"/>
+	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/spring-data-redis-1.8.4.RELEASE.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
-	<classpathentry kind="lib" path="E:/Repository/javacodedemo/springFrameworkDebug/WebRoot/WEB-INF/classes"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/spring-messaging-4.3.6.RELEASE.jar" sourcepath="C:/Users/ADMINI~1/AppData/Local/Temp/decompiler/source/spring-messaging-4.3.6.RELEASE-sources.jar"/>
+	<classpathentry kind="lib" path="D:/javacodedemo/springFrameworkDebug/WebRoot/WEB-INF/classes"/>
 	<classpathentry kind="output" path="WebRoot/WEB-INF/classes"/>
 </classpath>

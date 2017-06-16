@@ -185,7 +185,7 @@ public class JmsListenerAnnotationBeanPostProcessor
 		}
 
 		if (this.containerFactoryBeanName != null) {
-			this.registrar.setContainerFactoryBeanName(this.containerFactoryBeanName);
+			this.registrar.setContainerFactoryBeanName(this.containerFactoryBeanName); //!!!
 		}
 
 		// Set the custom handler method factory once resolved by the configurer

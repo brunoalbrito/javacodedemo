@@ -193,7 +193,7 @@ public class MessageListenerAdapter extends AbstractAdaptableMessageListener imp
 	 * Return the name of the default listener method to delegate to.
 	 */
 	protected String getDefaultListenerMethod() {
-		return this.defaultListenerMethod;
+		return this.defaultListenerMethod; // "consumerDefaultQueueMethod"
 	}
 
 
@@ -211,7 +211,7 @@ public class MessageListenerAdapter extends AbstractAdaptableMessageListener imp
 	public void onMessage(Message message, Session session) throws JMSException {
 		// Check whether the delegate is a MessageListener impl itself.
 		// In that case, the adapter will simply act as a pass-through.
-		Object delegate = getDelegate();
+		Object delegate = getDelegate(); // !!! cn.java.demo.jmstag.byxml.consumer.QueueConsumer
 		if (delegate != this) {
 			if (delegate instanceof SessionAwareMessageListener) {
 				if (session != null) {
@@ -230,8 +230,8 @@ public class MessageListenerAdapter extends AbstractAdaptableMessageListener imp
 		}
 
 		// Regular case: find a handler method reflectively.
-		Object convertedMessage = extractMessage(message);
-		String methodName = getListenerMethodName(message, convertedMessage);
+		Object convertedMessage = extractMessage(message); // 使用“消息转换器”转换消息
+		String methodName = getListenerMethodName(message, convertedMessage); // 获取“监听器方法”
 		if (methodName == null) {
 			throw new javax.jms.IllegalStateException("No default listener method specified: " +
 					"Either specify a non-null value for the 'defaultListenerMethod' property or " +
@@ -239,10 +239,10 @@ public class MessageListenerAdapter extends AbstractAdaptableMessageListener imp
 		}
 
 		// Invoke the handler method with appropriate arguments.
-		Object[] listenerArguments = buildListenerArguments(convertedMessage);
-		Object result = invokeListenerMethod(methodName, listenerArguments);
-		if (result != null) {
-			handleResult(result, message, session);
+		Object[] listenerArguments = buildListenerArguments(convertedMessage);  // 创建“监听器方法”参数
+		Object result = invokeListenerMethod(methodName, listenerArguments); // 调用“监听器方法”
+		if (result != null) {// !!! 如果有返回值
+			handleResult(result, message, session);  // 处理返回值
 		}
 		else {
 			logger.trace("No result object given - no result to handle");
@@ -304,7 +304,7 @@ public class MessageListenerAdapter extends AbstractAdaptableMessageListener imp
 	 * @see #getListenerMethodName
 	 * @see #buildListenerArguments
 	 */
-	protected Object invokeListenerMethod(String methodName, Object[] arguments) throws JMSException {
+	protected Object invokeListenerMethod(String methodName, Object[] arguments) throws JMSException { // 调用监听方法
 		try {
 			MethodInvoker methodInvoker = new MethodInvoker();
 			methodInvoker.setTargetObject(getDelegate());

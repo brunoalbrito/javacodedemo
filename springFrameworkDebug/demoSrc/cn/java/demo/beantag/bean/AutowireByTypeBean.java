@@ -53,7 +53,7 @@ public class AutowireByTypeBean {
 	/**
 	 * 参数类型为：Optional
 	 */
-	public void setOptional(Optional<AutowireByTypeToBeInjectedBean> autowireByTypeToBeInjectedBeanOptional) {
+	public void setBeanOptional(Optional<AutowireByTypeToBeInjectedBean> autowireByTypeToBeInjectedBeanOptional) {
 		System.out.println("----------参数类型识别注入，setOptional---------------");
 		this.autowireByTypeToBeInjectedBeanOptional = autowireByTypeToBeInjectedBeanOptional;
 		try {

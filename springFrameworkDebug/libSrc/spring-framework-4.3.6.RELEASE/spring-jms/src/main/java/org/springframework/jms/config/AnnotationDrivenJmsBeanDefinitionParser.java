@@ -53,15 +53,14 @@ class AnnotationDrivenJmsBeanDefinitionParser implements BeanDefinitionParser {
 		}
 		else {
 			BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(
-					"org.springframework.jms.annotation.JmsListenerAnnotationBeanPostProcessor");
+					"org.springframework.jms.annotation.JmsListenerAnnotationBeanPostProcessor"); // hook-BeanPostProcessor处理器
 			builder.getRawBeanDefinition().setSource(source);
 			String endpointRegistry = element.getAttribute("registry");
 			if (StringUtils.hasText(endpointRegistry)) {
 				builder.addPropertyReference("endpointRegistry", endpointRegistry);
 			}
 			else {
-				// 注册 org.springframework.jms.config.JmsListenerEndpointRegistry对象
-				registerDefaultEndpointRegistry(source, parserContext); // !!!!
+				registerDefaultEndpointRegistry(source, parserContext); // !!!! 创建Endpoint注册中心
 			}
 
 			String containerFactory = element.getAttribute("container-factory");
@@ -95,7 +94,7 @@ class AnnotationDrivenJmsBeanDefinitionParser implements BeanDefinitionParser {
 			ParserContext parserContext, BeanDefinitionBuilder builder, String beanName) {
 
 		builder.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
-		parserContext.getRegistry().registerBeanDefinition(beanName, builder.getBeanDefinition());
+		parserContext.getRegistry().registerBeanDefinition(beanName, builder.getBeanDefinition());  // 注册到BeanDefinition容器中
 		BeanDefinitionHolder holder = new BeanDefinitionHolder(builder.getBeanDefinition(), beanName);
 		parserContext.registerComponent(new BeanComponentDefinition(holder));
 	}

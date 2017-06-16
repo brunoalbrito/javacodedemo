@@ -8,7 +8,6 @@
 	
 	<!-- 连接工厂 -->
 	<bean id="cachingConnectionFactory0" class="org.springframework.jms.connection.CachingConnectionFactory">
-   		<property name="pubSubMode" value="FALSE" /><!-- false表示队列模式，true表示订阅模式，不设置表示其他 -->
    		<property name="targetConnectionFactory">
    			<bean class="org.apache.activemq.spring.ActiveMQConnectionFactory">
    				<property name="brokerURL" value="tcp://localhost:61616" />
@@ -19,7 +18,6 @@
     </bean>
 	<!-- 连接工厂 -->
 	<bean id="cachingConnectionFactory1" class="org.springframework.jms.connection.CachingConnectionFactory">
-   		<property name="pubSubMode" value="TRUE" /><!-- false表示队列模式，true表示订阅模式，不设置表示其他 -->
    		<property name="targetConnectionFactory">
    			<bean class="org.apache.activemq.spring.ActiveMQConnectionFactory">
    				<property name="brokerURL" value="tcp://localhost:61616" />
@@ -37,7 +35,7 @@
     <bean id="defaultTopicName0" class="org.apache.activemq.command.ActiveMQTopic">
   		<constructor-arg index="0" value="defaultTopicName" />
 	</bean>
-	<!-- *********生产者*********配置消息模板，在代码中硬编码调用发送消息********************* -->
+	<!-- *********配置消息模板，在代码中硬编码调用发送消息********************* -->
     <bean id="queueTemplate" class="org.springframework.jms.core.JmsTemplate"><!-- 队列模式 -->
     	<property name="defaultDestination" ref="defaultQuqueName0" /><!-- 如果发送的时候不指定队列，那么使用这个队列 -->
     	<property name="messageConverter" ref="simpleMessageConverter0" /><!-- 消息转换器 -->
@@ -48,19 +46,37 @@
     	<property name="messageConverter" ref="simpleMessageConverter0" /><!-- 消息转换器 -->
         <property name="connectionFactory" ref="cachingConnectionFactory1" /><!-- 发送到哪里（在此连接的是ActiveMQ） -->
     </bean>
+    
+    <!-- *********生产者****** -->
+    <bean id="queueProducer" class="cn.java.demo.jmstag.producor.QueueProducer" />
+    <bean id="topicProducer" class="cn.java.demo.jmstag.producor.TopicProducer" />
 	
-	<!-- *********消费者*********使用xml配置，使用aop劫持机制********************* -->
+	<!-- *********消费者*********使用xml配置，手动识别消费者********************* -->
 	<!-- 用途：aop机制劫持EmailService.sendMail(...)的调用，变成发送消息到defaultQuqueName0队列 -->
 	<!-- （劫持谁+发送给谁）**********bof*** -->
 	<bean id="queueConsumer" class="cn.java.demo.jmstag.byxml.consumer.QueueConsumer" />
+	<bean id="topicConsumer" class="cn.java.demo.jmstag.byxml.consumer.TopicConsumer" />
+	<jms:listener-container destination-type="queue" response-destination-type="queue"
+	    container-class="org.springframework.jms.listener.SimpleMessageListenerContainer">
+		<jms:listener ref="queueConsumer" method="consumerDefaultQueue" destination="defaultQuqueName0" /> <!-- 注册一个消费者 -->
+	</jms:listener-container>
 	<jms:listener-container destination-type="queue" response-destination-type="queue" message-converter="simpleMessageConverter0" 
-		connection-factory="cachingConnectionFactory0">
-		<jms:listener ref="queueConsumer" method="consumerDefaultQueue" destination="defaultQuqueName0" />
-		<jms:listener ref="queueConsumer" method="consumerEmailQueue" destination="EmailQuqueName0" />
+		connection-factory="cachingConnectionFactory0" container-class="org.springframework.jms.listener.SimpleMessageListenerContainer">
+		<!-- jms:listener用实现了SmartLifecycle接口的SimpleMessageListenerContainer对象包装信息，在上下文启动的时候会自动启动 -->
+		<jms:listener ref="queueConsumer" method="consumerDefaultQueue" destination="defaultQuqueName0" /> <!-- 注册一个消费者 -->
+		<jms:listener ref="queueConsumer" method="consumerEmailQueue" destination="emailQuqueName0" />
+		<jms:listener ref="queueConsumer" method="consumerFooQueue" destination="fooQueueName0" />
+	</jms:listener-container>
+	<jms:listener-container destination-type="topic" response-destination-type="topic" message-converter="simpleMessageConverter0" 
+		connection-factory="cachingConnectionFactory0" container-class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+		<jms:listener ref="topicConsumer" method="consumerDefaultTopic" destination="defaultTopicName0" />
+		<jms:listener ref="topicConsumer" method="consumerFooTopic" destination="fooTopicName0" />
 	</jms:listener-container>
 	<!-- 使用xml配置，（劫持谁+发送给谁）**********bof*** -->
 	
-	<!-- *********消费者*******使用注解配置，使用aop劫持机制********************* -->
+	<!-- *********消费者*******使用注解配置，使用aop劫持机制识别消费者********************* -->
 	<!-- 使用注解配置,自动扫描 @JmsListener 或者 @JmsListeners 注解 -->
-	<jms:annotation-driven registry="endpointRegistry0" />
+	<!-- 会注册一个实现了SmartLifecycle接口的JmsListenerEndpointRegistry对象，在上下文启动的时候会自动启动 -->
+	<jms:listener-container factory-id="jmsListenerContainerFactory0" container-type="default" />
+	<jms:annotation-driven container-factory="jmsListenerContainerFactory0" /><!-- 这个标签必须存在且只能存在一次，会注册一个BeanPostProcess对象，用于拦截对象并解析 @JmsListener注解 -->
 </beans>  

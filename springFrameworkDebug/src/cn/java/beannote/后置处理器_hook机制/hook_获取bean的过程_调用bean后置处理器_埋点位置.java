@@ -17,6 +17,8 @@ import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.ObjectFactory;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.config.DependencyDescriptor;
@@ -32,12 +34,14 @@ import org.springframework.beans.factory.support.ManagedProperties;
 import org.springframework.beans.factory.support.ManagedSet;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.AutowireByTypeDependencyDescriptor;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory.DependencyObjectProvider;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory.Jsr330ProviderFactory;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory.OptionalDependencyFactory;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.PriorityOrdered;
 import org.springframework.util.ObjectUtils;
 
-public class 关于bean后置处理器_埋点_获取bean的过程 {
+public class hook_获取bean的过程_调用bean后置处理器_埋点位置 {
 
 	public static void main(String[] args) {
 		/*
@@ -79,7 +83,7 @@ public class 关于bean后置处理器_埋点_获取bean的过程 {
 								}
 								if (ctors != null ||
 										mbd.getResolvedAutowireMode() == RootBeanDefinition.AUTOWIRE_CONSTRUCTOR || “自动装配” --- 感知“构造函数”，注入依赖的bean对象
-										mbd.hasConstructorArgumentValues() || !ObjectUtils.isEmpty(args))  {
+										mbd.hasConstructorArgumentValues() || !ObjectUtils.isEmpty(args))  { // 有配置“构造函数”的信息，有提供构造函数参数
 									return org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(beanName, mbd, ctors, args);
 								}
 						
@@ -120,20 +124,26 @@ public class 关于bean后置处理器_埋点_获取bean的过程 {
 									if (mbd.getResolvedAutowireMode() == RootBeanDefinition.AUTOWIRE_BY_TYPE) { // “自动装配” --- 感知setter方法的“参数类型”，注入依赖的bean对象 !!!
 										autowireByType(beanName, mbd, bw, newPvs); // org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireByType(...)
 										{
-											String[] propertyNames = unsatisfiedNonSimpleProperties(mbd, bw);
+											String[] propertyNames = unsatisfiedNonSimpleProperties(mbd, bw); // bean对象的属性列表
 											for (String propertyName : propertyNames) {
-											PropertyDescriptor pd = bw.getPropertyDescriptor(propertyName);
-											if (Object.class != pd.getPropertyType()) {
-												MethodParameter methodParam = BeanUtils.getWriteMethodParameter(pd); // setter的参数类型
+											PropertyDescriptor pd = bw.getPropertyDescriptor(propertyName); // 某个属性的信息
+											if (Object.class != pd.getPropertyType()) { // 属性的类型
+												MethodParameter methodParam = BeanUtils.getWriteMethodParameter(pd); // setter的参数信息
 												// Do not allow eager init for type matching in case of a prioritized post-processor.
-												boolean eager = !PriorityOrdered.class.isAssignableFrom(bw.getWrappedClass()); // 不继承自PriorityOrdered，就是饥渴模式
+												boolean eager = !PriorityOrdered.class.isAssignableFrom(bw.getWrappedClass()); // bean对象不继承自PriorityOrdered，就是饥渴模式
 												DependencyDescriptor desc = new AutowireByTypeDependencyDescriptor(methodParam, eager);
-												Object autowiredArgument = DefaultListableBeanFactory.resolveDependency(desc, beanName, autowiredBeanNames, converter); // !!! 解析参数类型--- org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(...)
+												Object autowiredArgument = DefaultListableBeanFactory.resolveDependency(descriptor === desc, beanName, autowiredBeanNames, converter); // !!! 解析参数类型--- org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(...)
 												{
 													if (javaUtilOptionalClass == descriptor.getDependencyType()) {// !!! 参数类型是 Optional
 														return new OptionalDependencyFactory().createOptionalDependency(descriptor, requestingBeanName); // 返回bean实例
 													}
-													.....
+													else if (ObjectFactory.class == descriptor.getDependencyType() || // !!! 参数类型是 ObjectFactory
+															ObjectProvider.class == descriptor.getDependencyType()) { // !!! 参数类型是 ObjectProvider
+														return new DependencyObjectProvider(descriptor, requestingBeanName);
+													}
+													else if (javaxInjectProviderClass == descriptor.getDependencyType()) {  // !!! 参数类型 javax.inject.Provider
+														return new Jsr330ProviderFactory().createDependencyProvider(descriptor, requestingBeanName);
+													}
 													else { // 其他参数类型
 														Object result = getAutowireCandidateResolver().getLazyResolutionProxyIfNecessary(
 																descriptor, requestingBeanName); // org.springframework.beans.factory.support.SimpleAutowireCandidateResolver
@@ -142,20 +152,22 @@ public class 关于bean后置处理器_埋点_获取bean的过程 {
 															{
 																...
 																Class<?> type = descriptor.getDependencyType(); // 方法参数类型，如： Optional、Bean1、
-																Object value = getAutowireCandidateResolver().getSuggestedValue(descriptor); // org.springframework.beans.factory.support.SimpleAutowireCandidateResolver
-													
+																Object value = getAutowireCandidateResolver().getSuggestedValue(descriptor); //推荐值 org.springframework.beans.factory.support.SimpleAutowireCandidateResolver
+																if (value != null) { // value === null
+																}
+																
 																Object multipleBeans = resolveMultipleBeans(descriptor, beanName, autowiredBeanNames, typeConverter); // 参数类型是 Array/Collection/Map
-																if (multipleBeans != null) {
+																if (multipleBeans != null) { // multipleBeans === null
 																	return multipleBeans;
 																}
 																
 																Map<String, Object> matchingBeans = findAutowireCandidates(beanName, type, descriptor);
 																{
-																
+																	String[] candidateNames = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(this, requiredType, true, descriptor.isEager()); // 根据bean的类型获取符合条件的bean列表
 																}
 																
 																if (matchingBeans.isEmpty()) {
-																	if (descriptor.isRequired()) {
+																	if (descriptor.isRequired()) { // 必须
 																		raiseNoMatchingBeanFound(type, descriptor.getResolvableType(), descriptor);// !!!!
 																		{
 																			checkBeanNotOfRequiredType(type, descriptor); //!!!

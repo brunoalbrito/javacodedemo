@@ -284,6 +284,7 @@ public abstract class AbstractMessageListenerContainer extends AbstractJmsListen
 	 * @see SessionAwareMessageListener
 	 */
 	public void setMessageListener(Object messageListener) {
+		// messageListener === org.springframework.jms.listener.adapter.MessageListenerAdapter
 		checkMessageListener(messageListener);
 		this.messageListener = messageListener;
 		if (this.subscriptionName == null) {
@@ -675,10 +676,10 @@ public abstract class AbstractMessageListenerContainer extends AbstractJmsListen
 	 */
 	@SuppressWarnings("rawtypes")
 	protected void invokeListener(Session session, Message message) throws JMSException {
-		Object listener = getMessageListener();
+		Object listener = getMessageListener(); // listener === org.springframework.jms.listener.adapter.MessageListenerAdapter
 
 		if (listener instanceof SessionAwareMessageListener) {
-			doInvokeListener((SessionAwareMessageListener) listener, session, message);
+			doInvokeListener((SessionAwareMessageListener) listener, session, message); // !!!!
 		}
 		else if (listener instanceof MessageListener) {
 			doInvokeListener((MessageListener) listener, message);

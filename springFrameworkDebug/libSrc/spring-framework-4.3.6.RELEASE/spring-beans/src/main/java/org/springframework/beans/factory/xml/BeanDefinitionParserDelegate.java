@@ -625,14 +625,14 @@ public class BeanDefinitionParserDelegate {
 
 		String autowireCandidate = ele.getAttribute(AUTOWIRE_CANDIDATE_ATTRIBUTE);
 		if ("".equals(autowireCandidate) || DEFAULT_VALUE.equals(autowireCandidate)) {
-			String candidatePattern = this.defaults.getAutowireCandidates();
+			String candidatePattern = this.defaults.getAutowireCandidates(); // 默认值
 			if (candidatePattern != null) {
 				String[] patterns = StringUtils.commaDelimitedListToStringArray(candidatePattern);
 				bd.setAutowireCandidate(PatternMatchUtils.simpleMatch(patterns, beanName)); // 如果beanName，符合自动装配表达式，自动设置为true
 			}
 		}
 		else {
-			bd.setAutowireCandidate(TRUE_VALUE.equals(autowireCandidate));
+			bd.setAutowireCandidate(TRUE_VALUE.equals(autowireCandidate)); // 是否是自动装配候选人
 		}
 
 		if (ele.hasAttribute(PRIMARY_ATTRIBUTE)) {

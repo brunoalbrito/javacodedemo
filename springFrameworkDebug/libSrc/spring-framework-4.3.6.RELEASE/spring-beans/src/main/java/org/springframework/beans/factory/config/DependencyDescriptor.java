@@ -83,10 +83,10 @@ public class DependencyDescriptor extends InjectionPoint implements Serializable
 	 * eagerly resolving potential target beans for type matching
 	 */
 	public DependencyDescriptor(MethodParameter methodParameter, boolean required, boolean eager) {
-		super(methodParameter);
-		this.declaringClass = methodParameter.getDeclaringClass();
-		if (this.methodParameter.getMethod() != null) {
-			this.methodName = methodParameter.getMethod().getName();
+		super(methodParameter);// 参数信息
+		this.declaringClass = methodParameter.getDeclaringClass(); 
+		if (this.methodParameter.getMethod() != null) { // “参数对象”所在方法
+			this.methodName = methodParameter.getMethod().getName(); // 方法名
 			this.parameterTypes = methodParameter.getMethod().getParameterTypes();
 		}
 		else {
@@ -95,7 +95,7 @@ public class DependencyDescriptor extends InjectionPoint implements Serializable
 		this.parameterIndex = methodParameter.getParameterIndex();
 		this.containingClass = methodParameter.getContainingClass();
 		this.required = required;
-		this.eager = eager;
+		this.eager = eager; // 是否是饥渴模式
 	}
 
 	/**

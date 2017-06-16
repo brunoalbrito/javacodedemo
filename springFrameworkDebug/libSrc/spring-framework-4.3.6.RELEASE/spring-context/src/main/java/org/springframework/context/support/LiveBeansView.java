@@ -70,7 +70,7 @@ public class LiveBeansView implements LiveBeansViewMBean, ApplicationContextAwar
 						MBeanServer server = ManagementFactory.getPlatformMBeanServer();
 						applicationName = applicationContext.getApplicationName();
 						server.registerMBean(new LiveBeansView(),
-								new ObjectName(mbeanDomain, MBEAN_APPLICATION_KEY, applicationName));
+								new ObjectName(mbeanDomain, MBEAN_APPLICATION_KEY, applicationName)); // 注册到jmx中
 					}
 					catch (Throwable ex) {
 						throw new ApplicationContextException("Failed to register LiveBeansView MBean", ex);
