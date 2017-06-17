@@ -30,11 +30,72 @@ public class Test {
 		DELAY_KEY_WRITE=0
 		;
 	 */
-	
+	/*
+		数据库 - mysql
+		{
+			mysql.user 存放数据的“用户信息”（用户名、允许连接的IP、数据库服务器的权限、用户密码、最大连接数、用户的最大连接数）
+			
+			mysql.slave_master_info 存放数据的“订阅的主服务器信息”（master主机名、master用户名、master密码、master端口、尝试次数、master日志名、master日志偏移位置、行号）
+			mysql.slave_relay_log_info存放salve的“同步信息”（master日志名、master日志偏移位置、slave日志名、slave日志偏移位置、行号）
+			mysql.slave_worker_info 存放工作者的“同步信息”（master日志名、master日志偏移位置、slave日志名、slave日志偏移位置、行号）
+			
+			mysql.slow_log 存放“慢查询日志”（连接用户IP信息、开始时间、查询时间、锁定锁定时间、数据库名、执行SQL、服务器socketId）
+		}
+		
+		数据库 - INFORMATION_SCHEMA
+		{
+			
+			关于-服务器的配置状态
+			{
+				INFORMATION_SCHEMA.ENGINES 存放“存储引擎的原信息”（是否支持、是否支持事务、是否支持分布式事务、是否支持保存点savepoint）
+			
+				INFORMATION_SCHEMA.GLOBAL_VARIABLES 存放“全局”数据库“服务器的配置状态”
+				INFORMATION_SCHEMA.SESSION_VARIABLES 存放“某个连接”数据库“服务器的配置状态”
+				
+				INFORMATION_SCHEMA.PLUGINS 存放“插件信息”（插件名、插件版本、插件状态、插件类型STORAGE ENGINE、插件类型版本、插件作者）
+			}
+			
+			关于-服务器的运行状态
+			{
+				INFORMATION_SCHEMA.GLOBAL_STATUS 存放“全局”数据库“服务器的运行状态”
+				INFORMATION_SCHEMA.SESSION_STATUS 存放“某个连接”数据库“服务器的运行状态”
+				
+				INFORMATION_SCHEMA.PROCESSLIST 存放“进程信息”（连接用户名、连接用户IP信息、数据库名、当前执行的SQL）
+			}
+			
+			关于-数据库信息
+			{
+				INFORMATION_SCHEMA.SCHEMATA 存放“数据库的原信息”（数据库名、字符集、排序字符集）
+				INFORMATION_SCHEMA.SCHEMA_PRIVILEGES 存放数据库的授权信息（授权给用户、数据库名、权限类型、是否授权）
+				
+				INFORMATION_SCHEMA.USER_PRIVILEGES 存放数据库服务器的授权信息（授权给用户、权限类型、是否授权）
+			}
+			
+			关于-表信息
+			{
+				INFORMATION_SCHEMA.TABLES 存放“表的原信息”（所属数据库名、表名、使用引擎、行格式、排序字符集、行的格式、是否自增、已经使用索引长度、已经使用数据长度、允许使用最大数据长度、创建时间、注释...）
+				INFORMATION_SCHEMA.TABLE_PRIVILEGES 存放数据库的授权信息（授权给用户、数据库名、表名、权限类型、是否授权）
+				
+				INFORMATION_SCHEMA.PARTITIONS 存放“分区信息”（所属数据库、所属表、分区名、子分区名、分区方式、分区表达式）
+			}
+			
+			关于-列信息
+			{
+				INFORMATION_SCHEMA.COLUMNS 存放表的“列的原信息”（所属数据库名、所属表名、列名、数据类型、字符集、排序字符集、列类型、权限、注释...）
+				
+				INFORMATION_SCHEMA.KEY_COLUMN_USAGE 存放“主键信息”（数据库名、表名、字段名）
+				
+				INFORMATION_SCHEMA.STATISTICS 存放“索引信息（主键也会添加一条）”（数据库名、表名、索引哪个数据库、索引哪个字段、字段索引名、索引类型）
+			}
+			
+		}
+	 */
+
 	/**
 	 * 
 	 * @param args
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked", "serial" })
 	public static void main(String[] args) {
 		
 		/**

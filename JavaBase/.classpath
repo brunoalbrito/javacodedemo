@@ -46,5 +46,6 @@
 	<classpathentry kind="lib" path="lib/jasperreports-6.3.0/commons-collections-3.2.2.jar"/>
 	<classpathentry kind="lib" path="lib/jasperreports-6.3.0/commons-digester-2.1.jar"/>
 	<classpathentry kind="lib" path="lib/jasperreports-6.3.0/itext-4.2.0.jar"/>
+	<classpathentry kind="lib" path="lib/hsqldb-2.4.0/hsqldb.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

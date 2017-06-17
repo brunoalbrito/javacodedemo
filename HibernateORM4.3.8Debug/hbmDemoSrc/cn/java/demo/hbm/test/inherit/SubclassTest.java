@@ -15,6 +15,7 @@ import cn.java.demo.hbm.util.SessionFactoryUtil;
 public class SubclassTest {
 
 	public static void main(String[] args) {
+		SessionFactoryUtil.openSessionFactory();
 		Pig pig = insert0();
 		selectOne(pig);
 		update(pig);
@@ -24,6 +25,7 @@ public class SubclassTest {
 		insert0();
 		insert1();
 		selectList(pig);
+		SessionFactoryUtil.closeSessionFactory();
 	}
 	
 	private static Pig insert0() {

@@ -83,6 +83,7 @@ public class CompositeDatabasePopulator implements DatabasePopulator {
 
 	@Override
 	public void populate(Connection connection) throws SQLException, ScriptException {
+		// populator === org.springframework.jdbc.datasource.init.ResourceDatabasePopulator
 		for (DatabasePopulator populator : this.populators) {
 			populator.populate(connection);
 		}

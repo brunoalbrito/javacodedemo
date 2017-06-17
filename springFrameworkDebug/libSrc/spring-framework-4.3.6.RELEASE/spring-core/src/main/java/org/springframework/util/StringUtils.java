@@ -320,7 +320,7 @@ public abstract class StringUtils {
 		if (str.length() < prefix.length()) {
 			return false;
 		}
-		String lcStr = str.substring(0, prefix.length()).toLowerCase();
+		String lcStr = str.substring(0, prefix.length()).toLowerCase(); // 截取指定长度的前缀
 		String lcPrefix = prefix.toLowerCase();
 		return lcStr.equals(lcPrefix);
 	}

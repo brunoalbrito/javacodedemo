@@ -233,7 +233,7 @@ public class ResourceDatabasePopulator implements DatabasePopulator {
 	@Override
 	public void populate(Connection connection) throws ScriptException {
 		Assert.notNull(connection, "Connection must not be null");
-		for (Resource script : this.scripts) {
+		for (Resource script : this.scripts) { // scripts === org.springframework.jdbc.config.SortedResourcesFactoryBean
 			EncodedResource encodedScript = new EncodedResource(script, this.sqlScriptEncoding);
 			ScriptUtils.executeSqlScript(connection, encodedScript, this.continueOnError, this.ignoreFailedDrops,
 					this.commentPrefix, this.separator, this.blockCommentStartDelimiter, this.blockCommentEndDelimiter);

@@ -13,6 +13,7 @@ import cn.java.demo.hbm.util.SessionFactoryUtil;
 public class CacheTest {
 
 	public static void main(String args[]) {
+		SessionFactoryUtil.openSessionFactory();
 		User user = addUser();
 		System.out.println("----------");
 		getUser(user.getId());
@@ -20,6 +21,7 @@ public class CacheTest {
 		System.out.println("hit=" + st.getSecondLevelCacheHitCount());
 		System.out.println("miss=" + st.getSecondLevelCacheMissCount());
 		System.out.println("put=" + st.getSecondLevelCachePutCount());
+		SessionFactoryUtil.closeSessionFactory();
 	}
 	
 	private static User getUser(int id) {

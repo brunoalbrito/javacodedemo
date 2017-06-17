@@ -16,6 +16,7 @@ import cn.java.demo.jpa.util.SessionFactoryUtil;
 public class UnionSubclassTest {
 
 	public static void main(String[] args) {
+		SessionFactoryUtil.openSessionFactory();
 		Pig pig = insert0();
 		selectOne(pig);
 		update(pig);
@@ -26,6 +27,7 @@ public class UnionSubclassTest {
 		insert1();
 		selectListFromPig(pig);
 		selectListFromAnimal(pig);
+		SessionFactoryUtil.closeSessionFactory();
 	}
 	
 	private static Pig insert0() {

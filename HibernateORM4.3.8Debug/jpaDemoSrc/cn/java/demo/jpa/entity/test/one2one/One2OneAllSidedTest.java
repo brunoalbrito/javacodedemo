@@ -13,6 +13,7 @@ import cn.java.demo.jpa.util.SessionFactoryUtil;
 public class One2OneAllSidedTest {
 
 	public static void main(String[] args) {
+		SessionFactoryUtil.openSessionFactory();
 		Person person = insert();
 		selectOne(person);
 		update(person);
@@ -24,6 +25,7 @@ public class One2OneAllSidedTest {
 		insert();
 		insert();
 		selectList(person);
+		SessionFactoryUtil.closeSessionFactory();
 	}
 
 	private static Person insert() {

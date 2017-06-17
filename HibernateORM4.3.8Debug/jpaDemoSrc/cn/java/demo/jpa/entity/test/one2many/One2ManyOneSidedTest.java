@@ -13,6 +13,7 @@ import cn.java.demo.jpa.util.SessionFactoryUtil;
 public class One2ManyOneSidedTest {
 
 	public static void main(String[] args) {
+		SessionFactoryUtil.openSessionFactory();
 		Department department = insert0();
 		selectOne(department);
 		update(department);
@@ -22,6 +23,7 @@ public class One2ManyOneSidedTest {
 		insert0();
 		insert0();
 		selectList(department);
+		SessionFactoryUtil.closeSessionFactory();
 	}
 
 	private static void selectList(Department department) {

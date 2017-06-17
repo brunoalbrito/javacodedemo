@@ -16,6 +16,7 @@ import cn.java.demo.jpa.util.SessionFactoryUtil;
 public class JoinedSubclassTest {
 
 	public static void main(String[] args) {
+		SessionFactoryUtil.openSessionFactory();
 		Pig pig = insert0();
 		selectOne(pig);
 		update(pig);
@@ -25,6 +26,7 @@ public class JoinedSubclassTest {
 		insert0();
 		insert1();
 		selectList(pig);
+		SessionFactoryUtil.closeSessionFactory();
 	}
 	
 	private static Pig insert0() {

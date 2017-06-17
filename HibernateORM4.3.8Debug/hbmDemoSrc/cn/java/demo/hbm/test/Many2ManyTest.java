@@ -16,6 +16,7 @@ import cn.java.demo.hbm.util.SessionFactoryUtil;
 public class Many2ManyTest {
 
 	public static void main(String[] args) {
+		SessionFactoryUtil.openSessionFactory();
 		Set<Teacher> teacherSet =  insert0();
 		Teacher teacher = teacherSet.iterator().next();
 		selectOne(teacher);
@@ -26,6 +27,7 @@ public class Many2ManyTest {
 		insert0();
 		insert0();
 		selectList(teacher);
+		SessionFactoryUtil.closeSessionFactory();
 	}
 
 	private static Set<Teacher> insert0() {

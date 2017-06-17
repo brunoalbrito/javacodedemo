@@ -12,9 +12,11 @@ import cn.java.demo.hbm.util.SessionFactoryUtil;
 public class VersionTest {
 
 	public static void main(String args[]) {
+		SessionFactoryUtil.openSessionFactory();
 		User user = addUser();
 		System.out.println("----------");
 		update(user.getId());
+		SessionFactoryUtil.closeSessionFactory();
 	}
 
 	static void update(int id) {

@@ -445,7 +445,7 @@ public abstract class ScriptUtils {
 
 			String script;
 			try {
-				script = readScript(resource, commentPrefix, separator);
+				script = readScript(resource, commentPrefix, separator); // 读取脚本文件
 			}
 			catch (IOException ex) {
 				throw new CannotReadScriptException(resource, ex);
@@ -460,7 +460,7 @@ public abstract class ScriptUtils {
 
 			List<String> statements = new LinkedList<String>();
 			splitSqlScript(resource, script, separator, commentPrefix, blockCommentStartDelimiter,
-					blockCommentEndDelimiter, statements);
+					blockCommentEndDelimiter, statements); // 按分割符切割SQL
 
 			int stmtNumber = 0;
 			Statement stmt = connection.createStatement();

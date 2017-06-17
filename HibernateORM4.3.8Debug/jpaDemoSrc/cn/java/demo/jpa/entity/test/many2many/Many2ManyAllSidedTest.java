@@ -18,8 +18,10 @@ import cn.java.demo.jpa.util.SessionFactoryUtil;
 public class Many2ManyAllSidedTest {
 
 	public static void main(String[] args) {
+		SessionFactoryUtil.openSessionFactory();
 		TeacherCtrlTest.main(args);
 		StudentCtrlTest.main(args);
+		SessionFactoryUtil.closeSessionFactory();
 	}
 
 	/**

@@ -16,6 +16,7 @@ import cn.java.demo.hbm.util.SessionFactoryUtil;
 public class One2OneTest {
 
 	public static void main(String[] args) {
+		SessionFactoryUtil.openSessionFactory();
 		Person person = insert();
 		selectOne(person);
 		update(person);
@@ -25,6 +26,7 @@ public class One2OneTest {
 		insert();
 		insert();
 		selectList(person);
+		SessionFactoryUtil.closeSessionFactory();
 	}
 	
 	private static Person insert() {

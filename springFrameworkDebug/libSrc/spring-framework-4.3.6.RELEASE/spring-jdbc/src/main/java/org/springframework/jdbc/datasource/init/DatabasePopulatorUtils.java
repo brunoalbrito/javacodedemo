@@ -45,6 +45,7 @@ public abstract class DatabasePopulatorUtils {
 		try {
 			Connection connection = DataSourceUtils.getConnection(dataSource);
 			try {
+				// populator === org.springframework.jdbc.datasource.init.CompositeDatabasePopulator
 				populator.populate(connection);
 			}
 			finally {

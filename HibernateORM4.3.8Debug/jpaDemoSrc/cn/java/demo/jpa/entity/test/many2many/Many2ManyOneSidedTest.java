@@ -18,6 +18,7 @@ import cn.java.demo.jpa.util.SessionFactoryUtil;
 public class Many2ManyOneSidedTest {
 
 	public static void main(String[] args) {
+		SessionFactoryUtil.openSessionFactory();
 		Set<Student> studentSet = insert0();
 		Student student = studentSet.iterator().next();
 		selectOne(student);
@@ -28,6 +29,7 @@ public class Many2ManyOneSidedTest {
 		insert0();
 		insert0();
 		selectList(student);
+		SessionFactoryUtil.closeSessionFactory();
 	}
 
 	private static Set<Student> insert0() {

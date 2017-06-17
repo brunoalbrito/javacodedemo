@@ -16,6 +16,7 @@ import cn.java.demo.hbm.util.SessionFactoryUtil;
 public class OneTest {
 
 	public static void main(String[] args) {
+		SessionFactoryUtil.openSessionFactory();
 		User user = insert();
 		selectOne(user);
 		selectOneByCriteria(user);
@@ -29,6 +30,7 @@ public class OneTest {
 		insert();
 		insert();
 		selectList(user);
+		SessionFactoryUtil.closeSessionFactory();
 	}
 	
 	private static void selectOne(User user) {

@@ -1,0 +1,1 @@
+DROP TABLE IF EXISTS `tbprefix_table_full`; 

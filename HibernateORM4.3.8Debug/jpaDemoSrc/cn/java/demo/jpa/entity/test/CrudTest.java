@@ -15,6 +15,7 @@ import cn.java.demo.jpa.util.SessionFactoryUtil;
 public class CrudTest {
 
 	public static void main(String[] args) {
+		SessionFactoryUtil.openSessionFactory();
 		User user = insert();
 		selectOne(user);
 		{
@@ -34,6 +35,7 @@ public class CrudTest {
 		insert();
 		insert();
 		selectList(user);
+		SessionFactoryUtil.closeSessionFactory();
 	}
 
 	public static class NamedQueryTest {

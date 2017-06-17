@@ -210,7 +210,7 @@ public interface FooMapper {
     // 执行 case.2,指定别名
     // select id As id_alias,account,password from tb_user WHERE id >= ? Limit 3 
     @Select(value={"select id As id_alias,account,password from ${tablePrefix}" + TableNameRegistry.TABLE_FOO + " WHERE id >= #{userid} Limit 3",})
-    @MapKey(value="account") // 用account列作为索引
+    @MapKey(value="account") // 用account列作为map索引(键)
     public Map select2(Integer userid);
     
 	// 执行 case.3，分组、排序、分页限制 

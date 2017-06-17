@@ -16,8 +16,10 @@ import cn.java.demo.jpa.util.SessionFactoryUtil;
 public class Many2OneAllSidedTest {
 
 	public static void main(String[] args) {
+		SessionFactoryUtil.openSessionFactory();
 		ClusterCtrlTest.main();
 		NodeCtrlTest.main();
+		SessionFactoryUtil.closeSessionFactory();
 	}
 
 	public static class ClusterCtrlTest {

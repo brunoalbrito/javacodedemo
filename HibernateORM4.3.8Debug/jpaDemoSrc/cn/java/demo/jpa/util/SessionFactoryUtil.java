@@ -14,16 +14,29 @@ public final class SessionFactoryUtil {
 
 	private SessionFactoryUtil() {
 	}
-
-	static {
+	
+	public static void openSessionFactory() {
 		sessionFactory = SessionFactoryUtil0.getSessionFactory("./" + getPackageDir() + "/hibernate.cfg.xml");
 	}
-
+	
+	public static void closeSessionFactory() {
+		if(sessionFactory==null){
+			throw new RuntimeException("sessionFactory is null.");
+		}
+		sessionFactory.close();
+	}
+	
 	public static SessionFactory getSessionFactory() {
+		if(sessionFactory==null){
+			throw new RuntimeException("sessionFactory is null.");
+		}
 		return sessionFactory;
 	}
-
+	
 	public static Session getSession() {
+		if(sessionFactory==null){
+			throw new RuntimeException("sessionFactory is null.");
+		}
 		return sessionFactory.openSession();
 	}
 

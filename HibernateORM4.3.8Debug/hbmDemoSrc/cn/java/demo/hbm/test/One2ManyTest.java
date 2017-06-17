@@ -15,6 +15,7 @@ import cn.java.demo.hbm.util.SessionFactoryUtil;
 public class One2ManyTest {
 
 	public static void main(String[] args) {
+		SessionFactoryUtil.openSessionFactory();
 		Department department = insert0();
 		selectOne(department);
 		update(department);
@@ -24,6 +25,7 @@ public class One2ManyTest {
 		insert0();
 		insert1();
 		selectList(department);
+		SessionFactoryUtil.closeSessionFactory();
 	}
 
 	private static void selectList(Department department) {

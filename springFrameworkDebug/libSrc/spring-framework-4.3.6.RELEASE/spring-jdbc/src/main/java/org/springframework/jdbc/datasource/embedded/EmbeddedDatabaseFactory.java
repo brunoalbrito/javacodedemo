@@ -173,10 +173,12 @@ public class EmbeddedDatabaseFactory {
 
 		// Create the embedded database first
 		if (this.databaseConfigurer == null) {
+			// databaseConfigurer === org.springframework.jdbc.datasource.embedded.HsqlEmbeddedDatabaseConfigurer
 			this.databaseConfigurer = EmbeddedDatabaseConfigurerFactory.getConfigurer(EmbeddedDatabaseType.HSQL);
 		}
+		// dataSourceFactory === org.springframework.jdbc.datasource.embedded.SimpleDriverDataSourceFactory
 		this.databaseConfigurer.configureConnectionProperties(
-				this.dataSourceFactory.getConnectionProperties(), this.databaseName);
+				this.dataSourceFactory.getConnectionProperties(), this.databaseName); // !!!!
 		this.dataSource = this.dataSourceFactory.getDataSource();
 
 		if (logger.isInfoEnabled()) {

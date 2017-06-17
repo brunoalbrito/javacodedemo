@@ -134,8 +134,31 @@ public class Test {
 					@Transactional
 					<aop:config>
 			《jms》
-				spring-jms-4.3.6.RELEASE.jar、activemq-all-5.10.0.jar
+				spring-jms-4.3.6.RELEASE.jar、spring-messaging-4.3.6.RELEASE.jar
+				activemq-all-5.10.0.jar
 				
+				消费者 - 使用xml配置
+					<jms:listener-container>
+					
+				消费者 - 使用注解配置
+					<jms:annotation-driven>
+			《jdbc》
+				spring-jdbc-4.3.6.RELEASE.jar
+				
+				数据源  - 使用xml配置
+				<jdbc:embedded-database>
+				<jdbc:initialize-database>
+			
+			《spring_redis》	
+				spring-data-redis-1.8.4.RELEASE.jar
+				
+			《spring_memcache》
+				
+			《spring_mybatis》	
+				mybatis-spring-1.3.1.jar
+				
+			《spring_hibernate》	
+				spring-orm-4.3.6.RELEASE.jar
 		 */
 	}
 

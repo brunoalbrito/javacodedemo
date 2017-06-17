@@ -14,6 +14,7 @@ import cn.java.demo.jpa.util.SessionFactoryUtil;
 public class Many2OneOneSidedTest {
 
 	public static void main(String[] args) {
+		SessionFactoryUtil.openSessionFactory();
 		List<Node> nodeList = insert0();
 		selectOne(nodeList);
 		update(nodeList);
@@ -23,6 +24,7 @@ public class Many2OneOneSidedTest {
 		insert0();
 		insert0();
 		selectList(nodeList);
+		SessionFactoryUtil.closeSessionFactory();
 	}
 
 	private static void selectList(List<Node> nodeList) {

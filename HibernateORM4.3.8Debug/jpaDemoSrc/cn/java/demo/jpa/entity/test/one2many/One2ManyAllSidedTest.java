@@ -15,8 +15,10 @@ import cn.java.demo.jpa.util.SessionFactoryUtil;
 
 public class One2ManyAllSidedTest {
 	public static void main(String[] args) {
+		SessionFactoryUtil.openSessionFactory();
 		EmployeeCtrlTest.main();
 		DepartmentCtrlTest.main();
+		SessionFactoryUtil.closeSessionFactory();
 	}
 
 	public static class EmployeeCtrlTest {

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+	
+	<!-- 读取配置文件、替换bean中的占位符 -->
+	<bean id="propertyConfigurer"  
+        class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">  
+        <property name="location" value="classpath:/cn/java/demo/data_mybatis/jdbc.properties" />  
+    </bean>  
+    
+  	<!-- 配置数据源 -->
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+        <property name="driverClass" value="${jdbc.driverClassName}" />
+        <property name="jdbcUrl" value="${jdbc.url}" />
+        <property name="user" value="${jdbc.username}" />
+        <property name="password" value="${jdbc.password}" />
+        <property name="initialPoolSize" value="${jdbc.c3p0.initialPoolSize}" />
+        <property name="minPoolSize" value="${jdbc.c3p0.minPoolSize}" />
+        <property name="maxPoolSize" value="${jdbc.c3p0.maxPoolSize}" />
+        <property name="maxIdleTime" value="${jdbc.c3p0.maxIdleTime}" />
+        
+        <property name="testConnectionOnCheckout" value="${jdbc.c3p0.testConnectionOnCheckout}" />
+        <property name="testConnectionOnCheckin" value="${jdbc.c3p0.testConnectionOnCheckin}" />
+        <property name="idleConnectionTestPeriod" value="${jdbc.c3p0.idleConnectionTestPeriod}" />
+     </bean>
+  
+  	<!-- session工厂 -->
+    <bean id="mybatisSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">  
+        <property name="dataSource" ref="dataSource" />  
+       <!--  <property name="mapperLocations" value="classpath:cn/java/demo/data_mybatis/dao/mapper/*.xml"></property>   -->
+    </bean>  
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">  
+        <property name="basePackage" value="cn.java.demo.data_mybatis.dao.mapper" />  
+        <property name="sqlSessionFactoryBeanName" value="mybatisSessionFactory" />  
+    </bean>  
+  
+    <!-- 事务管理器 -->  
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">  
+        <property name="dataSource" ref="dataSource" />  
+    </bean>
+    
+    <!-- 业务Bean -->
+	<bean id="fooService" class=" cn.java.demo.data_mybatis.service.FooService">
+		 <property name="mybatisSessionFactory" ref="mybatisSessionFactory" />
+	</bean>
+</beans>  
