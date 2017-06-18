@@ -87,7 +87,7 @@ public abstract class BaseExecutor implements Executor {
         rollback(forceRollback);
       } finally {
         if (transaction != null) {
-          transaction.close();
+          transaction.close(); // org.apache.ibatis.transaction.jdbc.JdbcTransaction
         }
       }
     } catch (SQLException e) {

@@ -558,7 +558,7 @@ class BasicResourcePool implements ResourcePool
 		{
 			// !!! timeout === 0
 			
-			Object resc = prelimCheckoutResource( timeout );
+			Object resc = prelimCheckoutResource( timeout ); //!!!
 
 			// best to do the recheckout while we don't hold this'
 			// lock, so we don't refurbish-on-checkout while holding.
@@ -1147,7 +1147,7 @@ class BasicResourcePool implements ResourcePool
 		// 获取数据库连接
 		// mgr === com.mchange.v2.c3p0.impl.C3P0PooledConnectionPool.C3P0PooledConnectionPool(...).PooledConnectionResourcePoolManager
 		Object resc = mgr.acquireResource(); //note we acquire the resource while we DO NOT hold the pool's lock!
-
+		// resc === com.mchange.v2.c3p0.impl.C3P0PooledConnection
 		boolean destroy = false;
 		int msz;
 

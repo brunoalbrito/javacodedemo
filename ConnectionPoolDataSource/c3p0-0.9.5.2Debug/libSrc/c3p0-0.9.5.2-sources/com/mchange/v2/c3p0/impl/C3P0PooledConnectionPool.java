@@ -685,7 +685,7 @@ public final class C3P0PooledConnectionPool
 		try 
 		{ 
 			PooledConnection pc = (PooledConnection) this.checkoutAndMarkConnectionInUse();  // !!! 获取连接，并标记为被使用中
-			pc.addConnectionEventListener( cl );
+			pc.addConnectionEventListener( cl ); // 添加监听器
 			return pc;
 		}
 		catch (TimeoutException e)
@@ -800,6 +800,7 @@ public final class C3P0PooledConnectionPool
 									"of the c3p0 library.", e);
 			}
 		}
+		// rp === com.mchange.v2.resourcepool.BasicResourcePool
 		rp.checkinResource(pcon);
 	}
 
@@ -889,7 +890,7 @@ public final class C3P0PooledConnectionPool
 		// and more reliable synchronous checkin enabled, and async closing
 		// of resources in BasicResourcePool.close().
 		//
-		public void connectionClosed(final ConnectionEvent evt)
+		public void connectionClosed(final ConnectionEvent evt) // 关闭连接事件
 		{ 
 			//System.err.println("Checking in: " + evt.getSource());
 
@@ -911,7 +912,7 @@ public final class C3P0PooledConnectionPool
 			try
 			{ 
 				//rp.checkinResource( evt.getSource() ); 
-				checkinPooledConnection( (PooledConnection) evt.getSource() );
+				checkinPooledConnection( (PooledConnection) evt.getSource() );  // !!! 把连接重新放回“连接池”
 			}
 			catch (Exception e)
 			{ 

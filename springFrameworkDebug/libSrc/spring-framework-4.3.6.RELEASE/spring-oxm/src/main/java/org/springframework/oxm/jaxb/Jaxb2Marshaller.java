@@ -454,7 +454,7 @@ public class Jaxb2Marshaller implements MimeMarshaller, MimeUnmarshaller, Generi
 					"Setting either 'contextPath', 'classesToBeBound', " + "or 'packagesToScan' is required");
 		}
 		if (!this.lazyInit) {
-			getJaxbContext();
+			getJaxbContext();//!!!
 		}
 		if (!ObjectUtils.isEmpty(this.schemaResources)) {
 			this.schema = loadSchema(this.schemaResources, this.schemaLanguage);
@@ -475,7 +475,7 @@ public class Jaxb2Marshaller implements MimeMarshaller, MimeUnmarshaller, Generi
 						this.jaxbContext = createJaxbContextFromContextPath();
 					}
 					else if (!ObjectUtils.isEmpty(this.classesToBeBound)) {
-						this.jaxbContext = createJaxbContextFromClasses();
+						this.jaxbContext = createJaxbContextFromClasses(); // !!!
 					}
 					else if (!ObjectUtils.isEmpty(this.packagesToScan)) {
 						this.jaxbContext = createJaxbContextFromPackages();

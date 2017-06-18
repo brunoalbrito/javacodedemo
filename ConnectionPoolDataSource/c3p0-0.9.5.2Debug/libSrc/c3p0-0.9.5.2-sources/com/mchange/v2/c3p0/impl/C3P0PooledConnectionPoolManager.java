@@ -305,7 +305,7 @@ public final class C3P0PooledConnectionPoolManager
 	{
 		try
 		{
-			this.cpds = cpds;
+			this.cpds = cpds; // com.mchange.v2.c3p0.WrapperConnectionPoolDataSource
 			this.flatPropertyOverrides = flatPropertyOverrides;
 			this.num_task_threads = num_task_threads;
 			this.parentDataSourceIdentityToken = parentDataSourceIdentityToken;

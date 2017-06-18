@@ -261,6 +261,7 @@ public class DefaultSqlSession implements SqlSession {
   @Override
   public void close() {
     try {
+      // executor == new org.apache.ibatis.executor.CachingExecutor(org.apache.ibatis.executor.SimpleExecutor)
       executor.close(isCommitOrRollbackRequired(false));
       closeCursors();
       dirty = false;

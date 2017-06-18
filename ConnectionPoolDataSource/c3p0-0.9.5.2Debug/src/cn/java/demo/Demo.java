@@ -4,25 +4,33 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import com.mchange.v2.c3p0.C3P0ProxyConnection;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class Demo {
 
 	public static void main(String[] args) throws Exception {
 		ComboPooledDataSource dataSource = new ComboPooledDataSource();
-		dataSource.setDriverClass("com.mysql.jdbc.Driver");
-		dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/rap_db?useSSL=true&useUnicode=true&characterEncoding=UTF-8&autoReconnect=true");
-		dataSource.setUser("root");
-		dataSource.setPassword("123456");
-		dataSource.setMaxPoolSize(5);
-		dataSource.setMinPoolSize(5);
-		dataSource.setInitialPoolSize(2);
-		dataSource.setMaxIdleTime(5);
-		dataSource.setAcquireIncrement(3); // 尝试次数
 		
+		// 配置
+		{
+			dataSource.setDriverClass("com.mysql.jdbc.Driver");
+			dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/rap_db?useSSL=true&useUnicode=true&characterEncoding=UTF-8&autoReconnect=true");
+			dataSource.setUser("root");
+			dataSource.setPassword("123456");
+			dataSource.setMaxPoolSize(5);
+			dataSource.setMinPoolSize(5);
+			dataSource.setInitialPoolSize(2);
+			dataSource.setMaxIdleTime(5);
+			dataSource.setAcquireIncrement(3); // 尝试次数
+		}
+
 		// 使用
 		{
-			Connection connection = dataSource.getConnection(); // 从连接池中获取一个对象， 如果配置了过滤器，此时是被包装后的com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl
+			Connection connection = dataSource.getConnection();  // 返回的是代理对象
+			if(connection instanceof C3P0ProxyConnection){
+				System.out.println("connection instanceof C3P0ProxyConnection...");
+			}
 			connection.setAutoCommit(false);
 			PreparedStatement preparedStatement =  connection.prepareStatement("select id AS userid,account from tb_user WHERE id > ?"); // com.alibaba.druid.proxy.jdbc.PreparedStatementProxyImpl
 			preparedStatement.setInt(1, -1);
@@ -40,6 +48,7 @@ public class Demo {
 			}
 			connection.commit();
 			connection.rollback();
+			connection.close(); // 把连接放回连接池
 		}
 		
 		try {

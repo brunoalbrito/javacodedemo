@@ -146,8 +146,11 @@ public class Test {
 				spring-jdbc-4.3.6.RELEASE.jar
 				
 				数据源  - 使用xml配置
-				<jdbc:embedded-database>
-				<jdbc:initialize-database>
+					<jdbc:embedded-database>
+					<jdbc:initialize-database>
+			《oxm》
+				spring-oxm-4.3.6.RELEASE.jar
+				数据源  - 使用xml配置
 			
 			《spring_redis》	
 				spring-data-redis-1.8.4.RELEASE.jar
@@ -159,6 +162,8 @@ public class Test {
 				
 			《spring_hibernate》	
 				spring-orm-4.3.6.RELEASE.jar
+				
+			《spring_hibernate》	
 		 */
 	}
 

@@ -292,13 +292,111 @@ public class Debug {
 								}
 								return out;
 				 			}
-							pc.addConnectionEventListener( cl );
+				 			// cl === com.mchange.v2.c3p0.impl.C3P0PooledConnectionPool.ConnectionEventListenerImpl
+							pc.addConnectionEventListener( cl ); // 添加监听器，在回收“关闭”连接的时候有用
 							return pc;
 				 		}
+				 		// pc === com.mchange.v2.c3p0.impl.C3P0PooledConnection
 	       				return pc.getConnection();
 				 	}
 			 	}
 			 	
+			 	-------------“关闭数据库连接”-------------------
+			 	com.mchange.v2.c3p0.impl.C3P0PooledConnection.ProxyConnectionInvocationHandler.invoke(Object proxy, Method m, Object[] args)
+			 	{
+			 		try
+					{
+						String mname = m.getName(); // 调用方法名
+						if (activeConnection != null)
+						{
+							...
+							
+							else if ( mname.equals("close") )//!!! 关闭连接
+							{
+								//the PooledConnection doesn't have to be okay
+		
+								Exception e = doSilentClose( proxy, false, this.txn_known_resolved );
+								if (! connection_error_signaled)
+									ces.fireConnectionClosed(); // !!! 以“触发事件的方式”把连接重新放回“连接池”
+									{
+										com.mchange.v2.c3p0.util.ConnectionEventSupport.fireConnectionClosed()
+										{
+											Set mlCopy;
+											synchronized (this) {
+												mlCopy = (Set) mlisteners.clone(); // 克隆事件列表
+											}
+											// source === com.mchange.v2.c3p0.impl.C3P0PooledConnection
+											ConnectionEvent evt = new ConnectionEvent(source);
+											for (Iterator i = mlCopy.iterator(); i.hasNext();) { // 迭代事件列表
+												ConnectionEventListener cl = (ConnectionEventListener) i.next();
+												cl.connectionClosed(evt); // 触发关闭事件
+												{
+													如：com.mchange.v2.c3p0.impl.C3P0PooledConnectionPool.ConnectionEventListenerImpl.connectionClosed(ConnectionEvent evt)
+													{
+														doCheckinResource( evt );
+														{
+															//rp.checkinResource( evt.getSource() ); 
+															checkinPooledConnection( (PooledConnection) evt.getSource() );  // !!! 把连接重新放回“连接池”
+															{
+																 com.mchange.v2.c3p0.impl.C3P0PooledConnectionPool.checkinPooledConnection(PooledConnection pcon)
+																 {
+																 	pcon.removeConnectionEventListener( cl );
+																	unmarkConnectionInUseAndCheckin( pcon ); 
+																	{
+																		try
+																		{
+																			AbstractC3P0PooledConnection acpc = (AbstractC3P0PooledConnection) pcon;
+																			Connection physicalConnection = acpc.getPhysicalConnection();
+																			unmarkPhysicalConnectionInUse(physicalConnection);
+																		}
+																		// rp === com.mchange.v2.resourcepool.BasicResourcePool
+																		rp.checkinResource(pcon);
+																		{
+																			if ( unlocked_do_checkin_managed ) doCheckinManaged( resc );
+																			{
+																				com.mchange.v2.resourcepool.BasicResourcePool.doCheckinManaged(Object resc) 
+																				{
+																					class RefurbishCheckinResourceTask implements Runnable
+																					{
+																						public void run()
+																						{
+																							unused.add(0,  resc ); // 放入未使用容器
+																						}
+																					}
+																					Runnable doMe = new RefurbishCheckinResourceTask();
+																					if ( force_synchronous_checkins ) doMe.run();
+																					else taskRunner.postRunnable( doMe );
+																				}
+																			}
+																		}
+																	}
+																 }
+															}
+														}
+													}
+
+												}
+											}
+										}
+									}
+								//System.err.println("close() called on a ProxyConnection.");
+								if (e != null)
+								{
+									// 					    System.err.print("user close exception -- ");
+									// 					    e.printStackTrace();
+									throw e;
+								}
+								else
+									return null;
+							}	
+							
+							...
+					 	}
+			 		}
+			 		catch (InvocationTargetException e)
+					{
+						...
+					}
 		 */
 	}
 

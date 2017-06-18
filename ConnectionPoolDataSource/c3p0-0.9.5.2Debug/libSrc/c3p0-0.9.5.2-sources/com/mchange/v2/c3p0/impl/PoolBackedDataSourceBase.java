@@ -65,7 +65,7 @@ public class PoolBackedDataSourceBase extends IdentityTokenResolvable implements
 		ConnectionPoolDataSource oldVal = this.connectionPoolDataSource;
 		if ( ! eqOrBothNull( oldVal, connectionPoolDataSource ) )
 			vcs.fireVetoableChange( "connectionPoolDataSource", oldVal, connectionPoolDataSource );
-		this.connectionPoolDataSource = connectionPoolDataSource;
+		this.connectionPoolDataSource = connectionPoolDataSource; // com.mchange.v2.c3p0.WrapperConnectionPoolDataSource
 		if ( ! eqOrBothNull( oldVal, connectionPoolDataSource ) )
 			pcs.firePropertyChange( "connectionPoolDataSource", oldVal, connectionPoolDataSource );
 	}

@@ -1837,7 +1837,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                                       , long connectedNanos //
                                       , long initedNanos //
                                       , long validatedNanos) {
-            this.connection = connection;
+            this.connection = connection; // 物理连接
             
             this.connectStartNanos = connectStartNanos;
             this.connectedNanos = connectedNanos;

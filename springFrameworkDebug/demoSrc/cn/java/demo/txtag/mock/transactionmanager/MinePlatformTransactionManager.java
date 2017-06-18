@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 
+import javax.sql.DataSource;
+
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionException;
@@ -23,7 +25,13 @@ import org.springframework.transaction.support.DefaultTransactionStatus;
  * @author zhouzhian
  */
 public class MinePlatformTransactionManager implements PlatformTransactionManager {
-
+	
+	// 数据源，使用数据源的好处是：有数据库连接池的功能支持，减少了数据库连接的建立、销毁的损耗
+	private DataSource dataSource; 
+	public void setDataSource(DataSource dataSource) {
+		this.dataSource = dataSource;
+	}
+	
 	private Object synchronizedCreateConnection = new Object();
 	private String connectionUrl;
 	private String username;
@@ -326,19 +334,29 @@ public class MinePlatformTransactionManager implements PlatformTransactionManage
 	}
 
 	private Connection getConnection(boolean readOnly, int isolationLevel) {
-		// 加载MySql的驱动类
-		try {
-			Class.forName("com.mysql.jdbc.Driver");
-		} catch (ClassNotFoundException e) {
-			throw new RuntimeException(e);
+		if(this.dataSource!=null){ // 使用数据源创建
+			try {
+				return dataSource.getConnection();
+			} catch (SQLException se) {
+				throw new RuntimeException(se);
+			}
 		}
-		// 连接MySql数据库
-		try {
-			Connection connection = DriverManager.getConnection(this.connectionUrl, this.username, this.password);
-			return connection;
-		} catch (SQLException se) {
-			throw new RuntimeException(se);
+		else{
+			// 加载MySql的驱动类
+			try {
+				Class.forName("com.mysql.jdbc.Driver");
+			} catch (ClassNotFoundException e) {
+				throw new RuntimeException(e);
+			}
+			// 连接MySql数据库
+			try {
+				Connection connection = DriverManager.getConnection(this.connectionUrl, this.username, this.password);
+				return connection;
+			} catch (SQLException se) {
+				throw new RuntimeException(se);
+			}
 		}
+		
 	}
 
 	/**

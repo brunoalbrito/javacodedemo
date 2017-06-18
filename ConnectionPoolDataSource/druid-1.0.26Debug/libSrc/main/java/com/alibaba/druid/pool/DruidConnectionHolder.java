@@ -78,7 +78,7 @@ public final class DruidConnectionHolder {
     public DruidConnectionHolder(DruidAbstractDataSource dataSource, Connection conn, long connectNanoSpan) throws SQLException{
 
         this.dataSource = dataSource;
-        this.conn = conn;
+        this.conn = conn; // 物理连接
         this.createNanoSpan = connectNanoSpan;
         this.connectTimeMillis = System.currentTimeMillis();
         this.lastActiveTimeMillis = connectTimeMillis;

@@ -22,7 +22,7 @@ import org.springframework.jms.support.converter.MessageConverter;
 import org.springframework.jms.support.converter.SimpleMessageConverter;
 import org.springframework.util.MethodInvoker;
 
-import cn.java.demo.jmstag.byxml.consumer.QueueConsumer;
+import cn.java.demo.jmstag.activemq.byxml.consumer.QueueConsumer;
 
 public class Debug_消费者的启动 {
 	{

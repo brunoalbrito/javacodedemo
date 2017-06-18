@@ -233,7 +233,7 @@ class PooledConnection implements InvocationHandler {
   public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
     String methodName = method.getName();
     if (CLOSE.hashCode() == methodName.hashCode() && CLOSE.equals(methodName)) {
-      dataSource.pushConnection(this);
+      dataSource.pushConnection(this); // 放回连接池中
       return null;
     } else {
       try {
@@ -242,7 +242,7 @@ class PooledConnection implements InvocationHandler {
           // throw an SQLException instead of a Runtime
           checkConnection();
         }
-        return method.invoke(realConnection, args);
+        return method.invoke(realConnection, args); // 调用调用真实对象的方法
       } catch (Throwable t) {
         throw ExceptionUtil.unwrapThrowable(t);
       }

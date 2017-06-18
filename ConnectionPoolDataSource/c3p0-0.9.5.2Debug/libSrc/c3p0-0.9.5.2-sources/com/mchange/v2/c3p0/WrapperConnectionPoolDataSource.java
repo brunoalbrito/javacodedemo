@@ -218,7 +218,7 @@ public final class WrapperConnectionPoolDataSource extends WrapperConnectionPool
 		Connection conn = null;
 		try
 		{
-			conn = nds.getConnection(user, password); // 获取连接
+			conn = nds.getConnection(user, password); // 获取连接 -- 物理连接
 			if (conn == null)
 				throw new SQLException("An (unpooled) DataSource returned null from its getConnection() method! " +
 						"DataSource: " + getNestedDataSource());

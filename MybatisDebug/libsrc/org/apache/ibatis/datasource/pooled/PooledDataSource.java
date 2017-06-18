@@ -86,7 +86,7 @@ public class PooledDataSource implements DataSource {
 
   @Override
   public Connection getConnection() throws SQLException { // 建立连接
-    return popConnection(dataSource.getUsername(), dataSource.getPassword()).getProxyConnection();
+    return popConnection(dataSource.getUsername(), dataSource.getPassword()).getProxyConnection(); // 返回的是代理对象
   }
 
   @Override

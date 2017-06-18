@@ -57,7 +57,7 @@ public class JdbcTransaction implements Transaction {
   @Override
   public Connection getConnection() throws SQLException {
     if (connection == null) {
-      openConnection();
+      openConnection(); // !!!
     }
     return connection;
   }
@@ -135,7 +135,9 @@ public class JdbcTransaction implements Transaction {
     if (log.isDebugEnabled()) {
       log.debug("Opening JDBC Connection");
     }
+    // 从数据源中获取一个连接
     connection = dataSource.getConnection(); // 打开连接  org.apache.ibatis.datasource.pooled.PooledDataSource
+    // connection 是代理对象
     if (level != null) {
       connection.setTransactionIsolation(level.getLevel()); // 隔离级别
     }

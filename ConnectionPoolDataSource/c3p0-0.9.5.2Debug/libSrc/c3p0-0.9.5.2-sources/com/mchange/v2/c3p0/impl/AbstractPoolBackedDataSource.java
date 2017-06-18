@@ -137,8 +137,10 @@ public abstract class AbstractPoolBackedDataSource extends PoolBackedDataSourceB
     //implementation of javax.sql.DataSource
     public Connection getConnection() throws SQLException
     {
+    	//  com.mchange.v2.c3p0.impl.C3P0PooledConnectionPoolManager.getPool().checkoutPooledConnection();
     	// com.mchange.v2.c3p0.impl.C3P0PooledConnectionPool.checkoutPooledConnection();
         PooledConnection pc = getPoolManager().getPool().checkoutPooledConnection();
+        // pc === com.mchange.v2.c3p0.impl.C3P0PooledConnection
         return pc.getConnection();
     }
 
@@ -522,7 +524,7 @@ public abstract class AbstractPoolBackedDataSource extends PoolBackedDataSourceB
     {
         if (poolManager == null)
         {
-            ConnectionPoolDataSource cpds = assertCpds();
+            ConnectionPoolDataSource cpds = assertCpds(); // cpds === com.mchange.v2.c3p0.WrapperConnectionPoolDataSource
             poolManager = new C3P0PooledConnectionPoolManager(cpds, null, null, this.getNumHelperThreads(), this.getIdentityToken(), this.getDataSourceName());
             if (logger.isLoggable(MLevel.INFO))
                 logger.info("Initializing c3p0 pool... " + this.toString( true )  /* + "; using pool manager: " + poolManager */);

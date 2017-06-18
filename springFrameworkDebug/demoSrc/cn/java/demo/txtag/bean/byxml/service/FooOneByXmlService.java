@@ -17,8 +17,9 @@ public class FooOneByXmlService implements ApplicationContextAware{
 	
 	public Integer insertFooInfo() {
 		System.out.println("code in : "+this.getClass().getName());
+		Connection connection = null;
 		try {
-			Connection connection = this.transactionManager.getConnection();
+			connection = this.transactionManager.getConnection();
 			DatabaseMetaData metaData = connection.getMetaData();
 			System.out.println("getDriverName : " + metaData.getDriverName());
 			System.out.println("getDriverVersion : " + metaData.getDriverVersion());
@@ -26,6 +27,14 @@ public class FooOneByXmlService implements ApplicationContextAware{
 			System.out.println("getDriverMinorVersion : " + metaData.getDriverMinorVersion());
 		} catch (SQLException e) {
 			e.printStackTrace();
+		}
+		finally {
+			if(connection!=null){
+				try {
+					connection.close();
+				} catch (SQLException e) {
+				}
+			}
 		}
 		return 0;
 	}

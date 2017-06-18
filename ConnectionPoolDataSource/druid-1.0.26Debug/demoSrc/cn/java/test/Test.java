@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.DruidPooledConnection;
 
 public class Test {
 	
@@ -60,6 +61,7 @@ public class Test {
 			dataSource.setPoolPreparedStatements(true);
 			dataSource.setMaxPoolPreparedStatementPerConnectionSize(50);
 		}
+		
 		// 初始化
 		{
 			dataSource.init();
@@ -67,7 +69,10 @@ public class Test {
 		
 		// 使用
 		{
-			Connection connection = dataSource.getConnection(); // 从连接池中获取一个对象， 如果配置了过滤器，此时是被包装后的com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl
+			Connection connection = dataSource.getConnection(); // 返回的是代理对象（在这边是硬编码的实现java.sql.Connection接口），com.alibaba.druid.pool.DruidPooledConnection
+			if(connection instanceof DruidPooledConnection) {
+				System.out.println("connection instanceof DruidPooledConnection...");
+			}
 			connection.setAutoCommit(false);
 			PreparedStatement preparedStatement =  connection.prepareStatement("select id AS userid,account from tb_user WHERE id > ?"); // com.alibaba.druid.proxy.jdbc.PreparedStatementProxyImpl
 			preparedStatement.setInt(1, -1);
@@ -85,6 +90,7 @@ public class Test {
 			}
 			connection.commit();
 			connection.rollback();
+			connection.close(); // !!! 把连接放回连接池
 		}
 		
 		try {
@@ -95,7 +101,7 @@ public class Test {
 		
 		// 关闭
 		{
-			dataSource.close();
+			dataSource.close(); // 会关闭所有物理连接
 		}
 	}
 

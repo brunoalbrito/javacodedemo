@@ -8,7 +8,7 @@ import org.springframework.jms.connection.CachingConnectionFactory;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.support.converter.SimpleMessageConverter;
 
-import cn.java.demo.jmstag.message.EmailMessage;
+import cn.java.demo.jmstag.activemq.message.EmailMessage;
 
 public class Debug {
 

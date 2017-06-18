@@ -40,6 +40,8 @@ public class Debug {
 //		session.getTransaction().begin();
 //		session.save(student);
 //		session.getTransaction().commit();
+		
+		session.close();
 	}
 	
 	{

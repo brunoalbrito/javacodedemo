@@ -230,7 +230,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
             return;
         }
 
-        DruidAbstractDataSource dataSource = holder.getDataSource();
+        DruidAbstractDataSource dataSource = holder.getDataSource(); // 数据源
         boolean isSameThread = this.getOwnerThread() == Thread.currentThread();
         
         if (!isSameThread) {
@@ -252,7 +252,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
             FilterChainImpl filterChain = new FilterChainImpl(dataSource);
             filterChain.dataSource_recycle(this);
         } else {
-            recycle();
+            recycle(); // 把连接放入连接池
         }
 
         this.disable = true;

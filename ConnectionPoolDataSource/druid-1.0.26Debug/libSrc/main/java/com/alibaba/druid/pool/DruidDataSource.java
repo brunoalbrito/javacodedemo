@@ -639,7 +639,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 if (MockDriver.class.getName().equals(driverClass)) {
                     driver = MockDriver.instance;
                 } else {
-                    driver = JdbcUtils.createDriver(driverClassLoader, driverClass);
+                    driver = JdbcUtils.createDriver(driverClassLoader, driverClass); // 创建实例
                 }
             } else {
                 if (this.driverClass == null) {
@@ -991,7 +991,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             FilterChainImpl filterChain = new FilterChainImpl(this);
             return filterChain.dataSource_connect(this, maxWaitMillis);
         } else {
-            return getConnectionDirect(maxWaitMillis);
+            return getConnectionDirect(maxWaitMillis); // com.alibaba.druid.pool.DruidPooledConnection
         }
     }
 
@@ -1011,6 +1011,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             // handle notFullTimeoutRetry
             DruidPooledConnection poolableConnection;
             try {
+            	// poolableConnection === com.alibaba.druid.pool.DruidPooledConnection
                 poolableConnection = getConnectionInternal(maxWaitMillis); // 获取连接!!!
             } catch (GetConnectionTimeoutException ex) {
                 if (notFullTimeoutRetryCnt <= this.notFullTimeoutRetryCount && !isFull()) {
@@ -1337,7 +1338,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 activeCount--;
                 closeCount++;
 
-                result = putLast(holder, lastActiveTimeMillis);
+                result = putLast(holder, lastActiveTimeMillis); // 把连接放回连接池
                 recycleCount++;
             } finally {
                 lock.unlock();
@@ -1416,7 +1417,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
                 Connection physicalConnection = connHolder.getConnection();
                 try {
-                    physicalConnection.close();
+                    physicalConnection.close(); // 关闭物理连接
                 } catch (Exception ex) {
                     LOG.warn("close connection error", ex);
                 }

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:jms="http://www.springframework.org/schema/jms"
+	xsi:schemaLocation="    
+    http://www.springframework.org/schema/beans        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd    
+    http://www.springframework.org/schema/jms	http://www.springframework.org/schema/jms/spring-jms-4.2.xsd">
+	
+	<!-- 连接工厂 -->
+	<bean id="cachingConnectionFactoryOfActiveMQ_0" class="org.springframework.jms.connection.CachingConnectionFactory">
+   		<property name="targetConnectionFactory">
+   			<bean class="org.apache.activemq.spring.ActiveMQConnectionFactory">
+   				<property name="brokerURL" value="tcp://localhost:61616" />
+   				<property name="userName" value="userName0" />
+   				<property name="password" value="password0" />
+   			</bean>
+   		</property>
+    </bean>
+	<!-- 连接工厂 -->
+	<bean id="cachingConnectionFactoryOfActiveMQ_1" class="org.springframework.jms.connection.CachingConnectionFactory">
+   		<property name="targetConnectionFactory">
+   			<bean class="org.apache.activemq.spring.ActiveMQConnectionFactory">
+   				<property name="brokerURL" value="tcp://localhost:61616" />
+   				<property name="userName" value="userName0" />
+   				<property name="password" value="password0" />
+   			</bean>
+   		</property>
+    </bean>
+    <!-- 消息转换器 -->
+    <bean id="simpleMessageConverterOfActiveMQ_0" class="org.springframework.jms.support.converter.SimpleMessageConverter" />
+    <!-- 默认目标 -->
+    <bean id="defaultQuqueNameOfActiveMQ_0" class="org.apache.activemq.command.ActiveMQQueue">
+  		<constructor-arg index="0" value="defaultQuqueNameOfActiveMQ_0" />
+	</bean>
+    <bean id="defaultTopicNameOfActiveMQ_0" class="org.apache.activemq.command.ActiveMQTopic">
+  		<constructor-arg index="0" value="defaultTopicNameOfActiveMQ_0" />
+	</bean>
+	<!-- *********配置消息模板，在代码中硬编码调用发送消息********************* -->
+    <bean id="queueTemplateOfActiveMQ" class="org.springframework.jms.core.JmsTemplate"><!-- 队列模式 -->
+    	<property name="defaultDestination" ref="defaultQuqueNameOfActiveMQ_0" /><!-- 如果发送的时候不指定队列，那么使用这个队列 -->
+    	<property name="messageConverter" ref="simpleMessageConverterOfActiveMQ_0" /><!-- 消息转换器 -->
+        <property name="connectionFactory" ref="cachingConnectionFactoryOfActiveMQ_0" /><!-- 发送到哪里（在此连接的是ActiveMQ） -->
+    </bean>
+    <bean id="topicTemplateOfActiveMQ" class="org.springframework.jms.core.JmsTemplate"><!-- 订阅模式 -->
+    	<property name="defaultDestination" ref="defaultTopicNameOfActiveMQ_0" /><!-- 如果发送的时候不指定队列，那么使用这个队列 -->
+    	<property name="messageConverter" ref="simpleMessageConverterOfActiveMQ_0" /><!-- 消息转换器 -->
+        <property name="connectionFactory" ref="cachingConnectionFactoryOfActiveMQ_1" /><!-- 发送到哪里（在此连接的是ActiveMQ） -->
+    </bean>
+    
+    <!-- 自定义Bean  -->
+    <bean id="queueProducerOfActiveMQ" class=" cn.java.demo.jmstag.activemq.producorservice.QueueProducerService" />
+    <bean id="topicProducerOfActiveMQ" class="cn.java.demo.jmstag.activemq.producorservice.TopicProducerService" />
+	
+	<!-- *********消费者*********使用xml配置，手动识别消费者********************* -->
+	<!-- 用途：aop机制劫持EmailService.sendMail(...)的调用，变成发送消息到defaultQuqueName0队列 -->
+	<!-- （劫持谁+发送给谁）**********bof*** -->
+	<bean id="queueConsumerOfActiveMQ" class="cn.java.demo.jmstag.activemq.byxml.consumer.QueueConsumer" />
+	<bean id="topicConsumerOfActiveMQ" class="cn.java.demo.jmstag.activemq.byxml.consumer.TopicConsumer" />
+	<jms:listener-container destination-type="queue" response-destination-type="queue"
+	    container-class="org.springframework.jms.listener.SimpleMessageListenerContainer">
+		<jms:listener ref="queueConsumerOfActiveMQ" method="consumerDefaultQueue" destination="defaultQuqueNameOfActiveMQ_0" /> <!-- 注册一个消费者 -->
+	</jms:listener-container>
+	<!-- 队列消息模板 -->
+	<jms:listener-container destination-type="queue" response-destination-type="queue" 
+		message-converter="simpleMessageConverterOfActiveMQ_0" connection-factory="cachingConnectionFactoryOfActiveMQ_0" 
+		container-class="org.springframework.jms.listener.SimpleMessageListenerContainer">
+		<!-- jms:listener用实现了SmartLifecycle接口的SimpleMessageListenerContainer对象包装信息，在上下文启动的时候会自动启动 -->
+		<jms:listener ref="queueConsumerOfActiveMQ" method="consumerDefaultQueue" destination="defaultQuqueNameOfActiveMQ_0" /> <!-- 注册一个消费者，消费defaultQuqueNameOfActiveMQ_0队列 -->
+		<jms:listener ref="queueConsumerOfActiveMQ" method="consumerEmailQueue" destination="emailQuqueNameOfActiveMQ_0" /> <!-- 消费emailQuqueNameOfActiveMQ_0队列 -->
+		<jms:listener ref="queueConsumerOfActiveMQ" method="consumerFooQueue" destination="fooQueueNameOfActiveMQ_0" /> <!-- 消费fooQueueNameOfActiveMQ_0队列 -->
+	</jms:listener-container>
+	<!-- 订阅消息模板 -->
+	<jms:listener-container destination-type="topic" response-destination-type="topic" 
+		message-converter="simpleMessageConverterOfActiveMQ_0" connection-factory="cachingConnectionFactoryOfActiveMQ_1" 
+		container-class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+		<jms:listener ref="topicConsumerOfActiveMQ" method="consumerDefaultTopic" destination="defaultTopicNameOfActiveMQ_0" />
+		<jms:listener ref="topicConsumerOfActiveMQ" method="consumerFooTopic" destination="fooTopicNameOfActiveMQ_0" />
+	</jms:listener-container>
+	<!-- 使用xml配置，（劫持谁+发送给谁）**********bof*** -->
+	
+	<!-- *********消费者*******使用注解配置，使用aop劫持机制识别消费者********************* -->
+	<!-- 使用注解配置,自动扫描 @JmsListener 或者 @JmsListeners 注解 -->
+	<!-- 会注册一个实现了SmartLifecycle接口的JmsListenerEndpointRegistry对象，在上下文启动的时候会自动启动 -->
+	<jms:listener-container factory-id="jmsListenerContainerFactoryOfActiveMQ_0" container-type="default" />
+	<jms:annotation-driven container-factory="jmsListenerContainerFactoryOfActiveMQ_0" /><!-- 这个标签必须存在且只能存在一次，会注册一个BeanPostProcess对象，用于拦截对象并解析 @JmsListener注解 -->
+</beans>  
