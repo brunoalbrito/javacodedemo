@@ -1344,6 +1344,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					// Do not allow eager init for type matching in case of a prioritized post-processor.
 					boolean eager = !PriorityOrdered.class.isAssignableFrom(bw.getWrappedClass()); // 不继承自PriorityOrdered，就是饥渴模式
 					DependencyDescriptor desc = new AutowireByTypeDependencyDescriptor(methodParam, eager);
+					// org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(...)
 					Object autowiredArgument = resolveDependency(desc, beanName, autowiredBeanNames, converter); // !!! 解析参数类型---
 					if (autowiredArgument != null) {
 						pvs.add(propertyName, autowiredArgument);
@@ -1796,7 +1797,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 	/**
 	 * Special DependencyDescriptor variant for Spring's good old autowire="byType" mode.
-	 * Always optional; never considering the parameter name for choosing a primary candidate.
+	 * Always optional; never considering the parameter name for choosing a primary candidate. 从不考虑使用“变量名”作为选择bean的依据
 	 */
 	@SuppressWarnings("serial")
 	private static class AutowireByTypeDependencyDescriptor extends DependencyDescriptor {
@@ -1807,7 +1808,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		@Override
 		public String getDependencyName() {
-			return null;
+			return null; // !!! 始终返回null
 		}
 	}
 

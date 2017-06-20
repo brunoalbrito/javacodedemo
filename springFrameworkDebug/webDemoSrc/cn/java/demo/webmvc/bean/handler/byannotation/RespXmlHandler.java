@@ -13,6 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.xml.MappingJackson2XmlView;
 
 /**
+ * 响应xml
  * @author zhouzhian
  *
  */

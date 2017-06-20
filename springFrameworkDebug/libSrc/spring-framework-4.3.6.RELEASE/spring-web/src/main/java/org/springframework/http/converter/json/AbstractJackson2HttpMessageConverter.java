@@ -154,7 +154,7 @@ public abstract class AbstractJackson2HttpMessageConverter extends AbstractGener
 		if (!canRead(mediaType)) {
 			return false;
 		}
-		JavaType javaType = getJavaType(type, contextClass);
+		JavaType javaType = getJavaType(type, contextClass); // !!!
 		if (!logger.isWarnEnabled()) {
 			return this.objectMapper.canDeserialize(javaType);
 		}
@@ -249,7 +249,7 @@ public abstract class AbstractJackson2HttpMessageConverter extends AbstractGener
 		JsonEncoding encoding = getJsonEncoding(contentType);
 		JsonGenerator generator = this.objectMapper.getFactory().createGenerator(outputMessage.getBody(), encoding);
 		try {
-			writePrefix(generator, object);
+			writePrefix(generator, object); // 写前缀
 
 			Class<?> serializationView = null;
 			FilterProvider filters = null;
@@ -284,7 +284,7 @@ public abstract class AbstractJackson2HttpMessageConverter extends AbstractGener
 			}
 			objectWriter.writeValue(generator, value);
 
-			writeSuffix(generator, object);
+			writeSuffix(generator, object); // 写后缀
 			generator.flush();
 
 		}

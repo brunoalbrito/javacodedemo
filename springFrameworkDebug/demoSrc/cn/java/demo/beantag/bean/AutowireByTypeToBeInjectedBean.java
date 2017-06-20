@@ -25,5 +25,10 @@ public class AutowireByTypeToBeInjectedBean {
 		this.username = username;
 	}
 
+	@Override
+	public String toString() {
+		return "AutowireByTypeToBeInjectedBean [id=" + id + ", username=" + username + "]";
+	}
+
 
 }

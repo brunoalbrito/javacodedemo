@@ -57,13 +57,15 @@ import cn.java.demo.webmvc.validator.UserLoginFormValidator;
 
 /**
  * @author zhouzhian
- *
+ * 普通参数
+ * json参数
+ * xml参数
  */
 @RequestMapping(
-	path={"/req-param-handler"},
+	path={"/req-handler"},
 	method={RequestMethod.GET,RequestMethod.POST}
 )
-public class ReqParamHandler {
+public class ReqHandler {
 	
 	/**
 	 * 

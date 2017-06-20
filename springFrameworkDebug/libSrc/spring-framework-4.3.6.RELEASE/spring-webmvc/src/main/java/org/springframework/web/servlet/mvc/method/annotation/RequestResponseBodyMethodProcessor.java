@@ -125,12 +125,12 @@ public class RequestResponseBodyMethodProcessor extends AbstractMessageConverter
 			NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
 
 		parameter = parameter.nestedIfOptional();
-		Object arg = readWithMessageConverters(webRequest, parameter, parameter.getNestedGenericParameterType()); // !!!! 读取http中body的数据
-		String name = Conventions.getVariableNameForParameter(parameter);
+		Object arg = readWithMessageConverters(webRequest, parameter, parameter.getNestedGenericParameterType()); // !!!! 读取http中body的数据 === target
+		String name = Conventions.getVariableNameForParameter(parameter); // 变量名  === objectName
 		// binderFactory === org.springframework.web.servlet.mvc.method.annotation.ServletRequestDataBinderFactory
 		WebDataBinder binder = binderFactory.createBinder(webRequest, arg, name); // webRequest,target,objectName
 		if (arg != null) {
-			validateIfApplicable(binder, parameter);
+			validateIfApplicable(binder, parameter); // 校验、如果需要
 			if (binder.getBindingResult().hasErrors() && isBindExceptionRequired(binder, parameter)) {
 				throw new MethodArgumentNotValidException(parameter, binder.getBindingResult());
 			}

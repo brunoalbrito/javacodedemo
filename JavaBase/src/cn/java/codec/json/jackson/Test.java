@@ -48,7 +48,9 @@ public class Test {
 		StringWriter stringWriter = new StringWriter();
 		try {
 			ObjectMapper objectMapper = new ObjectMapper();
-			objectMapper.writeValue(stringWriter, params);
+			if(objectMapper.canSerialize(params.getClass())){
+				objectMapper.writeValue(stringWriter, params);
+			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -64,7 +66,9 @@ public class Test {
         Map<String, Object> maps;
 		try {
 			ObjectMapper objectMapper = new ObjectMapper();
-			maps = objectMapper.readValue(jsonStr, Map.class);
+//			if(objectMapper.canDeserialize(Map.class)){
+				maps = objectMapper.readValue(jsonStr, Map.class);
+//			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		} 

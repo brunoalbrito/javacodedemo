@@ -43,6 +43,4 @@
         <!-- 过滤器 - 不包含过滤(只要符合其中一个就会被排除) -->
         <context:include-filter type="custom" expression="cn.java.demo.contexttag.filter.FooExcludeTypeFilter" />  <!-- 自定义过滤器 -->
     </context:component-scan>
-    
-    
 </beans>  

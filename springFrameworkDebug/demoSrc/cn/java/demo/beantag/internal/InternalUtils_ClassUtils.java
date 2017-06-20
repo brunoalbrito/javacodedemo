@@ -1,8 +1,13 @@
 package cn.java.demo.beantag.internal;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import org.springframework.context.support.AbstractRefreshableConfigApplicationContext;
 import org.springframework.transaction.annotation.AnnotationTransactionAttributeSource;
 import org.springframework.util.ClassUtils;
+
+import cn.java.beannote.all.ClassUtilsTest;
 
 public class InternalUtils_ClassUtils {
 	
@@ -30,7 +35,15 @@ public class InternalUtils_ClassUtils {
 				e.printStackTrace();
 			}
 		}
+		
+		// 获取所有接口
+		{
+			Class<?> targetClass = FooService.class;
+			Set<Class<?>> classes = new LinkedHashSet<Class<?>>(ClassUtils.getAllInterfacesForClassAsSet(targetClass));
+			classes.add(targetClass);	
+		}
 	}
+	
 	public static class FooService {
 		public void method0(){
 			

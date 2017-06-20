@@ -191,7 +191,7 @@ public final class ProducesRequestCondition extends AbstractRequestCondition<Pro
 		}
 		List<MediaType> acceptedMediaTypes;
 		try {
-			acceptedMediaTypes = getAcceptedMediaTypes(request);
+			acceptedMediaTypes = getAcceptedMediaTypes(request); // 接受的类型 “ Accept text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8”
 		}
 		catch (HttpMediaTypeException ex) {
 			return null;

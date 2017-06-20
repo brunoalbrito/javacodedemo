@@ -125,7 +125,7 @@ public abstract class Conventions {
 			valueClass = parameter.getParameterType();
 		}
 
-		String name = ClassUtils.getShortNameAsProperty(valueClass);
+		String name = ClassUtils.getShortNameAsProperty(valueClass);  // 类型的短写名
 		return (pluralize ? pluralize(name) : name);
 	}
 

@@ -32,6 +32,7 @@ import cn.java.demo.beantag.internal.ExpressionParserTest;
 import cn.java.demo.beantag.internal.GetBeanXTest;
 import cn.java.demo.beantag.internal.I18nTest;
 import cn.java.demo.beantag.internal.InternalUtils_AnnotationUtilsTest;
+import cn.java.demo.beantag.internal.InternalUtils_BeanFactoryUtils;
 import cn.java.demo.beantag.internal.InternalUtils_BeanUtilsTest;
 import cn.java.demo.beantag.internal.InternalUtils_ClassUtils;
 import cn.java.demo.beantag.internal.InternalUtils_ObjectUtilsTest;
@@ -246,6 +247,9 @@ public class Test {
 				
 				System.out.println("******ReflectionUtils工具类");
 				InternalUtils_ReflectionUtilsTest.testReflectionUtils((AbstractRefreshableConfigApplicationContext) context);
+				
+				System.out.println("******BeanFactoryUtils工具类");
+				InternalUtils_BeanFactoryUtils.testBeanFactoryUtils((AbstractRefreshableConfigApplicationContext) context);
 			}
 			
 			System.out.println("******自动生成beanName");

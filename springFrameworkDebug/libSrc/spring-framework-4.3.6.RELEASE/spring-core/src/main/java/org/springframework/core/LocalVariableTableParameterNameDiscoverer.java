@@ -98,7 +98,7 @@ public class LocalVariableTableParameterNameDiscoverer implements ParameterNameD
 	 * to indicate the lack of debug information.
 	 */
 	private Map<Member, String[]> inspectClass(Class<?> clazz) {
-		InputStream is = clazz.getResourceAsStream(ClassUtils.getClassFileName(clazz));
+		InputStream is = clazz.getResourceAsStream(ClassUtils.getClassFileName(clazz)); // 读取class文件
 		if (is == null) {
 			// We couldn't load the class file, which is not fatal as it
 			// simply means this method of discovering parameter names won't work.
@@ -201,10 +201,14 @@ public class LocalVariableTableParameterNameDiscoverer implements ParameterNameD
 		private final int[] lvtSlotIndex;
 
 		public LocalVariableTableVisitor(Class<?> clazz, Map<Member, String[]> map, String name, String desc, boolean isStatic) {
+			/*
+			 	name === "setFooArray" 
+			 	desc === "([Ljava/lang/String;)V"
+			 */
 			super(SpringAsmInfo.ASM_VERSION);
 			this.clazz = clazz;
 			this.memberMap = map;
-			this.name = name;
+			this.name = name; 
 			this.args = Type.getArgumentTypes(desc);
 			this.parameterNames = new String[this.args.length];
 			this.isStatic = isStatic;

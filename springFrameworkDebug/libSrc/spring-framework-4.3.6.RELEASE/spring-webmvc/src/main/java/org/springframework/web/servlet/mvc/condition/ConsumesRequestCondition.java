@@ -175,7 +175,7 @@ public final class ConsumesRequestCondition extends AbstractRequestCondition<Con
 		try {
 			contentType = StringUtils.hasLength(request.getContentType()) ?
 					MediaType.parseMediaType(request.getContentType()) :
-					MediaType.APPLICATION_OCTET_STREAM;
+					MediaType.APPLICATION_OCTET_STREAM; // 请求的类型“ Content-Type application/xml;charset=UTF-8”
 		}
 		catch (InvalidMediaTypeException ex) {
 			return null;

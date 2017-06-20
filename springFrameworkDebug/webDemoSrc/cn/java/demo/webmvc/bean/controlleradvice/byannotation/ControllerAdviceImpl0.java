@@ -1,7 +1,5 @@
 package cn.java.demo.webmvc.bean.controlleradvice.byannotation;
 
-import java.io.Writer;
-
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -28,7 +26,7 @@ public class ControllerAdviceImpl0 {
 			ServletRequest servletRequest,
 			HttpSession httpSession,HttpServletRequest request,
 			ServletResponse servletResponse,
-			Writer writer,HttpServletResponse reponse,
+			HttpServletResponse reponse,
 			WebRequest webRequest) throws Exception{
 		
 		System.out.println("--->code in : "+this.getClass().getSimpleName()+":modelAttribute0(...)");
@@ -132,6 +130,7 @@ public class ControllerAdviceImpl0 {
 		}
 		System.out.println("dataBinder.getTarget() = "+dataBinder.getTarget());
 		System.out.println("dataBinder.getObjectName() = "+dataBinder.getObjectName());
+//		dataBinder.addValidators(validators);
 	}
 	
 	@InitBinder(value={"objectName0","objectName1"}) 

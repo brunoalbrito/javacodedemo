@@ -632,7 +632,7 @@ public class BeanDefinitionParserDelegate {
 			}
 		}
 		else {
-			bd.setAutowireCandidate(TRUE_VALUE.equals(autowireCandidate)); // 是否是自动装配候选人
+			bd.setAutowireCandidate(TRUE_VALUE.equals(autowireCandidate)); // 是否成为自动装配候选人
 		}
 
 		if (ele.hasAttribute(PRIMARY_ATTRIBUTE)) {

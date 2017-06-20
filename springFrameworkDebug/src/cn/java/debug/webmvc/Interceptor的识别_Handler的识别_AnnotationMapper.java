@@ -773,7 +773,7 @@ public class Interceptor的识别_Handler的识别_AnnotationMapper {
 																											if (isBinderMethodApplicable(binderMethod, binder){
 																												InitBinder annot = initBinderMethod.getMethodAnnotation(InitBinder.class); // 有@InitBinder注解
 																												Collection<String> names = Arrays.asList(annot.value());
-																												return (names.size() == 0 || names.contains(binder.getObjectName()));
+																												return (names.size() == 0 || names.contains(binder.getObjectName())); // 1、注解上没有配置值； 2、@InitBinder注解上有配置值，并且在值域里面
 																											}) { // !!!!
 																												// org.springframework.web.method.support.InvocableHandlerMethod
 																												Object returnValue = binderMethod.invokeForRequest(request, null, binder); // !!!
@@ -1123,41 +1123,41 @@ public class Interceptor的识别_Handler的识别_AnnotationMapper {
 					List<HandlerMethodArgumentResolver> resolvers = new ArrayList<HandlerMethodArgumentResolver>();
 
 					// Annotation-based argument resolution
-					resolvers.add(new RequestParamMethodArgumentResolver(getBeanFactory(), false));
-					resolvers.add(new RequestParamMapMethodArgumentResolver());
-					resolvers.add(new PathVariableMethodArgumentResolver());
-					resolvers.add(new PathVariableMapMethodArgumentResolver());
-					resolvers.add(new MatrixVariableMethodArgumentResolver());
-					resolvers.add(new MatrixVariableMapMethodArgumentResolver());
-					resolvers.add(new ServletModelAttributeMethodProcessor(false)); // !!! 需要@ModelAttribute注解
-					resolvers.add(new RequestResponseBodyMethodProcessor(getMessageConverters(), this.requestResponseBodyAdvice)); // !!! 读取http中body的数据，要首先配置转换器
-					resolvers.add(new RequestPartMethodArgumentResolver(getMessageConverters(), this.requestResponseBodyAdvice));
-					resolvers.add(new RequestHeaderMethodArgumentResolver(getBeanFactory()));
-					resolvers.add(new RequestHeaderMapMethodArgumentResolver());
-					resolvers.add(new ServletCookieValueMethodArgumentResolver(getBeanFactory()));
-					resolvers.add(new ExpressionValueMethodArgumentResolver(getBeanFactory()));
-					resolvers.add(new SessionAttributeMethodArgumentResolver());
-					resolvers.add(new RequestAttributeMethodArgumentResolver());
+					resolvers.add(new RequestParamMethodArgumentResolver(getBeanFactory(), false));  // 参数上有@RequestParam注解，且是普通类型
+					resolvers.add(new RequestParamMapMethodArgumentResolver()); // 参数上有@RequestParam注解，且是map类型
+					resolvers.add(new PathVariableMethodArgumentResolver()); // 参数上有@PathVariable注解，且是普通类型
+					resolvers.add(new PathVariableMapMethodArgumentResolver()); // 参数上有@PathVariable注解，且是map类型
+					resolvers.add(new MatrixVariableMethodArgumentResolver()); // 参数上有@MatrixVariable注解，且是普通类型
+					resolvers.add(new MatrixVariableMapMethodArgumentResolver()); // 参数上有@MatrixVariable注解，且是map类型
+					resolvers.add(new ServletModelAttributeMethodProcessor(false)); // !!! 需要@ModelAttribute注解，尝试获取顺序：1、UriTemplateVariables 2、request.getParameter(attributeName)
+					resolvers.add(new RequestResponseBodyMethodProcessor(getMessageConverters(), this.requestResponseBodyAdvice)); // !!! 参数上有@RequestBody注解、返回值上有@ResponseBody注解
+					resolvers.add(new RequestPartMethodArgumentResolver(getMessageConverters(), this.requestResponseBodyAdvice)); // 参数上有@RequestPart注解、或者MultipartFile类型
+					resolvers.add(new RequestHeaderMethodArgumentResolver(getBeanFactory())); // 参数上有@RequestHeader注解，且是普通类型
+					resolvers.add(new RequestHeaderMapMethodArgumentResolver());  // 参数上有@RequestHeader注解，且是map类型
+					resolvers.add(new ServletCookieValueMethodArgumentResolver(getBeanFactory())); // 参数上有@CookieValue注解
+					resolvers.add(new ExpressionValueMethodArgumentResolver(getBeanFactory())); // 参数上有@Value注解
+					resolvers.add(new SessionAttributeMethodArgumentResolver()); // 参数上有@SessionAttribute注解
+					resolvers.add(new RequestAttributeMethodArgumentResolver()); // 参数上有@RequestAttribute注解
 			
 					// Type-based argument resolution
-					resolvers.add(new ServletRequestMethodArgumentResolver());
-					resolvers.add(new ServletResponseMethodArgumentResolver());
+					resolvers.add(new ServletRequestMethodArgumentResolver()); // javax.servlet.ServletRequest等类型的参数
+					resolvers.add(new ServletResponseMethodArgumentResolver()); // javax.servlet.ServletResponse等类型的参数
 					resolvers.add(new HttpEntityMethodProcessor(getMessageConverters(), this.requestResponseBodyAdvice));
-					resolvers.add(new RedirectAttributesMethodArgumentResolver());
-					resolvers.add(new ModelMethodProcessor());
-					resolvers.add(new MapMethodProcessor());
-					resolvers.add(new ErrorsMethodArgumentResolver()); // 处理“校验结果”参数注入 org.springframework.validation.BindingResult
-					resolvers.add(new SessionStatusMethodArgumentResolver());
-					resolvers.add(new UriComponentsBuilderMethodArgumentResolver());
+					resolvers.add(new RedirectAttributesMethodArgumentResolver()); // 参数类型是RedirectAttributes的子类
+					resolvers.add(new ModelMethodProcessor()); // 参数类型是Model的子类
+					resolvers.add(new MapMethodProcessor()); // 参数类型是Map的子类
+					resolvers.add(new ErrorsMethodArgumentResolver()); // 参数类型是Errors的子类，处理“校验结果”参数注入 org.springframework.validation.BindingResult
+					resolvers.add(new SessionStatusMethodArgumentResolver()); // 参数类型是SessionStatus
+					resolvers.add(new UriComponentsBuilderMethodArgumentResolver()); // 参数类型是UriComponentsBuilder、ServletUriComponentsBuilder
 			
 					// Custom arguments
-					if (getCustomArgumentResolvers() != null) {
+					if (getCustomArgumentResolvers() != null) { // 自定义参数值处理器
 						resolvers.addAll(getCustomArgumentResolvers());
 					}
 			
 					// Catch-all
-					resolvers.add(new RequestParamMethodArgumentResolver(getBeanFactory(), true));
-					resolvers.add(new ServletModelAttributeMethodProcessor(true)); // !!!! 不需要@ModelAttribute注解
+					resolvers.add(new RequestParamMethodArgumentResolver(getBeanFactory(), true)); // 参数上有@RequestParam注解、或MultipartFile类型
+					resolvers.add(new ServletModelAttributeMethodProcessor(true)); // !!!! 不需要@ModelAttribute注解，尝试获取顺序：1、UriTemplateVariables 2、request.getParameter(attributeName) 3、自定义类型UserLoginForm
 			
 					return resolvers;
 				}
@@ -1203,29 +1203,29 @@ public class Interceptor的识别_Handler的识别_AnnotationMapper {
 					List<HandlerMethodReturnValueHandler> handlers = new ArrayList<HandlerMethodReturnValueHandler>();
 
 					// Single-purpose return value types
-					handlers.add(new ModelAndViewMethodReturnValueHandler());
-					handlers.add(new ModelMethodProcessor());
-					handlers.add(new ViewMethodReturnValueHandler());
-					handlers.add(new ResponseBodyEmitterReturnValueHandler(getMessageConverters()));
-					handlers.add(new StreamingResponseBodyReturnValueHandler());
-					handlers.add(new HttpEntityMethodProcessor(getMessageConverters(),
+					handlers.add(new ModelAndViewMethodReturnValueHandler()); // 返回值是ModelAndView类型或者子类
+					handlers.add(new ModelMethodProcessor()); // 返回值类型是Model类型或者子类
+					handlers.add(new ViewMethodReturnValueHandler()); // 返回值类型是View类型或者子类
+					handlers.add(new ResponseBodyEmitterReturnValueHandler(getMessageConverters())); // 返回值类型是ResponseEntity类型或者子类
+					handlers.add(new StreamingResponseBodyReturnValueHandler()); // 返回值类型是StreamingResponseBody类型或者子类
+					handlers.add(new HttpEntityMethodProcessor(getMessageConverters(), // 返回值类型是HttpEntity类型或者子类
 							this.contentNegotiationManager, this.requestResponseBodyAdvice));
-					handlers.add(new HttpHeadersReturnValueHandler());
-					handlers.add(new CallableMethodReturnValueHandler());
-					handlers.add(new DeferredResultMethodReturnValueHandler());
-					handlers.add(new AsyncTaskMethodReturnValueHandler(this.beanFactory));
+					handlers.add(new HttpHeadersReturnValueHandler()); // 返回值类型是HttpHeaders类型或者子类
+					handlers.add(new CallableMethodReturnValueHandler()); // 返回值类型是Callable类型或者子类
+					handlers.add(new DeferredResultMethodReturnValueHandler()); // 返回值类型是DeferredResult、ListenableFuture或者子类
+					handlers.add(new AsyncTaskMethodReturnValueHandler(this.beanFactory)); // 返回值类型是WebAsyncTask类型或者子类
 			
 					// Annotation-based return value types
-					handlers.add(new ModelAttributeMethodProcessor(false));
+					handlers.add(new ModelAttributeMethodProcessor(false)); // 返回值上有@ModelAttribute注解
 					handlers.add(new RequestResponseBodyMethodProcessor(getMessageConverters(),
-							this.contentNegotiationManager, this.requestResponseBodyAdvice));
+							this.contentNegotiationManager, this.requestResponseBodyAdvice)); // 返回值上有 @ResponseBody注解
 			
 					// Multi-purpose return value types
-					handlers.add(new ViewNameMethodReturnValueHandler());
-					handlers.add(new MapMethodProcessor());
+					handlers.add(new ViewNameMethodReturnValueHandler()); // 返回void或者字符串
+					handlers.add(new MapMethodProcessor()); // 返回值类型是Map类型
 			
 					// Custom return value types
-					if (getCustomReturnValueHandlers() != null) {
+					if (getCustomReturnValueHandlers() != null) { // 自定义返回值处理器
 						handlers.addAll(getCustomReturnValueHandlers());
 					}
 			
@@ -1234,7 +1234,7 @@ public class Interceptor的识别_Handler的识别_AnnotationMapper {
 						handlers.add(new ModelAndViewResolverMethodReturnValueHandler(getModelAndViewResolvers()));
 					}
 					else {
-						handlers.add(new ModelAttributeMethodProcessor(true));
+						handlers.add(new ModelAttributeMethodProcessor(true)); // 返回值上有@ModelAttribute注解
 					}
 			
 					return handlers;

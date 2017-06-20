@@ -25,7 +25,9 @@
 	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.HaveAwareHandler" />
 	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.I18nHandler" />
 	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.PropertyHandler" />
-	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.ReqParamHandler" />
+	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.ReqHandler" />
+	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.ReqJsonHandler" />
+	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.ReqXmlHandler" />
 	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.RespHandler" />
 	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.RespJsonHandler" />
 	<bean class="cn.java.demo.webmvc.bean.handler.byannotation.RespXmlHandler" />
@@ -168,27 +170,46 @@
     </bean>
     <!-- ******关于“请求匹配器”的配置******eof****** -->
    
-   <!-- ******关于“Hanlder适配器”的配置******bof****** -->
+    <!-- ******关于“Hanlder适配器”的配置******bof****** -->
     <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter"> <!-- 实现org.springframework.web.method.HandlerMethod接口的handler的适配器 -->
     	<property  name="messageConverters"><!-- 消息转换器 -->
     	    <list>
-    	       <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"><!-- 消息转换器 -->
-                    <property name="objectMapper">
-                        <bean class="com.fasterxml.jackson.databind.ObjectMapper">
-                            <property name="dateFormat">
-                                <bean class="java.text.SimpleDateFormat">
-                                    <constructor-arg type="java.lang.String" value="yyyy-MM-dd HH:mm:ss" />
-                                </bean>
-                            </property>
-                        </bean>
+               <bean class="cn.java.demo.webmvc.http.converter.fastjson.FastJsonObjectHttpMessageConverter"> <!-- json的数据转换器 -->
+                   <property name="supportedMediaTypes">
+                        <list>
+                            <value>application/fastjson+json;charset=UTF-8</value>
+                        </list>
                     </property>
+               </bean>
+    	       <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"> <!-- json的数据转换器 -->
                     <property name="supportedMediaTypes">
                         <list>
                             <value>application/json;charset=UTF-8</value>
+                            <value>application/*+json;charset=UTF-8</value>
                         </list>
                     </property>
                 </bean>
-                <bean class="cn.java.demo.webmvc.http.converter.fastjson.FastJsonObjectHttpMessageConverter" /><!-- 消息转换器 -->
+                <bean class="org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter"> <!-- xml的数据转换器 -->
+                    <property name="supportedMediaTypes">
+                        <list>
+                            <value>application/xml;charset=UTF-8</value>
+                            <value>test/xml;charset=UTF-8</value>
+                        </list>
+                    </property>
+                </bean>
+                <!-- <bean class="org.springframework.http.converter.protobuf.ProtobufHttpMessageConverter" />  --><!-- Protobuf的数据转换器 -->
+                <!-- <bean class="org.springframework.http.converter.feed.RssChannelHttpMessageConverter" />  --><!-- rss的数据转换器 -->
+                <!-- <bean class="org.springframework.http.converter.feed.AtomFeedHttpMessageConverter" /> --> <!-- rss的数据转换器 -->
+    	    </list>
+    	</property>
+    	<property name="customArgumentResolvers"> <!-- 自定义参数解析器 -->
+    	    <list>
+    	        <bean class="cn.java.demo.webmvc.customargumentresolvers.CustomArgumentResolvers0" />
+    	    </list>
+    	</property>
+    	<property name="customReturnValueHandlers">  <!-- 自定义返回值解析器 -->
+    	    <list>
+    	        <bean class="cn.java.demo.webmvc.customreturnvaluehandlers.CustomReturnValueHandlers0" />
     	    </list>
     	</property>
     </bean>
@@ -197,12 +218,13 @@
     <!-- ******关于“Hanlder适配器”的配置******eof****** -->
   
     <!-- ******关于“异常处理器”的配置******bof****** -->
-    <bean class="org.springframework.web.servlet.mvc.annotation.ResponseStatusExceptionResolver"><!-- 处理有注解@ResponseStatus的异常类 -->
+    <!-- 处理有注解@ResponseStatus的异常类 -->
+    <!-- <bean class="org.springframework.web.servlet.mvc.annotation.ResponseStatusExceptionResolver">
         <property  name="order" value="1" />
     </bean>
     <bean class="org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver">
     	<property  name="order" value="3" />
-    </bean>
+    </bean> -->
     <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
         <property  name="order" value="5" />
         <property  name="defaultErrorView" value="exception/index" /> <!-- 默认模板 -->

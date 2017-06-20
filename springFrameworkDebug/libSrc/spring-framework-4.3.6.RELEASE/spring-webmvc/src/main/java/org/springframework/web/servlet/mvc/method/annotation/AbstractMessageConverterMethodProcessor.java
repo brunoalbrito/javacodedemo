@@ -168,7 +168,7 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 		Class<?> valueType;
 		Type declaredType;
 
-		if (value instanceof CharSequence) {
+		if (value instanceof CharSequence) { // 值是字符串
 			outputValue = value.toString();
 			valueType = String.class;
 			declaredType = String.class;
@@ -180,7 +180,7 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 		}
 
 		HttpServletRequest request = inputMessage.getServletRequest();
-		List<MediaType> requestedMediaTypes = getAcceptableMediaTypes(request);
+		List<MediaType> requestedMediaTypes = getAcceptableMediaTypes(request); // 请求资源类型
 		List<MediaType> producibleMediaTypes = getProducibleMediaTypes(request, valueType, declaredType);
 
 		if (outputValue != null && producibleMediaTypes.isEmpty()) {
@@ -217,7 +217,7 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 			}
 		}
 
-		if (selectedMediaType != null) {
+		if (selectedMediaType != null) { // 响应的资源类型
 			selectedMediaType = selectedMediaType.removeQualityValue();
 			for (HttpMessageConverter<?> messageConverter : this.messageConverters) { // 迭代配置的消息转换器
 				if (messageConverter instanceof GenericHttpMessageConverter) {

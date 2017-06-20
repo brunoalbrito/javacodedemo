@@ -16,6 +16,7 @@ import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 import cn.java.demo.webmvc.bean.handlermethodargumentresolver.GsonObject;
 
 /**
+ * 响应json
  * @author zhouzhian
  *
  */

@@ -186,7 +186,7 @@ public abstract class AbstractMessageConverterMethodArgumentResolver implements 
 		Object body = NO_VALUE;
 
 		try {
-			inputMessage = new EmptyBodyCheckingHttpInputMessage(inputMessage);
+			inputMessage = new EmptyBodyCheckingHttpInputMessage(inputMessage); // !!!
 
 			for (HttpMessageConverter<?> converter : this.messageConverters) { // 转换器列表
 				Class<HttpMessageConverter<?>> converterType = (Class<HttpMessageConverter<?>>) converter.getClass();

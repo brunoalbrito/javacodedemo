@@ -82,8 +82,8 @@ final class GenericTypeAwarePropertyDescriptor extends PropertyDescriptor {
 		this.readMethod = readMethodToUse;
 		this.writeMethod = writeMethodToUse;
 
-		if (this.writeMethod != null) {
-			if (this.readMethod == null) {
+		if (this.writeMethod != null) { // 有写方法
+			if (this.readMethod == null) { // 没有读方法
 				// Write method not matched against read method: potentially ambiguous through
 				// several overloaded variants, in which case an arbitrary winner has been chosen
 				// by the JDK's JavaBeans Introspector...
@@ -99,14 +99,14 @@ final class GenericTypeAwarePropertyDescriptor extends PropertyDescriptor {
 					this.ambiguousWriteMethods = ambiguousCandidates;
 				}
 			}
-			this.writeMethodParameter = new MethodParameter(this.writeMethod, 0);
+			this.writeMethodParameter = new MethodParameter(this.writeMethod, 0); // 写方法的参数
 			GenericTypeResolver.resolveParameterType(this.writeMethodParameter, this.beanClass);
 		}
 
-		if (this.readMethod != null) {
+		if (this.readMethod != null) { // 有读方法
 			this.propertyType = GenericTypeResolver.resolveReturnType(this.readMethod, this.beanClass);
 		}
-		else if (this.writeMethodParameter != null) {
+		else if (this.writeMethodParameter != null) { // 属性类型
 			this.propertyType = this.writeMethodParameter.getParameterType();
 		}
 

@@ -142,10 +142,12 @@ public class QualifierAnnotationAutowireCandidateResolver extends GenericTypeAwa
 	 * @see Qualifier
 	 */
 	@Override
-	public boolean isAutowireCandidate(BeanDefinitionHolder bdHolder, DependencyDescriptor descriptor) {
+	public boolean isAutowireCandidate(BeanDefinitionHolder bdHolder, DependencyDescriptor descriptor) { // 是否自动装配
 		boolean match = super.isAutowireCandidate(bdHolder, descriptor);
 		if (match && descriptor != null) {
-			match = checkQualifiers(bdHolder, descriptor.getAnnotations());
+			// bdHolder 是“被检查是否能成为被依赖对象注入setter”的对象
+			// descriptor.getAnnotations() 是setter方法上的参数的注解
+			match = checkQualifiers(bdHolder, descriptor.getAnnotations()); 
 			if (match) {
 				MethodParameter methodParam = descriptor.getMethodParameter();
 				if (methodParam != null) {
@@ -167,11 +169,11 @@ public class QualifierAnnotationAutowireCandidateResolver extends GenericTypeAwa
 			return true;
 		}
 		SimpleTypeConverter typeConverter = new SimpleTypeConverter();
-		for (Annotation annotation : annotationsToSearch) {
+		for (Annotation annotation : annotationsToSearch) { // setter方法上的参数“注解”
 			Class<? extends Annotation> type = annotation.annotationType();
 			boolean checkMeta = true;
 			boolean fallbackToMeta = false;
-			if (isQualifier(type)) {
+			if (isQualifier(type)) { // 是注解 @Qualifier 或者自定义注解 @MyQualifier0
 				if (!checkQualifier(bdHolder, annotation, typeConverter)) {
 					fallbackToMeta = true;
 				}
@@ -219,10 +221,10 @@ public class QualifierAnnotationAutowireCandidateResolver extends GenericTypeAwa
 	protected boolean checkQualifier(
 			BeanDefinitionHolder bdHolder, Annotation annotation, TypeConverter typeConverter) {
 
-		Class<? extends Annotation> type = annotation.annotationType();
-		RootBeanDefinition bd = (RootBeanDefinition) bdHolder.getBeanDefinition();
+		Class<? extends Annotation> type = annotation.annotationType(); // setter方法上的参数的“注解”，如type.getName() = "org.springframework.beans.factory.annotation.Qualifier"
+		RootBeanDefinition bd = (RootBeanDefinition) bdHolder.getBeanDefinition(); // bdHolder是“被检查是否能成为被依赖对象注入setter”的对象
 
-		AutowireCandidateQualifier qualifier = bd.getQualifier(type.getName());
+		AutowireCandidateQualifier qualifier = bd.getQualifier(type.getName()); // “被检查的bean上有配置的Qualifier” 和要求的一样
 		if (qualifier == null) {
 			qualifier = bd.getQualifier(ClassUtils.getShortName(type));
 		}
@@ -266,13 +268,13 @@ public class QualifierAnnotationAutowireCandidateResolver extends GenericTypeAwa
 			// If no attributes, the qualifier must be present
 			return false;
 		}
-		for (Map.Entry<String, Object> entry : attributes.entrySet()) {
+		for (Map.Entry<String, Object> entry : attributes.entrySet()) { // 注解有属性
 			String attributeName = entry.getKey();
 			Object expectedValue = entry.getValue();
 			Object actualValue = null;
 			// Check qualifier first
 			if (qualifier != null) {
-				actualValue = qualifier.getAttribute(attributeName);
+				actualValue = qualifier.getAttribute(attributeName); // <qualifier>配置的值
 			}
 			if (actualValue == null) {
 				// Fall back on bean definition attribute

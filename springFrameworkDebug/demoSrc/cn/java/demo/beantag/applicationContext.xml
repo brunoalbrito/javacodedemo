@@ -9,11 +9,6 @@
 	<bean id="helloService" class="cn.java.demo.beantag.bean.HelloServiceImpl" />
 	<bean id="standardBean0" class="cn.java.demo.beantag.bean.StandardBean" />
 	
-	<!-- 修饰符qualifier -->
-	<bean class="cn.java.demo.beantag.bean.HelloServiceImpl">
-	    <qualifier type="java.lang.String" value="qualifier0" />
-    </bean>
-	
 	<!-- 标准bean -->
 	<bean id="fooBean" name="fooBeanAlias0" class="cn.java.demo.beantag.bean.FooBean" autowire="constructor"/>
 	
@@ -54,30 +49,80 @@
     <!-- case.1 不在配置文件中指定传值内容，此时必须scope="prototype"，在预创建的时候，不会实例化本类 -->
 	<bean id="autowireByConstructor1" class="cn.java.demo.beantag.bean.AutowireByConstructor" autowire="constructor" scope="prototype" />
     
+	<!-- 修饰符qualifier  -->
+	<!-- 
+		qualifier标签起作用的条件是：配置org.springframework.beans.factory.annotation.CustomAutowireConfigurer劫持修改掉beanFactory的AutowireCandidateResolver
+		这个bean能成为“自动装配候选人”的条件是：
+			case.1、不存在CustomAutowireConfigurer中配置的注解
+				autowire-candidate="true"
+				
+			case.2、存在CustomAutowireConfigurer中配置的注解
+				1、autowire-candidate="true"
+				2、目标bean中的setter方法上的参数有存在注解，并且在<qualifier>支持的类型中存在
+	-->
+	<bean class="cn.java.demo.beantag.bean.autowirebytype.FooBeanInjectSelectedByQualifier" autowire-candidate="true">
+	    <constructor-arg index="0" type="java.lang.String" value="0" />
+	   	<constructor-arg index="1" type="java.lang.String" value="FooBeanInjectSelectedByQualifier0" />
+	    <qualifier type="org.springframework.beans.factory.annotation.Qualifier" value="fooBeanInjectSelectedByQualifier0" /> <!-- 配置qualifier -->
+	    <qualifier type="cn.java.demo.beantag.qualifier.MyQualifier0"  value="MyQualifier0_fooBeanInjectSelectedByQualifier0">
+	        <attribute key="attribute_key0" value="attribute_key0_value" />
+	        <attribute key="attribute_key1" value="attribute_key1_value" />
+        </qualifier>
+    </bean>
+	<bean class="cn.java.demo.beantag.bean.autowirebytype.FooBeanInjectSelectedByQualifier" autowire-candidate="true">
+	    <constructor-arg index="0" type="java.lang.String" value="1" />
+	   	<constructor-arg index="1" type="java.lang.String" value="FooBeanInjectSelectedByQualifier1" />
+	    <qualifier type="cn.java.demo.beantag.qualifier.MyQualifier1"  value="MyQualifier1_fooBeanInjectSelectedByQualifier0" /> <!-- 配置qualifier -->
+    </bean>
     <!-- 
     	属性注入(自动装配) - 根据“成员方法”的参数类型autowire="byType"
     	org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(....)
-     -->
-	<bean id="autowireByTypeInjectedBean0" class="cn.java.demo.beantag.bean.AutowireByTypeToBeInjectedBean" primary="true"> <!-- primary="true"，在使用类型识别注入的时候，会被选中注入 -->
-		<constructor-arg index="0" type="java.lang.Integer" value="1" />
-	   	<constructor-arg index="1" type="java.lang.String" value="username is assign in xml - AutowireByTypeToBeInjectedBean autowireByTypeInjectedBean0" />
-	</bean>   
-	<bean id="autowireByTypeInjectedBean1" class="cn.java.demo.beantag.bean.AutowireByTypeToBeInjectedBean" primary="false"><!-- primary="false"，在使用类型识别注入的时候，不会被选中注入 -->
-		<constructor-arg index="0" type="java.lang.Integer" value="1" />
-	   	<constructor-arg index="1" type="java.lang.String" value="username is assign in xml - AutowireByTypeToBeInjectedBean autowireByTypeInjectedBean1" />
-	</bean> 
-	<bean id="fooBeanFactory0" class="cn.java.demo.beantag.bean.autowirebytype.FooBeanFactory" autowire-candidate="true" /> <!-- 会自动注入,autowire-candidate="true"表示是成为自动装配候选人  -->
-	<bean id="fooBeanFactory1" class="cn.java.demo.beantag.bean.autowirebytype.FooBeanFactory" autowire-candidate="false" /> <!-- 不会自动注入,autowire-candidate="false"表示是不成为自动装配候选人  -->
+    -->
+	<bean id="fooBeanFactory0" class="cn.java.demo.beantag.bean.autowirebytype.FooBeanFactory" autowire-candidate="true" /> <!-- 会参与注入,autowire-candidate="true"表示是成为自动装配候选人  -->
+	<bean id="fooBeanFactory1" class="cn.java.demo.beantag.bean.autowirebytype.FooBeanFactory" autowire-candidate="false" /> <!-- 不会参与注入,autowire-candidate="false"表示是不成为自动装配候选人  -->
 	<bean id="fooBeanProvider" class="cn.java.demo.beantag.bean.autowirebytype.FooBeanProvider" /> <!-- 会自动注入  -->
+	<bean id="autowireByTypeToBeInjectedBean" class="cn.java.demo.beantag.bean.AutowireByTypeToBeInjectedBean">
+	    <constructor-arg index="0" type="java.lang.Integer" name="id" value="0" />
+	   	<constructor-arg index="1" type="java.lang.String" name="username" value="AutowireByTypeToBeInjectedBean0" />
+    </bean>
     <bean id="beanRefByAutowireByTypeBean" class="cn.java.demo.beantag.bean.FooBean" />
+    <bean class="cn.java.demo.beantag.bean.autowirebytype.FooBeanInjectSelectedByPrimary"  primary="false"> <!-- 1.根据“primary="xxx"”选择 -->
+        <constructor-arg index="0" type="java.lang.String" value="0" />
+	   	<constructor-arg index="1" type="java.lang.String" value="FooBeanInjectSelectedByPrimary0" />
+    </bean>
+    <bean class="cn.java.demo.beantag.bean.autowirebytype.FooBeanInjectSelectedByPrimary"  primary="true"> <!-- 同一类型，有且只能有一个primary="true" -->
+        <constructor-arg index="0" type="java.lang.String" value="1" />
+	   	<constructor-arg index="1" type="java.lang.String" value="FooBeanInjectSelectedByPrimary1" />
+    </bean>
+    <bean class="cn.java.demo.beantag.bean.autowirebytype.FooBeanInjectSelectedByOrder"> <!-- 2.根据“排序”选择 -->
+        <constructor-arg index="0" type="java.lang.String" value="0" />
+	   	<constructor-arg index="1" type="java.lang.String" value="FooBeanInjectSelectedByOrder0" />
+	   	<property name="order" value="10" />  <!-- order值越小，权重越高 -->
+    </bean>
+    <bean class="cn.java.demo.beantag.bean.autowirebytype.FooBeanInjectSelectedByOrder">
+        <constructor-arg index="0" type="java.lang.String" value="1" />
+	   	<constructor-arg index="1" type="java.lang.String" value="FooBeanInjectSelectedByOrder1" />
+	   	<property name="order" value="1" />
+    </bean>
+    <bean id="fooBeanInjectSelectedByArgName0" class="cn.java.demo.beantag.bean.autowirebytype.FooBeanInjectSelectedByArgName"> <!-- 3.根据“参数名”选择 -->
+        <constructor-arg index="0" type="java.lang.String" value="0" />
+	   	<constructor-arg index="1" type="java.lang.String" value="FooBeanInjectSelectedByArgName0" />
+    </bean>
+    <bean id="fooBeanInjectSelectedByArgName1" class="cn.java.demo.beantag.bean.autowirebytype.FooBeanInjectSelectedByArgName">
+        <constructor-arg index="0" type="java.lang.String" value="1" />
+	   	<constructor-arg index="1" type="java.lang.String" value="FooBeanInjectSelectedByArgName1" />
+    </bean>
 	<bean id="autowireByTypeBean0" class="cn.java.demo.beantag.bean.AutowireByTypeBean" autowire="byType">
+	 	<!-- 以下使用属性注入 -->
 	 	<property  name="username" value="username is assign in xml  - AutowireByNameBean" />
 	    <property  name="fooBean" ref="beanRefByAutowireByTypeBean" />
 	 	<!-- 
-	 		.. 其他，根据“成员方法”的参数类型byType注入，如果命中的bean有多个的时候，决策方案是：
-	 			1、检查有配置primary的bean，有且只能有一个设置为primary的bean； 
-		  		2、根据bean优先权，不能有两个一样优先权的被依赖bean
-		  		3、根据参数名获取到bean
+	 		其他使用类型识别注入：
+		 		根据“成员方法”的参数类型byType注入，如果命中的bean有多个的时候，决策方案是：
+		 			0、根据setter方法上配置的注解是否在<qualifier>标签中声明进行选择（默认不支持 - 要自行扩展，详见 CustomAutowireConfigurer）
+		 			1、检查有配置primary的bean，有且只能有一个设置为primary的bean； 
+			  		2、根据bean优先权，不能有两个一样优先权的被依赖bean  （默认不支持 - 要自行扩展，在beanFactory设置自己的DependencyComparator，详见BeanFactoryPostProcessorImpl）
+			  		3、根据参数名获取到bean（默认不支持 - 要自行扩展，在beanFactory设置自己的AutowireCandidateResolver，详见BeanFactoryPostProcessorImpl）
 	 	 -->
     </bean>
 	
@@ -177,4 +222,14 @@
 	<bean id="fooOneSmartLifecycle" class="cn.java.demo.beantag.lifecycle.FooOneSmartLifecycle">
 	    <property name="isAutoStartup" value="true" />
     </bean>
+    
+	<!-- 劫持BeanFactory -->
+	<bean class="cn.java.demo.beantag.bean_factory_post_processor.CustomBeanFactoryConfigurer">
+	    <property name="customQualifierTypes">
+			<set>
+			  <value>cn.java.demo.beantag.qualifier.MyQualifier0</value>
+			  <value>cn.java.demo.beantag.qualifier.MyQualifier1</value>
+			</set>
+		</property>
+	</bean>
 </beans>  

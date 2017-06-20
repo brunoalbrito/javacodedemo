@@ -39,7 +39,7 @@ public class DefaultParameterNameDiscoverer extends PrioritizedParameterNameDisc
 
 	public DefaultParameterNameDiscoverer() {
 		if (standardReflectionAvailable) {
-			addDiscoverer(new StandardReflectionParameterNameDiscoverer());
+			addDiscoverer(new StandardReflectionParameterNameDiscoverer()); // !!! java8的特性
 		}
 		addDiscoverer(new LocalVariableTableParameterNameDiscoverer());
 	}

@@ -510,7 +510,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 	@Override
 	public void afterPropertiesSet() {
 		// Do this first, it may add ResponseBody advice beans
-		initControllerAdviceCache();
+		initControllerAdviceCache(); // !!!
 
 		if (this.argumentResolvers == null) {
 			List<HandlerMethodArgumentResolver> resolvers = getDefaultArgumentResolvers(); // “参数”解析器
@@ -554,13 +554,13 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 					logger.info("Detected @InitBinder methods in " + bean);
 				}
 			}
-			if (RequestBodyAdvice.class.isAssignableFrom(bean.getBeanType())) {
+			if (RequestBodyAdvice.class.isAssignableFrom(bean.getBeanType())) { // 实现了RequestBodyAdvice接口
 				requestResponseBodyAdviceBeans.add(bean);
 				if (logger.isInfoEnabled()) {
 					logger.info("Detected RequestBodyAdvice bean in " + bean);
 				}
 			}
-			if (ResponseBodyAdvice.class.isAssignableFrom(bean.getBeanType())) {
+			if (ResponseBodyAdvice.class.isAssignableFrom(bean.getBeanType())) { // 实现了RequestBodyAdvice接口
 				requestResponseBodyAdviceBeans.add(bean);
 				if (logger.isInfoEnabled()) {
 					logger.info("Detected ResponseBodyAdvice bean in " + bean);

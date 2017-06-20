@@ -156,12 +156,13 @@ public class hook_获取bean的过程_调用bean后置处理器_埋点位置 {
 																if (value != null) { // value === null
 																}
 																
-																Object multipleBeans = resolveMultipleBeans(descriptor, beanName, autowiredBeanNames, typeConverter); // 参数类型是 Array/Collection/Map
+																Object multipleBeans = DefaultListableBeanFactory.resolveMultipleBeans(descriptor, beanName, autowiredBeanNames, typeConverter); // 参数类型是 Array/Collection/Map
 																if (multipleBeans != null) { // multipleBeans === null
 																	return multipleBeans;
 																}
 																
-																Map<String, Object> matchingBeans = findAutowireCandidates(beanName, type, descriptor);
+																// !!!!!  --- 根据autowire-candidate="true"配置选择“参与自动装配的bean”列表   0、根据setter方法上配置的注解是否在<qualifier>标签中声明进行选择（默认不支持 - 要自行扩展，详见 CustomAutowireConfigurer）
+																Map<String, Object> matchingBeans = DefaultListableBeanFactory.findAutowireCandidates(beanName, type, descriptor); // “成为自动装配候选人”的列表
 																{
 																	String[] candidateNames = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(this, requiredType, true, descriptor.isEager()); // 根据bean的类型获取符合条件的bean列表
 																}
@@ -189,7 +190,29 @@ public class hook_获取bean的过程_调用bean后置处理器_埋点位置 {
 																}
 																...
 																if (matchingBeans.size() > 1) { // 根据类型匹配到的bean超过一个
-																	autowiredBeanName = determineAutowireCandidate(matchingBeans, descriptor); // 选择规则是：1、检查有配置primary的bean ； 2、根据bean优先权order   3、根据参数名获取到bean
+																	autowiredBeanName = DefaultListableBeanFactory.determineAutowireCandidate(matchingBeans, descriptor); // 选择规则是：1、检查有配置primary的bean ； 2、根据bean优先权order（默认不支持 - 要自行扩展）   3、根据参数名获取到bean（默认不支持 - 要自行扩展）
+																	{
+																		Class<?> requiredType = descriptor.getDependencyType();
+																		String primaryCandidate = determinePrimaryCandidate(candidates, requiredType); // 检查有配置primary的bean
+																		if (primaryCandidate != null) {
+																			return primaryCandidate;
+																		}
+																		String priorityCandidate = determineHighestPriorityCandidate(candidates, requiredType); // 根据优先权order获取bean
+																		if (priorityCandidate != null) {
+																			return priorityCandidate;
+																		}
+																		// Fallback
+																		for (Map.Entry<String, Object> entry : candidates.entrySet()) {
+																			String candidateName = entry.getKey();
+																			Object beanInstance = entry.getValue();
+																			if ((beanInstance != null && this.resolvableDependencies.containsValue(beanInstance)) ||
+																					matchesBeanName(candidateName, descriptor.getDependencyName())) { // 根据参数名进行匹配bean
+																				// descriptor.getDependencyName() --- 始终返回null  --- AutowireByTypeDependencyDescriptor.getDependencyName()
+																				return candidateName;
+																			}
+																		}
+																		return null;
+																	}
 																	instanceCandidate = matchingBeans.get(autowiredBeanName);
 																}
 																...

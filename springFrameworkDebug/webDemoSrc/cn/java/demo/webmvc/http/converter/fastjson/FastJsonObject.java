@@ -1,5 +1,7 @@
 package cn.java.demo.webmvc.http.converter.fastjson;
 
-public class FastJsonObject {
+import com.alibaba.fastjson.JSONObject;
+
+public class FastJsonObject extends JSONObject{
 
 }
