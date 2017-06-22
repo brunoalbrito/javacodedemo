@@ -31,7 +31,9 @@
         resource-pattern="*Component.class"
         base-package="cn.java.demo.contexttag.bean,cn.java.demo.contexttag.component.impl"
         scope-resolver="org.springframework.context.annotation.AnnotationScopeMetadataResolver"
-        name-generator="org.springframework.context.annotation.AnnotationBeanNameGenerator">
+        name-generator="org.springframework.context.annotation.AnnotationBeanNameGenerator"><!-- 扫描器配置，在context命名空间识别的时候就执行 -->
+        
+        <!-- 过滤机制是：指定类的特征在“exclude-filter”中不能存在一项并且在“include-filter”中至少有一项匹配 -->
         
         <!-- 过滤器 - 包含过滤(只要符合其中一个就会被收录)-->
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Component" /><!-- 包含@Component注解 -->
@@ -41,6 +43,6 @@
         <context:include-filter type="custom" expression="cn.java.demo.contexttag.filter.FooIncludeTypeFilter" />  <!-- 自定义过滤器 -->
         
         <!-- 过滤器 - 不包含过滤(只要符合其中一个就会被排除) -->
-        <context:include-filter type="custom" expression="cn.java.demo.contexttag.filter.FooExcludeTypeFilter" />  <!-- 自定义过滤器 -->
+        <context:exclude-filter type="custom" expression="cn.java.demo.contexttag.filter.FooExcludeTypeFilter" />  <!-- 自定义过滤器 -->
     </context:component-scan>
 </beans>  

@@ -46,19 +46,19 @@ public interface FooMapper {
          		+ "AND id > ${onglValue} ",
     })
     @ResultType(value=cn.java.demo.mybatis.mapper.bean.Foo.class) // 
-    public void selectAboutResult0(@Param("userid")Integer userid,@Param("account")String account,@Param("onglValue")String onglValue,@Param("result")FooResultHandler result);
+    public void selectListReturnVoidGetResultByParam(@Param("userid")Integer userid,@Param("account")String account,@Param("onglValue")String onglValue,@Param("result")FooResultHandler result);
     
     // case 1.返回值类型是Collection的子类或者数组
     @Select(value={"select "+SELECT_FIELDS_STR+" from ${tablePrefix}" + TableNameRegistry.TABLE_FOO + " WHERE id >= #{userid} ",})
-    public Foo[] selectAboutResult1(Integer userid);
+    public Foo[] selectListReturnArray(Integer userid);
     
     @Select(value={"select "+SELECT_FIELDS_STR+" from ${tablePrefix}" + TableNameRegistry.TABLE_FOO + " WHERE id >= #{userid} ",})
-    public List<Foo> selectAboutResult2(Integer userid);
+    public List<Foo> selectListReturnList(Integer userid);
     
     // case 2.返回值类型是Map的子类，使用某个字段作为索引
     @Select(value={"select "+SELECT_FIELDS_STR+" from ${tablePrefix}" + TableNameRegistry.TABLE_FOO + " WHERE id >= #{userid} ",})
     @MapKey(value="account") // 用account列作为索引
-    public Map selectAboutResult3(Integer userid);
+    public Map selectListReturnMapWithMapKey(Integer userid);
     
     // case 3.返回值类型是Cursor，《不支持Cursor类型的返回值！！！》 org.apache.ibatis.reflection.factory.DefaultObjectFactory.resolveInterface(...)没有相关的自适应代码块
 //  @Select(value={"select "+SELECT_FIELDS_STR+" from ${tablePrefix}" + TableNameRegistry.TABLE_FOO + " WHERE id = #{userid} ",})
@@ -66,50 +66,54 @@ public interface FooMapper {
  
     // case 4.返回值类型是其他
     @Select(value={"select "+SELECT_FIELDS_STR+" from ${tablePrefix}" + TableNameRegistry.TABLE_FOO + " WHERE id = #{userid} LIMIT 1",})
-    public Foo selectAboutResult5(Integer userid);
+    public Foo selectOneReturnBeanObject(Integer userid);
+    
+    // case 5.返回值类型是Map的子类
+    @Select(value={"select "+SELECT_FIELDS_STR+" from ${tablePrefix}" + TableNameRegistry.TABLE_FOO + " WHERE id >= #{userid} LIMIT 1",})
+    public Map selectOneReturnMapWithoutMapKey(Integer userid);
    
     // --------------------- 关于参数 - N中写法 ----------------------
     // case 0. 对返回的结果集进行筛选（RowBounds 是对结果集的筛选，不是决定数据库的返回结果集）
     @Select(value={"select "+SELECT_FIELDS_STR+" from ${tablePrefix}" + TableNameRegistry.TABLE_FOO + " WHERE id >= #{userid}",})
-    public List<Foo> selectAboutParam0(Integer userid,RowBounds rowBounds); 
+    public List<Foo> selectListAndPaginationOnLocalResultSet(Integer userid,RowBounds rowBounds); 
   
     // case 1. 分页
     @Select(value={"select "+SELECT_FIELDS_STR+" from ${tablePrefix}" + TableNameRegistry.TABLE_FOO + " WHERE id >= #{userid} LIMIT #{limit} OFFSET #{offset}",})
-    public List<Foo> selectAboutParam1(@Param("userid")Integer userid,@Param("offset")Integer offset,@Param("limit")int limit); 
+    public List<Foo> selectListAndPaginationOnDbServer(@Param("userid")Integer userid,@Param("offset")Integer offset,@Param("limit")int limit); 
 
     // case 2. ${...} 写法是不安全的
     @Select(value={"select "+SELECT_FIELDS_STR+" from ${tablePrefix}" + TableNameRegistry.TABLE_FOO + " WHERE id >= #{userid} ${ognlUnsafeValue} ${_parameter.ognlUnsafeValue}",})
-    public List<Foo> selectAboutParam2(@Param("userid")Integer userid,@Param("ognlUnsafeValue")String ognlUnsafeValue); 
+    public List<Foo> selectListPassParamUnsafe(@Param("userid")Integer userid,@Param("ognlUnsafeValue")String ognlUnsafeValue); 
     
     // case 3. 参数是自定义对象
     @Select(value={"select "+SELECT_FIELDS_STR+" from ${tablePrefix}" + TableNameRegistry.TABLE_FOO + " WHERE id >= #{id}",})
-    public List<Foo> selectAboutParam3(Foo foo);
+    public List<Foo> selectListPassBeanObject(Foo foo);
     
     // case 4. 参数是自定义对象
     @Select(value={"select "+SELECT_FIELDS_STR+" from ${tablePrefix}" + TableNameRegistry.TABLE_FOO + " WHERE id >= #{foo.id} AND id >= #{userid} ",})
-    public List<Foo> selectAboutParam4(@Param("foo")Foo foo,@Param("userid")int userid);
+    public List<Foo> selectListPassParamNamed(@Param("foo")Foo foo,@Param("userid")int userid);
     
     // case 5. 使用通用名获取参数，从param1开始
     @Select(value={"select "+SELECT_FIELDS_STR+" from ${tablePrefix}" + TableNameRegistry.TABLE_FOO + " WHERE id >= #{param1.id} AND id >= #{param2} ",})
-    public List<Foo> selectAboutParam5(Foo foo,int userid);
+    public List<Foo> selectListPassParamWithGenericNamed(Foo foo,int userid);
     
     // --------------------- 关于Bean - N中写法 ----------------------
     // case 0.通过setter方法注入返回值
     @Select(value={"select "+SELECT_FIELDS_STR+" from ${tablePrefix}" + TableNameRegistry.TABLE_FOO + " WHERE id = #{userid} LIMIT 1",})
-    public Foo selectAboutResultBean0(Integer userid);
+    public Foo selectOneFillBeanObjectBySetter(Integer userid);
     
-    // case 1.通过构造函数创建bean，使用注解（要求bean构造函数有查询结果的所有字段，但是要配置注解）
+    // case 1.通过构造函数创建bean，使用注解（不要求bean构造函数有查询结果的所有字段，但是要配置注解）
     @ConstructorArgs(value={ // 构造函数传参实例化
 			@Arg(id=false,column="id",javaType=Integer.class,jdbcType=JdbcType.INTEGER,typeHandler=org.apache.ibatis.type.IntegerTypeHandler.class,select="",resultMap=""),
 			@Arg(id=false,column="account",javaType=String.class,jdbcType=JdbcType.VARCHAR,typeHandler=org.apache.ibatis.type.StringTypeHandler.class,select="",resultMap="")
 		}
 	)
     @Select(value={"select * from ${tablePrefix}" + TableNameRegistry.TABLE_FOO + " WHERE id = #{userid} LIMIT 1",})
-    public FooConstructAnnotaionMap selectAboutResultBean1(Integer userid);
+    public FooConstructAnnotaionMap selectOneFillBeanObjectByConstructorAccordingAnnotation(Integer userid);
   
     // case 2.通过构造函数创建bean，不使用注解（要求bean构造函数有查询结果的所有字段，不然自动映射不了）
     @Select(value={"select id,account from ${tablePrefix}" + TableNameRegistry.TABLE_FOO + " WHERE id = #{userid} LIMIT 1",})
-    public FooConstructAutoMap selectAboutResultBean2(Integer userid);
+    public FooConstructAutoMap selectOneFillBeanObjectByConstructorWithoutAccordingAnnotation(Integer userid);
    
     
     // --------------------- 查询 ----------------------
@@ -205,13 +209,13 @@ public interface FooMapper {
     				+ "AND id > 0 "
     				+ "AND id > ${onglValue}  Limit 1 ",
     })
-    public List<Foo> select1(@Param("userid")Integer userid,@Param("account")String account,@Param("onglValue")String onglValue); // 有多个参数时，参数的类型称为：org.apache.ibatis.binding.MapperMethod.ParamMap
+    public List<Foo> selectWithSomeFileds(@Param("userid")Integer userid,@Param("account")String account,@Param("onglValue")String onglValue); // 有多个参数时，参数的类型称为：org.apache.ibatis.binding.MapperMethod.ParamMap
 	
     // 执行 case.2,指定别名
     // select id As id_alias,account,password from tb_user WHERE id >= ? Limit 3 
     @Select(value={"select id As id_alias,account,password from ${tablePrefix}" + TableNameRegistry.TABLE_FOO + " WHERE id >= #{userid} Limit 3",})
     @MapKey(value="account") // 用account列作为map索引(键)
-    public Map select2(Integer userid);
+    public Map selectWithAlias(Integer userid);
     
 	// 执行 case.3，分组、排序、分页限制 
 	//  select id As id_alias,account,password from tb_user WHERE id >= ? GROUP BY id,id ORDER BY id ASC,account DESC LIMIT 3 OFFSET 0 
@@ -220,7 +224,7 @@ public interface FooMapper {
     		+ " WHERE id >= #{userid} GROUP BY id,id ORDER BY id ASC,account DESC LIMIT 3 OFFSET 0",
     })
     @MapKey(value="account") 
-    public Map select3(Integer userid);
+    public Map selectWithGroupOrderPagination(Integer userid);
     
 	// ---关联---
 	//  SELECT tb1.id As id_alias,tb2.account,tb3.password FROM tb_user AS tb1 
@@ -237,7 +241,7 @@ public interface FooMapper {
     		"LIMIT 3 OFFSET 0",
     })
     @MapKey(value="account") 
-    public Map select4(Integer userid);
+    public Map selectWithLeftJoin(Integer userid);
     
 	// ---子查询---
 	//  执行 case.1，【子查询作为条件】
@@ -248,7 +252,7 @@ public interface FooMapper {
     		"LIMIT 3 OFFSET 0",
     })
     @MapKey(value="account") 
-    public Map select5(Integer userid);
+    public Map selectSubQueryAsParam(Integer userid);
     
 	//  执行 case.2，【子查询作为表】子查询出列表，再从列表中查询
 	// SELECT id As id_alias,account,password FROM tb_user AS tb1 WHERE id IN (SELECT id from tb_user WHERE id >= ? ) LIMIT 3 OFFSET 0 
@@ -258,7 +262,7 @@ public interface FooMapper {
     		"LIMIT 3 OFFSET 0",
     })
     @MapKey(value="account") 
-    public Map select6(Integer userid);
+    public Map selectSubQueryAsTempTable(Integer userid);
     
 	//  执行 case.3，【子查询作为字段】子查询只能返回单条
 	//  SELECT id As id_alias,account,password,(SELECT id AS id_alias2 FROM tb_user as tb1 LIMIT 1) as id_alias2_sub FROM tb_user WHERE id >= ? LIMIT 10 
@@ -266,7 +270,7 @@ public interface FooMapper {
     		"SELECT id As id_alias,account,password,(SELECT id AS id_alias2 FROM ${tablePrefix}" + TableNameRegistry.TABLE_FOO +" as tb1 LIMIT 1) as id_alias2_sub FROM ${tablePrefix}" + TableNameRegistry.TABLE_FOO +" WHERE id >= #{userid} LIMIT 10",
     })
     @MapKey(value="account") 
-    public Map select7(Integer userid);
+    public Map selectSubQueryAsField(Integer userid);
     
 	// ---联合查询---
 	//  (SELECT id As id_alias,account,password FROM tb_user WHERE id >= ? LIMIT 1) UNION ALL (SELECT id As id_alias,account,password FROM tb_user WHERE id >= ? LIMIT 2) 
@@ -275,14 +279,14 @@ public interface FooMapper {
     		"UNION ALL  (SELECT id As id_alias,account,password FROM ${tablePrefix}" + TableNameRegistry.TABLE_FOO +" WHERE id >= #{userid} LIMIT 2)",
     })
     @MapKey(value="account") 
-    public Map select8(Integer userid);
+    public Map selectUnion(Integer userid);
     
 	//　---统计---
 	//  SELECT "album"."count""("*")" AS "count_total" FROM "album"
     @Select(value={
     		" SELECT count(*) FROM ${tablePrefix}" + TableNameRegistry.TABLE_FOO +" WHERE id >= #{userid}",
     })
-    public long select9(Integer userid);
+    public long selectCount(Integer userid);
     
     // ---------------------缓存--------------------------------
 	// 执行 case.0
@@ -296,7 +300,7 @@ public interface FooMapper {
     })
 	@Options(useCache=true,flushCache=FlushCachePolicy.DEFAULT,resultSetType=ResultSetType.FORWARD_ONLY,statementType=StatementType.PREPARED,
 		fetchSize=-1,timeout=-1,useGeneratedKeys=false,keyProperty="id",keyColumn="id,account,password",resultSets="")
-	public List<Foo> selectAboutCache(@Param("userid")Integer userid,@Param("account")String account,@Param("onglValue")String onglValue); 
+	public List<Foo> selectListThroughCache(@Param("userid")Integer userid,@Param("account")String account,@Param("onglValue")String onglValue); 
     
     // ---------------------添加--------------------------------
     // 一次添加一条记录
@@ -304,7 +308,7 @@ public interface FooMapper {
     		"INSERT INTO ${tablePrefix}" + TableNameRegistry.TABLE_FOO +"(id,account,password) ",
     		"VALUES (#{foo.id:INTEGER,javaType=java.lang.Integer,mode=IN,numericScale=0,typeHandler=org.apache.ibatis.type.IntegerTypeHandler,jdbcTypeName=INTEGER},#{foo.account},#{foo.password})",
     })
-    public int insert0(@Param("foo")Foo foo);
+    public int insertOne(@Param("foo")Foo foo);
     
     // 一次添加多条记录
     @Insert(value={
@@ -312,7 +316,7 @@ public interface FooMapper {
     	"VALUES (#{list[0].id:INTEGER,javaType=java.lang.Integer,mode=IN,numericScale=0,typeHandler=org.apache.ibatis.type.IntegerTypeHandler,jdbcTypeName=INTEGER},#{list[0].account},#{list[0].password})",
     	",(#{list[1].id:INTEGER,javaType=java.lang.Integer,mode=IN,numericScale=0,typeHandler=org.apache.ibatis.type.IntegerTypeHandler,jdbcTypeName=INTEGER},#{list[1].account},#{list[1].password})"
     })
-    public int insert1(@Param("list") List<Foo> list);
+    public int insertBatch(@Param("list") List<Foo> list);
     
     // ---------------------删除--------------------------------
     @Delete(value={

@@ -31,9 +31,9 @@ public class FooTest {
 		SqlSession sqlSession = sqlSessionFactory.openSession(true);  // 打开连接（会从“数据源”中获取一个，如果没有会“创建一个”）
 		{
 			FooMapper fooMapper = sqlSession.getMapper(FooMapper.class);
-			// AboutResult.test(fooMapper);
+			AboutResult.test(fooMapper);
 			AboutParam.test(fooMapper);
-			// AboutResultBean.test(fooMapper);
+			AboutResultBean.test(fooMapper);
 			AboutCurd.test(fooMapper);
 			// testTrasaction(sqlSession);
 		}
@@ -68,6 +68,7 @@ public class FooTest {
 	 */
 	private static class AboutCurd {
 		public static void test(FooMapper fooMapper){
+			System.out.println("--------------------------------AboutCurd-----------------------------------------");
 			select(fooMapper);
 			insert(fooMapper);
 			update(fooMapper);
@@ -75,15 +76,15 @@ public class FooTest {
 		}
 		
 		public static void select(FooMapper fooMapper){
-			System.out.println(fooMapper.select1(0,"0","0"));
-			System.out.println(fooMapper.select2(0));
-			System.out.println(fooMapper.select3(0));
-			System.out.println(fooMapper.select4(0));
-			System.out.println(fooMapper.select5(0));
-			System.out.println(fooMapper.select6(0));
-			System.out.println(fooMapper.select7(0));
-			System.out.println(fooMapper.select8(0));
-			System.out.println(fooMapper.select9(0));
+			System.out.println(fooMapper.selectWithSomeFileds(0,"0","0"));
+			System.out.println(fooMapper.selectWithAlias(0));
+			System.out.println(fooMapper.selectWithGroupOrderPagination(0));
+			System.out.println(fooMapper.selectWithLeftJoin(0));
+			System.out.println(fooMapper.selectSubQueryAsParam(0));
+			System.out.println(fooMapper.selectSubQueryAsTempTable(0));
+			System.out.println(fooMapper.selectSubQueryAsField(0));
+			System.out.println(fooMapper.selectUnion(0));
+			System.out.println(fooMapper.selectCount(0));
 		}
 		
 		public static void delete(FooMapper fooMapper){
@@ -109,7 +110,7 @@ public class FooTest {
 			foo.setId(100);
 			foo.setAccount("account_100");
 			foo.setPassword("password_100");
-			System.out.println(fooMapper.insert0(foo));
+			System.out.println(fooMapper.insertOne(foo));
 			
 			List list = new ArrayList();
 			
@@ -124,7 +125,7 @@ public class FooTest {
 			foo.setAccount("account_102");
 			foo.setPassword("password_102");
 			list.add(foo);
-			System.out.println(fooMapper.insert1(list));
+			System.out.println(fooMapper.insertBatch(list));
 		}
 
 	}
@@ -133,22 +134,19 @@ public class FooTest {
 		
 		public static void test(FooMapper fooMapper){
 			System.out.println("--------------------------------selectAboutResult-----------------------------------------");
-			selectAboutResultBean0(fooMapper);
-			selectAboutResultBean1(fooMapper);
-			selectAboutResultBean2(fooMapper);
+			{
+				System.out.println(fooMapper.selectOneFillBeanObjectBySetter(1));
+			}
+			
+			{
+				System.out.println(fooMapper.selectOneFillBeanObjectByConstructorAccordingAnnotation(1));
+			}
+			
+			{
+				System.out.println(fooMapper.selectOneFillBeanObjectByConstructorWithoutAccordingAnnotation(1));
+			}
 		}
 		
-		public static void selectAboutResultBean0(FooMapper fooMapper){
-			System.out.println(fooMapper.selectAboutResultBean0(1));
-		}
-		
-		public static void selectAboutResultBean1(FooMapper fooMapper){
-			System.out.println(fooMapper.selectAboutResultBean1(1));
-		}
-		
-		public static void selectAboutResultBean2(FooMapper fooMapper){
-			System.out.println(fooMapper.selectAboutResultBean2(1));
-		}
 	}
 
 	private static class AboutResult {
@@ -156,87 +154,65 @@ public class FooTest {
 		public static void test(FooMapper fooMapper){
 			System.out.println("--------------------------------selectAboutResult-----------------------------------------");
 			System.out.println("-----------selectAboutResult 0 - getResultByParam------------");
-			selectAboutResult0(fooMapper);
+			{
+				// 透过参数获取返回值
+				FooResultHandler result = new FooResultHandler();
+				fooMapper.selectListReturnVoidGetResultByParam(1,"1","0",result);
+				for (Object obj : result.getResultList()) {
+					System.out.println(obj);
+				}
+			}
 
 			System.out.println("-----------selectAboutResult 1 - return Array------------");
-			selectAboutResult1(fooMapper);
+			{
+				// 返回数组
+				Foo[] fooArray = fooMapper.selectListReturnArray(1);
+				for (Foo foo : fooArray) {
+					System.out.println(foo);
+				}
+			}
 
 			System.out.println("-----------selectAboutResult 2 - return List------------");
-			selectAboutResult2(fooMapper);
+			{
+				// 返回 List
+				List<Foo> fooList = fooMapper.selectListReturnList(1);
+				for (Iterator iterator = fooList.iterator(); iterator.hasNext();) {
+					Foo foo = (Foo) iterator.next();
+					System.out.println(foo);
+				}
+			}
 
 			System.out.println("-----------selectAboutResult 3 - return Map------------");
-			selectAboutResult3(fooMapper);
-
+			{
+				// 返回 Map
+				Map map = fooMapper.selectListReturnMapWithMapKey(1);
+				System.out.println(map);
+			}
+			
 			System.out.println("-----------selectAboutResult 4 - return Cursor------------");
-			selectAboutResult4(fooMapper);
+			{
+				// 返回 Cursor，不支持
+				
+//				Cursor cursor = fooMapper.selectAboutResult4(1);
+//				for (Iterator iterator = cursor.iterator(); iterator.hasNext();) {
+//					Foo foo = (Foo)iterator.next();
+//					System.out.println(foo);
+//				}
+			}
 
 			System.out.println("-----------selectAboutResult 5 - return Bean------------");
-			selectAboutResult5(fooMapper);
-		}
-
-		/**
-		 * 透过参数获取返回值
-		 * @param fooMapper
-		 */
-		public static void selectAboutResult0(FooMapper fooMapper){
-			FooResultHandler result = new FooResultHandler();
-			fooMapper.selectAboutResult0(1,"1","0",result);
-			for (Object obj : result.getResultList()) {
-				System.out.println(obj);
-			}
-		}
-
-		/**
-		 * 返回数组
-		 * @param fooMapper
-		 */
-		public static void selectAboutResult1(FooMapper fooMapper){
-			Foo[] fooArray = fooMapper.selectAboutResult1(1);
-			for (Foo foo : fooArray) {
+			{
+				// 其他类型
+				Foo foo = fooMapper.selectOneReturnBeanObject(1);
 				System.out.println(foo);
 			}
-		}
-
-		/**
-		 * 返回 List
-		 * @param fooMapper
-		 */
-		public static void selectAboutResult2(FooMapper fooMapper){
-			List<Foo> fooList = fooMapper.selectAboutResult2(1);
-			for (Iterator iterator = fooList.iterator(); iterator.hasNext();) {
-				Foo foo = (Foo) iterator.next();
-				System.out.println(foo);
+			
+			System.out.println("-----------selectAboutResult 5 - return Map Without Annotation------------");
+			{
+				// 返回 Map
+				Map map = fooMapper.selectOneReturnMapWithoutMapKey(1);
+				System.out.println(map);
 			}
-		}
-
-		/**
-		 * 返回 Map
-		 * @param fooMapper
-		 */
-		public static void selectAboutResult3(FooMapper fooMapper){
-			Map map = fooMapper.selectAboutResult3(1);
-			System.out.println(map);
-		}
-
-		/**
-		 * 返回 Cursor，不支持
-		 * @param fooMapper
-		 */
-		public static void selectAboutResult4(FooMapper fooMapper){
-//			Cursor cursor = fooMapper.selectAboutResult4(1);
-//			for (Iterator iterator = cursor.iterator(); iterator.hasNext();) {
-//				Foo foo = (Foo)iterator.next();
-//				System.out.println(foo);
-//			}
-		}
-
-		/**
-		 * 其他类型
-		 * @param fooMapper
-		 */
-		public static void selectAboutResult5(FooMapper fooMapper){
-			Foo foo = fooMapper.selectAboutResult5(1);
-			System.out.println(foo);
 		}
 
 	}
@@ -251,98 +227,68 @@ public class FooTest {
 		public static void test(FooMapper fooMapper){
 			System.out.println("--------------------------------selectAboutParam-----------------------------------------");
 			System.out.println("-----------selectAboutParam 0  - param RowBounds 在结果集中进行筛选------------");
-			selectAboutParam0(fooMapper);
+			{
+				// 翻页结果集 - RowBounds 是对结果集的筛选，不是决定数据库的返回结果集
+				List<Foo> fooList = fooMapper.selectListAndPaginationOnLocalResultSet(1,new RowBounds(2,10));
+				for (Iterator iterator = fooList.iterator(); iterator.hasNext();) {
+					Foo foo = (Foo) iterator.next();
+					System.out.println(foo);
+				}
+			}
 
 			System.out.println("-----------selectAboutParam 1  - param UserDefine ------------");
-			selectAboutParam1(fooMapper);
+			{
+				List<Foo> fooList = fooMapper.selectListAndPaginationOnDbServer(1,0,10);
+				for (Iterator iterator = fooList.iterator(); iterator.hasNext();) {
+					Foo foo = (Foo) iterator.next();
+					System.out.println(foo);
+				}
+			}
 
 			System.out.println("-----------selectAboutParam 2  - param Unsafe ------------");
-			selectAboutParam2(fooMapper);
+			{
+				// 使用  ${} 是不安全的
+				List<Foo> fooList = fooMapper.selectListPassParamUnsafe(1," OR 1=1");
+				for (Iterator iterator = fooList.iterator(); iterator.hasNext();) {
+					Foo foo = (Foo) iterator.next();
+					System.out.println(foo);
+				}
+			}
 
 			System.out.println("-----------selectAboutParam 3  - param Bean ------------");
-			selectAboutParam3(fooMapper);
+			{
+				// 参数是自定义对象
+				Foo foo = new Foo();
+				foo.setId(0);
+				List<Foo> fooList = fooMapper.selectListPassBeanObject(foo);
+				for (Iterator iterator = fooList.iterator(); iterator.hasNext();) {
+					Foo fooTemp = (Foo) iterator.next();
+					System.out.println(fooTemp);
+				}
+			}
 
 			System.out.println("-----------selectAboutParam 4  - param Bean And other ------------");
-			selectAboutParam4(fooMapper);
+			{
+				// 参数是自定义对象
+				Foo foo = new Foo();
+				foo.setId(1);
+				List<Foo> fooList = fooMapper.selectListPassParamNamed(foo,0);
+				for (Iterator iterator = fooList.iterator(); iterator.hasNext();) {
+					Foo fooTemp = (Foo) iterator.next();
+					System.out.println(fooTemp);
+				}
+			}
 			
 			System.out.println("-----------selectAboutParam 5  - generic param name ------------");
-			selectAboutParam5(fooMapper);
-		}
-
-		/**
-		 * 翻页结果集 - RowBounds 是对结果集的筛选，不是决定数据库的返回结果集
-		 * @param fooMapper
-		 */
-		public static void selectAboutParam0(FooMapper fooMapper){
-			List<Foo> fooList = fooMapper.selectAboutParam0(1,new RowBounds(2,10));
-			for (Iterator iterator = fooList.iterator(); iterator.hasNext();) {
-				Foo foo = (Foo) iterator.next();
-				System.out.println(foo);
-			}
-		}
-
-		/**
-		 * @param fooMapper
-		 */
-		public static void selectAboutParam1(FooMapper fooMapper){
-			List<Foo> fooList = fooMapper.selectAboutParam1(1,0,10);
-			for (Iterator iterator = fooList.iterator(); iterator.hasNext();) {
-				Foo foo = (Foo) iterator.next();
-				System.out.println(foo);
-			}
-		}
-
-		/**
-		 * 使用  ${} 是不安全的
-		 * @param fooMapper
-		 */
-		public static void selectAboutParam2(FooMapper fooMapper){
-			List<Foo> fooList = fooMapper.selectAboutParam2(1," OR 1=1");
-			for (Iterator iterator = fooList.iterator(); iterator.hasNext();) {
-				Foo foo = (Foo) iterator.next();
-				System.out.println(foo);
-			}
-		}
-
-		/**
-		 * 参数是自定义对象
-		 * @param fooMapper
-		 */
-		public static void selectAboutParam3(FooMapper fooMapper){
-			Foo foo = new Foo();
-			foo.setId(0);
-			List<Foo> fooList = fooMapper.selectAboutParam3(foo);
-			for (Iterator iterator = fooList.iterator(); iterator.hasNext();) {
-				Foo fooTemp = (Foo) iterator.next();
-				System.out.println(fooTemp);
-			}
-		}
-
-		/**
-		 * 参数是自定义对象
-		 * @param fooMapper
-		 */
-		public static void selectAboutParam4(FooMapper fooMapper){
-			Foo foo = new Foo();
-			foo.setId(1);
-			List<Foo> fooList = fooMapper.selectAboutParam4(foo,0);
-			for (Iterator iterator = fooList.iterator(); iterator.hasNext();) {
-				Foo fooTemp = (Foo) iterator.next();
-				System.out.println(fooTemp);
-			}
-		}
-		
-		/**
-		 * 参数是自定义对象
-		 * @param fooMapper
-		 */
-		public static void selectAboutParam5(FooMapper fooMapper){
-			Foo foo = new Foo();
-			foo.setId(1);
-			List<Foo> fooList = fooMapper.selectAboutParam5(foo,0);
-			for (Iterator iterator = fooList.iterator(); iterator.hasNext();) {
-				Foo fooTemp = (Foo) iterator.next();
-				System.out.println(fooTemp);
+			{
+				// 参数是自定义对象
+				Foo foo = new Foo();
+				foo.setId(1);
+				List<Foo> fooList = fooMapper.selectListPassParamWithGenericNamed(foo,0);
+				for (Iterator iterator = fooList.iterator(); iterator.hasNext();) {
+					Foo fooTemp = (Foo) iterator.next();
+					System.out.println(fooTemp);
+				}
 			}
 		}
 	}

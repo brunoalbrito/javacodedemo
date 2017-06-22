@@ -275,7 +275,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 		Set<BeanDefinition> candidates = new LinkedHashSet<BeanDefinition>();
 		try {
 			String packageSearchPath = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX +
-					resolveBasePackage(basePackage) + '/' + this.resourcePattern; // classpath*:cn/java/demo/contexttag/[A-Z][a-z0-9A-Z]*Component
+					resolveBasePackage(basePackage) + '/' + this.resourcePattern; // classpath*:cn/java/demo/contexttag/*Component
 //			resourcePatternResolver === org.springframework.context.support.AbstractApplicationContext
 			Resource[] resources = this.resourcePatternResolver.getResources(packageSearchPath); // 查找所有资源
 			boolean traceEnabled = logger.isTraceEnabled();

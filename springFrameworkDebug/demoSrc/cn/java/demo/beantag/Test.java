@@ -37,6 +37,7 @@ import cn.java.demo.beantag.internal.InternalUtils_BeanUtilsTest;
 import cn.java.demo.beantag.internal.InternalUtils_ClassUtils;
 import cn.java.demo.beantag.internal.InternalUtils_ObjectUtilsTest;
 import cn.java.demo.beantag.internal.InternalUtils_ReflectionUtilsTest;
+import cn.java.demo.beantag.internal.ResourcePatternResolverTest;
 import cn.java.demo.beantag.internal.TypeConverterTest;
 import cn.java.demo.util.ApplicationContextUtil;
 
@@ -230,6 +231,11 @@ public class Test {
 			System.out.println("******使用表达式访问bean对象");
 			ExpressionParserTest.testStandardBeanExpressionResolverResultString((AbstractRefreshableConfigApplicationContext) context);
 			ExpressionParserTest.testStandardBeanExpressionResolverResultBeanObject((AbstractRefreshableConfigApplicationContext) context);
+			
+			System.out.println("******查找符合条件的资源文件");
+			{
+				ResourcePatternResolverTest.testResourcePatternResolver((AbstractRefreshableConfigApplicationContext) context);
+			}
 			
 			{
 				System.out.println("******BeanUtils工具类");

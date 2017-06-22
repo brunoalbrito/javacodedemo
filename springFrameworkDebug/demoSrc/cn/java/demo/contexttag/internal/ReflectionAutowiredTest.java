@@ -19,7 +19,7 @@ import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
 
-public class ReflectionUtilsTest {
+public class ReflectionAutowiredTest {
 
 	public static void testReflectionAutowired() {
 		new ReflectionAutowired().test();

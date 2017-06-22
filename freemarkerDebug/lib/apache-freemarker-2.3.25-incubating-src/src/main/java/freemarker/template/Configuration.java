@@ -831,7 +831,7 @@ public class Configuration extends Configurable implements Cloneable, ParserConf
         NullArgumentException.check("incompatibleImprovements", incompatibleImprovements);
         this.incompatibleImprovements = incompatibleImprovements;
         
-        createTemplateCache();
+        createTemplateCache(); // 创建模板缓存
         loadBuiltInSharedVariables(); // 加载内建的共享变量
     }
 
@@ -859,6 +859,7 @@ public class Configuration extends Configurable implements Cloneable, ParserConf
             TemplateLoader loader, CacheStorage storage,
             TemplateLookupStrategy templateLookupStrategy, TemplateNameFormat templateNameFormat,
             TemplateConfigurationFactory templateConfigurations) {
+    	// loader === freemarker.cache.FileTemplateLoader
         TemplateCache oldCache = cache;
         cache = new TemplateCache(
                 loader, storage, templateLookupStrategy, templateNameFormat, templateConfigurations, this);
@@ -1163,7 +1164,7 @@ public class Configuration extends Configurable implements Cloneable, ParserConf
             if (cache.getTemplateLoader() != templateLoader) {
                 recreateTemplateCacheWith(templateLoader, cache.getCacheStorage(),
                         cache.getTemplateLookupStrategy(), cache.getTemplateNameFormat(),
-                        cache.getTemplateConfigurations());
+                        cache.getTemplateConfigurations()); // !!!!
             }
             templateLoaderExplicitlySet = true;
         }
@@ -1419,7 +1420,7 @@ public class Configuration extends Configurable implements Cloneable, ParserConf
             if (path.equals(dir.getCanonicalPath()))
                 return;
         }
-        setTemplateLoader(new FileTemplateLoader(dir));
+        setTemplateLoader(new FileTemplateLoader(dir)); // !!!
     }
 
     /**

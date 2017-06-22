@@ -23,6 +23,7 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.RequiredAnnotationBeanPostProcessor;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
@@ -148,10 +149,10 @@ public class AnnotationConfigUtils {
 		DefaultListableBeanFactory beanFactory = unwrapDefaultListableBeanFactory(registry);
 		if (beanFactory != null) {
 			if (!(beanFactory.getDependencyComparator() instanceof AnnotationAwareOrderComparator)) {
-				beanFactory.setDependencyComparator(AnnotationAwareOrderComparator.INSTANCE); // org.springframework.core.annotation.AnnotationAwareOrderComparator
+				beanFactory.setDependencyComparator(AnnotationAwareOrderComparator.INSTANCE); // 指定order的属性，org.springframework.core.annotation.AnnotationAwareOrderComparator
 			}
 			if (!(beanFactory.getAutowireCandidateResolver() instanceof ContextAnnotationAutowireCandidateResolver)) {
-				beanFactory.setAutowireCandidateResolver(new ContextAnnotationAutowireCandidateResolver());
+				beanFactory.setAutowireCandidateResolver(new ContextAnnotationAutowireCandidateResolver()); // 支持@Qualifier注解
 			}
 		}
 

@@ -388,10 +388,10 @@ public class Configurable {
         parent = null;
         properties = new Properties();
         
-        locale = Locale.getDefault();
+        locale = Locale.getDefault(); // 语言
         properties.setProperty(LOCALE_KEY, locale.toString());
         
-        timeZone = TimeZone.getDefault();
+        timeZone = TimeZone.getDefault(); // 时区
         properties.setProperty(TIME_ZONE_KEY, timeZone.getID());
         
         sqlDataAndTimeTimeZone = null;
@@ -413,13 +413,13 @@ public class Configurable {
         properties.setProperty(CLASSIC_COMPATIBLE_KEY, classicCompatible.toString());
         
         templateExceptionHandler = _TemplateAPI.getDefaultTemplateExceptionHandler(
-                incompatibleImprovements);
+                incompatibleImprovements); // 模板异常处理器  freemarker.template.TemplateExceptionHandler.DEBUG_HANDLER
         properties.setProperty(TEMPLATE_EXCEPTION_HANDLER_KEY, templateExceptionHandler.getClass().getName());
         
         arithmeticEngine = ArithmeticEngine.BIGDECIMAL_ENGINE;
         properties.setProperty(ARITHMETIC_ENGINE_KEY, arithmeticEngine.getClass().getName());
         
-        objectWrapper = Configuration.getDefaultObjectWrapper(incompatibleImprovements);
+        objectWrapper = Configuration.getDefaultObjectWrapper(incompatibleImprovements); // 对象包装器  freemarker.template.DefaultObjectWrapperBuilder().build();
         // bug: setProperty missing
         
         autoFlush = Boolean.TRUE;
@@ -451,8 +451,8 @@ public class Configurable {
         lazyImports = false;
         lazyAutoImportsSet = true;
         
-        initAutoImportsMap();
-        initAutoIncludesList();
+        initAutoImportsMap(); // 自动导入
+        initAutoIncludesList(); // 自动包含
     }
 
     /**

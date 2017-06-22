@@ -111,14 +111,14 @@ public class ComponentScanBeanDefinitionParser implements BeanDefinitionParser {
 		}
 
 		try {
-			parseBeanNameGenerator(element, scanner); // 设置beanName生成器
+			parseBeanNameGenerator(element, scanner); // 设置beanName生成器 scanner.setBeanNameGenerator(...);
 		}
 		catch (Exception ex) {
 			parserContext.getReaderContext().error(ex.getMessage(), parserContext.extractSource(element), ex.getCause());
 		}
 
 		try {
-			parseScope(element, scanner); // 设置Scope解析器
+			parseScope(element, scanner); // 设置Scope解析器 scanner.setScopeMetadataResolver(...);
 		}
 		catch (Exception ex) {
 			parserContext.getReaderContext().error(ex.getMessage(), parserContext.extractSource(element), ex.getCause());
@@ -131,7 +131,7 @@ public class ComponentScanBeanDefinitionParser implements BeanDefinitionParser {
 
 	protected ClassPathBeanDefinitionScanner createScanner(XmlReaderContext readerContext, boolean useDefaultFilters) {
 		return new ClassPathBeanDefinitionScanner(readerContext.getRegistry(), useDefaultFilters,
-				readerContext.getEnvironment(), readerContext.getResourceLoader());
+				readerContext.getEnvironment(), readerContext.getResourceLoader()); // !!!
 	}
 
 	protected void registerComponents(

@@ -6,7 +6,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import cn.java.demo.contexttag.component.api.FooComponent;
 import cn.java.demo.contexttag.component.impl.NeedAutowireComponent;
-import cn.java.demo.contexttag.internal.ReflectionUtilsTest;
+import cn.java.demo.contexttag.internal.ReflectionAutowiredTest;
 import cn.java.demo.contexttag.internal.asm.ClassMetadataTest;
 import cn.java.demo.contexttag.internal.enhancer.FooServiceMustNeedBeanFactoryEnhancerTest;
 import cn.java.demo.util.ApplicationContextUtil;
@@ -71,7 +71,7 @@ public class Test {
 			
 			System.out.println("\n----------解析@Autowired注解--------------");
 			{
-				ReflectionUtilsTest.testReflectionAutowired();
+				ReflectionAutowiredTest.testReflectionAutowired();
 			}
 		}
 	}

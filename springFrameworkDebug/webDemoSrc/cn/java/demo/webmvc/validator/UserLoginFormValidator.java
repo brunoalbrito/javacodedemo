@@ -18,6 +18,7 @@ import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.support.RequestContext;
 
 import cn.java.demo.webmvc.form.UserLoginForm;
+import cn.java.demo.webmvc.validator.utils.ValidatorFactory;
 
 public class UserLoginFormValidator implements Validator {
 

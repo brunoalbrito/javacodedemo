@@ -2,6 +2,7 @@ package cn.java.demo.webmvc.bean.handler.byannotation;
 
 import java.util.List;
 
+import org.springframework.http.HttpMethod;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.DataBinder;
@@ -32,7 +33,7 @@ public class ValidHandler {
 	 * @param binder
 	 */
 	@InitBinder(value={"userLoginForm","objectName1"}) // 要@ModelAttribute的name值，在集合{"objectName0","objectName1"}中
-	public void initBinder(DataBinder binder) {
+	public void initBinder(DataBinder binder,HttpMethod httpMethod) {
 		if(binder instanceof ExtendedServletRequestDataBinder){
 			System.out.println("-->binder instanceof ExtendedServletRequestDataBinder");
 			if(binder.getTarget() instanceof UserLoginForm){
@@ -42,7 +43,9 @@ public class ValidHandler {
 				
 			}
 		}
-		binder.setValidator(new UserLoginFormValidator()); // 添加校验器
+		if(RequestMethod.POST.name().equals(httpMethod.name())){ // post的提交方式才需要校验
+			binder.setValidator(new UserLoginFormValidator()); // 添加校验器
+		}
 	}
 	
 	/**

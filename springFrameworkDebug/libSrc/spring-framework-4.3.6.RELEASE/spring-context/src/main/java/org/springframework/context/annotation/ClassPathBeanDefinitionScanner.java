@@ -164,7 +164,7 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 			registerDefaultFilters();
 		}
 		setEnvironment(environment);
-		setResourceLoader(resourceLoader);
+		setResourceLoader(resourceLoader); // !!!
 	}
 
 
@@ -281,7 +281,7 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 					postProcessBeanDefinition((AbstractBeanDefinition) candidate, beanName); // !!!  是否启用自动装配
 				}
 				if (candidate instanceof AnnotatedBeanDefinition) {
-					AnnotationConfigUtils.processCommonDefinitionAnnotations((AnnotatedBeanDefinition) candidate); // !!! BeanDefinition的属性
+					AnnotationConfigUtils.processCommonDefinitionAnnotations((AnnotatedBeanDefinition) candidate); // !!! 解析BeanDefinition的属性
 				}
 				if (checkCandidate(beanName, candidate)) { // beanName没被定义过
 					BeanDefinitionHolder definitionHolder = new BeanDefinitionHolder(candidate, beanName);
