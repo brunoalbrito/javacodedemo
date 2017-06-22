@@ -29,7 +29,7 @@ public class CacheTest {
 		User user = null;
 		SessionFactoryUtil.getSessionFactory().evict(User.class);
 		try {
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			user = (User) session.get(User.class, id);
 			System.out.println(user);
 			//session.evict(user);
@@ -49,7 +49,7 @@ public class CacheTest {
 		}
 
 		try {
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			user = (User) session.get(User.class, id);
 			System.out.println(user.getUserName());
 		} finally {
@@ -71,7 +71,7 @@ public class CacheTest {
 		Session session = null;
 		Transaction transaction = null;
 		try {
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			transaction = session.beginTransaction();
 			session.save(user);
 			transaction.commit();

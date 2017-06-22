@@ -34,7 +34,7 @@ public final class SessionFactoryUtil {
 		return sessionFactory;
 	}
 	
-	public static Session getSession() {
+	public static Session openSession() {
 		if(sessionFactory==null){
 			throw new RuntimeException("sessionFactory is null.");
 		}

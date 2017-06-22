@@ -45,10 +45,12 @@ public class TransactionEnvironmentImpl implements TransactionEnvironment {
     public TransactionEnvironmentImpl(SessionFactoryImpl sessionFactory) {
         this.sessionFactory = sessionFactory;
         this.statisticsImplementor = sessionFactory.getStatisticsImplementor();
-        this.serviceRegistry = sessionFactory.getServiceRegistry();
+        this.serviceRegistry = sessionFactory.getServiceRegistry(); // org.hibernate.service.internal.SessionFactoryServiceRegistryImpl
         this.jdbcServices = serviceRegistry.getService( JdbcServices.class );
         this.jtaPlatform = serviceRegistry.getService( JtaPlatform.class );
-        this.transactionFactory = serviceRegistry.getService( TransactionFactory.class );
+        // TransactionFactoryInitiator.INSTANCE 
+        this.transactionFactory = serviceRegistry.getService( TransactionFactory.class ); // !!!  org.hibernate.engine.transaction.internal.jdbc.JdbcTransactionFactory
+
     }
 
     @Override

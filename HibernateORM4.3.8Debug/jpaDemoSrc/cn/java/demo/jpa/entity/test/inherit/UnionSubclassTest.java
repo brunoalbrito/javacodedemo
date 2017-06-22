@@ -39,7 +39,7 @@ public class UnionSubclassTest {
 			pig.setAnimalName("animalName_"+System.nanoTime());
 			pig.setWeigth(new Random().nextInt(5));
 			// 添加数据
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			transaction = session.beginTransaction();
 			session.save(pig);
 			transaction.commit();
@@ -60,7 +60,7 @@ public class UnionSubclassTest {
 			bird.setAnimalName("animalName_"+System.nanoTime());
 			bird.setHeight(new Random().nextInt(10));
 			// 添加数据
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			transaction = session.beginTransaction();
 			session.save(bird);
 			transaction.commit();
@@ -78,7 +78,7 @@ public class UnionSubclassTest {
 		Transaction transaction = null;
 		try {
 
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			transaction = session.beginTransaction();
 			Pig pigEntity = (Pig) session.get(Pig.class, pig.getAnimalId());
 			System.out.println(pigEntity);
@@ -95,7 +95,7 @@ public class UnionSubclassTest {
 		Session session = null;
 		Transaction transaction = null;
 		try {
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			transaction = session.beginTransaction();
 			session.delete(pig); // 删除
 			transaction.commit();
@@ -115,7 +115,7 @@ public class UnionSubclassTest {
 		try {
 			pig.setAnimalName(pig.getAnimalName()+"_new");
 
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			transaction = session.beginTransaction();
 			session.update(pig); // 修改
 			transaction.commit();
@@ -130,7 +130,7 @@ public class UnionSubclassTest {
 		System.out.println("---------selectListFromPig---------");
 		Session session = null;
 		try {
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			Query query = session.createQuery("from "+Pig.class.getName()+" where id <> :id ");
 			query.setParameter("id", "0");
 			List<Pig> pigList = (List<Pig>) query.list();
@@ -155,7 +155,7 @@ public class UnionSubclassTest {
 		System.out.println("---------selectListFromAnimal---------");
 		Session session = null;
 		try {
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			Query query = session.createQuery("from "+Animal.class.getName()+" where id <> :id ");
 			query.setParameter("id", "0");
 			List<Animal> animalList = (List<Animal>) query.list();

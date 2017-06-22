@@ -34,7 +34,7 @@ public class One2OneAllSidedTest {
 		Transaction transaction = null;
 
 		try {
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 
 			// 构造数据
 			IdCard idCard = new IdCard();
@@ -66,7 +66,7 @@ public class One2OneAllSidedTest {
 		Transaction transaction = null;
 
 		try {
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			transaction = session.beginTransaction();
 			session.delete(person); // 删除
 			transaction.commit();
@@ -84,7 +84,7 @@ public class One2OneAllSidedTest {
 
 		try {
 			idCard.setIdcardName(idCard.getIdcardName() + "_new");
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			transaction = session.beginTransaction();
 			session.update(idCard); // 修改
 			transaction.commit();
@@ -102,7 +102,7 @@ public class One2OneAllSidedTest {
 
 		try {
 			person.setPersonName(person.getPersonName() + "_new");
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			transaction = session.beginTransaction();
 			session.update(person); // 修改
 			transaction.commit();
@@ -119,7 +119,7 @@ public class One2OneAllSidedTest {
 		Transaction transaction = null;
 
 		try {
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			transaction = session.beginTransaction();
 
 			// 获取数据
@@ -143,7 +143,7 @@ public class One2OneAllSidedTest {
 		System.out.println("---------selectList---------");
 		Session session = null;
 		try {
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			Query query = session.createQuery("from " + Person.class.getName() + " where id <> :id ");
 			query.setParameter("id", 0);
 			List<Person> personList = (List<Person>) query.list();

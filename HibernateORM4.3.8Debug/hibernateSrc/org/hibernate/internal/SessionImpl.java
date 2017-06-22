@@ -1431,14 +1431,14 @@ public final class SessionImpl extends AbstractSessionImpl implements EventSourc
 	@Override
 	public Transaction getTransaction() throws HibernateException {
 		errorIfClosed();
-		// TransactionCoordinatorImpl
+		// org.hibernate.engine.transaction.internal.TransactionCoordinatorImpl
 		return transactionCoordinator.getTransaction();
 	}
 
 	@Override
 	public Transaction beginTransaction() throws HibernateException {
 		errorIfClosed();
-		Transaction result = getTransaction();
+		Transaction result = getTransaction(); // org.hibernate.engine.transaction.internal.jdbc.JdbcTransaction
 		result.begin();
 		return result;
 	}

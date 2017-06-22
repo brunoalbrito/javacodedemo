@@ -35,7 +35,7 @@ public class One2OneTest {
 		Transaction transaction = null;
 
 		try {
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			
 			// 构造数据
 			IdCard idCard = new IdCard();
@@ -67,7 +67,7 @@ public class One2OneTest {
 		Transaction transaction = null;
 
 		try {
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			transaction = session.beginTransaction();
 			session.delete(person);  // 删除
 			transaction.commit();
@@ -86,7 +86,7 @@ public class One2OneTest {
 		try {
 			person.setName("person_new");
 			
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			transaction = session.beginTransaction();
 			session.update(person); // 修改
 			transaction.commit();
@@ -103,7 +103,7 @@ public class One2OneTest {
 		Transaction transaction = null;
 
 		try {
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			transaction = session.beginTransaction();
 			
 			// 获取数据
@@ -127,7 +127,7 @@ public class One2OneTest {
 		System.out.println("---------selectList---------");
 		Session session = null;
 		try {
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			Query query = session.createQuery("from Person where id <> :id "); 
 			query.setParameter("id", 0);
 			List<Person> personList = (List<Person>) query.list();

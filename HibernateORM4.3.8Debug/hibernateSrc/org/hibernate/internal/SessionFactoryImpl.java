@@ -263,7 +263,8 @@ public final class SessionFactoryImpl
 
 		this.properties = new Properties();
 		this.properties.putAll( cfg.getProperties() );
-
+		// SessionFactoryServiceRegistryFactoryInitiator.INSTANCE
+		// org.hibernate.service.internal.SessionFactoryServiceRegistryFactoryImpl
 		this.serviceRegistry = serviceRegistry.getService( SessionFactoryServiceRegistryFactory.class ).buildServiceRegistry(
 				this,
 				cfg
