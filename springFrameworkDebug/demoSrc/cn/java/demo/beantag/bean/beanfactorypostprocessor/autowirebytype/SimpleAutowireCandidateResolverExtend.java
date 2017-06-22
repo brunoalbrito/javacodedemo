@@ -1,4 +1,4 @@
-package cn.java.demo.beantag.bean_factory_post_processor;
+package cn.java.demo.beantag.bean.beanfactorypostprocessor.autowirebytype;
 
 import java.util.Arrays;
 import java.util.List;

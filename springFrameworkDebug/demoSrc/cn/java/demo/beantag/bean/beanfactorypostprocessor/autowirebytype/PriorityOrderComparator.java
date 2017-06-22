@@ -1,4 +1,4 @@
-package cn.java.demo.beantag.bean_factory_post_processor;
+package cn.java.demo.beantag.bean.beanfactorypostprocessor.autowirebytype;
 
 import org.springframework.core.OrderComparator;
 import org.springframework.core.PriorityOrdered;

@@ -32,6 +32,7 @@
     	<constructor-arg index="2" type="cn.java.demo.beantag.bean.FooBean" name="fooBean" ref="beanRefByConstructorParam" />
     </bean>
     
+    <!-- *********自动装配*********bof***********  -->
 	<!-- 属性注入(自动装配) - 根据setter的属性名autowire="byName" -->
 	<bean id="beanRefByAutowireByNameBean" class="cn.java.demo.beantag.bean.FooBean" />
 	<bean id="autowireByNameBean" class="cn.java.demo.beantag.bean.AutowireByNameBean" autowire="byName">
@@ -49,31 +50,6 @@
     <!-- case.1 不在配置文件中指定传值内容，此时必须scope="prototype"，在预创建的时候，不会实例化本类 -->
 	<bean id="autowireByConstructor1" class="cn.java.demo.beantag.bean.AutowireByConstructor" autowire="constructor" scope="prototype" />
     
-	<!-- 修饰符qualifier  -->
-	<!-- 
-		qualifier标签起作用的条件是：配置org.springframework.beans.factory.annotation.CustomAutowireConfigurer劫持修改掉beanFactory的AutowireCandidateResolver
-		这个bean能成为“自动装配候选人”的条件是：
-			case.1、不存在CustomAutowireConfigurer中配置的注解
-				autowire-candidate="true"
-				
-			case.2、存在CustomAutowireConfigurer中配置的注解
-				1、autowire-candidate="true"
-				2、目标bean中的setter方法上的参数有存在注解，并且在<qualifier>支持的类型中存在
-	-->
-	<bean class="cn.java.demo.beantag.bean.autowirebytype.FooBeanInjectSelectedByQualifier" autowire-candidate="true">
-	    <constructor-arg index="0" type="java.lang.String" value="0" />
-	   	<constructor-arg index="1" type="java.lang.String" value="FooBeanInjectSelectedByQualifier0" />
-	    <qualifier type="org.springframework.beans.factory.annotation.Qualifier" value="fooBeanInjectSelectedByQualifier0" /> <!-- 配置qualifier -->
-	    <qualifier type="cn.java.demo.beantag.qualifier.MyQualifier0"  value="MyQualifier0_fooBeanInjectSelectedByQualifier0">
-	        <attribute key="attribute_key0" value="attribute_key0_value" />
-	        <attribute key="attribute_key1" value="attribute_key1_value" />
-        </qualifier>
-    </bean>
-	<bean class="cn.java.demo.beantag.bean.autowirebytype.FooBeanInjectSelectedByQualifier" autowire-candidate="true">
-	    <constructor-arg index="0" type="java.lang.String" value="1" />
-	   	<constructor-arg index="1" type="java.lang.String" value="FooBeanInjectSelectedByQualifier1" />
-	    <qualifier type="cn.java.demo.beantag.qualifier.MyQualifier1"  value="MyQualifier1_fooBeanInjectSelectedByQualifier0" /> <!-- 配置qualifier -->
-    </bean>
     <!-- 
     	属性注入(自动装配) - 根据“成员方法”的参数类型autowire="byType"
     	org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(....)
@@ -112,6 +88,40 @@
         <constructor-arg index="0" type="java.lang.String" value="1" />
 	   	<constructor-arg index="1" type="java.lang.String" value="FooBeanInjectSelectedByArgName1" />
     </bean>
+    <!-- 修饰符qualifier  -->
+	<!-- 
+		qualifier标签起作用的条件是：配置org.springframework.beans.factory.annotation.CustomAutowireConfigurer劫持修改掉beanFactory的AutowireCandidateResolver
+		这个bean能成为“自动装配候选人”的条件是：
+			case.1、不存在CustomAutowireConfigurer中配置的注解
+				autowire-candidate="true"
+				
+			case.2、存在CustomAutowireConfigurer中配置的注解
+				1、autowire-candidate="true"
+				2、目标bean中的setter方法上的参数有存在注解，并且在<qualifier>支持的类型中存在
+	-->
+	<bean class="cn.java.demo.beantag.bean.autowirebytype.FooBeanInjectSelectedByQualifier" autowire-candidate="true">
+	    <constructor-arg index="0" type="java.lang.String" value="0" />
+	   	<constructor-arg index="1" type="java.lang.String" value="FooBeanInjectSelectedByQualifier0" />
+	    <qualifier type="org.springframework.beans.factory.annotation.Qualifier" value="fooBeanInjectSelectedByQualifier0" /> <!-- 配置qualifier -->
+	    <qualifier type="cn.java.demo.beantag.qualifier.MyQualifier0"  value="MyQualifier0_fooBeanInjectSelectedByQualifier0">
+	        <attribute key="attribute_key0" value="attribute_key0_value" />
+	        <attribute key="attribute_key1" value="attribute_key1_value" />
+        </qualifier>
+    </bean>
+	<bean class="cn.java.demo.beantag.bean.autowirebytype.FooBeanInjectSelectedByQualifier" autowire-candidate="true">
+	    <constructor-arg index="0" type="java.lang.String" value="1" />
+	   	<constructor-arg index="1" type="java.lang.String" value="FooBeanInjectSelectedByQualifier1" />
+	    <qualifier type="cn.java.demo.beantag.qualifier.MyQualifier1"  value="MyQualifier1_fooBeanInjectSelectedByQualifier0" /> <!-- 配置qualifier -->
+    </bean>
+    <!-- 劫持BeanFactory，注入对@Qualifier、@MyQualifier0、@MyQualifier1的支持 -->
+	<bean class="cn.java.demo.beantag.bean.beanfactorypostprocessor.autowirebytype.CustomBeanFactoryConfigurer">
+	    <property name="customQualifierTypes">
+			<set>
+			  <value>cn.java.demo.beantag.qualifier.MyQualifier0</value>
+			  <value>cn.java.demo.beantag.qualifier.MyQualifier1</value>
+			</set>
+		</property>
+	</bean>
 	<bean id="autowireByTypeBean0" class="cn.java.demo.beantag.bean.AutowireByTypeBean" autowire="byType">
 	 	<!-- 以下使用属性注入 -->
 	 	<property  name="username" value="username is assign in xml  - AutowireByNameBean" />
@@ -125,6 +135,7 @@
 			  		3、根据参数名获取到bean（默认不支持 - 要自行扩展，在beanFactory设置自己的AutowireCandidateResolver，详见BeanFactoryPostProcessorImpl）
 	 	 -->
     </bean>
+   	<!-- *********自动装配*********eof***********  -->
 	
 	<!-- 劫持getter方法 - 这个会使用cglib生成子类 -->
 	<!-- 没有“带参数的构造函数”，必须设置scope="prototype"，不然spring对没有配置scope="prototype"的bean，默认为是单例的bean，在预创建的时候，会使用“不带参数的构造函数”实例化，会出错 -->
@@ -207,6 +218,7 @@
 	</bean>
 	
 	<!-- 实现ApplicationListener接口，用于感知应用的事件（实现监听器） -->
+	<!-- 机制：实现ApplicationListener接口的bean会被ApplicationListenerDetector（是一个BeanPostProcessor hook）接触，并注入到applicationContext	 -->
 	<bean id="applicationListenerWithPayloadApplicationEventParamBean" class="cn.java.demo.beantag.bean.applicationlistener.ApplicationListenerWithPayloadApplicationEventParamBean" />
 	<bean id="applicationListenerWithApplicationEventParamBean" class="cn.java.demo.beantag.bean.applicationlistener.ApplicationListenerWithApplicationEventParamBean" />
 	<bean id="fooEventTriggerBean"  class="cn.java.demo.beantag.bean.applicationlistener.FooEventTriggerBean">
@@ -218,18 +230,13 @@
 	<bean id="messageSource" class="cn.java.demo.beantag.message_source.DelegatingMessageSourceExtend" />
 	
 	<!-- 带启动方法的bean，在jmx中的消费者就有应用到 -->
+	<!-- 机制：实现SmartLifecycle接口的bean，在ApplicationContext启动的最后一步，会自动调用里面的start方法
+		实现Lifecycle接口的bean，要手动启动触发启动
+	 -->
 	<bean id="fooOneLifecycle" class="cn.java.demo.beantag.lifecycle.FooOneLifecycle" />
 	<bean id="fooOneSmartLifecycle" class="cn.java.demo.beantag.lifecycle.FooOneSmartLifecycle">
 	    <property name="isAutoStartup" value="true" />
     </bean>
     
-	<!-- 劫持BeanFactory -->
-	<bean class="cn.java.demo.beantag.bean_factory_post_processor.CustomBeanFactoryConfigurer">
-	    <property name="customQualifierTypes">
-			<set>
-			  <value>cn.java.demo.beantag.qualifier.MyQualifier0</value>
-			  <value>cn.java.demo.beantag.qualifier.MyQualifier1</value>
-			</set>
-		</property>
-	</bean>
+	
 </beans>  

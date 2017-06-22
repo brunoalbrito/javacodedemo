@@ -37,12 +37,12 @@
     </bean>  
   
     <!-- 事务管理器 -->  
-    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">  
+    <bean id="mybatisTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">  
         <property name="dataSource" ref="dataSource" />  
     </bean>
     
     <!-- 业务Bean -->
-	<bean id="fooService" class="cn.java.demo.mapper_mybatis.service.FooService">
+	<bean id="fooService" class="cn.java.demo.mapper_mybatis.serviceimpl.FooServiceImpl">
 		 <property name="mybatisSessionFactory" ref="mybatisSessionFactory" />
 	</bean>
 </beans>  

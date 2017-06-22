@@ -208,6 +208,11 @@ public class Test {
 			fooEventTriggerBean.testTriggerEvent();
 		}
 		
+		System.out.println("-------------国际化-------------------");
+		{
+			I18nTest.testI18n((AbstractRefreshableConfigApplicationContext) context);
+		}
+		
 		System.out.println("-------------手动启动“不能自动启动bean”-------------------");
 		{
 			ConfigurableListableBeanFactory beanFactory = ApplicationContextUtil.getBeanFactoryAndTryCastTypeToConfigurableListableBeanFactory((AbstractRefreshableConfigApplicationContext) context);
@@ -261,8 +266,7 @@ public class Test {
 			System.out.println("******自动生成beanName");
 			BeanNameGeneratorTest.testBeanNameGenerator((AbstractRefreshableConfigApplicationContext) context);
 			
-			System.out.println("******国际化");
-			I18nTest.testI18n((AbstractRefreshableConfigApplicationContext) context);
+			
 		}
 		
 	}
