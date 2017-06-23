@@ -47,5 +47,12 @@
 	<classpathentry kind="lib" path="lib/jasperreports-6.3.0/commons-digester-2.1.jar"/>
 	<classpathentry kind="lib" path="lib/jasperreports-6.3.0/itext-4.2.0.jar"/>
 	<classpathentry kind="lib" path="lib/fastjson-1.2.26/fastjson-1.2.26.jar"/>
+	<classpathentry kind="lib" path="lib/net_sf_json/ezmorph-1.0.3.jar"/>
+	<classpathentry kind="lib" path="lib/net_sf_json/json-lib-2.4-jdk15.jar"/>
+	<classpathentry kind="lib" path="lib/net_sf_json/commons-lang-2.5.jar"/>
+	<classpathentry kind="lib" path="lib/qrcode/google/google_qrcode.jar"/>
+	<classpathentry kind="lib" path="lib/qrcode/japan/jmagick.jar"/>
+	<classpathentry kind="lib" path="lib/qrcode/japan/QRCode.jar"/>
+	<classpathentry kind="lib" path="lib/qrcode/japan/Qrcodeen.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -1,5 +1,6 @@
 package cn.java.security.demo;
 
+import java.lang.reflect.Array;
 import java.security.Key;
 import java.security.KeyFactory;
 import java.security.KeyPair;
@@ -14,11 +15,13 @@ import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Arrays;
 import java.util.Base64;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 public class SecurityUtil {
@@ -53,8 +56,9 @@ public class SecurityUtil {
 	 */
 	public static class AesUtil {
 		private static final String ALGORITHM = "AES";
+		private static final String CIPHER_TRANSFORMATION = "AES/CBC/PKCS5Padding";
 		private static final String DEFAULT_CHARSET = "UTF-8";
-
+		
 		/**
 		 * 生成秘钥
 		 * @return
@@ -72,17 +76,30 @@ public class SecurityUtil {
 		 */
 		public static SecretKeySpec getSecretKeySpec(String secretKeyStr){
 			byte[] secretKey = Base64.getDecoder().decode(secretKeyStr);
-			System.out.println(secretKey.length);
+			System.out.println("secretKey bytes length = " + secretKey.length);
 			return new SecretKeySpec(secretKey, ALGORITHM);
 		}
 
 		/**
 		 * 加密
 		 */
+		@SuppressWarnings("unused")
 		public static String encrypt(String content,String secretKey) throws Exception{
 			Key key = getSecretKeySpec(secretKey);
-			Cipher cipher = Cipher.getInstance(ALGORITHM);// 创建密码器  
-			cipher.init(Cipher.ENCRYPT_MODE, key);// 初始化
+			Cipher cipher = null;
+			{
+				cipher = Cipher.getInstance(ALGORITHM);// 创建密码器  
+				cipher.init(Cipher.ENCRYPT_MODE, key);// 初始化
+			}
+			if(false){
+				byte[] secretKeyBytes = Base64.getDecoder().decode(secretKey);
+				byte[] byteBuf = new byte[secretKeyBytes.length];
+				byte byteVal = 0;
+				Arrays.fill(byteBuf,byteVal);
+				IvParameterSpec iv = new IvParameterSpec(byteBuf);
+				cipher = Cipher.getInstance(CIPHER_TRANSFORMATION);
+				cipher.init(Cipher.ENCRYPT_MODE, key, iv);
+			}
 			byte[] result = cipher.doFinal(content.getBytes(DEFAULT_CHARSET));
 			return Base64.getEncoder().encodeToString(result);
 		}
@@ -90,10 +107,23 @@ public class SecurityUtil {
 		/**
 		 * 解密
 		 */
+		@SuppressWarnings("unused")
 		public static String decrypt(String content, String secretKey) throws Exception{  
 			Key key = getSecretKeySpec(secretKey);
-			Cipher cipher = Cipher.getInstance(ALGORITHM);
-			cipher.init(Cipher.DECRYPT_MODE, key);
+			Cipher cipher = null;
+			{
+				cipher = Cipher.getInstance(ALGORITHM);
+				cipher.init(Cipher.DECRYPT_MODE, key);
+			}
+			if(false){
+				byte[] secretKeyBytes = Base64.getDecoder().decode(secretKey);
+				byte[] byteBuf = new byte[secretKeyBytes.length];
+				byte byteVal = 0;
+				Arrays.fill(byteBuf,byteVal);
+				IvParameterSpec iv = new IvParameterSpec(byteBuf);
+				cipher = Cipher.getInstance(CIPHER_TRANSFORMATION);
+				cipher.init(Cipher.ENCRYPT_MODE, key, iv);
+			}
 			byte[] result = cipher.doFinal(Base64.getDecoder().decode(content));  
 			return new String(result);
 		}  
@@ -127,6 +157,7 @@ public class SecurityUtil {
 		private static final String ALGORITHM = "RSA";
 		private static final String ALGORITHMS_SHA1WithRSA = "SHA1WithRSA";
 		private static final String ALGORITHMS_SHA256WithRSA = "SHA256WithRSA";
+		private static final String CIPHER_TRANSFORMATION = "RSA/ECB/PKCS1Padding";
 		private static final String DEFAULT_CHARSET = "UTF-8";
 		private static String getAlgorithms(boolean isRsa2) {
 			return isRsa2 ? ALGORITHMS_SHA256WithRSA : ALGORITHMS_SHA1WithRSA;
@@ -211,9 +242,13 @@ public class SecurityUtil {
 		 * @param pubOrPrikey
 		 * @return
 		 */
+		@SuppressWarnings("unused")
 		public static String encrypt(String content, Key pubOrPrikey) throws Exception{
 			Cipher cipher = null;
-			cipher = Cipher.getInstance(ALGORITHM); 
+			cipher = Cipher.getInstance(CIPHER_TRANSFORMATION); 
+			if(false){
+				cipher = Cipher.getInstance(ALGORITHM); 
+			}
 			cipher.init(Cipher.ENCRYPT_MODE, pubOrPrikey);
 			byte[] result = cipher.doFinal(content.getBytes(DEFAULT_CHARSET));
 			return Base64.getEncoder().encodeToString(result);
@@ -225,9 +260,13 @@ public class SecurityUtil {
 		 * @param pubOrPrikey
 		 * @return
 		 */
+		@SuppressWarnings("unused")
 		public static String decrypt(String content, Key pubOrPrikey) throws Exception {
 			Cipher cipher = null;
-			cipher = Cipher.getInstance(ALGORITHM);
+			cipher = Cipher.getInstance(CIPHER_TRANSFORMATION); 
+			if(false){
+				cipher = Cipher.getInstance(ALGORITHM); 
+			}
 			cipher.init(Cipher.DECRYPT_MODE, pubOrPrikey);  
 			byte[] result = cipher.doFinal(Base64.getDecoder().decode(content));
 			return new String(result);
