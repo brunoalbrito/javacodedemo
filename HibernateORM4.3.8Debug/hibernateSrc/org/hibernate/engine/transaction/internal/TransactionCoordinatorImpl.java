@@ -89,7 +89,7 @@ public final class TransactionCoordinatorImpl implements TransactionCoordinator 
 			TransactionContext transactionContext) {
 		this.transactionContext = transactionContext;
 		this.jdbcCoordinator = new JdbcCoordinatorImpl( userSuppliedConnection, this );
-		//TransactionEnvironmentImpl
+		// org.hibernate.internal.TransactionEnvironmentImpl
 		this.transactionEnvironment = transactionContext.getTransactionEnvironment();//SessionImpl.getTransactionEnvironment();
 		this.transactionFactory = this.transactionEnvironment.getTransactionFactory();//!!!!!!
 		this.observers = new ArrayList<TransactionObserver>();
@@ -127,6 +127,7 @@ public final class TransactionCoordinatorImpl implements TransactionCoordinator 
 		if ( currentHibernateTransaction != null ) {
 			currentHibernateTransaction.invalidate();
 		}
+		// org.hibernate.engine.transaction.internal.jdbc.JdbcTransactionFactory.createTransaction( this );
 		currentHibernateTransaction = transactionFactory().createTransaction( this );//!!!!!!!!
 		if ( transactionContext.shouldAutoJoinTransaction() ) {
 			currentHibernateTransaction.markForJoin();

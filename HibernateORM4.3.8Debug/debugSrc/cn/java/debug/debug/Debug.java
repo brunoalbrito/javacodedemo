@@ -29,7 +29,7 @@ public class Debug {
 		
 		// 
 		SessionFactory sessionFactory = configuration.buildSessionFactory(serviceRegistry); // org.hibernate.internal.SessionFactoryImpl
-		Session session = sessionFactory.getCurrentSession();
+		Session session = sessionFactory.openSession(); // org.hibernate.internal.SessionImpl
 		
 		//Transaction result = transactionCoordinator.getTransaction(); 
 		//result.begin();

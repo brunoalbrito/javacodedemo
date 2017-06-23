@@ -32,7 +32,7 @@ public class One2ManyTest {
 		System.out.println("---------selectList---------");
 		Session session = null;
 		try {
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			Query query = session.createQuery("from Department where id <> :id ");
 			query.setParameter("id", 0);
 			List<Department> departmentList = (List<Department>) query.list();
@@ -73,7 +73,7 @@ public class One2ManyTest {
 			emp2.setDepart(depart);
 
 			// 添加数据
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			transaction = session.beginTransaction();
 			session.save(depart);
 			session.save(emp1);
@@ -115,7 +115,7 @@ public class One2ManyTest {
 			depart.setEmps(emps); // 一个部门有多个员工
 
 			// 添加数据
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			transaction = session.beginTransaction();
 			session.save(depart);
 			session.save(emp1);
@@ -143,7 +143,7 @@ public class One2ManyTest {
 		try {
 			department.setName(department.getName()+"_new");
 
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			transaction = session.beginTransaction();
 			session.update(department); // 修改
 			transaction.commit();
@@ -160,7 +160,7 @@ public class One2ManyTest {
 		Transaction transaction = null;
 
 		try {
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			transaction = session.beginTransaction();
 			session.delete(department); // 删除
 			transaction.commit();
@@ -177,7 +177,7 @@ public class One2ManyTest {
 		Transaction transaction = null;
 		try {
 
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			transaction = session.beginTransaction();
 			Department depart = (Department) session.get(Department.class, department.getId());
 			System.out.println(depart);
@@ -197,7 +197,7 @@ public class One2ManyTest {
 		Session session = null;
 		Transaction transaction = null;
 		try {
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			transaction = session.beginTransaction();
 			Employee emp = (Employee) session.get(Employee.class, employee.getId());
 			System.out.println(emp);

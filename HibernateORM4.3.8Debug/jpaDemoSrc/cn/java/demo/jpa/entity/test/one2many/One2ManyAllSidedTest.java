@@ -64,7 +64,7 @@ public class One2ManyAllSidedTest {
 				}
 				
 				// 添加数据
-				session = SessionFactoryUtil.getSession();
+				session = SessionFactoryUtil.openSession();
 				transaction = session.beginTransaction();
 				session.save(department);
 				session.save(employee0);
@@ -95,7 +95,7 @@ public class One2ManyAllSidedTest {
 				Department department = employeeList.get(0).getDepartment();
 				department.setDepartmentName(department.getDepartmentName() + "_new");
 
-				session = SessionFactoryUtil.getSession();
+				session = SessionFactoryUtil.openSession();
 				transaction = session.beginTransaction();
 				session.update(department); // 修改
 				transaction.commit();
@@ -113,7 +113,7 @@ public class One2ManyAllSidedTest {
 			Transaction transaction = null;
 
 			try {
-				session = SessionFactoryUtil.getSession();
+				session = SessionFactoryUtil.openSession();
 				transaction = session.beginTransaction();
 
 				{
@@ -136,7 +136,7 @@ public class One2ManyAllSidedTest {
 			Session session = null;
 			Transaction transaction = null;
 			try {
-				session = SessionFactoryUtil.getSession();
+				session = SessionFactoryUtil.openSession();
 				transaction = session.beginTransaction();
 				for (Employee employee : employeeList) {
 					Employee employeeEntity = (Employee) session.get(Employee.class, employee.getEmployeeId());
@@ -157,7 +157,7 @@ public class One2ManyAllSidedTest {
 			System.out.println("---------selectList---------");
 			Session session = null;
 			try {
-				session = SessionFactoryUtil.getSession();
+				session = SessionFactoryUtil.openSession();
 				Query query = session.createQuery("from " + Employee.class.getName() + " where id <> :id ");
 				query.setParameter("id", 0);
 				List<Employee> employeeListTemp = (List<Employee>) query.list();
@@ -196,7 +196,7 @@ public class One2ManyAllSidedTest {
 			System.out.println("---------selectList---------");
 			Session session = null;
 			try {
-				session = SessionFactoryUtil.getSession();
+				session = SessionFactoryUtil.openSession();
 				Query query = session.createQuery("from " + Department.class.getName() + " where id <> :id ");
 				query.setParameter("id", 0);
 				List<Department> departmentList = (List<Department>) query.list();
@@ -247,7 +247,7 @@ public class One2ManyAllSidedTest {
 				}
 
 				// 添加数据
-				session = SessionFactoryUtil.getSession();
+				session = SessionFactoryUtil.openSession();
 				transaction = session.beginTransaction();
 				session.save(department);
 				session.save(employee0);
@@ -275,7 +275,7 @@ public class One2ManyAllSidedTest {
 			try {
 				department.setDepartmentName(department.getDepartmentName() + "_new");
 
-				session = SessionFactoryUtil.getSession();
+				session = SessionFactoryUtil.openSession();
 				transaction = session.beginTransaction();
 				session.update(department); // 修改
 				transaction.commit();
@@ -293,7 +293,7 @@ public class One2ManyAllSidedTest {
 			Transaction transaction = null;
 
 			try {
-				session = SessionFactoryUtil.getSession();
+				session = SessionFactoryUtil.openSession();
 				transaction = session.beginTransaction();
 				session.delete(department); // 删除
 				transaction.commit();
@@ -309,7 +309,7 @@ public class One2ManyAllSidedTest {
 			Session session = null;
 			Transaction transaction = null;
 			try {
-				session = SessionFactoryUtil.getSession();
+				session = SessionFactoryUtil.openSession();
 				transaction = session.beginTransaction();
 				Department departmentEntity = (Department) session.get(Department.class, department.getDepartmentId());
 				System.out.println(departmentEntity);

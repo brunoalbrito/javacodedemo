@@ -46,7 +46,7 @@ public class Many2OneAllSidedTest {
 			System.out.println("---------selectList---------");
 			Session session = null;
 			try {
-				session = SessionFactoryUtil.getSession();
+				session = SessionFactoryUtil.openSession();
 				Query query = session.createQuery("from " + Cluster.class.getName() + " where id <> :id ");
 				query.setParameter("id", 0);
 				List<Cluster> clusterList = (List<Cluster>) query.list();
@@ -88,7 +88,7 @@ public class Many2OneAllSidedTest {
 				node1.setCluster(cluster);
 
 				// 添加数据
-				session = SessionFactoryUtil.getSession();
+				session = SessionFactoryUtil.openSession();
 				transaction = session.beginTransaction();
 				session.save(cluster);
 				session.save(node0);
@@ -112,7 +112,7 @@ public class Many2OneAllSidedTest {
 			Transaction transaction = null;
 			try {
 				cluster.setClusterName(cluster.getClusterName() + "_new");
-				session = SessionFactoryUtil.getSession();
+				session = SessionFactoryUtil.openSession();
 				transaction = session.beginTransaction();
 				session.update(cluster); // 修改
 				transaction.commit();
@@ -128,7 +128,7 @@ public class Many2OneAllSidedTest {
 			Session session = null;
 			Transaction transaction = null;
 			try {
-				session = SessionFactoryUtil.getSession();
+				session = SessionFactoryUtil.openSession();
 				transaction = session.beginTransaction();
 				session.delete(cluster); // 删除 - 会级联删除
 				transaction.commit();
@@ -144,7 +144,7 @@ public class Many2OneAllSidedTest {
 			Session session = null;
 			Transaction transaction = null;
 			try {
-				session = SessionFactoryUtil.getSession();
+				session = SessionFactoryUtil.openSession();
 				transaction = session.beginTransaction();
 				Cluster clusterEntity = (Cluster) session.get(Cluster.class, cluster.getClusterId());
 				System.out.println(clusterEntity);
@@ -185,7 +185,7 @@ public class Many2OneAllSidedTest {
 			System.out.println("---------selectList---------");
 			Session session = null;
 			try {
-				session = SessionFactoryUtil.getSession();
+				session = SessionFactoryUtil.openSession();
 				Query query = session.createQuery("from " + Node.class.getName() + " where id <> :id ");
 				query.setParameter("id", 0);
 				List<Node> nodeListTemp = (List<Node>) query.list();
@@ -223,7 +223,7 @@ public class Many2OneAllSidedTest {
 				node1.setCluster(cluster);
 
 				// 添加数据
-				session = SessionFactoryUtil.getSession();
+				session = SessionFactoryUtil.openSession();
 				transaction = session.beginTransaction();
 				session.save(cluster);
 				session.save(node0);
@@ -255,7 +255,7 @@ public class Many2OneAllSidedTest {
 				if (node != null) {
 					Cluster cluster = node.getCluster();
 					cluster.setClusterName(cluster.getClusterName() + "_new");
-					session = SessionFactoryUtil.getSession();
+					session = SessionFactoryUtil.openSession();
 					transaction = session.beginTransaction();
 					session.update(cluster); // 修改
 					transaction.commit();
@@ -274,7 +274,7 @@ public class Many2OneAllSidedTest {
 
 			try {
 				if (nodeList != null) {
-					session = SessionFactoryUtil.getSession();
+					session = SessionFactoryUtil.openSession();
 					
 
 					// 删除“多”的一端
@@ -308,7 +308,7 @@ public class Many2OneAllSidedTest {
 			try {
 				if (nodeList != null) {
 					for (Node node : nodeList) {
-						session = SessionFactoryUtil.getSession();
+						session = SessionFactoryUtil.openSession();
 						transaction = session.beginTransaction();
 						Node nodeEntity = (Node) session.get(Node.class, node.getNodeId());
 						System.out.println(nodeEntity);

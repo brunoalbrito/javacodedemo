@@ -43,7 +43,7 @@ public class CrudTest {
 			System.out.println("-----NamedQueryTest::selectOneByQuery()-------");
 			Session session = null;
 			try {
-				session = SessionFactoryUtil.getSession();
+				session = SessionFactoryUtil.openSession();
 				String sql = "select * from jpa_user as user where user.id = :id AND user.id = ?0";
 				Query query = session.createSQLQuery(sql).addEntity(User.class);
 				;
@@ -61,7 +61,7 @@ public class CrudTest {
 			System.out.println("-----NamedQueryTest::selectOneByQuery-------");
 			Session session = null;
 			try {
-				session = SessionFactoryUtil.getSession();
+				session = SessionFactoryUtil.openSession();
 				String sql = "select * from jpa_user as user where user.id = :id AND user.id = ?0";
 				Query query = session.createSQLQuery(sql).addEntity(User.class);
 				;
@@ -86,7 +86,7 @@ public class CrudTest {
 			System.out.println("-----CreateQueryTest::selectOneByQuery()-------");
 			Session session = null;
 			try {
-				session = SessionFactoryUtil.getSession();
+				session = SessionFactoryUtil.openSession();
 				String hql = "from User as user where user.id = :id AND user.id = ?0";
 				Query query = session.createQuery(hql);
 				query.setParameter("id", user.getId());
@@ -103,7 +103,7 @@ public class CrudTest {
 			System.out.println("-----CreateQueryTest::selectListByQuery()-------");
 			Session session = null;
 			try {
-				session = SessionFactoryUtil.getSession();
+				session = SessionFactoryUtil.openSession();
 				String hql = "from User as user where user.id = :id AND user.id = ?0";
 				Query query = session.createQuery(hql);
 				query.setParameter("id", user.getId());
@@ -126,7 +126,7 @@ public class CrudTest {
 			System.out.println("-----CriteriaTest::selectOneByCriteria()-------");
 			Session session = null;
 			try {
-				session = SessionFactoryUtil.getSession();
+				session = SessionFactoryUtil.openSession();
 				Criteria criteria = session.createCriteria(User.class);
 				criteria.add(Restrictions.eq("id", user.getId()));
 				User userTemp = (User) criteria.uniqueResult(); // 一行记录
@@ -141,7 +141,7 @@ public class CrudTest {
 			System.out.println("-----CriteriaTest::selectListByCriteria()-------");
 			Session session = null;
 			try {
-				session = SessionFactoryUtil.getSession();
+				session = SessionFactoryUtil.openSession();
 				DetachedCriteria detachedCriteria = DetachedCriteria.forClass(User.class);//不是从Session的，离线
 				detachedCriteria.add(Restrictions.eq("id", user.getId())); //查询条件
 				// detachedCriteria.add(Restrictions.isNotEmpty("userName"));
@@ -165,7 +165,7 @@ public class CrudTest {
 		Transaction transaction = null;
 
 		try {
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			transaction = session.beginTransaction();
 			User userTemp = (User) session.get(User.class, user.getId()); // 获取数据
 			System.out.println(userTemp);
@@ -184,7 +184,7 @@ public class CrudTest {
 		Session session = null;
 		Transaction transaction = null;
 		try {
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			transaction = session.beginTransaction();
 			session.save(user);
 			transaction.commit();
@@ -202,7 +202,7 @@ public class CrudTest {
 		Transaction transaction = null;
 
 		try {
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			transaction = session.beginTransaction();
 			session.delete(user); // 删除
 			transaction.commit();
@@ -220,7 +220,7 @@ public class CrudTest {
 
 		try {
 			user.setUserName("UserName_new");
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			transaction = session.beginTransaction();
 			session.update(user); // 修改
 			transaction.commit();
@@ -235,7 +235,7 @@ public class CrudTest {
 		System.out.println("-----selectList-------");
 		Session session = null;
 		try {
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			Query query = null;
 
 			if (true) {

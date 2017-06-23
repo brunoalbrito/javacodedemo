@@ -39,7 +39,7 @@ public class OneTest {
 		Transaction transaction = null;
 		
 		try {
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			transaction = session.beginTransaction();
 			User userTemp = (User) session.get(User.class, user.getId()); // 获取数据
 			System.out.println(userTemp);
@@ -54,7 +54,7 @@ public class OneTest {
 		System.out.println("-----selectOneByCriteria-------");
 		Session session = null;
 		try {
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			Criteria criteria = session.createCriteria(User.class);
 			criteria.add(Restrictions.eq("id", user.getId()));
 			User userTemp = (User) criteria.uniqueResult();
@@ -68,7 +68,7 @@ public class OneTest {
 		System.out.println("-----selectOneByQuery-------");
 		Session session = null;
 		try {
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			String hql = "from User as user where user.id = :id AND  user.id = ?0";
 			Query query = session.createQuery(hql);
 			query.setParameter("id", user.getId());
@@ -93,7 +93,7 @@ public class OneTest {
 		Session session = null;
 		Transaction transaction = null;
 		try {
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			transaction = session.beginTransaction();
 			session.save(user);
 			transaction.commit();
@@ -111,7 +111,7 @@ public class OneTest {
 		Transaction transaction = null;
 
 		try {
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			transaction = session.beginTransaction();
 			session.delete(user);  // 删除
 			transaction.commit();
@@ -134,7 +134,7 @@ public class OneTest {
 			userName.setLastName("lastName0_new");
 			user.setUserName(userName);
 			
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			transaction = session.beginTransaction();
 			session.update(user); // 修改
 			transaction.commit();
@@ -149,7 +149,7 @@ public class OneTest {
 		System.out.println("-----selectList-------");
 		Session session = null;
 		try {
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			Query query = null;
 			
 			if(true){

@@ -2753,7 +2753,7 @@ public class Configuration implements Serializable {
 
 	private Settings buildSettingsInternal(Properties props, ServiceRegistry serviceRegistry) {
 		// settingsFactory === org.hibernate.cfg.SettingsFactory
-		final Settings settings = settingsFactory.buildSettings( props, serviceRegistry ); // jia
+		final Settings settings = settingsFactory.buildSettings( props, serviceRegistry ); // 
 		// org.hibernate.tuple.entity.EntityTuplizerFactory
 		settings.setEntityTuplizerFactory( this.getEntityTuplizerFactory() );
 //		settings.setComponentTuplizerFactory( this.getComponentTuplizerFactory() );

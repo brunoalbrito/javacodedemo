@@ -57,7 +57,7 @@ public class Many2ManyOneSidedTest {
 			student1.setTeachers(teacherSet);
 			student2.setTeachers(teacherSet);
 
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			transaction = session.beginTransaction();
 			session.save(teacher1);
 			session.save(teacher2);
@@ -77,7 +77,7 @@ public class Many2ManyOneSidedTest {
 		Session session = null;
 		Transaction transaction = null;
 		try {
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			transaction = session.beginTransaction();
 			session.delete(student); // 删除
 			transaction.commit();
@@ -94,7 +94,7 @@ public class Many2ManyOneSidedTest {
 		Transaction transaction = null;
 		try {
 			student.setStudentName(student.getStudentName() + "_new");
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			transaction = session.beginTransaction();
 			session.update(student); // 修改
 			transaction.commit();
@@ -110,7 +110,7 @@ public class Many2ManyOneSidedTest {
 		Session session = null;
 		Transaction transaction = null;
 		try {
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			transaction = session.beginTransaction();
 			Student studentEntity = (Student) session.get(Student.class, student.getStudentId());
 			System.out.println(studentEntity);
@@ -129,7 +129,7 @@ public class Many2ManyOneSidedTest {
 		System.out.println("---------selectList---------");
 		Session session = null;
 		try {
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			Query query = session.createQuery("from cn.java.demo.jpa.entity.many2many.onesided.Student where id <> :id ");
 			query.setParameter("id", 0);
 			List<Student> studentList = (List<Student>) query.list();

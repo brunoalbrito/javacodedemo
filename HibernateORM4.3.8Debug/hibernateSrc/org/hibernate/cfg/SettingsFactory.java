@@ -127,7 +127,7 @@ public class SettingsFactory implements Serializable {
 		if ( debugEnabled ) {
 			LOG.debugf( "Automatic session close at end of transaction: %s", enabledDisabled(autoCloseSession) );
 		}
-		settings.setAutoCloseSessionEnabled(autoCloseSession);
+		settings.setAutoCloseSessionEnabled(autoCloseSession); //　自动关闭session
 
 		//JDBC and connection settings:
 
@@ -281,13 +281,13 @@ public class SettingsFactory implements Serializable {
 		if ( debugEnabled ) {
 			LOG.debugf( "Second-level cache: %s", enabledDisabled(useSecondLevelCache) );
 		}
-		settings.setSecondLevelCacheEnabled( useSecondLevelCache );
+		settings.setSecondLevelCacheEnabled( useSecondLevelCache ); // 二级缓存
 
 		boolean useQueryCache = ConfigurationHelper.getBoolean(AvailableSettings.USE_QUERY_CACHE, properties);
 		if ( debugEnabled ) {
 			LOG.debugf( "Query cache: %s", enabledDisabled(useQueryCache) );
 		}
-		settings.setQueryCacheEnabled( useQueryCache );
+		settings.setQueryCacheEnabled( useQueryCache ); // 查询缓存
 		if (useQueryCache) {
 			settings.setQueryCacheFactory( createQueryCacheFactory( properties, serviceRegistry ) );
 		}

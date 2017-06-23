@@ -51,7 +51,7 @@ public class Test {
 	 * 添加
 	 */
 	public static void insert(Integer userId) {
-		Session session = SessionFactoryUtil.getSession();
+		Session session = SessionFactoryUtil.openSession();
 		session.beginTransaction();
 		SQLQuery sqlQuery = session
 				.createSQLQuery("INSERT INTO " + TABLE_NAME + "(id,username,password) VALUES(?,?,?)");
@@ -68,7 +68,7 @@ public class Test {
 	 * 修改
 	 */
 	public static void update(Integer userId) {
-		Session session = SessionFactoryUtil.getSession();
+		Session session = SessionFactoryUtil.openSession();
 		session.beginTransaction();
 		SQLQuery sqlQuery = session.createSQLQuery("UPDATE " + TABLE_NAME + " SET username='username_new' WHERE id=?");
 		sqlQuery.setInteger(0, userId);
@@ -83,7 +83,7 @@ public class Test {
 	 */
 	@SuppressWarnings("unused")
 	public static void selectOne(Integer userId) {
-		Session session = SessionFactoryUtil.getSession();
+		Session session = SessionFactoryUtil.openSession();
 		SQLQuery sqlQuery = session.createSQLQuery("SELECT * FROM " + TABLE_NAME + " WHERE id=?");
 		sqlQuery.setInteger(0, userId);
 		sqlQuery.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
@@ -103,7 +103,7 @@ public class Test {
 	 * 查询
 	 */
 	public static void selectJoin() {
-		Session session = SessionFactoryUtil.getSession();
+		Session session = SessionFactoryUtil.openSession();
 		SQLQuery sqlQuery = session
 				.createSQLQuery("SELECT user0.id AS user0_id,user0.username,user1.id AS user1_id FROM " + TABLE_NAME
 						+ " AS user0 LEFT JOIN " + TABLE_NAME + " user1 ON user0.id = user1.id");
@@ -119,7 +119,7 @@ public class Test {
 	 * 查询
 	 */
 	public static void selectList() {
-		Session session = SessionFactoryUtil.getSession();
+		Session session = SessionFactoryUtil.openSession();
 		SQLQuery sqlQuery = session.createSQLQuery("SELECT * FROM " + TABLE_NAME + "");
 		sqlQuery.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
 		List list = sqlQuery.list();
@@ -133,7 +133,7 @@ public class Test {
 	 * 删除
 	 */
 	public static void delete(Integer userId) {
-		Session session = SessionFactoryUtil.getSession();
+		Session session = SessionFactoryUtil.openSession();
 		session.beginTransaction();
 		SQLQuery sqlQuery = session.createSQLQuery("delete FROM " + TABLE_NAME + " WHERE id=?");
 		sqlQuery.setParameter(0, userId);

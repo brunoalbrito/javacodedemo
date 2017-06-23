@@ -53,13 +53,13 @@
     </bean>
 	
 	<!-- 事务管理器 -->
-	<bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+	<bean id="hibernate4TransactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
        <property name="sessionFactory" ref="hibernate4SessionFactory" />
        <property name="dataSource" ref="dataSource" />
     </bean>
     
     <!-- 业务Bean -->
-	<bean id="fooService" class="cn.java.demo.orm_hibernate4.service.FooService" autowire="byName">
+	<bean id="fooService" class="cn.java.demo.orm_hibernate4.serviceimpl.FooServiceImpl" autowire="byName">
 		 <property name="hibernate4SessionFactory" ref="hibernate4SessionFactory" />
 	</bean>
 </beans>  

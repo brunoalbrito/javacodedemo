@@ -54,7 +54,7 @@ public class Many2ManyTest {
 			teacher1.setStudents(studentSet);
 			teacher2.setStudents(studentSet);
 
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			transaction = session.beginTransaction();
 			session.save(teacher1);
 			session.save(teacher2);
@@ -75,7 +75,7 @@ public class Many2ManyTest {
 		Transaction transaction = null;
 
 		try {
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			transaction = session.beginTransaction();
 			session.delete(teacher); // 删除
 			transaction.commit();
@@ -94,7 +94,7 @@ public class Many2ManyTest {
 		try {
 			teacher.setName("teacher_new");
 
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			transaction = session.beginTransaction();
 			session.update(teacher); // 修改
 			transaction.commit();
@@ -111,7 +111,7 @@ public class Many2ManyTest {
 		Transaction transaction = null;
 		try {
 
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			transaction = session.beginTransaction();
 			Teacher teacherEntity = (Teacher) session.get(Teacher.class, teacher.getId());
 			System.out.println(teacherEntity);
@@ -130,7 +130,7 @@ public class Many2ManyTest {
 		System.out.println("---------selectList---------");
 		Session session = null;
 		try {
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			Query query = session.createQuery("from Teacher where id <> :id ");
 			query.setParameter("id", 0);
 			List<Teacher> teacherList = (List<Teacher>) query.list();

@@ -22,12 +22,12 @@ public class VersionTest {
 	static void update(int id) {
 
 		Session session1 = null;
-		session1 = SessionFactoryUtil.getSession();
+		session1 = SessionFactoryUtil.openSession();
 		Transaction transaction1 = session1.beginTransaction();
 		User user1 = (User) session1.get(User.class, id);
 
 		Session session2 = null;
-		session2 = SessionFactoryUtil.getSession();
+		session2 = SessionFactoryUtil.openSession();
 		Transaction transaction2 = session2.beginTransaction();
 		User user2 = (User) session2.get(User.class, id);
 
@@ -51,7 +51,7 @@ public class VersionTest {
 		
 		Session session = null;
 		try {
-			session = SessionFactoryUtil.getSession();
+			session = SessionFactoryUtil.openSession();
 			session.save(user);
 			System.out.println(user.getUserName());
 		} finally {

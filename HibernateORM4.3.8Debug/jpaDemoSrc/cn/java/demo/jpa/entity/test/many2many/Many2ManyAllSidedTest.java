@@ -66,7 +66,7 @@ public class Many2ManyAllSidedTest {
 				teacher1.setStudents(studentSet);
 				teacher2.setStudents(studentSet);
 
-				session = SessionFactoryUtil.getSession();
+				session = SessionFactoryUtil.openSession();
 				transaction = session.beginTransaction();
 				session.save(teacher1);
 				session.save(teacher2);
@@ -86,7 +86,7 @@ public class Many2ManyAllSidedTest {
 			Session session = null;
 			Transaction transaction = null;
 			try {
-				session = SessionFactoryUtil.getSession();
+				session = SessionFactoryUtil.openSession();
 				transaction = session.beginTransaction();
 				session.delete(teacher); // 删除
 				transaction.commit();
@@ -103,7 +103,7 @@ public class Many2ManyAllSidedTest {
 			Transaction transaction = null;
 			try {
 				teacher.setTeacherName(teacher.getTeacherName() + "_new");
-				session = SessionFactoryUtil.getSession();
+				session = SessionFactoryUtil.openSession();
 				transaction = session.beginTransaction();
 				session.update(teacher); // 修改
 				transaction.commit();
@@ -119,7 +119,7 @@ public class Many2ManyAllSidedTest {
 			Session session = null;
 			Transaction transaction = null;
 			try {
-				session = SessionFactoryUtil.getSession();
+				session = SessionFactoryUtil.openSession();
 				transaction = session.beginTransaction();
 				Teacher teacherEntity = (Teacher) session.get(Teacher.class, teacher.getTeacherId());
 				System.out.println(teacherEntity);
@@ -138,7 +138,7 @@ public class Many2ManyAllSidedTest {
 			System.out.println("---------selectList---------");
 			Session session = null;
 			try {
-				session = SessionFactoryUtil.getSession();
+				session = SessionFactoryUtil.openSession();
 				Query query = session.createQuery("from " + Teacher.class.getName() + " where id <> :id ");
 				query.setParameter("id", 0);
 				List<Teacher> teacherList = (List<Teacher>) query.list();
@@ -200,7 +200,7 @@ public class Many2ManyAllSidedTest {
 				student1.setTeachers(teacherSet);
 				student2.setTeachers(teacherSet);
 
-				session = SessionFactoryUtil.getSession();
+				session = SessionFactoryUtil.openSession();
 				transaction = session.beginTransaction();
 				session.save(teacher1);
 				session.save(teacher2);
@@ -220,7 +220,7 @@ public class Many2ManyAllSidedTest {
 			Session session = null;
 			Transaction transaction = null;
 			try {
-				session = SessionFactoryUtil.getSession();
+				session = SessionFactoryUtil.openSession();
 				transaction = session.beginTransaction();
 				session.delete(student); // 删除
 				transaction.commit();
@@ -237,7 +237,7 @@ public class Many2ManyAllSidedTest {
 			Transaction transaction = null;
 			try {
 				student.setStudentName(student.getStudentName() + "_new");
-				session = SessionFactoryUtil.getSession();
+				session = SessionFactoryUtil.openSession();
 				transaction = session.beginTransaction();
 				session.update(student); // 修改
 				transaction.commit();
@@ -253,7 +253,7 @@ public class Many2ManyAllSidedTest {
 			Session session = null;
 			Transaction transaction = null;
 			try {
-				session = SessionFactoryUtil.getSession();
+				session = SessionFactoryUtil.openSession();
 				transaction = session.beginTransaction();
 				Student studentEntity = (Student) session.get(Student.class, student.getStudentId());
 				System.out.println(studentEntity);
@@ -272,7 +272,7 @@ public class Many2ManyAllSidedTest {
 			System.out.println("---------selectList---------");
 			Session session = null;
 			try {
-				session = SessionFactoryUtil.getSession();
+				session = SessionFactoryUtil.openSession();
 				Query query = session.createQuery("from " + Student.class.getName() + " where id <> :id ");
 				query.setParameter("id", 0);
 				List<Student> studentList = (List<Student>) query.list();
