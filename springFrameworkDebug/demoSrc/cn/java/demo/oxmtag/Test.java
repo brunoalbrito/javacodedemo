@@ -26,7 +26,7 @@ public class Test {
 		
 		{
 			Jaxb2Marshaller jaxb2Marshaller = (Jaxb2Marshaller) context.getBean("jaxb2Marshaller0");
-			JAXBContext jaxbContext = jaxb2Marshaller.getJaxbContext();
+			JAXBContext jaxbContext = jaxb2Marshaller.getJaxbContext(); // java对象和xml文档的转换器
 			
 			System.out.println("--------java对象转成xml文件----------------");
 			String xmlStrTemp = "";

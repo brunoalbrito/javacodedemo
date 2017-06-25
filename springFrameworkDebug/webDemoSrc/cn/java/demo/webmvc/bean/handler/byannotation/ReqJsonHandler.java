@@ -21,6 +21,9 @@ import cn.java.demo.webmvc.http.converter.fastjson.FastJsonObject;
 
 /**
  * @author zhouzhian
+ * 
+ * 使用Firefox - HttpRequester模拟插件测试
+ * 
  */
 @RequestMapping(path = { "/req-json-handler" }, method = { RequestMethod.GET, RequestMethod.POST })
 public class ReqJsonHandler {

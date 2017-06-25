@@ -57,6 +57,9 @@ import cn.java.demo.webmvc.validator.UserLoginFormValidator;
 
 /**
  * @author zhouzhian
+ * 
+ * 使用Firefox - HttpRequester模拟插件测试
+ * 
  * 普通参数
  * json参数
  * xml参数
