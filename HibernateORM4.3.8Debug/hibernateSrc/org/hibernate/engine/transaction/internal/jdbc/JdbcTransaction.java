@@ -64,6 +64,7 @@ public class JdbcTransaction extends AbstractTransactionImpl {
 			if ( managedConnection != null ) {
 				throw new TransactionException( "Already have an associated managed connection" );
 			}
+			// 从数据源获取一个连接
 			managedConnection = transactionCoordinator().getJdbcCoordinator().getLogicalConnection().getConnection();
 			wasInitiallyAutoCommit = managedConnection.getAutoCommit();
 			LOG.debugv( "initial autocommit status: {0}", wasInitiallyAutoCommit );

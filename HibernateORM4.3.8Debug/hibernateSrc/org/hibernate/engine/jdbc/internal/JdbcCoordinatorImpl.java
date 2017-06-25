@@ -113,6 +113,7 @@ public class JdbcCoordinatorImpl implements JdbcCoordinator {
 		this.transactionCoordinator = transactionCoordinator;
 		this.logicalConnection = new LogicalConnectionImpl(
 				userSuppliedConnection,
+				// org.hibernate.internal.SessionImpl.getConnectionReleaseMode(),
 				transactionCoordinator.getTransactionContext().getConnectionReleaseMode(),
 				transactionCoordinator.getTransactionContext().getTransactionEnvironment().getJdbcServices(),
 				transactionCoordinator.getTransactionContext().getJdbcConnectionAccess()
@@ -202,6 +203,7 @@ public class JdbcCoordinatorImpl implements JdbcCoordinator {
 			currentBatch.release();
 		}
 		cleanup();
+		// logicalConnection === org.hibernate.engine.jdbc.internal.LogicalConnectionImpl
 		return logicalConnection.close();
 	}
 

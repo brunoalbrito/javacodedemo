@@ -113,7 +113,7 @@ public class EntityEntryContext {
 		}
 
 		// associate the EntityEntry with the entity
-		managedEntity.$$_hibernate_setEntityEntry( entityEntry );
+		managedEntity.$$_hibernate_setEntityEntry( entityEntry ); // 被管理的实体
 
 		if ( alreadyAssociated ) {
 			// if the entity was already associated with the context, skip the linking step.
@@ -154,6 +154,7 @@ public class EntityEntryContext {
 	 * @return The associated EntityEntry
 	 */
 	public EntityEntry getEntityEntry(Object entity) {
+		// entity === cn.java.bean.User
 		// essentially resolve the entity to a ManagedEntity...
 		final ManagedEntity managedEntity;
 		if ( ManagedEntity.class.isInstance( entity ) ) {

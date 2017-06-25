@@ -1,5 +1,7 @@
 package cn.java.demo.hbm.test;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
@@ -8,6 +10,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.jdbc.Work;
 
 import cn.java.demo.hbm.entity.one.User;
 import cn.java.demo.hbm.entity.one.UserName;
@@ -17,6 +20,10 @@ public class OneTest {
 
 	public static void main(String[] args) {
 		SessionFactoryUtil.openSessionFactory();
+		
+		User user0 = insertWithoutTransaction();
+		delete(user0);
+		
 		User user = insert();
 		selectOne(user);
 		selectOneByCriteria(user);
@@ -64,6 +71,7 @@ public class OneTest {
 				session.close();
 		}
 	}
+	
 	private static void selectOneByQuery(User user) {
 		System.out.println("-----selectOneByQuery-------");
 		Session session = null;
@@ -81,6 +89,34 @@ public class OneTest {
 		}
 	}
 
+	private static User insertWithoutTransaction() {
+		System.out.println("-----insertWithoutTransaction-------");
+		User user = new User();
+		user.setBirthday(new Date());
+		UserName userName = new UserName();
+		userName.setFirstName("firstName0");
+		userName.setLastName("lastName0");
+		user.setUserName(userName);
+		
+		Session session = null;
+		try {
+			session = SessionFactoryUtil.openSession();
+		    session.doWork(new Work(){
+	            @Override
+	            public void execute(Connection connection) throws SQLException {
+	                connection.setAutoCommit(true); // 开启自动提交
+	            }
+	        });
+			session.save(user);
+			session.flush();
+			System.out.println(user);
+		} finally {
+			if (session != null)
+				session.close();
+		}
+		return user;
+	}
+	
 	private static User insert() {
 		System.out.println("-----insert-------");
 		User user = new User();

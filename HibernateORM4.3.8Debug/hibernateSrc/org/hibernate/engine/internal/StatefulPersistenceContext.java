@@ -591,6 +591,7 @@ public class StatefulPersistenceContext implements PersistenceContext {
 
 	@Override
 	public Object unproxyAndReassociate(Object maybeProxy) throws HibernateException {
+		// 如 maybeProxy === cn.java.bean.User 视图bean
 		if ( maybeProxy instanceof ElementWrapper ) {
 			maybeProxy = ( (ElementWrapper) maybeProxy ).getElement();
 		}

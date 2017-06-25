@@ -65,8 +65,8 @@ public class DefaultSaveOrUpdateEventListener extends AbstractSaveEventListener 
 	 * @param event The update event to be handled.
 	 */
 	public void onSaveOrUpdate(SaveOrUpdateEvent event) {
-		final SessionImplementor source = event.getSession();
-		final Object object = event.getObject();
+		final SessionImplementor source = event.getSession(); // !!! org.hibernate.internal.SessionImpl
+		final Object object = event.getObject(); // 用户要保存的对象 cn.java.bean.User
 		final Serializable requestedId = event.getRequestedId();
 
 		if ( requestedId != null ) {
@@ -82,12 +82,15 @@ public class DefaultSaveOrUpdateEventListener extends AbstractSaveEventListener 
 			LOG.trace( "Reassociated uninitialized proxy" );
 		}
 		else {
+			// !!! org.hibernate.internal.SessionImpl.getPersistenceContext().unproxyAndReassociate( object );
+			// org.hibernate.engine.internal.StatefulPersistenceContext.unproxyAndReassociate( object );
 			//initialize properties of the event:
 			final Object entity = source.getPersistenceContext().unproxyAndReassociate( object );
-			event.setEntity( entity );
-			event.setEntry( source.getPersistenceContext().getEntry( entity ) );
+			// entity === cn.java.bean.User
+			event.setEntity( entity ); // 实体 cn.java.bean.User
+			event.setEntry( source.getPersistenceContext().getEntry( entity ) ); // 条目
 			//return the id in the event object
-			event.setResultId( performSaveOrUpdate( event ) );
+			event.setResultId( performSaveOrUpdate( event ) ); // 执行更新，调用子类的performSaveOrUpdate方法
 		}
 
 	}
@@ -102,7 +105,7 @@ public class DefaultSaveOrUpdateEventListener extends AbstractSaveEventListener 
 				event.getEntityName(),
 				event.getEntry(),
 				event.getSession()
-		);
+		); 
 
 		switch ( entityState ) {
 			case DETACHED:
@@ -179,7 +182,7 @@ public class DefaultSaveOrUpdateEventListener extends AbstractSaveEventListener 
 
 		LOG.trace( "Saving transient instance" );
 
-		final EventSource source = event.getSession();
+		final EventSource source = event.getSession(); // org.hibernate.internal.SessionImpl
 
 		EntityEntry entityEntry = event.getEntry();
 		if ( entityEntry != null ) {
@@ -191,8 +194,9 @@ public class DefaultSaveOrUpdateEventListener extends AbstractSaveEventListener 
 			}
 		}
 
-		Serializable id = saveWithGeneratedOrRequestedId( event );
+		Serializable id = saveWithGeneratedOrRequestedId( event ); // !!! 在里面执行SQL语句，调用子类的方法
 
+		// org.hibernate.engine.internal.StatefulPersistenceContext.reassociateProxy( event.getObject(), id );
 		source.getPersistenceContext().reassociateProxy( event.getObject(), id );
 
 		return id;
@@ -233,15 +237,23 @@ public class DefaultSaveOrUpdateEventListener extends AbstractSaveEventListener 
 
 		Object entity = event.getEntity();
 
-		EntityPersister persister = event.getSession().getEntityPersister( event.getEntityName(), entity );
-
+		EntityPersister persister = event.getSession().getEntityPersister( event.getEntityName(), entity ); // !!!
+		/*
+		 	entity === cn.java.bean.User 实体
+		 	persister === 
+				org.hibernate.persister.entity.SingleTableEntityPersister
+				org.hibernate.persister.entity.JoinedSubclassEntityPersister
+				org.hibernate.persister.entity.UnionSubclassEntityPersister
+				org.hibernate.persister.collection.OneToManyPersister
+				org.hibernate.persister.collection.BasicCollectionPersister
+		 */
 		event.setRequestedId(
 				getUpdateId(
 						entity, persister, event.getRequestedId(), event.getSession()
 				)
 		);
 
-		performUpdate( event, entity, persister );
+		performUpdate( event, entity, persister ); // 执行更新
 
 	}
 
@@ -282,7 +294,16 @@ public class DefaultSaveOrUpdateEventListener extends AbstractSaveEventListener 
 			SaveOrUpdateEvent event,
 			Object entity,
 			EntityPersister persister) throws HibernateException {
-
+		/*
+		 	source === org.hibernate.internal.SessionImpl
+		 	entity === cn.java.bean.User 实体
+		 	persister === 
+				org.hibernate.persister.entity.SingleTableEntityPersister
+				org.hibernate.persister.entity.JoinedSubclassEntityPersister
+				org.hibernate.persister.entity.UnionSubclassEntityPersister
+				org.hibernate.persister.collection.OneToManyPersister
+				org.hibernate.persister.collection.BasicCollectionPersister
+		 */
 		final boolean traceEnabled = LOG.isTraceEnabled();
 		if ( traceEnabled && !persister.isMutable() ) {
 			LOG.trace( "Immutable instance passed to performUpdate()" );
@@ -321,7 +342,7 @@ public class DefaultSaveOrUpdateEventListener extends AbstractSaveEventListener 
             		entry.getState(); //TODO: half-assemble this stuff
         }*/
 
-		source.getPersistenceContext().addEntity(
+		source.getPersistenceContext().addEntity( // 添加到托管
 				entity,
 				( persister.isMutable() ? Status.MANAGED : Status.READ_ONLY ),
 				null, // cachedState,
@@ -350,6 +371,16 @@ public class DefaultSaveOrUpdateEventListener extends AbstractSaveEventListener 
 	}
 
 	protected boolean invokeUpdateLifecycle(Object entity, EntityPersister persister, EventSource source) {
+		/*
+		 	source === org.hibernate.internal.SessionImpl
+		 	entity === cn.java.bean.User 实体
+		 	persister === 
+				org.hibernate.persister.entity.SingleTableEntityPersister
+				org.hibernate.persister.entity.JoinedSubclassEntityPersister
+				org.hibernate.persister.entity.UnionSubclassEntityPersister
+				org.hibernate.persister.collection.OneToManyPersister
+				org.hibernate.persister.collection.BasicCollectionPersister
+		 */
 		if ( persister.implementsLifecycle() ) {
 			LOG.debug( "Calling onUpdate()" );
 			if ( ( (Lifecycle) entity ).onUpdate( source ) ) {

@@ -340,6 +340,8 @@ public final class SessionFactoryImpl
 
 		final RegionFactory regionFactory = cacheAccess.getRegionFactory();
 		final String cacheRegionPrefix = settings.getCacheRegionPrefix() == null ? "" : settings.getCacheRegionPrefix() + ".";
+		// PersisterFactoryInitiator.INSTANCE
+		// !!! 如 persisterFactory === org.hibernate.persister.internal.PersisterFactoryImpl
 		final PersisterFactory persisterFactory = serviceRegistry.getService( PersisterFactory.class );
 
 		// todo : consider removing this silliness and just have EntityPersister directly implement ClassMetadata
@@ -348,7 +350,7 @@ public final class SessionFactoryImpl
 		//
 		// todo : similar for CollectionPersister/CollectionMetadata
 
-		entityPersisters = new HashMap();
+		entityPersisters = new HashMap(); // !!! 实体持久器
 		Map entityAccessStrategies = new HashMap();
 		Map<String,ClassMetadata> classMeta = new HashMap<String,ClassMetadata>();
 		classes = cfg.getClassMappings();
@@ -398,15 +400,23 @@ public final class SessionFactoryImpl
 					}
 				}
 			}
-
+			// !!! 如 persisterFactory === org.hibernate.persister.internal.PersisterFactoryImpl
 			EntityPersister cp = persisterFactory.createEntityPersister(
-					model,
+					model,  // !!!
 					accessStrategy,
 					naturalIdAccessStrategy,
 					this,
 					mapping
 			);
-			entityPersisters.put( model.getEntityName(), cp );
+			/*
+			 	cp === 
+					org.hibernate.persister.entity.SingleTableEntityPersister
+					org.hibernate.persister.entity.JoinedSubclassEntityPersister
+					org.hibernate.persister.entity.UnionSubclassEntityPersister
+					org.hibernate.persister.collection.OneToManyPersister
+					org.hibernate.persister.collection.BasicCollectionPersister
+			 */
+			entityPersisters.put( model.getEntityName(), cp ); // 实体持久器!!!!
 			classMeta.put( model.getEntityName(), cp.getClassMetadata() );
 		}
 		this.classMetadata = Collections.unmodifiableMap(classMeta);

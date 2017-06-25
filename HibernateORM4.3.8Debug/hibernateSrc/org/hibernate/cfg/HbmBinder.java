@@ -176,7 +176,7 @@ public final class HbmBinder {
 			else if ( "class".equals( elementName ) ) {
 				RootClass rootclass = new RootClass();
 				bindRootClass( element, rootclass, mappings, inheritedMetas );
-				mappings.addClass( rootclass );
+				mappings.addClass( rootclass ); // !!!!
 			}
 			else if ( "subclass".equals( elementName ) ) {
 				PersistentClass superModel = getSuperclass( mappings, element );

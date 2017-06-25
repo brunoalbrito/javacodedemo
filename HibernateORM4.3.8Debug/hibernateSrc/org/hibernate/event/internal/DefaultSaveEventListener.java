@@ -41,18 +41,19 @@ public class DefaultSaveEventListener extends DefaultSaveOrUpdateEventListener {
 	protected Serializable performSaveOrUpdate(SaveOrUpdateEvent event) {
 		// this implementation is supposed to tolerate incorrect unsaved-value
 		// mappings, for the purpose of backward-compatibility
+		// org.hibernate.engine.internal.StatefulPersistenceContext.getEntry( event.getEntity() );
 		EntityEntry entry = event.getSession().getPersistenceContext().getEntry( event.getEntity() );
 		if ( entry!=null && entry.getStatus() != Status.DELETED ) {
 			return entityIsPersistent(event);
 		}
 		else {
-			return entityIsTransient(event);
+			return entityIsTransient(event);// !!!! 调用父类的方法
 		}
 	}
 	
 	protected Serializable saveWithGeneratedOrRequestedId(SaveOrUpdateEvent event) {
 		if ( event.getRequestedId() == null ) {
-			return super.saveWithGeneratedOrRequestedId(event);
+			return super.saveWithGeneratedOrRequestedId(event); // !!!
 		}
 		else {
 			return saveWithRequestedId( 

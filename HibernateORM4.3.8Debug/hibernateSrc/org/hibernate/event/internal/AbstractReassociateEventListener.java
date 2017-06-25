@@ -84,7 +84,7 @@ public abstract class AbstractReassociateEventListener implements Serializable {
 		);
 		Object version = Versioning.getVersion( values, persister );
 
-		EntityEntry newEntry = source.getPersistenceContext().addEntity(
+		EntityEntry newEntry = source.getPersistenceContext().addEntity( // 添加到托管
 				object,
 				( persister.isMutable() ? Status.MANAGED : Status.READ_ONLY ),
 				values,

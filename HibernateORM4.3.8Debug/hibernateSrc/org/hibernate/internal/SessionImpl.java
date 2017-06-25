@@ -367,6 +367,7 @@ public final class SessionImpl extends AbstractSessionImpl implements EventSourc
 
 		try {
 			if ( !isTransactionCoordinatorShared ) {
+				// org.hibernate.engine.transaction.internal.TransactionCoordinatorImpl
 				return transactionCoordinator.close();
 			}
 			else {
@@ -688,13 +689,24 @@ public final class SessionImpl extends AbstractSessionImpl implements EventSourc
 	}
 
 	private <T> Iterable<T> listeners(EventType<T> type) {
-		// type === new EventType<T>( "save", SaveOrUpdateEventListener.class );
-		//factory.getServiceRegistry().getService( EventListenerRegistry.class ).getEventListenerGroup( new EventType<T>( "save", SaveOrUpdateEventListener.class ) ).listeners();
+		
 		return eventListenerGroup( type ).listeners();
 	}
 
 	private <T> EventListenerGroup<T> eventListenerGroup(EventType<T> type) {
-		// factory.getServiceRegistry().getService( EventListenerRegistry.class ).getEventListenerGroup( new EventType<T>( "save", SaveOrUpdateEventListener.class ) );
+		// factory == org.hibernate.internal.SessionFactoryImpl
+		// factory.getServiceRegistry() == org.hibernate.service.internal.SessionFactoryServiceRegistryImpl
+		//  EventListenerServiceInitiator.INSTANCE
+		//  factory.getServiceRegistry().getService( EventListenerRegistry.class ) === org.hibernate.event.service.internal.EventListenerRegistryImpl
+		/*
+			registeredEventListenersMap = {
+					EventType.SAVE ： new EventListenerGroupImpl<T>( EventType.SAVE ).appendListener( new DefaultSaveEventListener() );
+					EventType.SAVE_UPDATE ： new EventListenerGroupImpl<T>( EventType.SAVE_UPDATE ).appendListener( new DefaultSaveOrUpdateEventListener() );
+					EventType.DELETE ： new EventListenerGroupImpl<T>( EventType.DELETE ).appendListener( new DefaultDeleteEventListener() );
+					EventType.UPDATE ： new EventListenerGroupImpl<T>( EventType.UPDATE ).appendListener( new DefaultUpdateEventListener() );
+					EventType.LOAD ： new EventListenerGroupImpl<T>( EventType.LOAD ).appendListener( new DefaultLoadEventListener() );
+			}
+		 */
 		return factory.getServiceRegistry().getService( EventListenerRegistry.class ).getEventListenerGroup( type );
 	}
 
@@ -708,7 +720,7 @@ public final class SessionImpl extends AbstractSessionImpl implements EventSourc
 
 	@Override
 	public Serializable save(String entityName, Object object) throws HibernateException {
-		return fireSave( new SaveOrUpdateEvent( entityName, object, this ) );
+		return fireSave( new SaveOrUpdateEvent( entityName, object, this ) ); // 触发保存事件
 	}
 
 	private Serializable fireSave(SaveOrUpdateEvent event) {
@@ -717,7 +729,8 @@ public final class SessionImpl extends AbstractSessionImpl implements EventSourc
 		checkNoUnresolvedActionsBeforeOperation();
 		//EventType.SAVE == new EventType<T>( "save", SaveOrUpdateEventListener.class )
 		//factory.getServiceRegistry().getService( EventListenerRegistry.class ).getEventListenerGroup( new EventType<T>( "save", SaveOrUpdateEventListener.class ) ).listeners();
-		for ( SaveOrUpdateEventListener listener : listeners( EventType.SAVE ) ) {//迭代保存事件
+		for ( SaveOrUpdateEventListener listener : listeners( EventType.SAVE ) ) { // 迭代保存事件
+			// listener === org.hibernate.event.internal.DefaultSaveEventListener
 			listener.onSaveOrUpdate( event );//触发保存事件
 		}
 		checkNoUnresolvedActionsAfterOperation();
@@ -1445,9 +1458,11 @@ public final class SessionImpl extends AbstractSessionImpl implements EventSourc
 
 	@Override
 	public EntityPersister getEntityPersister(final String entityName, final Object object) {
+		// object ===  cn.java.bean.User 实体
 		errorIfClosed();
 		if (entityName==null) {
-			return factory.getEntityPersister( guessEntityName( object ) );
+			// factory === org.hibernate.internal.SessionFactoryImpl
+			return factory.getEntityPersister( guessEntityName( object ) ); // !!!
 		}
 		else {
 			// try block is a hack around fact that currently tuplizers are not
@@ -1999,7 +2014,7 @@ public final class SessionImpl extends AbstractSessionImpl implements EventSourc
 	@Override
 	public PersistenceContext getPersistenceContext() {
 		errorIfClosed();
-		checkTransactionSynchStatus();
+		checkTransactionSynchStatus(); // !!!
 		return persistenceContext;
 	}
 

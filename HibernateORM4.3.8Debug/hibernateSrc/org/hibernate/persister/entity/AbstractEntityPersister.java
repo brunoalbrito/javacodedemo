@@ -4534,6 +4534,8 @@ public abstract class AbstractEntityPersister
 	}
 
 	public IdentifierGenerator getIdentifierGenerator() throws HibernateException {
+		// entityMetamodel == org.hibernate.tuple.entity.EntityMetamodel
+		// entityMetamodel.getIdentifierProperty() === org.hibernate.tuple.IdentifierProperty
 		return entityMetamodel.getIdentifierProperty().getIdentifierGenerator();
 	}
 

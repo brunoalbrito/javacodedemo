@@ -113,16 +113,25 @@ public abstract class AbstractSaveEventListener extends AbstractReassociateEvent
 			Object anything,
 			EventSource source,
 			boolean requiresImmediateIdAccess) {
+		/*
+		 	entity === cn.java.bean.User 实体
+		 	persister === 
+				org.hibernate.persister.entity.SingleTableEntityPersister
+				org.hibernate.persister.entity.JoinedSubclassEntityPersister
+				org.hibernate.persister.entity.UnionSubclassEntityPersister
+				org.hibernate.persister.collection.OneToManyPersister
+				org.hibernate.persister.collection.BasicCollectionPersister
+		 */
 		EntityPersister persister = source.getEntityPersister( entityName, entity );
-		Serializable generatedId = persister.getIdentifierGenerator().generate( source, entity );
+		Serializable generatedId = persister.getIdentifierGenerator().generate( source, entity ); // 使用ID生成器生成ID
 		if ( generatedId == null ) {
 			throw new IdentifierGenerationException( "null id generated for:" + entity.getClass() );
 		}
 		else if ( generatedId == IdentifierGeneratorHelper.SHORT_CIRCUIT_INDICATOR ) {
 			return source.getIdentifier( entity );
 		}
-		else if ( generatedId == IdentifierGeneratorHelper.POST_INSERT_INDICATOR ) {
-			return performSave( entity, null, persister, true, anything, source, requiresImmediateIdAccess );
+		else if ( generatedId == IdentifierGeneratorHelper.POST_INSERT_INDICATOR ) { // 执行插入
+			return performSave( entity, null, persister, true, anything, source, requiresImmediateIdAccess ); // !!!!
 		}
 		else {
 			// TODO: define toString()s for generators
@@ -191,7 +200,7 @@ public abstract class AbstractSaveEventListener extends AbstractReassociateEvent
 			return id; //EARLY EXIT
 		}
 
-		return performSaveOrReplicate(
+		return performSaveOrReplicate( // !!!!
 				entity,
 				key,
 				persister,
@@ -212,7 +221,7 @@ public abstract class AbstractSaveEventListener extends AbstractReassociateEvent
 				return true;
 			}
 		}
-		return false;
+		return false;// !!!!
 	}
 
 	/**
@@ -287,7 +296,7 @@ public abstract class AbstractSaveEventListener extends AbstractReassociateEvent
 
 		AbstractEntityInsertAction insert = addInsertAction(
 				values, id, entity, persister, useIdentityColumn, source, shouldDelayIdentityInserts
-		);
+		); // 在这里面执行了插入 insert into hbm_user (....)values (?, ?, ?, ?, ?)
 
 		// postpone initializing id in case the insert has non-nullable transient dependencies
 		// that are not resolved until cascadeAfterSave() is executed
@@ -299,7 +308,7 @@ public abstract class AbstractSaveEventListener extends AbstractReassociateEvent
 								insert.getClass().getName()
 				);
 			}
-			id = ((EntityIdentityInsertAction) insert).getGeneratedId();
+			id = ((EntityIdentityInsertAction) insert).getGeneratedId();//!!!
 
 			insert.handleNaturalIdPostSaveNotifications( id );
 		}
@@ -320,7 +329,7 @@ public abstract class AbstractSaveEventListener extends AbstractReassociateEvent
 		if ( useIdentityColumn ) {
 			EntityIdentityInsertAction insert = new EntityIdentityInsertAction(
 					values, entity, persister, isVersionIncrementDisabled(), source, shouldDelayIdentityInserts
-			);
+			);// !!!!
 			source.getActionQueue().addAction( insert );
 			return insert;
 		}

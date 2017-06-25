@@ -24,7 +24,10 @@
 package org.hibernate.service.internal;
 
 import org.hibernate.cfg.Configuration;
+import org.hibernate.engine.query.spi.NativeQueryInterpreterInitiator;
+import org.hibernate.engine.spi.CacheInitiator;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
+import org.hibernate.event.service.internal.EventListenerServiceInitiator;
 import org.hibernate.metamodel.source.MetadataImplementor;
 import org.hibernate.service.Service;
 import org.hibernate.service.spi.ServiceBinding;
@@ -32,6 +35,7 @@ import org.hibernate.service.spi.ServiceInitiator;
 import org.hibernate.service.spi.ServiceRegistryImplementor;
 import org.hibernate.service.spi.SessionFactoryServiceInitiator;
 import org.hibernate.service.spi.SessionFactoryServiceRegistry;
+import org.hibernate.stat.internal.StatisticsInitiator;
 
 /**
  * @author Steve Ebersole
@@ -55,7 +59,13 @@ public class SessionFactoryServiceRegistryImpl extends AbstractServiceRegistryIm
 		this.metadata = null;
 
 		// for now, just use the standard initiator list
-		for ( SessionFactoryServiceInitiator initiator : StandardSessionFactoryServiceInitiators.LIST ) {
+		for ( SessionFactoryServiceInitiator initiator : StandardSessionFactoryServiceInitiators.LIST ) { //!!!!
+			/*
+			 	serviceInitiators.add( EventListenerServiceInitiator.INSTANCE );
+				serviceInitiators.add( StatisticsInitiator.INSTANCE );
+				serviceInitiators.add( CacheInitiator.INSTANCE );
+				serviceInitiators.add( NativeQueryInterpreterInitiator.INSTANCE );
+			 */
 			// create the bindings up front to help identify to which registry services belong
 			createServiceBinding( initiator );
 		}

@@ -168,7 +168,7 @@ public class LogicalConnectionImpl implements LogicalConnectionImplementor {
 				// should never happen
 				throw new HibernateException( "User-supplied connection was null" );
 			}
-			obtainConnection();
+			obtainConnection(); // !!!
 		}
 		return physicalConnection;
 	}
@@ -225,7 +225,8 @@ public class LogicalConnectionImpl implements LogicalConnectionImplementor {
 	private void obtainConnection() throws JDBCException {
 		LOG.debug( "Obtaining JDBC connection" );
 		try {
-			physicalConnection = jdbcConnectionAccess.obtainConnection();
+			// jdbcConnectionAccess == org.hibernate.internal.AbstractSessionImpl.NonContextualJdbcConnectionAccess
+			physicalConnection = jdbcConnectionAccess.obtainConnection(); // 从数据源获取一个连接
 			for ( ConnectionObserver observer : observers ) {
 				observer.physicalConnectionObtained( physicalConnection );
 			}
@@ -252,6 +253,7 @@ public class LogicalConnectionImpl implements LogicalConnectionImplementor {
 				getJdbcServices().getSqlExceptionHelper().logAndClearWarnings( physicalConnection );
 			}
 			if ( !isUserSuppliedConnection ) {
+				// org.hibernate.internal.AbstractSessionImpl.NonContextualJdbcConnectionAccess
 				jdbcConnectionAccess.releaseConnection( physicalConnection );
 			}
 		}

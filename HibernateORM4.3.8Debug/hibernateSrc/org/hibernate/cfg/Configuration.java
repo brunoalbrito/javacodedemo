@@ -1055,7 +1055,7 @@ public class Configuration implements Serializable {
 	 * @return The created mappings
 	 */
 	public Mappings createMappings() {
-		return new MappingsImpl();
+		return new MappingsImpl(); // !!!!
 	}
 
 
@@ -3196,7 +3196,7 @@ public class Configuration implements Serializable {
 		}
 
 		public void addClass(PersistentClass persistentClass) throws DuplicateMappingException {
-			Object old = classes.put( persistentClass.getEntityName(), persistentClass );
+			Object old = classes.put( persistentClass.getEntityName(), persistentClass ); // !!!!
 			if ( old != null ) {
 				throw new DuplicateMappingException( "class/entity", persistentClass.getEntityName() );
 			}
@@ -4171,6 +4171,7 @@ public class Configuration implements Serializable {
 
 		private void processHbmXml(XmlDocument metadataXml, Set<String> entityNames) {
 			try {
+				// !!!!
 				HbmBinder.bindRoot( metadataXml, createMappings(), Collections.EMPTY_MAP, entityNames );
 			}
 			catch ( MappingException me ) {

@@ -105,8 +105,8 @@ public class EventListenerGroupImpl<T> implements EventListenerGroup<T> {
 
 	@Override
 	public void appendListener(T listener) {
-		if ( listenerShouldGetAdded( listener ) ) {
-			internalAppend( listener );
+		if ( listenerShouldGetAdded( listener ) ) { // 检查不能重复
+			internalAppend( listener ); // 添加监听器
 		}
 	}
 

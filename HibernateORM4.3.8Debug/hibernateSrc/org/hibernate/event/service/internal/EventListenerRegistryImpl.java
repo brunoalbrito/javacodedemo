@@ -97,10 +97,19 @@ import static org.hibernate.event.spi.EventType.UPDATE;
 public class EventListenerRegistryImpl implements EventListenerRegistry {
 	private Map<Class,Object> listenerClassToInstanceMap = new HashMap<Class, Object>();
 
-	private Map<EventType,EventListenerGroupImpl> registeredEventListenersMap = prepareListenerMap();
+	private Map<EventType,EventListenerGroupImpl> registeredEventListenersMap = prepareListenerMap(); // !!!!!
 
 	@SuppressWarnings({ "unchecked" })
 	public <T> EventListenerGroupImpl<T> getEventListenerGroup(EventType<T> eventType) {
+		/*
+			registeredEventListenersMap = {
+					EventType.SAVE ： new EventListenerGroupImpl<T>( EventType.SAVE ).appendListener( new DefaultSaveEventListener() );
+					EventType.SAVE_UPDATE ： new EventListenerGroupImpl<T>( EventType.SAVE_UPDATE ).appendListener( new DefaultSaveOrUpdateEventListener() );
+					EventType.DELETE ： new EventListenerGroupImpl<T>( EventType.DELETE ).appendListener( new DefaultDeleteEventListener() );
+					EventType.UPDATE ： new EventListenerGroupImpl<T>( EventType.UPDATE ).appendListener( new DefaultUpdateEventListener() );
+					EventType.LOAD ： new EventListenerGroupImpl<T>( EventType.LOAD ).appendListener( new DefaultLoadEventListener() );
+			}
+		 */
 		EventListenerGroupImpl<T> listeners = registeredEventListenersMap.get( eventType );
 		if ( listeners == null ) {
 			throw new HibernateException( "Unable to find listeners for type [" + eventType.eventName() + "]" );
@@ -206,8 +215,9 @@ public class EventListenerRegistryImpl implements EventListenerRegistry {
 				workMap
 		);
 
+		
 		// delete listeners
-		prepareListeners(
+		prepareListeners(  // 删除事件
 				DELETE,
 				new DefaultDeleteEventListener(),
 				workMap
@@ -246,6 +256,7 @@ public class EventListenerRegistryImpl implements EventListenerRegistry {
 				workMap
 		);
 
+		
 		// load listeners
 		prepareListeners(
 				LOAD,
@@ -386,7 +397,7 @@ public class EventListenerRegistryImpl implements EventListenerRegistry {
 		);
 
 		// update listeners
-		prepareListeners(
+		prepareListeners( // 修改
 				UPDATE,
 				new DefaultUpdateEventListener(),
 				workMap
@@ -407,7 +418,7 @@ public class EventListenerRegistryImpl implements EventListenerRegistry {
 		);
 
 		// save listeners
-		prepareListeners(
+		prepareListeners( // 添加事件
 				SAVE,
 				new DefaultSaveEventListener(),
 				workMap
@@ -442,6 +453,7 @@ public class EventListenerRegistryImpl implements EventListenerRegistry {
 			listenerGroup.appendListener( defaultListener );
 		}
 		map.put( type, listenerGroup  );
+		
 	}
 
 }

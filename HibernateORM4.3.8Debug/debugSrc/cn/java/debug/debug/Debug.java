@@ -34,7 +34,12 @@ public class Debug {
 		//Transaction result = transactionCoordinator.getTransaction(); 
 		//result.begin();
 		session.beginTransaction();
+		
 		session.save(student);
+		session.delete(student);
+		session.update(student);
+		session.createQuery("select * from tables");
+		
 		session.getTransaction().commit();
 		
 //		session.getTransaction().begin();

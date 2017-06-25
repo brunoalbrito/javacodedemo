@@ -130,6 +130,8 @@ public final class PersisterFactoryImpl implements PersisterFactory, ServiceRegi
 			Mapping cfg) {
 		Class<? extends EntityPersister> persisterClass = metadata.getEntityPersisterClass();
 		if ( persisterClass == null ) {
+			// PersisterClassResolverInitiator.INSTANCE
+			// persisterClass == org.hibernate.persister.internal.StandardPersisterClassResolver.getEntityPersisterClass( metadata );
 			persisterClass = serviceRegistry.getService( PersisterClassResolver.class ).getEntityPersisterClass( metadata );
 		}
 		return create( persisterClass, ENTITY_PERSISTER_CONSTRUCTOR_ARGS, metadata, cacheAccessStrategy, naturalIdRegionAccessStrategy, factory, cfg );

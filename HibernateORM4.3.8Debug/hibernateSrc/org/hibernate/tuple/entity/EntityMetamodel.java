@@ -153,7 +153,7 @@ public class EntityMetamodel implements Serializable {
 			PersistentClass persistentClass,
 			AbstractEntityPersister persister,
 			SessionFactoryImplementor sessionFactory) {
-		this.sessionFactory = sessionFactory;
+		this.sessionFactory = sessionFactory; // org.hibernate.internal.SessionFactoryImpl
 		this.persister = persister;
 
 		name = persistentClass.getEntityName();

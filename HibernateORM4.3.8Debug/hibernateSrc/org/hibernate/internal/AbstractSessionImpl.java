@@ -337,9 +337,12 @@ public abstract class AbstractSessionImpl
 	@Override
 	public JdbcConnectionAccess getJdbcConnectionAccess() {
 		if ( jdbcConnectionAccess == null ) {
+			// factory === org.hibernate.internal.SessionFactoryImpl
 			if ( MultiTenancyStrategy.NONE == factory.getSettings().getMultiTenancyStrategy() ) {
 				jdbcConnectionAccess = new NonContextualJdbcConnectionAccess(
 						getEventListenerManager(),
+						// ConnectionProviderInitiator.INSTANCE 
+						// org.hibernate.service.internal.SessionFactoryServiceRegistryImpl.getService( ConnectionProvider.class )
 						factory.getServiceRegistry().getService( ConnectionProvider.class )
 				);
 			}
@@ -387,6 +390,7 @@ public abstract class AbstractSessionImpl
 		@Override
 		public void releaseConnection(Connection connection) throws SQLException {
 			try {
+				// connectionProvider === org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl
 				listener.jdbcConnectionReleaseStart();
 				connectionProvider.closeConnection( connection );
 			}

@@ -298,6 +298,7 @@ public final class TransactionCoordinatorImpl implements TransactionCoordinator 
 		open = false;
 		reset();
 		observers.clear();
+		// jdbcCoordinator === org.hibernate.engine.jdbc.internal.JdbcCoordinatorImpl
 		return jdbcCoordinator.close();
 	}
 

@@ -1290,6 +1290,7 @@ public final class AnnotationBinder {
 		else {
 			throw new AssertionFailure( "Unknown inheritance type: " + inheritanceState.getType() );
 		}
+		
 		return persistentClass;
 	}
 
