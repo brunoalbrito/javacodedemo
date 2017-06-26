@@ -15,10 +15,10 @@
 	<classpathentry kind="src" path="libSrc/spring-framework-4.3.6.RELEASE/spring-tx/src/main/java"/>
 	<classpathentry kind="src" path="libSrc/spring-framework-4.3.6.RELEASE/spring-jms/src/main/java"/>
 	<classpathentry kind="src" path="libSrc/spring-framework-4.3.6.RELEASE/spring-jdbc/src/main/java"/>
-	<classpathentry kind="src" path="libSrc/spring-framework-4.3.6.RELEASE/spring-oxm/src/main/java"/>
 	<classpathentry kind="src" path="libSrc/spring-data-jpa-1.11.x/src/main/java"/>
 	<classpathentry kind="src" path="libSrc/spring-data-commons-1.13.x/src/main/java"/>
 	<classpathentry kind="src" path="dataSrc"/>
+	<classpathentry kind="src" path="libSrc/spring-framework-4.3.6.RELEASE/spring-oxm/src/main/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/aspectjweaver-1.8.10.jar" sourcepath="C:/Users/ADMINI~1/AppData/Local/Temp/decompiler/source/aspectjweaver-1.8.10-sources.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/commons-logging-1.2.jar"/>
