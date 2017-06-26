@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns="http://java.sun.com/xml/ns/javaee"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-	version="2.5">
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee	http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+  version="3.1"  metadata-complete="true">
 	
 	<description>spring web 测试</description>
 	<display-name>spring web 测试</display-name>
@@ -35,12 +35,12 @@
 	<servlet>
         <servlet-name>springwebmvc_DispatcherServlet</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
         <init-param>
 	        <param-name>contextConfigLocation</param-name>
        		<param-value>/WEB-INF/classes/cn/java/demo/webmvc/applicationContext.xml</param-value>
      	</init-param>
-     	<!-- 文件上传配置 -->
+	    <load-on-startup>1</load-on-startup>
+        <!-- 文件上传配置 -->
 		<multipart-config>
 	       <max-file-size>52428800</max-file-size>  <!-- 最大文件大小,50MB -->
 	       <max-request-size>52428800</max-request-size> <!-- 允许的body大小,50MB -->
@@ -50,19 +50,19 @@
     <servlet-mapping>
         <servlet-name>springwebmvc_DispatcherServlet</servlet-name>
         <url-pattern>/springwebmvc</url-pattern>
-　　</servlet-mapping>
+	</servlet-mapping>
     <servlet-mapping>
         <servlet-name>springwebmvc_DispatcherServlet</servlet-name>
         <url-pattern>/springwebmvc/</url-pattern>
-　　</servlet-mapping>
+	</servlet-mapping>
     <servlet-mapping>
         <servlet-name>springwebmvc_DispatcherServlet</servlet-name>
         <url-pattern>/springwebmvc/*</url-pattern>
-　　</servlet-mapping>
+	</servlet-mapping>
     <servlet-mapping>
         <servlet-name>springwebmvc_DispatcherServlet</servlet-name>
         <url-pattern>/springwebmvc/*.do</url-pattern>
-　　</servlet-mapping>
+	</servlet-mapping>
         
     <!-- JSP页面的相关配置 -->
 	<jsp-config>

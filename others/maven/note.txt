@@ -1,0 +1,140 @@
+
+------------------------------------------
+配置代理（在"conf/settings.xml"文件修改）
+	<settings>
+		...
+		<proxies>
+		    <!-- proxy
+		     | Specification for one proxy, to be used in connecting to the network.
+		     |
+		    <proxy>
+		      <id>optional</id>
+		      <active>true</active>
+		      <protocol>http</protocol>
+		      <username>proxyuser</</username>
+		      <password>proxypass</password>
+		      <host>proxy.host.net</host>
+		      <port>80</port>
+		      <nonProxyHosts>local.net|some.host.com</nonProxyHosts>
+		    </proxy>
+		    -->
+	   </proxies>
+	   ...
+	</settings>
+修改本地仓库地址（在"conf/settings.xml"文件修改）
+	<settings>
+		...
+		<localRepository>D:\software\yiibai.com\apache-maven\repository</localRepository>
+		...
+	</settings>
+	
+Maven的依赖库查询顺序
+    在 Maven 本地资源库中搜索，如果没有找到，进入第 2 步，否则退出。
+    在 Maven 中央存储库搜索，如果没有找到，进入第 3 步，否则退出。（http://repo1.maven.org/maven/）
+    在java.net Maven的远程存储库搜索(如果在 pom.xml 中定义) ，如果没有找到，提示错误信息，否则退出。
+    
+添加远程仓库（在"pom.xml"文件修改）
+	<project ...>
+	    <repositories>
+			<repository>
+			    <id>java.net</id>
+			    <url>https://maven.java.net/content/repositories/public/</url>
+			</repository>
+			<repository>
+				<id>JBoss repository</id>
+				<url>http://repository.jboss.org/nexus/content/groups/public/</url>
+	      	</repository>
+	    </repositories>
+	</project>
+-------------------------
+方式一：添加非标准依赖jar包到本地仓库
+	1、下载jar包
+	2、添加
+		mvn install:install-file -Dfile=c:\kaptcha-2.3.jar -DgroupId=com.google.code 
+	3、使用（配置pom.xml）
+		<dependency>
+			<groupId>com.google.code</groupId>
+			<artifactId>kaptcha</artifactId>
+			<version>2.3</version>
+		</dependency>
+方式二：
+	<dependency>
+		<groupId>ldapjdk</groupId>
+		<artifactId>ldapjdk</artifactId>
+		<scope>system</scope>
+		<version>1.0</version>
+		<systemPath>${basedir}\src\lib\ldapjdk.jar</systemPath>
+	</dependency>
+-------------------------	
+从 Maven 模板创建一个项目（Java项目命名 “beanstagdemo”）
+	mvn archetype:generate -DgroupId=cn.java.demo -DartifactId=beanstagdemo -DarchetypeArtifactId=maven -archetype-quickstart -DinteractiveMode=false
+-------------------------
+产生 Eclipse IDE所要求的所有项目文件
+	mvn eclipse:eclipse（--> Eclipse Java project (JAR)）
+	
+	mvn eclipse:eclipse -Dwtpversion=2.0（Eclipse Java web project (WAR) -Dwtpversion=2.0 告诉 Maven 将项目转换到 Eclipse 的 Web 项目(WAR)，而不是默认的Java项目(JAR)）
+-------------------------	
+添加编译器插件来告诉 Maven 使用哪个 JDK 版本是用来编译项目
+	<build>
+		...
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+	  </plugins>
+	</build>
+-------------------------	
+Maven 打包 
+	它编译，运行单元测试并打包项目成一个 jar 文件，并把它放在 project/target 文件夹
+	mvn package
+	
+-------------------------
+组合命令
+	清理、拷贝依赖、编译+打包
+	mvn clean dependency:copy-dependencies package
+-------------------------
+Maven 的插件
+	Maven 是一个执行插件的框架，每一个任务实际上是由插件完成的。Maven 插件通常用于：创建 jar 文件、创建 war 文件、编译代码文件、进行代码单元测试、创建项目文档、创建项目报告
+	mvn [plugin-name]:[goal-name]
+	Maven 提供以下两种类型插件：
+		构建插件 	在生成过程中执行，并在 pom.xml 中的<build/> 元素进行配置 
+		报告插件 	在网站生成期间执行，在 pom.xml 中的 <reporting/> 元素进行配置 
+-------------------------
+创建应用程序的文档
+	mvn site
+	Maven会使用一个文件处理引擎： Doxia，它将会读取多个源格式并将它们转换为通用文档模型文档。
+-------------------------
+快照与版本
+	在使用版本时，如果 Maven 下载所提到的版本为 data-service:1.0，那么它永远不会尝试在库中下载已经更新的版本1.0。要下载更新的代码，data-service的版本必须要升级到1.1。
+	在使用快照（SNAPSHOT）时，Maven会在每次应用程序UI团队建立自己的项目时自动获取最新的快照（data-service:1.0-SNAPSHOT）。 
+-------------------------
+在项目开发中，通常是部署过程包含以下步骤
+    检入代码在建项目全部进入SVN或源代码库中，并标记它。
+    从SVN下载完整的源代码。
+    构建应用程序。
+    生成输出要么WAR或EAR文件存储到一个共同的网络位置。
+    从网络获取的文件和文件部署到生产现场。
+    更新日期和应用程序的更新版本号的文件。
+-------------------------
+创建/构建/部署和运行Web应用程序
+-------------------------
+输出模板列表，保存为文本文件
+	mvn archetype:generate > templates.txt
+-------------------------
+构建项目
+	mvn package
+清理项目
+	mvn clean
+运行单元测试
+	mvn test
+打包项目，并自动部署到本地资源库
+	mvn install
+生成文档
+	mvn site
+ldapjdk.jar、kaptcha.jar
