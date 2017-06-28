@@ -13,6 +13,10 @@ public class InternalUtils_StringUtils {
 			System.out.println(StringUtils.trimWhitespace(" a b c "));
 		}
 		{
+			String[] strArray = {"a","b","c"};
+			System.out.println(StringUtils.arrayToDelimitedString(strArray, ","));
+		}
+		{
 			String candidatePattern = "*beanName1,beanName1*";
 			String beanName= "beanName1";
 			String[] patterns = StringUtils.commaDelimitedListToStringArray(candidatePattern);

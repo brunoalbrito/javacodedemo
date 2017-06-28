@@ -126,7 +126,10 @@ Maven 的插件
 -------------------------
 输出模板列表，保存为文本文件
 	mvn archetype:generate > templates.txt
+
 -------------------------
+导出依赖到指定目录
+	  		mvn dependency:copy-dependencies -DoutputDirectory=src/main/webapp/WEB-INF/lib
 构建项目
 	mvn package
 清理项目
@@ -138,3 +141,48 @@ Maven 的插件
 生成文档
 	mvn site
 ldapjdk.jar、kaptcha.jar
+
+-------------------------
+mvn install 是将你打好的jar包安装到你的本地库中，一般没有设置过是在 用户目录下的 .m2\下面
+mvn package 只是将你的代码打包到输出目录，一般的是 target下面。
+-----------------
+mvn package 命令
+{
+	{
+		maven-resources-plugin:2.6:resources (default-resources) @ javawebstack
+		maven-compiler-plugin:3.1:compile (default-compile) @ javawebstack
+		maven-resources-plugin:2.6:testResources (default-testResources) @ javawebstack
+		maven-compiler-plugin:3.1:testCompile (default-testCompile) @ javawebstack
+		maven-surefire-plugin:2.12.4:test (default-test) @ javawebstack
+	}
+	maven-war-plugin:2.2:war (default-war) @ javawebstack
+	
+	if(如果pom.xml文件中有配置插件<build><plugins><plugin></plugin></plugins></build>){
+		maven-dependency-plugin:2.8:copy-dependencies (copy-dependencies) @ javawebstack
+	}
+}
+
+mvn install 命令
+{
+	{
+		maven-resources-plugin:2.6:resources (default-resources) @ javawebstack
+		maven-compiler-plugin:3.1:compile (default-compile) @ javawebstack
+		maven-resources-plugin:2.6:testResources (default-testResources) @ javawebstack
+		maven-compiler-plugin:3.1:testCompile (default-testCompile) @ javawebstack
+		maven-surefire-plugin:2.12.4:test (default-test) @ javawebstack
+	}
+	
+	maven-war-plugin:2.2:war (default-war) @ javawebstack
+	
+	if(如果pom.xml文件中有配置插件<build><plugins><plugin></plugin></plugins></build>){
+		maven-dependency-plugin:2.8:copy-dependencies (copy-dependencies) @ javawebstack
+	}
+	
+	maven-install-plugin:2.4:install (default-install) @ javawebstack
+}
+
+mvn clean 命令
+{
+	maven-clean-plugin:2.5:clean (default-clean) @ javawebstack
+}
+-------------------------
