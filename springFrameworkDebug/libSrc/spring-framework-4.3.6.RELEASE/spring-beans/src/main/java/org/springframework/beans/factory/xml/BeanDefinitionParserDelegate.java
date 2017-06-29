@@ -556,9 +556,9 @@ public class BeanDefinitionParserDelegate {
 			parseLookupOverrideSubElements(ele, bd.getMethodOverrides());
 			parseReplacedMethodSubElements(ele, bd.getMethodOverrides());
 
-			parseConstructorArgElements(ele, bd);
-			parsePropertyElements(ele, bd);
-			parseQualifierElements(ele, bd);
+			parseConstructorArgElements(ele, bd); // <constructor-arg>
+			parsePropertyElements(ele, bd); // <property>
+			parseQualifierElements(ele, bd); // <qualifier>
 
 			bd.setResource(this.readerContext.getResource()); // org.springframework.beans.factory.xml.XmlReaderContext
 			bd.setSource(extractSource(ele));
