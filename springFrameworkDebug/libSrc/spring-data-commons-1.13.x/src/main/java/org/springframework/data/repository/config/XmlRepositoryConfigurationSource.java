@@ -70,7 +70,21 @@ public class XmlRepositoryConfigurationSource extends RepositoryConfigurationSou
 		this.context = context;
 
 		TypeFilterParser parser = new TypeFilterParser(context.getReaderContext());
+		/*
+		 	<include-filter></include-filter>
+		 	<include-filter></include-filter>
+		 	
+		 	<xxx type="ANNOTATION" expression="cn.java.Annotation0Class" /> 目标类有@Annotation0Class注解
+			<xxx type="ASSIGNABLE" expression="cn.java.ParentClass" />  目标类是cn.java.ParentClass的子类
+			<xxx type="ASPECTJ" expression="* cn.java.demo..*ServiceImpl" /> 目标类的类名是否符合指定“ASPECTJ规则”
+			<xxx type="REGEX" expression="" /> 目标类的类名是否符合指定“正则规则”
+			<xxx type="CUSTOM" expression="" /> 使用自定义过滤器
+		 */
 		this.includeFilters = parser.parseTypeFilters(element, Type.INCLUDE);
+		/*
+		 	<exclude-filter></exclude-filter>
+		 	<exclude-filter></exclude-filter>
+		 */
 		this.excludeFilters = parser.parseTypeFilters(element, Type.EXCLUDE);
 	}
 
@@ -147,7 +161,7 @@ public class XmlRepositoryConfigurationSource extends RepositoryConfigurationSou
 	 * @see org.springframework.data.repository.config.RepositoryConfigurationSource#getRepositoryFactoryBeanName()
 	 */
 	public String getRepositoryFactoryBeanName() {
-		return getNullDefaultedAttribute(element, REPOSITORY_FACTORY_BEAN_CLASS_NAME);
+		return getNullDefaultedAttribute(element, REPOSITORY_FACTORY_BEAN_CLASS_NAME); // factory-class=""
 	}
 
 	/* 

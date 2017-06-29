@@ -190,24 +190,25 @@ public abstract class RepositoryFactorySupport implements BeanClassLoaderAware, 
 	@SuppressWarnings({ "unchecked" })
 	public <T> T getRepository(Class<T> repositoryInterface, Object customImplementation) {
 
-		RepositoryMetadata metadata = getRepositoryMetadata(repositoryInterface);
+		// repositoryInterface === cn.java.dao.UserRepository
+		RepositoryMetadata metadata = getRepositoryMetadata(repositoryInterface); 
 		Class<?> customImplementationClass = null == customImplementation ? null : customImplementation.getClass();
 		RepositoryInformation information = getRepositoryInformation(metadata, customImplementationClass);
 
 		validate(information, customImplementation);
 
-		Object target = getTargetRepository(information);
+		Object target = getTargetRepository(information); // !!!! ----target === org.springframework.data.jpa.repository.support.SimpleJpaRepository
 
 		// Create proxy
 		ProxyFactory result = new ProxyFactory();
 		result.setTarget(target);
 		result.setInterfaces(new Class[] { repositoryInterface, Repository.class });
 
-		result.addAdvice(SurroundingTransactionDetectorMethodInterceptor.INSTANCE);
-		result.addAdvisor(ExposeInvocationInterceptor.ADVISOR);
+		result.addAdvice(SurroundingTransactionDetectorMethodInterceptor.INSTANCE);  // 拦截器1
+		result.addAdvisor(ExposeInvocationInterceptor.ADVISOR);  // 拦截器2
 
 		if (TRANSACTION_PROXY_TYPE != null) {
-			result.addInterface(TRANSACTION_PROXY_TYPE);
+			result.addInterface(TRANSACTION_PROXY_TYPE);  // 拦截器3
 		}
 
 		for (RepositoryProxyPostProcessor processor : postProcessors) {
@@ -215,12 +216,12 @@ public abstract class RepositoryFactorySupport implements BeanClassLoaderAware, 
 		}
 
 		if (IS_JAVA_8) {
-			result.addAdvice(new DefaultMethodInvokingMethodInterceptor());
+			result.addAdvice(new DefaultMethodInvokingMethodInterceptor());  // 拦截器4
 		}
 
-		result.addAdvice(new QueryExecutorMethodInterceptor(information, customImplementation, target));
+		result.addAdvice(new QueryExecutorMethodInterceptor(information, customImplementation, target));  // 拦截器5--调用实际方法
 
-		return (T) result.getProxy(classLoader);
+		return (T) result.getProxy(classLoader); // 创建代理对象
 	}
 
 	/**
@@ -252,7 +253,7 @@ public abstract class RepositoryFactorySupport implements BeanClassLoaderAware, 
 
 		Class<?> repositoryBaseClass = this.repositoryBaseClass == null ? getRepositoryBaseClass(metadata)
 				: this.repositoryBaseClass;
-
+		// repositoryBaseClass == org.springframework.data.jpa.repository.support.SimpleJpaRepository
 		repositoryInformation = new DefaultRepositoryInformation(metadata, repositoryBaseClass, customImplementationClass);
 		repositoryInformationCache.put(cacheKey, repositoryInformation);
 		return repositoryInformation;
@@ -346,7 +347,7 @@ public abstract class RepositoryFactorySupport implements BeanClassLoaderAware, 
 	protected final <R> R getTargetRepositoryViaReflection(RepositoryInformation information,
 			Object... constructorArguments) {
 
-		Class<?> baseClass = information.getRepositoryBaseClass();
+		Class<?> baseClass = information.getRepositoryBaseClass(); // org.springframework.data.jpa.repository.support.SimpleJpaRepository
 		Constructor<?> constructor = ReflectionUtils.findConstructor(baseClass, constructorArguments);
 
 		if (constructor == null) {
@@ -407,14 +408,14 @@ public abstract class RepositoryFactorySupport implements BeanClassLoaderAware, 
 			Assert.notNull(target, "Target must not be null!");
 
 			this.resultHandler = new QueryExecutionResultHandler();
-			this.repositoryInformation = repositoryInformation;
+			this.repositoryInformation = repositoryInformation; // org.springframework.data.repository.core.support.DefaultRepositoryInformation
 			this.customImplementation = customImplementation;
 			this.target = target;
 
 			QueryLookupStrategy lookupStrategy = getQueryLookupStrategy(queryLookupStrategyKey,
 					RepositoryFactorySupport.this.evaluationContextProvider);
 			lookupStrategy = lookupStrategy == null ? getQueryLookupStrategy(queryLookupStrategyKey) : lookupStrategy;
-			Iterable<Method> queryMethods = repositoryInformation.getQueryMethods();
+			Iterable<Method> queryMethods = repositoryInformation.getQueryMethods(); // 查询方法列表
 
 			if (lookupStrategy == null) {
 
@@ -473,7 +474,7 @@ public abstract class RepositoryFactorySupport implements BeanClassLoaderAware, 
 			Method method = invocation.getMethod();
 			Object[] arguments = invocation.getArguments();
 
-			if (isCustomMethodInvocation(invocation)) {
+			if (isCustomMethodInvocation(invocation)) { // 自定义实现类 cn.java.dao.UserRepositoryImpl的方法
 
 				Method actualMethod = repositoryInformation.getTargetClassMethod(method);
 				return executeMethodOn(customImplementation, actualMethod, arguments);
@@ -485,7 +486,10 @@ public abstract class RepositoryFactorySupport implements BeanClassLoaderAware, 
 
 			// Lookup actual method as it might be redeclared in the interface
 			// and we have to use the repository instance nevertheless
-			Method actualMethod = repositoryInformation.getTargetClassMethod(method);
+			
+			// !!!repositoryInformation === org.springframework.data.repository.core.support.DefaultRepositoryInformation
+			// !!!自定义类 cn.java.dao.UserRepositoryImpl 中查找、基础类 org.springframework.data.jpa.repository.support.SimpleJpaRepository 中查找
+			Method actualMethod = repositoryInformation.getTargetClassMethod(method); 
 			return executeMethodOn(target, actualMethod, arguments);
 		}
 
@@ -501,7 +505,7 @@ public abstract class RepositoryFactorySupport implements BeanClassLoaderAware, 
 		private Object executeMethodOn(Object target, Method method, Object[] parameters) throws Throwable {
 
 			try {
-				return method.invoke(target, parameters);
+				return method.invoke(target, parameters); // 调用目标方法
 			} catch (Exception e) {
 				ClassUtils.unwrapReflectionException(e);
 			}

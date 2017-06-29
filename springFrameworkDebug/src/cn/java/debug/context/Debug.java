@@ -32,7 +32,7 @@ public class Debug {
 		 			@Autowired注入机制是：根据参数类型查找容器符合条件的bean，当有多个bean都符合条件时，选择规则是：0、根据setter方法上配置的注解是否在<qualifier>标签中声明进行选择（默认不支持 - 要自行扩展）；1、检查有配置primary的bean ； 2、根据bean优先权order（默认不支持 - 要自行扩展）   3、根据参数名获取到bean（默认不支持 - 要自行扩展）         
 				 		在字段上的注解 ---> org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.AutowiredFieldElement.inject(...)
 				 		在方法上的注解 ---> org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.AutowiredMethodElement.inject(...)
-		 	7、获取bean的过程，会执行bean级别的hook（RequiredAnnotationBeanPostProcessor....），只是起依赖起检查作用
+		 	7、获取bean的过程，会执行bean级别的hook（RequiredAnnotationBeanPostProcessor....），只是起依赖起检查作用，识别 @Required，“有@Required注解,但是没有配置值”，那么抛出异常
 		 	8、获取bean的过程，会执行bean级别的hook（CommonAnnotationBeanPostProcessor....），识别@WebServiceRef、@EJB、@Resource注解，进行注入，
 		 		@WebServiceRef ---> org.springframework.context.annotation.CommonAnnotationBeanPostProcessor.WebServiceRefElement.inject(...)
 		 		@EJB ---> org.springframework.context.annotation.CommonAnnotationBeanPostProcessor.EjbRefElement.inject(...)

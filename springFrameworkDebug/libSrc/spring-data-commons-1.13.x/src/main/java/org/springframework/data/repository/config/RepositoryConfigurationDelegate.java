@@ -68,7 +68,7 @@ public class RepositoryConfigurationDelegate {
 	public RepositoryConfigurationDelegate(RepositoryConfigurationSource configurationSource,
 			ResourceLoader resourceLoader, Environment environment) {
 
-		this.isXml = configurationSource instanceof XmlRepositoryConfigurationSource;
+		this.isXml = configurationSource instanceof XmlRepositoryConfigurationSource; // true
 		boolean isAnnotation = configurationSource instanceof AnnotationRepositoryConfigurationSource;
 
 		Assert.isTrue(isXml || isAnnotation,
@@ -113,6 +113,17 @@ public class RepositoryConfigurationDelegate {
 	public List<BeanComponentDefinition> registerRepositoriesIn(BeanDefinitionRegistry registry,
 			RepositoryConfigurationExtension extension) {
 
+		// extension === org.springframework.data.jpa.repository.config.JpaRepositoryConfigExtension
+		// configurationSource === org.springframework.data.repository.config.XmlRepositoryConfigurationSource 里面包含过滤规则
+		/*
+			注册bean定义到BeanDefinition容器
+			{
+				org.springframework.data.jpa.repository.support.EntityManagerBeanDefinitionRegistrarPostProcessor
+				org.springframework.data.jpa.repository.config.JpaMetamodelMappingContextFactoryBean
+				org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor
+				org.springframework.data.jpa.repository.support.DefaultJpaContext
+			}
+		 */
 		extension.registerBeansForRoot(registry, configurationSource);
 
 		RepositoryBeanDefinitionBuilder builder = new RepositoryBeanDefinitionBuilder(registry, extension, resourceLoader,
@@ -121,9 +132,28 @@ public class RepositoryConfigurationDelegate {
 
 		for (RepositoryConfiguration<? extends RepositoryConfigurationSource> configuration : extension
 				.getRepositoryConfigurations(configurationSource, resourceLoader, inMultiStoreMode)) {
-
+			// configuration === org.springframework.data.repository.config.DefaultRepositoryConfiguration
 			BeanDefinitionBuilder definitionBuilder = builder.build(configuration);
-
+			/*
+			 	一个entity会被包装成如下
+			 	org.springframework.data.jpa.repository.support.JpaRepositoryFactoryBean(cn.java.dao.UserRepository)
+			 	{
+			 		queryLookupStrategyKey : ""
+			 		lazyInit : ""
+			 		repositoryBaseClass : ""
+			 		namedQueries :  “classpath*:META-INF/jpa-named-queries.properties”的实例
+			 		customImplementation :  自定义xxxImpl的实例,如userRepositoryImpl == cn.java.dao.UserRepositoryImpl
+			 		evaluationContextProvider : org.springframework.data.repository.query.ExtensionAwareEvaluationContextProvider
+			 		------
+			 		transactionManager : "transactionManagerx"
+				 	entityManager : 引用org.springframework.orm.jpa.SharedEntityManagerCreator.createSharedEntityManager("entityManagerFactory0")对象
+				 	mappingContext :引用jpaMappingContext对象
+				 	------
+				 	enableDefaultTransactions : false
+				 	------
+				 	factoryBeanObjectType ：cn.java.dao.UserRepository
+			 	}
+			 */
 			extension.postProcess(definitionBuilder, configurationSource);
 
 			if (isXml) {
@@ -133,7 +163,8 @@ public class RepositoryConfigurationDelegate {
 			}
 
 			AbstractBeanDefinition beanDefinition = definitionBuilder.getBeanDefinition();
-			String beanName = beanNameGenerator.generateBeanName(beanDefinition, registry);
+			// beanNameGenerator == org.springframework.data.repository.config.RepositoryBeanNameGenerator
+			String beanName = beanNameGenerator.generateBeanName(beanDefinition, registry); // 使用@Component注解的值作为beanName
 
 			if (LOGGER.isDebugEnabled()) {
 				LOGGER.debug(REPOSITORY_REGISTRATION, extension.getModuleName(), beanName,
@@ -142,7 +173,7 @@ public class RepositoryConfigurationDelegate {
 
 			beanDefinition.setAttribute(FACTORY_BEAN_OBJECT_TYPE, configuration.getRepositoryInterface());
 
-			registry.registerBeanDefinition(beanName, beanDefinition);
+			registry.registerBeanDefinition(beanName, beanDefinition); // 注册到BeanDefinition容器
 			definitions.add(new BeanComponentDefinition(beanDefinition, beanName));
 		}
 

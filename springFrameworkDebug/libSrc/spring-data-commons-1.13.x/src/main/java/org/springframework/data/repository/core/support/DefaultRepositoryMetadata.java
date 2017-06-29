@@ -75,7 +75,7 @@ public class DefaultRepositoryMetadata extends AbstractRepositoryMetadata {
 	private Class<? extends Serializable> resolveIdType(Class<?> repositoryInterface) {
 
 		TypeInformation<?> information = ClassTypeInformation.from(repositoryInterface);
-		List<TypeInformation<?>> arguments = information.getSuperTypeInformation(Repository.class).getTypeArguments();
+		List<TypeInformation<?>> arguments = information.getSuperTypeInformation(Repository.class).getTypeArguments(); // 泛型参数
 
 		if (arguments.size() < 2 || arguments.get(1) == null) {
 			throw new IllegalArgumentException(String.format("Could not resolve id type of %s!", repositoryInterface));
@@ -87,7 +87,7 @@ public class DefaultRepositoryMetadata extends AbstractRepositoryMetadata {
 	private Class<?> resolveDomainType(Class<?> repositoryInterface) {
 
 		TypeInformation<?> information = ClassTypeInformation.from(repositoryInterface);
-		List<TypeInformation<?>> arguments = information.getSuperTypeInformation(Repository.class).getTypeArguments();
+		List<TypeInformation<?>> arguments = information.getSuperTypeInformation(Repository.class).getTypeArguments();// 泛型参数
 
 		if (arguments.isEmpty() || arguments.get(0) == null) {
 			throw new IllegalArgumentException(String.format("Could not resolve domain type of %s!", repositoryInterface));

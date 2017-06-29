@@ -56,12 +56,12 @@ public abstract class RepositoryConfigurationSourceSupport implements Repository
 	 */
 	public Collection<BeanDefinition> getCandidates(ResourceLoader loader) {
 
-		RepositoryComponentProvider scanner = new RepositoryComponentProvider(getIncludeFilters());
+		RepositoryComponentProvider scanner = new RepositoryComponentProvider(getIncludeFilters()); // 包含
 		scanner.setConsiderNestedRepositoryInterfaces(shouldConsiderNestedRepositories());
 		scanner.setResourceLoader(loader);
 		scanner.setEnvironment(environment);
 
-		for (TypeFilter filter : getExcludeFilters()) {
+		for (TypeFilter filter : getExcludeFilters()) { // 不包含
 			scanner.addExcludeFilter(filter);
 		}
 

@@ -1,4 +1,4 @@
-package cn.java.aopnote;
+package cn.java.debug.aopnote;
 
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 

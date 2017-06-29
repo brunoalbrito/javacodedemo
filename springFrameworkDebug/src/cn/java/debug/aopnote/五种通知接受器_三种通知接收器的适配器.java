@@ -1,4 +1,4 @@
-package cn.java.aopnote;
+package cn.java.debug.aopnote;
 
 public class 五种通知接受器_三种通知接收器的适配器 {
 

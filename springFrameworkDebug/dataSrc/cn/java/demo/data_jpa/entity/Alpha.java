@@ -1,6 +1,6 @@
 package cn.java.demo.data_jpa.entity;
 
-public class Foo {
+public class Alpha {
 	private int fooId;
 	private String fooName;
 	public int getFooId() {

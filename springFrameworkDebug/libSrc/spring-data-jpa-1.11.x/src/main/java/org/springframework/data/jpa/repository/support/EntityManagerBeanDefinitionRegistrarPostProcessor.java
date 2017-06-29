@@ -51,14 +51,14 @@ public class EntityManagerBeanDefinitionRegistrarPostProcessor implements BeanFa
 	@Override
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
 
-		for (EntityManagerFactoryBeanDefinition definition : getEntityManagerFactoryBeanDefinitions(beanFactory)) {
+		for (EntityManagerFactoryBeanDefinition definition : getEntityManagerFactoryBeanDefinitions(beanFactory)) { // 扫描实现EntityManagerFactory接口的bean
 
 			if (!(definition.getBeanFactory() instanceof BeanDefinitionRegistry)) {
 				continue;
 			}
 
 			BeanDefinitionBuilder builder = BeanDefinitionBuilder
-					.rootBeanDefinition("org.springframework.orm.jpa.SharedEntityManagerCreator");
+					.rootBeanDefinition("org.springframework.orm.jpa.SharedEntityManagerCreator"); // 用SharedEntityManagerCreator包装"实现EntityManagerFactory接口的bean"
 			builder.setFactoryMethod("createSharedEntityManager");
 			builder.addConstructorArgReference(definition.getBeanName());
 

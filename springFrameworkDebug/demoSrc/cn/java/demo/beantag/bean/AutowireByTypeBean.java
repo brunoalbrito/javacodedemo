@@ -139,26 +139,34 @@ public class AutowireByTypeBean {
 //	}
 	
 	/**
-	 * 自定义类型 - 根据“<qualifier>”选择
+	 * 自定义类型 - 根据“<qualifier>+@Qualifier注解”选择
 	 */
-	public void setFooBeanInjectSelectedByQualifierX(@Qualifier(value="fooBeanInjectSelectedByQualifier0") FooBeanInjectSelectedByQualifier fooBeanInjectSelectedByQualifier) {
-		System.out.println("----------自定义类型-根据“<qualifier>”选择---------------");
+	public void setFooBeanInjectSelectedBy_QualifierAnnotation_QualifierTag(@Qualifier(value="fooBeanInjectSelectedByQualifier0") FooBeanInjectSelectedByQualifier fooBeanInjectSelectedByQualifier) {
+		System.out.println("----------自定义类型-根据“<qualifier>+@Qualifier注解”选择---------------");
 		System.out.println(fooBeanInjectSelectedByQualifier);
 	}
 	
 	/**
-	 * 自定义类型 - 根据“<qualifier>”选择
+	 * 自定义类型 - 根据“<qualifier>+自定义注解+不指定属性”选择
 	 */
-	public void setFooBeanInjectSelectedByQualifierXX(@MyQualifier1(value="MyQualifier1_fooBeanInjectSelectedByQualifier0") FooBeanInjectSelectedByQualifier fooBeanInjectSelectedByQualifier) {
-		System.out.println("----------自定义类型-根据“<qualifier>”注入---------------");
+	public void setFooBeanInjectSelectedBy_SelfQualifierAnnotation0_QualifierTag(@MyQualifier1(value="MyQualifier1_fooBeanInjectSelectedByQualifier0") FooBeanInjectSelectedByQualifier fooBeanInjectSelectedByQualifier) {
+		System.out.println("----------自定义类型-根据“<qualifier>+自定义注解+不指定属性”注入---------------");
 		System.out.println(fooBeanInjectSelectedByQualifier);
 	}
 	
 	/**
-	 * 自定义类型 - 根据“<qualifier>”选择
+	 * 自定义类型 - 根据“<qualifier>+<attribute>+自定义注解+指定属性”选择
 	 */
-	public void setFooBeanInjectSelectedByQualifierXXX(@MyQualifier0(value="MyQualifier0_fooBeanInjectSelectedByQualifier0",attribute_key0="attribute_key0_value",attribute_key1="attribute_key1_value") FooBeanInjectSelectedByQualifier fooBeanInjectSelectedByQualifier) {
-		System.out.println("----------自定义类型-根据“<qualifier>”注入---------------");
+	public void setFooBeanInjectSelectedBy_SelfQualifierAnnotation1_QualifierTag(@MyQualifier0(value="MyQualifier0_fooBeanInjectSelectedByQualifier0",attribute_key0="attribute_key0_value",attribute_key1="attribute_key1_value") FooBeanInjectSelectedByQualifier fooBeanInjectSelectedByQualifier) {
+		System.out.println("----------自定义类型-根据“<qualifier>+<attribute>+自定义注解+指定属性”注入---------------");
+		System.out.println(fooBeanInjectSelectedByQualifier);
+	}
+	
+	/**
+	 * 自定义类型 - 根据“<qualifier>+<meta>+自定义注解+指定属性”选择
+	 */
+	public void setFooBeanInjectSelectedBy_SelfQualifierAnnotation1_QualifierMetaTag(@MyQualifier0(value="MyQualifier0_fooBeanInjectSelectedByQualifier1",attribute_key0="attribute_key0_value",attribute_key1="attribute_key1_value") FooBeanInjectSelectedByQualifier fooBeanInjectSelectedByQualifier) {
+		System.out.println("----------自定义类型-根据“<qualifier>+<meta>+自定义注解+指定属性”注入---------------");
 		System.out.println(fooBeanInjectSelectedByQualifier);
 	}
 	

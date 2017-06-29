@@ -118,6 +118,9 @@ public class JpaRepositoryConfigExtension extends RepositoryConfigurationExtensi
 	@Override
 	public void postProcess(BeanDefinitionBuilder builder, RepositoryConfigurationSource source) {
 
+		/*
+		 	
+		 */
 		String transactionManagerRef = source.getAttribute("transactionManagerRef");
 		builder.addPropertyValue("transactionManager",
 				transactionManagerRef == null ? DEFAULT_TRANSACTION_MANAGER_BEAN_NAME : transactionManagerRef);
@@ -161,8 +164,18 @@ public class JpaRepositoryConfigExtension extends RepositoryConfigurationExtensi
 
 		super.registerBeansForRoot(registry, config);
 
+		// config === org.springframework.data.repository.config.XmlRepositoryConfigurationSource 里面包含过滤规则
+		
 		Object source = config.getSource();
 
+		/*
+			{
+				org.springframework.data.jpa.repository.support.EntityManagerBeanDefinitionRegistrarPostProcessor
+				org.springframework.data.jpa.repository.config.JpaMetamodelMappingContextFactoryBean
+				org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor
+				org.springframework.data.jpa.repository.support.DefaultJpaContext
+			}
+		 */
 		registerIfNotAlreadyRegistered(new RootBeanDefinition(EntityManagerBeanDefinitionRegistrarPostProcessor.class),
 				registry, EM_BEAN_DEFINITION_REGISTRAR_POST_PROCESSOR_BEAN_NAME, source);
 

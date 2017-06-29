@@ -9,7 +9,6 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import cn.java.demo.data_kafka.producorservice.KafkaProducerService;
 
 public class KafkaTest {
-	
 	/*
 	 * http://www.cnblogs.com/wangb0402/p/6187796.html
 	 */

@@ -118,13 +118,13 @@ class DefaultRepositoryInformation implements RepositoryInformation {
 			return methodCache.get(method);
 		}
 
-		Method result = getTargetClassMethod(method, customImplementationClass);
+		Method result = getTargetClassMethod(method, customImplementationClass); // 自定义实现类中查找  cn.java.dao.UserRepositoryImpl
 
 		if (!result.equals(method)) {
 			return cacheAndReturn(method, result);
 		}
 
-		return cacheAndReturn(method, getTargetClassMethod(method, repositoryBaseClass));
+		return cacheAndReturn(method, getTargetClassMethod(method, repositoryBaseClass)); // 基础类中查找 org.springframework.data.jpa.repository.support.SimpleJpaRepository
 	}
 
 	private Method cacheAndReturn(Method key, Method value) {
@@ -183,10 +183,10 @@ class DefaultRepositoryInformation implements RepositoryInformation {
 	 * @param method
 	 * @return
 	 */
-	private boolean isQueryMethodCandidate(Method method) {
-		return !method.isBridge() && !ReflectionUtils.isDefaultMethod(method) //
-				&& !Modifier.isStatic(method.getModifiers()) //
-				&& (isQueryAnnotationPresentOn(method) || !isCustomMethod(method) && !isBaseClassMethod(method));
+	private boolean isQueryMethodCandidate(Method method) { // 自定义抽象类中的方法？
+		return !method.isBridge() && !ReflectionUtils.isDefaultMethod(method) // 不是在接口中的方法
+				&& !Modifier.isStatic(method.getModifiers()) // 不是静态的
+				&& (isQueryAnnotationPresentOn(method) || !isCustomMethod(method) && !isBaseClassMethod(method)); // 含有@QueryAnnotation注解、（不是自定义类方法+不是基础类的方法）
 	}
 
 	/**
@@ -226,7 +226,7 @@ class DefaultRepositoryInformation implements RepositoryInformation {
 	@Override
 	public boolean isBaseClassMethod(Method method) {
 
-		Assert.notNull(method, "Method must not be null!");
+		Assert.notNull(method, "Method must not be null!"); // repositoryBaseClass === org.springframework.data.jpa.repository.support.SimpleJpaRepository
 		return isTargetClassMethod(method, repositoryBaseClass);
 	}
 
@@ -284,7 +284,7 @@ class DefaultRepositoryInformation implements RepositoryInformation {
 		Class<?> repositoryInterface = getRepositoryInterface();
 
 		// No detection required if no typing interface was configured
-		if (isGenericRepositoryInterface(repositoryInterface)) {
+		if (isGenericRepositoryInterface(repositoryInterface)) { // 只有自定义方法
 			return false;
 		}
 

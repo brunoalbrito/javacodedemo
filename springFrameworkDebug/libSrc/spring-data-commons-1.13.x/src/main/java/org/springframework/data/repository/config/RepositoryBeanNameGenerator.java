@@ -65,7 +65,7 @@ public class RepositoryBeanNameGenerator implements BeanNameGenerator, BeanClass
 	 */
 	private Class<?> getRepositoryInterfaceFrom(BeanDefinition beanDefinition) {
 
-		Object value = beanDefinition.getConstructorArgumentValues().getArgumentValue(0, Class.class).getValue();
+		Object value = beanDefinition.getConstructorArgumentValues().getArgumentValue(0, Class.class).getValue(); // "cn.java.dao.UserRepository"
 
 		if (value instanceof Class<?>) {
 			return (Class<?>) value;

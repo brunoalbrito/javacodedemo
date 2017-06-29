@@ -10,8 +10,8 @@ public class ApplicationListenerWithApplicationEventParamBean implements Applica
 	 */
 	@Override
 	public void onApplicationEvent(ApplicationEvent event) {
-		if(event instanceof ApplicationEventImpl){
-			ApplicationEventImpl applicationEventImpl = (ApplicationEventImpl)event;
+		if(event instanceof FooApplicationEvent){
+			FooApplicationEvent applicationEventImpl = (FooApplicationEvent)event;
 			Object source = applicationEventImpl.getSource();
 			if(source instanceof FooEventTriggerBean){
 				FooEventTriggerBean fooEventTriggerBean = (FooEventTriggerBean)source;

@@ -45,7 +45,7 @@ public class JpaRepositoryFactoryBean<T extends Repository<S, ID>, S, ID extends
 	 * @param repositoryInterface must not be {@literal null}.
 	 */
 	public JpaRepositoryFactoryBean(Class<? extends T> repositoryInterface) {
-		super(repositoryInterface);
+		super(repositoryInterface); // repositoryInterface === cn.java.dao.UserRepository
 	}
 
 	/**
@@ -75,7 +75,7 @@ public class JpaRepositoryFactoryBean<T extends Repository<S, ID>, S, ID extends
 	 */
 	@Override
 	protected RepositoryFactorySupport doCreateRepositoryFactory() {
-		return createRepositoryFactory(entityManager);
+		return createRepositoryFactory(entityManager); // !!!!!
 	}
 
 	/**
@@ -85,7 +85,7 @@ public class JpaRepositoryFactoryBean<T extends Repository<S, ID>, S, ID extends
 	 * @return
 	 */
 	protected RepositoryFactorySupport createRepositoryFactory(EntityManager entityManager) {
-		return new JpaRepositoryFactory(entityManager);
+		return new JpaRepositoryFactory(entityManager); //!!!
 	}
 
 	/*

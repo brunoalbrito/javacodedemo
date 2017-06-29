@@ -79,19 +79,20 @@ public abstract class RepositoryConfigurationExtensionSupport implements Reposit
 		Assert.notNull(loader, "Loader must not be null!");
 
 		Set<RepositoryConfiguration<T>> result = new HashSet<RepositoryConfiguration<T>>();
+		// configSource === org.springframework.data.repository.config.XmlRepositoryConfigurationSource 里面包含过滤规则
+		for (BeanDefinition candidate : configSource.getCandidates(loader)) { // 符合指定特征的bean列表
 
-		for (BeanDefinition candidate : configSource.getCandidates(loader)) {
-
-			RepositoryConfiguration<T> configuration = getRepositoryConfiguration(candidate, configSource);
+			// configuration === org.springframework.data.repository.config.DefaultRepositoryConfiguration
+			RepositoryConfiguration<T> configuration = getRepositoryConfiguration(candidate, configSource); 
 
 			if (!strictMatchesOnly || configSource.usesExplicitFilters()) {
 				result.add(configuration);
 				continue;
 			}
 
-			Class<?> repositoryInterface = loadRepositoryInterface(configuration, loader);
+			Class<?> repositoryInterface = loadRepositoryInterface(configuration, loader); //  repositoryInterface === cn.java.dao.UserRepository
 
-			if (repositoryInterface == null || isStrictRepositoryCandidate(repositoryInterface)) {
+			if (repositoryInterface == null || isStrictRepositoryCandidate(repositoryInterface)) { // !!!!!
 				result.add(configuration);
 			}
 		}
@@ -246,16 +247,17 @@ public abstract class RepositoryConfigurationExtensionSupport implements Reposit
 
 		RepositoryMetadata metadata = AbstractRepositoryMetadata.getMetadata(repositoryInterface);
 
-		Collection<Class<?>> types = getIdentifyingTypes();
+		Collection<Class<?>> types = getIdentifyingTypes(); // 
 
 		for (Class<?> type : types) {
-			if (type.isAssignableFrom(repositoryInterface)) {
+			// 如： type === org.springframework.data.jpa.repository.JpaRepository
+			if (type.isAssignableFrom(repositoryInterface)) { // 实现JpaRepository接口
 				return true;
 			}
 		}
 
 		Class<?> domainType = metadata.getDomainType();
-		Collection<Class<? extends Annotation>> annotations = getIdentifyingAnnotations();
+		Collection<Class<? extends Annotation>> annotations = getIdentifyingAnnotations(); // 包含注解 @Entity  @MappedSuperclass
 
 		if (annotations.isEmpty()) {
 			return true;
@@ -282,7 +284,7 @@ public abstract class RepositoryConfigurationExtensionSupport implements Reposit
 	 */
 	private Class<?> loadRepositoryInterface(RepositoryConfiguration<?> configuration, ResourceLoader loader) {
 
-		String repositoryInterface = configuration.getRepositoryInterface();
+		String repositoryInterface = configuration.getRepositoryInterface(); //接口名　cn.java.dao.UserRepository
 		ClassLoader classLoader = loader.getClassLoader();
 
 		try {

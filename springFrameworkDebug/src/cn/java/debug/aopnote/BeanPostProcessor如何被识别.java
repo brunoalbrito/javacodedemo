@@ -1,4 +1,4 @@
-package cn.java.aopnote;
+package cn.java.debug.aopnote;
 
 public class BeanPostProcessor如何被识别 {
 	

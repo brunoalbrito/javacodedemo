@@ -1,6 +1,6 @@
 package cn.java.demo.data_common.entity;
 
-public class Foo {
+public class FooEntity {
 	private int fooId;
 	private String fooName;
 	public int getFooId() {

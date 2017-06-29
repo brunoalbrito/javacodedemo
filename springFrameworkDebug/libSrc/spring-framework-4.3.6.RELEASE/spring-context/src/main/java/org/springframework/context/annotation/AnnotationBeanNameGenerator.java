@@ -67,7 +67,7 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
 	@Override
 	public String generateBeanName(BeanDefinition definition, BeanDefinitionRegistry registry) {
 		if (definition instanceof AnnotatedBeanDefinition) {
-			String beanName = determineBeanNameFromAnnotation((AnnotatedBeanDefinition) definition);
+			String beanName = determineBeanNameFromAnnotation((AnnotatedBeanDefinition) definition); // !!!
 			if (StringUtils.hasText(beanName)) {
 				// Explicit bean name found.
 				return beanName;
@@ -83,11 +83,11 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
 	 * @return the bean name, or {@code null} if none is found
 	 */
 	protected String determineBeanNameFromAnnotation(AnnotatedBeanDefinition annotatedDef) {
-		AnnotationMetadata amd = annotatedDef.getMetadata();
-		Set<String> types = amd.getAnnotationTypes();
+		AnnotationMetadata amd = annotatedDef.getMetadata(); // 元信息
+		Set<String> types = amd.getAnnotationTypes(); // 注解列表
 		String beanName = null;
 		for (String type : types) {
-			AnnotationAttributes attributes = AnnotationConfigUtils.attributesFor(amd, type);
+			AnnotationAttributes attributes = AnnotationConfigUtils.attributesFor(amd, type); // 某个注解的属性
 			if (isStereotypeWithNameValue(type, amd.getMetaAnnotationTypes(type), attributes)) {
 				Object value = attributes.get("value");
 				if (value instanceof String) {

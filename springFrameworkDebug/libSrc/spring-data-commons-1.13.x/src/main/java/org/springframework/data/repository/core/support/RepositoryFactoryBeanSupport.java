@@ -245,7 +245,7 @@ public abstract class RepositoryFactoryBeanSupport<T extends Repository<S, ID>, 
 	 */
 	public void afterPropertiesSet() {
 
-		this.factory = createRepositoryFactory();
+		this.factory = createRepositoryFactory(); // org.springframework.data.jpa.repository.support.JpaRepositoryFactory
 		this.factory.setQueryLookupStrategyKey(queryLookupStrategyKey);
 		this.factory.setNamedQueries(namedQueries);
 		this.factory.setEvaluationContextProvider(evaluationContextProvider);

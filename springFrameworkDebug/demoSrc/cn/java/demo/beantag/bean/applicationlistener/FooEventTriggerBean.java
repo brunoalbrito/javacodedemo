@@ -68,9 +68,9 @@ public class FooEventTriggerBean implements ApplicationContextAware {
 			
 			if(applicationContext instanceof AbstractApplicationContext){
 				AbstractApplicationContext abstractApplicationContext = (AbstractApplicationContext)applicationContext;
-				System.out.println("--- 触发ApplicationEventImpl事件 ---");
+				System.out.println("--- 触发FooApplicationEvent事件 ---");
 				{
-					ApplicationEvent applicationEvent = new ApplicationEventImpl(this);
+					ApplicationEvent applicationEvent = new FooApplicationEvent(this);
 					abstractApplicationContext.publishEvent(applicationEvent);
 				}
 				

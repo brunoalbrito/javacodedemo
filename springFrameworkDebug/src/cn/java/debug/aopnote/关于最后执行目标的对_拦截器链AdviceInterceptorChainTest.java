@@ -1,4 +1,4 @@
-package cn.java.aopnote;
+package cn.java.debug.aopnote;
 
 import java.io.Serializable;
 import java.lang.reflect.AccessibleObject;

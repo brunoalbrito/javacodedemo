@@ -49,7 +49,7 @@ public abstract class RepositoryConfigurationUtils {
 		Assert.notNull(registry, "BeanDefinitionRegistry must not be null!");
 		Assert.notNull(configurationSource, "RepositoryConfigurationSource must not be null!");
 
-		Class<? extends RepositoryConfigurationExtension> extensionType = extension.getClass();
+		Class<? extends RepositoryConfigurationExtension> extensionType = extension.getClass(); // org.springframework.data.jpa.repository.config.JpaRepositoryConfigExtension
 		String beanName = extensionType.getName().concat(GENERATED_BEAN_NAME_SEPARATOR).concat("0");
 
 		if (registry.containsBeanDefinition(beanName)) {

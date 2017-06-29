@@ -37,6 +37,11 @@ import org.springframework.util.StringUtils;
 
 public class ClassMetadataTest {
 
+	public static void main(String[] args)  {
+		testGetClassMetadataInfoByParseBytecode();
+		testGetClassMetadataInfoByReflectClass();
+	}
+	
 	public static void testGetClassMetadataInfoByParseBytecode()  {
 		System.out.println("\n----------testGetClassMetadataInfoByParseBytecode--------------");
 		try {

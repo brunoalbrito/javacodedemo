@@ -1,4 +1,4 @@
-package cn.java.aopnote;
+package cn.java.debug.aopnote;
 
 import org.springframework.aop.config.AopConfigUtils;
 import org.springframework.beans.factory.config.BeanDefinition;

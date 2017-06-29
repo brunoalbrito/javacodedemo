@@ -288,7 +288,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 					try {
 						//　类元信息读取器　org.springframework.core.type.classreading.SimpleMetadataReader
 						MetadataReader metadataReader = this.metadataReaderFactory.getMetadataReader(resource); // org.springframework.core.type.classreading.CachingMetadataReaderFactory
-						if (isCandidateComponent(metadataReader)) { // 符合"包含条件"和"不包含条件"
+						if (isCandidateComponent(metadataReader)) { // 符合"包含条件"和"不包含条件"  -- 不能在“排除列表”里面，并且在“接受列表”里面“至少有一个”
 							ScannedGenericBeanDefinition sbd = new ScannedGenericBeanDefinition(metadataReader); // org.springframework.context.annotation.ScannedGenericBeanDefinition
 							sbd.setResource(resource);
 							sbd.setSource(resource);

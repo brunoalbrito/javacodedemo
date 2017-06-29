@@ -12,6 +12,7 @@ public class Test {
 				"classpath:cn/java/demo/data_common/applicationContext.xml");
 		
 		{
+			context.getBean("jackson2Populator0");
 		}
 		
 	}

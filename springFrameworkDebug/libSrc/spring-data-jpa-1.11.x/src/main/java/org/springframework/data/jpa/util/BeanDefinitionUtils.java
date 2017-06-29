@@ -49,6 +49,7 @@ public class BeanDefinitionUtils {
 
 	static {
 
+		
 		List<Class<?>> types = new ArrayList<Class<?>>();
 		types.add(EntityManagerFactory.class);
 		types.add(AbstractEntityManagerFactoryBean.class);
@@ -94,9 +95,16 @@ public class BeanDefinitionUtils {
 
 		List<EntityManagerFactoryBeanDefinition> definitions = new ArrayList<EntityManagerFactoryBeanDefinition>();
 
+		/*
+		 	EMF_TYPES = {
+				javax.persistence.EntityManagerFactory
+				org.springframework.orm.jpa.AbstractEntityManagerFactoryBean
+				org.springframework.jndi.JndiObjectFactoryBean
+			}
+		 */
 		for (Class<?> type : EMF_TYPES) {
 
-			for (String name : beanFactory.getBeanNamesForType(type, true, false)) {
+			for (String name : beanFactory.getBeanNamesForType(type, true, false)) { // 扫描实现EntityManagerFactory接口的bean
 				registerEntityManagerFactoryBeanDefinition(transformedBeanName(name), beanFactory, definitions);
 			}
 		}
@@ -132,7 +140,7 @@ public class BeanDefinitionUtils {
 			return;
 		}
 
-		definitions.add(new EntityManagerFactoryBeanDefinition(name, beanFactory));
+		definitions.add(new EntityManagerFactoryBeanDefinition(name, beanFactory));//!!!
 	}
 
 	/**

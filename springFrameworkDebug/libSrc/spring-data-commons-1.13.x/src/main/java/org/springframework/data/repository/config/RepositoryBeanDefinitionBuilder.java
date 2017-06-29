@@ -82,20 +82,33 @@ class RepositoryBeanDefinitionBuilder {
 		Assert.notNull(registry, "BeanDefinitionRegistry must not be null!");
 		Assert.notNull(resourceLoader, "ResourceLoader must not be null!");
 
+		// configuration === org.springframework.data.repository.config.DefaultRepositoryConfiguration
+		// extension === org.springframework.data.jpa.repository.config.JpaRepositoryConfigExtension
 		String factoryBeanName = configuration.getRepositoryFactoryBeanName();
 		factoryBeanName = StringUtils.hasText(factoryBeanName) ? factoryBeanName
-				: extension.getRepositoryFactoryClassName();
+				: extension.getRepositoryFactoryClassName(); // org.springframework.data.jpa.repository.support.JpaRepositoryFactoryBean
 
+		/*
+		 	org.springframework.data.jpa.repository.support.JpaRepositoryFactoryBean(cn.java.dao.UserRepository)
+		 	{
+		 		queryLookupStrategyKey : ""
+		 		lazyInit : ""
+		 		repositoryBaseClass : ""
+		 		namedQueries :  “classpath*:META-INF/jpa-named-queries.properties”的实例
+		 		customImplementation :  自定义xxxImpl的实例,如userRepositoryImpl == cn.java.dao.UserRepositoryImpl
+		 		evaluationContextProvider : org.springframework.data.repository.query.ExtensionAwareEvaluationContextProvider
+		 	}
+		 */
 		BeanDefinitionBuilder builder = BeanDefinitionBuilder.rootBeanDefinition(factoryBeanName);
 
 		builder.getRawBeanDefinition().setSource(configuration.getSource());
-		builder.addConstructorArgValue(configuration.getRepositoryInterface());
+		builder.addConstructorArgValue(configuration.getRepositoryInterface()); // "cn.java.dao.UserRepository"
 		builder.addPropertyValue("queryLookupStrategyKey", configuration.getQueryLookupStrategyKey());
 		builder.addPropertyValue("lazyInit", configuration.isLazyInit());
-		builder.addPropertyValue("repositoryBaseClass", configuration.getRepositoryBaseClassName());
+		builder.addPropertyValue("repositoryBaseClass", configuration.getRepositoryBaseClassName()); // !!!
 
 		NamedQueriesBeanDefinitionBuilder definitionBuilder = new NamedQueriesBeanDefinitionBuilder(
-				extension.getDefaultNamedQueryLocation());
+				extension.getDefaultNamedQueryLocation()); // 如： “classpath*:META-INF/jpa-named-queries.properties”  classpath*:META-INF/redis-named-queries.properties
 
 		if (StringUtils.hasText(configuration.getNamedQueriesLocation())) {
 			definitionBuilder.setLocations(configuration.getNamedQueriesLocation());
@@ -103,7 +116,7 @@ class RepositoryBeanDefinitionBuilder {
 
 		builder.addPropertyValue("namedQueries", definitionBuilder.build(configuration.getSource()));
 
-		String customImplementationBeanName = registerCustomImplementation(configuration);
+		String customImplementationBeanName = registerCustomImplementation(configuration); // 自定义实现
 
 		if (customImplementationBeanName != null) {
 			builder.addPropertyReference("customImplementation", customImplementationBeanName);
@@ -120,11 +133,13 @@ class RepositoryBeanDefinitionBuilder {
 	}
 
 	private String registerCustomImplementation(RepositoryConfiguration<?> configuration) {
-
-		String beanName = configuration.getImplementationBeanName();
+		
+		// org.springframework.data.repository.config.DefaultRepositoryConfiguration
+		
+		String beanName = configuration.getImplementationBeanName(); // 如：  userRepositoryImpl
 
 		// Already a bean configured?
-		if (registry.containsBeanDefinition(beanName)) {
+		if (registry.containsBeanDefinition(beanName)) { // 容器中有注册userRepositoryImpl
 			return beanName;
 		}
 

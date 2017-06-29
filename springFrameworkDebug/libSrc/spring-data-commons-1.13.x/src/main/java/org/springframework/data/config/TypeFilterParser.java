@@ -113,7 +113,6 @@ public class TypeFilterParser {
 	 * @return
 	 */
 	protected TypeFilter createTypeFilter(Element element, ClassLoader classLoader) {
-
 		String filterType = element.getAttribute(FILTER_TYPE_ATTRIBUTE);
 		String expression = element.getAttribute(FILTER_EXPRESSION_ATTRIBUTE);
 
@@ -135,7 +134,13 @@ public class TypeFilterParser {
 	 * @see #getFilter(String, ClassLoader)
 	 */
 	private static enum FilterType {
-
+		/*
+			<xxx type="ANNOTATION" expression="cn.java.Annotation0Class" /> 目标类有@Annotation0Class注解
+			<xxx type="ASSIGNABLE" expression="cn.java.ParentClass" />  目标类是cn.java.ParentClass的子类
+			<xxx type="ASPECTJ" expression="* cn.java.demo..*ServiceImpl" /> 目标类的类名是否符合指定“ASPECTJ规则”
+			<xxx type="REGEX" expression="" /> 目标类的类名是否符合指定“正则规则”
+			<xxx type="CUSTOM" expression="" /> 使用自定义过滤器
+		 */
 		ANNOTATION {
 			@Override
 			@SuppressWarnings("unchecked")

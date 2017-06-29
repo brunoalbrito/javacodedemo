@@ -78,7 +78,7 @@ public class JpaRepositoryFactory extends RepositoryFactorySupport {
 	 */
 	@Override
 	protected Object getTargetRepository(RepositoryInformation information) {
-
+		// information === org.springframework.data.repository.core.support.DefaultRepositoryInformation
 		SimpleJpaRepository<?, ?> repository = getTargetRepository(information, entityManager);
 		repository.setRepositoryMethodMetadata(crudMethodMetadataPostProcessor.getCrudMethodMetadata());
 
@@ -96,8 +96,8 @@ public class JpaRepositoryFactory extends RepositoryFactorySupport {
 	 */
 	protected <T, ID extends Serializable> SimpleJpaRepository<?, ?> getTargetRepository(
 			RepositoryInformation information, EntityManager entityManager) {
-
-		JpaEntityInformation<?, Serializable> entityInformation = getEntityInformation(information.getDomainType());
+		// information === org.springframework.data.repository.core.support.DefaultRepositoryInformation
+		JpaEntityInformation<?, Serializable> entityInformation = getEntityInformation(information.getDomainType()); // "cn.java.dao.UserRepository"
 
 		return getTargetRepositoryViaReflection(information, entityInformation, entityManager);
 	}

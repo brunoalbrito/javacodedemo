@@ -2,9 +2,9 @@ package cn.java.demo.beantag.bean.applicationlistener;
 
 import org.springframework.context.ApplicationEvent;
 
-public class ApplicationEventImpl extends ApplicationEvent{
+public class FooApplicationEvent extends ApplicationEvent{
 
-	public ApplicationEventImpl(Object source) {
+	public FooApplicationEvent(Object source) {
 		super(source);
 	}
 

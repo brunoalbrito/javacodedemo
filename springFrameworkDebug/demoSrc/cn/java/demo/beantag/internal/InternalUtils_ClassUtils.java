@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.AnnotationTransactionAttribute
 import org.springframework.util.ClassUtils;
 
 import cn.java.beannote.all.ClassUtilsTest;
+import cn.java.demo.data_jpa.internal.ProxyFactoryTest.DebugTest;
 
 public class InternalUtils_ClassUtils {
 	
@@ -41,6 +42,10 @@ public class InternalUtils_ClassUtils {
 			Class<?> targetClass = FooService.class;
 			Set<Class<?>> classes = new LinkedHashSet<Class<?>>(ClassUtils.getAllInterfacesForClassAsSet(targetClass));
 			classes.add(targetClass);	
+		}
+		
+		{
+			 boolean IS_JAVA_8 = ClassUtils.isPresent("java.util.Optional",	InternalUtils_ClassUtils.class.getClassLoader());
 		}
 	}
 	

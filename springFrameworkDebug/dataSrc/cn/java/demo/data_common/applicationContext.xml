@@ -10,6 +10,10 @@
     http://www.springframework.org/schema/data/repository		http://www.springframework.org/schema/data/repository/spring-repository-1.11.xsd
     http://www.springframework.org/schema/data/keyvalue		http://www.springframework.org/schema/data/repository/spring-repository-1.11.xsd">
     
-    <repository:jackson2-populator locations="classpath:cn.java.demo.data_common.json" />
+    <bean id="objectMapper0" class="com.fasterxml.jackson.databind.ObjectMapper" />
+    
+    <repository:jackson2-populator id="jackson2Populator0" locations="classpath:cn.java.demo.data_common.json" object-mapper-ref="objectMapper0"/>
+    
+    <repository:unmarshaller-populator id="unmarshallerPopulator0" locations="classpath:cn.java.demo.data_common.json" unmarshaller-ref="objectMapper0"/>
     
 </beans>  

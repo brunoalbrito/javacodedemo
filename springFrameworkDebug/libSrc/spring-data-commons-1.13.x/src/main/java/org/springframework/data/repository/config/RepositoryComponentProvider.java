@@ -120,7 +120,7 @@ class RepositoryComponentProvider extends ClassPathScanningCandidateComponentPro
 
 		Set<BeanDefinition> candidates = super.findCandidateComponents(basePackage);
 
-		for (BeanDefinition candidate : candidates) {
+		for (BeanDefinition candidate : candidates) { // candidate === org.springframework.context.annotation.ScannedGenericBeanDefinition
 			if (candidate instanceof AnnotatedBeanDefinition) {
 				AnnotationConfigUtils.processCommonDefinitionAnnotations((AnnotatedBeanDefinition) candidate);
 			}

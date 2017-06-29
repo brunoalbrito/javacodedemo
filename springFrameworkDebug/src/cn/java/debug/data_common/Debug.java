@@ -9,6 +9,11 @@ public class Debug {
 				http\://www.springframework.org/schema/data/keyvalue=org.springframework.data.keyvalue.repository.config.KeyValueRepositoryNameSpaceHandler
 		 	schema文档
 		 		http\://www.springframework.org/schema/data/repository/spring-repository-1.11.xsd=org/springframework/data/repository/config/spring-repository-1.11.xsd
+		 
+		 	org.springframework.data.repository.init.Jackson2RepositoryPopulatorFactoryBean
+		 
+		 
+		 	org.springframework.data.repository.init.Jackson2RepositoryPopulatorFactoryBean
 		 */
 	}
 

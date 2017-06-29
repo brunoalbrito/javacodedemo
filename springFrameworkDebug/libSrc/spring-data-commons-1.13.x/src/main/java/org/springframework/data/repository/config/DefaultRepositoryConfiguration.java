@@ -83,6 +83,7 @@ public class DefaultRepositoryConfiguration<T extends RepositoryConfigurationSou
 	 * @see org.springframework.data.repository.config.RepositoryConfiguration#getRepositoryInterface()
 	 */
 	public String getRepositoryInterface() {
+		// definition === org.springframework.context.annotation.ScannedGenericBeanDefinition
 		return definition.getBeanClassName();
 	}
 
@@ -148,6 +149,7 @@ public class DefaultRepositoryConfiguration<T extends RepositoryConfigurationSou
 	 * @see org.springframework.data.repository.config.RepositoryConfiguration#getRepositoryFactoryBeanName()
 	 */
 	public String getRepositoryFactoryBeanName() {
+		// configurationSource === org.springframework.data.repository.config.XmlRepositoryConfigurationSource
 		return configurationSource.getRepositoryFactoryBeanName();
 	}
 

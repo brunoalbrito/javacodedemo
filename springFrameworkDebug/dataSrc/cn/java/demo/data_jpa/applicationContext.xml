@@ -7,10 +7,62 @@
     http://www.springframework.org/schema/beans		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
     http://www.springframework.org/schema/context                http://www.springframework.org/schema/context/spring-context-3.0.xsd
     http://www.springframework.org/schema/data/jpa		http://www.springframework.org/schema/data/jpa/spring-jpa-1.8.xsd">
-    
-    <jpa:repositories base-package="cn.java.demo.data_jpa.dao_alais_repository"/>
-    
-    <bean id="fooService" class="cn.java.demo.data_jpa.service.impl.FooServiceImpl">
-    	<property name="fooDao" ref="fooDao" />
+  	<!-- 读取配置文件、替换bean中的占位符 -->
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">  
+    	<property name="locations" value="classpath:/cn/java/demo/data_jpa/jdbc.properties"/>
     </bean>
+    
+	<!-- 配置数据源 -->
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+        <property name="driverClass" value="${jdbc.driverClassName}" />
+        <property name="jdbcUrl" value="${jdbc.url}" />
+        <property name="user" value="${jdbc.username}" />
+        <property name="password" value="${jdbc.password}" />
+        
+        <property name="initialPoolSize" value="${jdbc.c3p0.initialPoolSize}" />
+        <property name="minPoolSize" value="${jdbc.c3p0.minPoolSize}" />
+        <property name="maxPoolSize" value="${jdbc.c3p0.maxPoolSize}" />
+        <property name="maxIdleTime" value="${jdbc.c3p0.maxIdleTime}" />
+        
+        <property name="testConnectionOnCheckout" value="${jdbc.c3p0.testConnectionOnCheckout}" />
+        <property name="testConnectionOnCheckin" value="${jdbc.c3p0.testConnectionOnCheckin}" />
+        <property name="idleConnectionTestPeriod" value="${jdbc.c3p0.idleConnectionTestPeriod}" />
+	</bean>
+	
+	<!-- 实例管理器工厂 -->
+	<bean id="entityManagerFactory0" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="jpaVendorAdapter" ref="hibernateJpaVendorAdapter"/>
+        <!-- 
+        <property name="packagesToScan">
+			<list>
+                <value>cn.java.demo.orm_hibernate4.entity</value>
+            </list>
+        </property> 
+        -->
+        <property name="jpaProperties">
+            <props>
+                <prop key="hibernate.ejb.naming_strategy">org.hibernate.cfg.ImprovedNamingStrategy</prop>
+               	<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+                <prop key="hibernate.format_sql">${hibernate.format_sql}</prop>
+                <prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
+            </props>
+        </property>
+    </bean>
+    
+    <!-- 事务管理器 -->
+    <bean id="transactionManager0" class="org.springframework.orm.jpa.JpaTransactionManager">  
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>  
+    </bean>
+    
+    <!-- 配置dao（仓库） -->
+    <jpa:repositories base-package="cn.java.demo.data_jpa.dao.repositorybyannotation,cn.java.demo.data_jpa.dao.repositorybyextend" 
+    	transaction-manager-ref="transactionManager0" entity-manager-factory-ref="entityManagerFactory0" enable-default-transactions="false">
+    </jpa:repositories>
+    
+    <!-- 服务bean -->
+    <bean id="fooService" class="cn.java.demo.data_jpa.service.impl.FooServiceImpl">
+    	<property name="fooOneDao" ref="fooOneDao" />
+    </bean>
+    
 </beans>  

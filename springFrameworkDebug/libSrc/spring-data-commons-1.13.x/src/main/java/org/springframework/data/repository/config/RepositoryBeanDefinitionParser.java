@@ -65,13 +65,13 @@ public class RepositoryBeanDefinitionParser implements BeanDefinitionParser {
 			ResourceLoader resourceLoader = readerContext.getResourceLoader();
 			BeanDefinitionRegistry registry = parser.getRegistry();
 
-			XmlRepositoryConfigurationSource configSource = new XmlRepositoryConfigurationSource(element, parser, environment);
+			XmlRepositoryConfigurationSource configSource = new XmlRepositoryConfigurationSource(element, parser, environment); // 过滤规则
 			RepositoryConfigurationDelegate delegate = new RepositoryConfigurationDelegate(configSource, resourceLoader,
 					environment);
 
-			RepositoryConfigurationUtils.exposeRegistration(extension, registry, configSource);
+			RepositoryConfigurationUtils.exposeRegistration(extension, registry, configSource); // 注解JpaRepositoryConfigExtension到BeanDefinition容器 
 
-			for (BeanComponentDefinition definition : delegate.registerRepositoriesIn(registry, extension)) {
+			for (BeanComponentDefinition definition : delegate.registerRepositoriesIn(registry, extension)) { // 扫描指定目录，并注册Repository到BeanDefinition容器
 				readerContext.fireComponentRegistered(definition);
 			}
 

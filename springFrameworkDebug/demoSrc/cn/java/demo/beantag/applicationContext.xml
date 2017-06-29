@@ -99,15 +99,24 @@
 			case.2、存在CustomAutowireConfigurer中配置的注解
 				1、autowire-candidate="true"
 				2、目标bean中的setter方法上的参数有存在注解，并且在<qualifier>支持的类型中存在
+				3、目标bean中的setter方法上的注解有配置属性，那么<qualifier>中的属性值（<attribute>、<meta>）要和注解的属性值一致
 	-->
 	<bean class="cn.java.demo.beantag.bean.autowirebytype.FooBeanInjectSelectedByQualifier" autowire-candidate="true">
 	    <constructor-arg index="0" type="java.lang.String" value="0" />
 	   	<constructor-arg index="1" type="java.lang.String" value="FooBeanInjectSelectedByQualifier0" />
 	    <qualifier type="org.springframework.beans.factory.annotation.Qualifier" value="fooBeanInjectSelectedByQualifier0" /> <!-- 配置qualifier -->
 	    <qualifier type="cn.java.demo.beantag.qualifier.MyQualifier0"  value="MyQualifier0_fooBeanInjectSelectedByQualifier0">
-	        <attribute key="attribute_key0" value="attribute_key0_value" />
+	        <attribute key="attribute_key0" value="attribute_key0_value" /><!-- 配置qualifier的属性 -->
 	        <attribute key="attribute_key1" value="attribute_key1_value" />
         </qualifier>
+    </bean>
+	<bean class="cn.java.demo.beantag.bean.autowirebytype.FooBeanInjectSelectedByQualifier" autowire-candidate="true">
+	    <constructor-arg index="0" type="java.lang.String" value="0" />
+	   	<constructor-arg index="1" type="java.lang.String" value="FooBeanInjectSelectedByQualifier0_meta" />
+	   	
+	    <qualifier type="cn.java.demo.beantag.qualifier.MyQualifier0"  value="MyQualifier0_fooBeanInjectSelectedByQualifier1" /><!-- 配置qualifier -->
+        <meta key="attribute_key0" value="attribute_key0_value" /> <!-- 配置qualifier的属性 -->
+        <meta key="attribute_key1" value="attribute_key1_value" />
     </bean>
 	<bean class="cn.java.demo.beantag.bean.autowirebytype.FooBeanInjectSelectedByQualifier" autowire-candidate="true">
 	    <constructor-arg index="0" type="java.lang.String" value="1" />
@@ -219,7 +228,7 @@
 	</bean>
 	
 	<!-- 实现ApplicationListener接口，用于感知应用的事件（实现监听器） -->
-	<!-- 机制：实现ApplicationListener接口的bean会被ApplicationListenerDetector（是一个BeanPostProcessor hook）接触，并注入到applicationContext	 -->
+	<!-- 机制：实现ApplicationListener接口的bean会被 ApplicationListenerDetector （是一个BeanPostProcessor hook）接触，并注入到applicationContext	 -->
 	<bean id="applicationListenerWithPayloadApplicationEventParamBean" class="cn.java.demo.beantag.bean.applicationlistener.ApplicationListenerWithPayloadApplicationEventParamBean" />
 	<bean id="applicationListenerWithApplicationEventParamBean" class="cn.java.demo.beantag.bean.applicationlistener.ApplicationListenerWithApplicationEventParamBean" />
 	<bean id="fooEventTriggerBean"  class="cn.java.demo.beantag.bean.applicationlistener.FooEventTriggerBean">
