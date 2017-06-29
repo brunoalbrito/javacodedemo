@@ -66,7 +66,7 @@ public class ConfigTools {
 
 	public static PublicKey getPublicKey(String publicKeyText) {
 		if (publicKeyText == null || publicKeyText.length() == 0) {
-			publicKeyText = ConfigTools.DEFAULT_PUBLIC_KEY_STRING;
+			publicKeyText = DEFAULT_PUBLIC_KEY_STRING;
 		}
 
 		try {

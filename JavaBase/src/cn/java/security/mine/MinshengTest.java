@@ -1,0 +1,41 @@
+package cn.java.security.mine;
+
+import java.security.Key;
+import java.util.Base64;
+
+public class MinshengTest {
+
+	public static void main(String[] args) throws Exception {
+		// 数据
+		String encryptData = "1lcIeazs0TOWUnVZA1kXDskMNJ6R/RBdJ1I+cTB8kaAys7fx8dMzH9bHoddoN2dpizsXf0TFizfykKR0EkJsEj74E+1MCl6u+9P7lh8prMeqIti1IkhOTBq741Lnt6oTUqeprub3uFU8iFInTFcRhKAxGin6pkNxVzkSWHmPpdPqgL4YepynfkrVcZQjAnTVGTbv/6EP83dMc8CBuTNqqOLhBm+LokeQe+kYmRU+92gXu5NF0ugFDYAdT0hH2Mhp76nNQq76CiCdh0b++ibAas16Q5nJzcCHujtHTNP/2phTr8gYOiD0TO02cHciA65IF5cBbVAe1SKMSTeu6Ha14KSveGkl3phqpELzKl82melg1hnmBqgsOo4pwxkVt5OroOLjFqJpSSesht6Y1Sv52qARAKDb6IRXftEyW6p4Tf35iRNeCv8WBMOa4GsSz8aXfbExTKbzI9KELJqmrrkG9I36LeQ2Rc/gV13IsMBDewXt+QESXHBRdfdn1/N3WH1BGbZwO4rAgkrBbQ+dOrkBlmKOd73obFd/NzLuyLuMKv+h8r3YXg6n6MZCweRapdOF";
+		String encryptKey = "dU52HQimbrp83WPPaaL3e1+dhDQ2IpfHsr/hh+Ov1I+Q5w+Po22dNjrGdgTyYABcERfDQTTHqOO8LWjR2w16mDwMCrqYIqEH3OYu0HpYl/83irzLnS02KeMQlyb3yaC2rk8V13u14h7OVH+PSeSKA0LLvJPG0RS4bVDSB+dFrLh78rsEzyjtyqtmcBH3H6iocyL7zGEehkzWVhd9Dpl019AYV+HtM6T2Dtbj4BVus9IJ8ckuFM1dfl9zo6M+Tg2JyFrL3Y1vu+M5kk0I0FdQ6JHnBfHz6oeatF1hnbH/iJM2JPGvjNXVHqmBQpEh51ZYN/lgrH4poZZBQD0M5YB/Hw==";
+		String signData = "v3joulHVkgw/qkSc/X0Gy52M0J3H+Hm+JN8KSh35fmX880O9gyHYyZalfmlGC+YaxWYTPpPVtSOF1irH2i8w6tLnyJ+nmPt9QmETt5PHF6Bx5wOseP5SzJV7iDG3bDc54YP7SPtB9TJO8/DPI3fsHauKvvWWw+xk1a/d0PrNbrCwkmFX9ZfIS0hKkdo3bG6IlM4omf2Knely8hegNPSv/6SoqI8G4ab9k16dKHz6uQSQr0Ej6+99DWjXC5b5L2QjTuEtIoUDYjLiUV+z2XswCXndFTaxirioZo91hITdFH4xl40+NZbi5mOcUGK3/ovzF9ARud9Nu0RPN+haOYUfkQ==";
+		
+		// 秘钥
+		String privateKeyStrWJX = "MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC+2fyJF2kx6s2M6Z6kQD8IFax0+2ka/MEHy+BbDYgtfUZut0bXc2PMuxU/K6GR7cfSK1Eu1epXxy8r8++Aw7ve5KcoqeNIeXPAZ0c+K17XTnQvtXt+ZyLPoer/N2GFKt/I6kyg9qWheNnHQEcNXng81rBWjSytkWOIqTw/ATAufpGH+AQA+P0mlyVV4PEoYL/7IU05lY72JH0wTuVq0d8yg2l/vEiVtzyxsZ5V8J6hkvipm+VKt14UD5xv8+GhSUry3MQT7sEWKrqNGDO5sPEHbLUa7BRMyT804CiF5qU/TkRi4kSBJ4VJ4WfjFpxDrnu+qm0qSAmEoLQ7Nuv/txfZAgMBAAECggEAGh/mxLFSsgWNK4vTLnKo7idhWwYLJimRFsseo/gfOvLaEE/AP7/I2n6Fcwc676nX33oUe8/Ga0uVtnOGxl6EugccpqFSvln5sU2x39259skDeIBkLjJZ/ogQjez7yWnMBkmkQahhlc/gJ7kxwK+8z78nlkFu6zdqo4te9tTnzoVCP3BKLwEINRInS17aQOMjGZs3wc8yhzFwNP29dRm3tZeWtckIaQRtIq25AZ3Nlomasu3nMsV0KBEWWdR98VOoArlsdMEoaN5CF6DZjTgR1UAbgxbvhpd1Jfv0nCVc3hQsjmEFL24jBq5Ziw+rOEQ06oJrKhyCCeKEfX5RT7fWPQKBgQDmclXp7KuCaPzwRDEFtZd/lXLmgtGnTDtb3KsldfjD9pPHXOMuo6ZRzV8O3joekvpgnIWIr4scEtAXcvAvf4SAKbNHC58v76qlRExpofRz9g7m0J1Spj44sN2Rw44Y5ZKMfjRZMfW2ckAre1PmBQ6CqSfh/PH6PA0Z4VMgmhPfzwKBgQDUA6shUbTyRtLXdGs+TAXHEVjeBhkE9Z5hxzarwdk52EdJ3MUey5qLUgyKhWpx5KutlLQixaxqtiIkxBa8cE/0WjqMS1qTzbRc6fikvJLEUGevqkNEavWlFG4KPjkhGSAtRrbHJBEe664gxTYTlspJiUXFO8jxZQo/HrX4e8cP1wKBgQDk70NgsEk2tjxKKUSWSm/mRL8wN1g2nqn9ubyg65EmhQkMrr/XLqblb2R3LdiJVTS90+FpCBPn4Nyv3vS0CzfD5yl+dBJCGhPqOW68JjPnG9R0A123pQX9Zd/IloDNRQyQ3DP/RH25McmEKPIReoaO0aOYg6SVFyFgy5O8uLTzywKBgQCNkyGMb1ZITrjufOQ8RmG5S8EvCZ1dbXLk0jWUvi6DbQQ1s4HCDa3WiOSs/2hUQ6HMmLctXRjEbXkhWfvgu5L4lePw2UTT3BIr1WVfBDlxdEu4xxaCMnZ0VM8iceiOTIvrEARvuIriPfkaEvcIX7IXJt57VW/ammEcQzK6ilUkIwKBgFU4FqXtQOMVTTH6ltzEC8YtgnpWh6H7jRSxZiczoXqmTwlW+Y47eeCdtiJDkcvU/0KmnCtAfEZyt2fcuFbUfwThL32oBybEpWkW4hM1pcjDNf6ixC4alF7k+vd3XZzh6PbVkIw7pDGHhaHHUskgBKfJw0EcsByJuNMqR6K9i7kl";
+		Key privateKey = SecurityUtil.RsaUtil.genRsaPrivateKeyFromPKCS8Encoded(privateKeyStrWJX);
+		String publicKeyStrMS = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA8G91V4rtd+NKu3nve8XQiPVxlg7twbbqwbnZDOT+KOQABieL7pancBRQu77TtmXht3pJnMd1R3xGpMgZ8MXxJFntux7dvuE0xprfibojLupuWsiZUx6aSFHe/LVGCjjw8U/znzZwkptgPcTTD1k3w+WtVgUqmaBew0FVc1zdPBUktxadToBPziaadAtgAM601EWft7UJ3D06wbU1C3JPUZX2mo9Y/0aiTGDX9kYU5uPhixsqC+r4qP4fGFgv4gUIxfiZCu/zXpK3MsBbbStocnzyJvx7zGNuD7nADvweJ+gwhztKY9tU7WIJYmwEtIX8M8Ntx7mfpgGbV3Mr5jLVXwIDAQAB";
+	
+		// 获取公钥
+		String aseKey = SecurityUtil.RsaUtil.decrypt(encryptKey, privateKey);
+		System.out.println("aseKey = " + aseKey);
+		
+		// 解密内容
+		String content = SecurityUtil.AesUtil.decrypt(encryptData, Base64.getEncoder().encodeToString(aseKey.getBytes()));
+		System.out.println(content);
+		
+		if(SecurityUtil.RsaUtil.verify(content, signData,publicKeyStrMS, false)){
+			System.out.println("verify is true.");
+		}
+		else{
+			System.out.println("verify is false.");
+		}
+		
+		{
+			encryptKey = "a+bFkyFuxZlGn4dUplyeO6RUx/umtEprKAxvOpGtK7vTW7fSuOCJFbVUYSl0TTX3OlPbQj1NvShFS0hIv3hl4JAQ8tbyV5N7mdLBeyffVtsMl+2Hy8ckYCejwdgtzy/CDICON2ge1U0Q4tVinQvaVvwFkA7icjSgNd/NvlRlQPgsp16JkhKKayS0Fc6RR0Y9p1/dd5na6h1NdBrIWR7faN+ixv59jM0plIcO9Ar9Mnsg/kZvhpqz7L9WBxj60Eflw8MIuJfYbny2yIPMHXSJYLDWhSArDM177eMPY61qlr3hCg5fD6j/iFmT5uZR7qKVXbFOHHcoNxG1B8EGFG1IOw==";
+			aseKey = SecurityUtil.RsaUtil.decrypt(encryptKey, privateKey);
+			System.out.println("aseKey = " + aseKey); // rlB9TDjeQdQEiAWQ
+		}
+	}
+
+}

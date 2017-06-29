@@ -87,8 +87,45 @@ public class Test {
 				
 				INFORMATION_SCHEMA.STATISTICS 存放“索引信息（主键也会添加一条）”（数据库名、表名、索引哪个数据库、索引哪个字段、字段索引名、索引类型）
 			}
-			
 		}
+		
+		数据库服务器“运行时信息” - PERFORMANCE_SCHEMA
+		{
+			关于-访问
+			{
+				PERFORMANCE_SCHEMA.users 存放“连接用户的连接统计”（用户名、当前连接数、历史总共连接数）
+				PERFORMANCE_SCHEMA.hosts 存放“某个客户端IP的连接信息”（IP地址、当前连接数、历史总共连接数）
+				PERFORMANCE_SCHEMA.accounts 存放“某个客户端IP使用某个账户的连接信息”（用户名、IP地址、当前连接数、历史总共连接数）
+			}
+			
+			关于-线程
+			PERFORMANCE_SCHEMA.threads 存放“线程信息”（线程ID、线程名、线程类型、所属进程ID、所属进程执行用户、所属进程"服务的客户端IP"）
+			
+			{
+				PERFORMANCE_SCHEMA.session_account_connect_attrs 存放“某个进程服务的客户端信息”（进程ID、属性名[如：_client_name、_pid、_platform]、属性值[客户端驱动名、客户端进程ID、客户端系统类型]）
+				PERFORMANCE_SCHEMA.session_connect_attrs 存放“某个进程服务的客户端信息”（进程ID、属性名[如：_client_name、_pid、_platform]、属性值[客户端驱动名、客户端进程ID、客户端系统类型]）
+			}
+			
+			关于-本地文件
+			{
+				PERFORMANCE_SCHEMA.file_instances 存放“某个文件的使用信息”（文件名、事件名、文件打开次数）
+				PERFORMANCE_SCHEMA.file_summary_by_event_name 存放“某个事件使用情况”（事件名、读次数）
+				PERFORMANCE_SCHEMA.file_summary_by_instance 存放“某个文件使用情况”（文件名、事件名、读次数）
+			}
+			
+			关于-sql语句
+			{
+				PERFORMANCE_SCHEMA.events_statements_current 存放“当前执行的SQL信息”（线程ID、事件ID、事件名、执行开始时间、执行结束时间、执行等待时间、执行的SQL、DIGEST整理后的SQL、在哪个数据库执行、排序扫描行数、查询扫描行数、）
+				PERFORMANCE_SCHEMA.events_statements_summary_by_digest 存放“SQL信息统计信息【SQL语句维度】”（数据库名、DIGEST名、DIGEST整理后的SQL、历史总共行影响次数）
+				PERFORMANCE_SCHEMA.events_statements_summary_by_host_by_event_name 存放“SQL信息统计信息【"客户端连接IP+事件"维度】”（客户端IP、事件名、历史总共行影响次数）
+				PERFORMANCE_SCHEMA.events_statements_summary_by_thread_by_event_name 存放“SQL信息统计信息【"服务端线程ID+事件"维度】”（服务端线程ID、事件名、历史总共行影响次数）
+				PERFORMANCE_SCHEMA.events_statements_summary_by_thread_by_event_name 存放“SQL信息统计信息【"连接用户名+事件"维度】”（连接用户名、事件名、历史总共行影响次数）
+				PERFORMANCE_SCHEMA.events_statements_summary_global_by_event_name 存放“SQL信息统计信息【"事件"维度】”（事件名、历史总共行影响次数）
+			}
+			
+			...
+		}
+		
 	 */
 
 	/**

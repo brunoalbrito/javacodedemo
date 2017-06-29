@@ -1,6 +1,5 @@
-package cn.java.security.demo;
+package cn.java.security.mine;
 
-import java.lang.reflect.Array;
 import java.security.Key;
 import java.security.KeyFactory;
 import java.security.KeyPair;
@@ -64,7 +63,7 @@ public class SecurityUtil {
 		 * @return
 		 * @throws NoSuchAlgorithmException
 		 */
-		public static String generaterKey() throws NoSuchAlgorithmException {  
+		public static String genAesKey() throws NoSuchAlgorithmException {  
 			KeyGenerator keygen = KeyGenerator.getInstance(ALGORITHM);
 			keygen.init(128, new SecureRandom()); // 16 字节 == 128 bit
 //			keygen.init(128, new SecureRandom(seedStr.getBytes())); // 随机因子一样，生成出来的秘钥会一样
@@ -74,7 +73,7 @@ public class SecurityUtil {
 
 		/**
 		 */
-		public static SecretKeySpec getSecretKeySpec(String secretKeyStr){
+		public static SecretKeySpec getAesKeyFromKeyBase64ed(String secretKeyStr){
 			byte[] secretKey = Base64.getDecoder().decode(secretKeyStr);
 			System.out.println("secretKey bytes length = " + secretKey.length);
 			return new SecretKeySpec(secretKey, ALGORITHM);
@@ -85,7 +84,7 @@ public class SecurityUtil {
 		 */
 		@SuppressWarnings("unused")
 		public static String encrypt(String content,String secretKey) throws Exception{
-			Key key = getSecretKeySpec(secretKey);
+			Key key = getAesKeyFromKeyBase64ed(secretKey);
 			Cipher cipher = null;
 			{
 				cipher = Cipher.getInstance(ALGORITHM);// 创建密码器  
@@ -109,7 +108,7 @@ public class SecurityUtil {
 		 */
 		@SuppressWarnings("unused")
 		public static String decrypt(String content, String secretKey) throws Exception{  
-			Key key = getSecretKeySpec(secretKey);
+			Key key = getAesKeyFromKeyBase64ed(secretKey);
 			Cipher cipher = null;
 			{
 				cipher = Cipher.getInstance(ALGORITHM);
@@ -168,7 +167,7 @@ public class SecurityUtil {
 		 * @return
 		 * @throws NoSuchAlgorithmException
 		 */
-		public static RsaKeyPair generaterKeyPair() throws NoSuchAlgorithmException{  
+		public static RsaKeyPair genKeyPair() throws NoSuchAlgorithmException{  
 			KeyPairGenerator keygen = KeyPairGenerator.getInstance(ALGORITHM);  
 			SecureRandom random = new SecureRandom();  
 			//			SecureRandom random = new SecureRandom(seedStr.getBytes()); // 随机因子一样，生成出来的秘钥会一样
@@ -189,13 +188,13 @@ public class SecurityUtil {
 		 * @return
 		 * @throws Exception
 		 */
-		public static RSAPublicKey getPublicKey(String publicKey) throws Exception{  
+		public static RSAPublicKey genRsaPublicKeyFromX509Encoded(String publicKey) throws Exception{  
 			byte[] keyBytes = Base64.getDecoder().decode(publicKey);  
 			X509EncodedKeySpec spec = new X509EncodedKeySpec(keyBytes);  
 			KeyFactory keyFactory = KeyFactory.getInstance(ALGORITHM);  
 			return (RSAPublicKey) keyFactory.generatePublic(spec);  
 		}
-
+		
 		/**
 		 * 获取私钥
 		 * @param privateKey
@@ -204,10 +203,10 @@ public class SecurityUtil {
 		 * @throws InvalidKeySpecException 
 		 * @throws Exception
 		 */
-		public static RSAPrivateKey getPrivateKey(String privateKey) throws Exception{  
+		public static RSAPrivateKey genRsaPrivateKeyFromPKCS8Encoded(String privateKey) throws Exception{  
 			byte[] keyBytes = Base64.getDecoder().decode(privateKey);  
-			PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);  
-			KeyFactory keyFactory = KeyFactory.getInstance(ALGORITHM);  
+			PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);
+			KeyFactory keyFactory = KeyFactory.getInstance(ALGORITHM);
 			return (RSAPrivateKey) keyFactory.generatePrivate(spec);  
 		}
 
@@ -217,7 +216,7 @@ public class SecurityUtil {
 		 * @throws Exception 
 		 */
 		public static String sign(String content, String privateKey, boolean isRsa2) throws Exception {
-			PrivateKey priKey = getPrivateKey(privateKey);
+			PrivateKey priKey = genRsaPrivateKeyFromPKCS8Encoded(privateKey);
 			java.security.Signature signature = java.security.Signature.getInstance(getAlgorithms(isRsa2));
 			signature.initSign(priKey);
 			signature.update(content.getBytes(DEFAULT_CHARSET));
@@ -229,7 +228,7 @@ public class SecurityUtil {
 		 * 要公钥签名
 		 */
 		public static boolean verify(String content,String sign,String publicKey,boolean isRsa2) throws Exception {
-			PublicKey pubKey = getPublicKey(publicKey);
+			PublicKey pubKey = genRsaPublicKeyFromX509Encoded(publicKey);
 			java.security.Signature signature = java.security.Signature.getInstance(getAlgorithms(isRsa2));
 			signature.initVerify(pubKey);
 			signature.update(content.getBytes(DEFAULT_CHARSET));
@@ -269,6 +268,7 @@ public class SecurityUtil {
 			}
 			cipher.init(Cipher.DECRYPT_MODE, pubOrPrikey);  
 			byte[] result = cipher.doFinal(Base64.getDecoder().decode(content));
+			System.out.println("result.length = " + result.length);
 			return new String(result);
 		}
 	}
