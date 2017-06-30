@@ -83,7 +83,7 @@ public class DefaultCrudMethods implements CrudMethods {
 
 		for (Class<?> type : asList(metadata.getDomainType(), Object.class)) {
 
-			Method saveMethodCandidate = findMethod(metadata.getRepositoryInterface(), SAVE, type);
+			Method saveMethodCandidate = findMethod(metadata.getRepositoryInterface(), SAVE, type); 
 
 			if (saveMethodCandidate != null) {
 				return getMostSpecificMethod(saveMethodCandidate, metadata.getRepositoryInterface());

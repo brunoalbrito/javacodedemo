@@ -591,7 +591,7 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 	private Object convertIfNecessary(String propertyName, Object oldValue, Object newValue, Class<?> requiredType,
 			TypeDescriptor td) throws TypeMismatchException {
 		try {
-			return this.typeConverterDelegate.convertIfNecessary(propertyName, oldValue, newValue, requiredType, td);
+			return this.typeConverterDelegate.convertIfNecessary(propertyName, oldValue, newValue, requiredType, td);//!!!
 		}
 		catch (ConverterNotFoundException ex) {
 			PropertyChangeEvent pce =
@@ -618,7 +618,7 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 	protected Object convertForProperty(String propertyName, Object oldValue, Object newValue, TypeDescriptor td)
 			throws TypeMismatchException {
 
-		return convertIfNecessary(propertyName, oldValue, newValue, td.getType(), td);
+		return convertIfNecessary(propertyName, oldValue, newValue, td.getType(), td);//!!
 	}
 
 	@Override

@@ -59,5 +59,6 @@
 	<classpathentry kind="lib" path="lib/http/httpcore-4.3.3.jar"/>
 	<classpathentry kind="lib" path="lib/http/httpcore-nio-4.3.3.jar"/>
 	<classpathentry kind="lib" path="lib/http/httpmime-4.3.5.jar"/>
+	<classpathentry kind="lib" path="lib/apache/commons-codec-1.10.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

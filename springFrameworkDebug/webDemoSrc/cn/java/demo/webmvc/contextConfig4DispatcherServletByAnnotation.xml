@@ -162,7 +162,7 @@
 	        <bean class="org.springframework.util.AntPathMatcher" />
 	    </property>
 	    <property  name="contentNegotiationManager"> 
-	    	<bean class="org.springframework.web.accept.ContentNegotiationManager" /> <!-- 默认Hanlder-->
+	    	<bean class="org.springframework.web.accept.ContentNegotiationManager" />
 	    </property>
 	    <property  name="useSuffixPatternMatch" value="true" /> 
 	    <property  name="useTrailingSlashMatch" value="true" /> 

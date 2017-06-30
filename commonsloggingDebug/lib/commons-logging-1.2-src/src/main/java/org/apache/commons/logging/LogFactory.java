@@ -416,7 +416,7 @@ public abstract class LogFactory {
      */
     public static LogFactory getFactory() throws LogConfigurationException {
         // Identify the class loader we will be using
-        ClassLoader contextClassLoader = getContextClassLoaderInternal();
+        ClassLoader contextClassLoader = getContextClassLoaderInternal(); // 类型加载器
 
         if (contextClassLoader == null) {
             // This is an odd enough situation to report about. This
@@ -450,7 +450,7 @@ public abstract class LogFactory {
         // As the properties file (if it exists) will be used one way or
         // another in the end we may as well look for it first.
 
-        Properties props = getConfigurationFile(contextClassLoader, FACTORY_PROPERTIES); // "commons-logging.properties"
+        Properties props = getConfigurationFile(contextClassLoader, FACTORY_PROPERTIES); // 类路径下自定义的配置文件"commons-logging.properties"
 
         // Determine whether we will be using the thread context class loader to
         // load logging classes or not by checking the loaded properties file (if any).
@@ -481,7 +481,7 @@ public abstract class LogFactory {
         }
 
         try {
-            String factoryClass = getSystemProperty(FACTORY_PROPERTY, null); // "org.apache.commons.logging.LogFactory"
+            String factoryClass = getSystemProperty(FACTORY_PROPERTY, null); // 查询jvm的启动属性："org.apache.commons.logging.LogFactory"
             if (factoryClass != null) {
                 if (isDiagnosticsEnabled()) {
                     logDiagnostic("[LOOKUP] Creating an instance of LogFactory class '" + factoryClass +
@@ -527,7 +527,7 @@ public abstract class LogFactory {
                               "] to define the LogFactory subclass to use...");
             }
             try {
-                final InputStream is = getResourceAsStream(contextClassLoader, SERVICE_ID); // "META-INF/services/org.apache.commons.logging.LogFactory"
+                final InputStream is = getResourceAsStream(contextClassLoader, SERVICE_ID); // 查找文件 "META-INF/services/org.apache.commons.logging.LogFactory"
 
                 if( is != null ) {
                     // This code is needed by EBCDIC and other strange systems.
@@ -635,7 +635,7 @@ public abstract class LogFactory {
                 while (names.hasMoreElements()) {
                     String name = (String) names.nextElement();
                     String value = props.getProperty(name);
-                    factory.setAttribute(name, value);
+                    factory.setAttribute(name, value); // 类路径下自定义的配置文件"commons-logging.properties"，进行内传
                 }
             }
         }
@@ -1695,7 +1695,7 @@ public abstract class LogFactory {
         diagnosticPrefix = "[LogFactory from " + classLoaderName + "] ";
         diagnosticsStream = initDiagnostics();
         logClassLoaderEnvironment(LogFactory.class);
-        factories = createFactoryStore();
+        factories = createFactoryStore(); // WeakHashtable
         if (isDiagnosticsEnabled()) {
             logDiagnostic("BOOTSTRAP COMPLETED");
         }

@@ -1,5 +1,7 @@
 package cn.java.debug.data_jpa;
 
+import org.springframework.data.repository.core.support.AbstractRepositoryMetadata;
+
 public class Debug {
 
 	public static void main(String[] args) {
@@ -76,6 +78,9 @@ public class Debug {
 								{
 									// repositoryInterface === cn.java.dao.UserRepository
 									RepositoryMetadata metadata = getRepositoryMetadata(repositoryInterface); 
+									{
+										return AbstractRepositoryMetadata.getMetadata(repositoryInterface);
+									}
 									Class<?> customImplementationClass = null == customImplementation ? null : customImplementation.getClass();
 									RepositoryInformation information = getRepositoryInformation(metadata, customImplementationClass);
 									{

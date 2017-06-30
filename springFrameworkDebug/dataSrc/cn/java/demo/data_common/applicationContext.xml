@@ -1,19 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:oxm="http://www.springframework.org/schema/oxm"
     xmlns:repository="http://www.springframework.org/schema/data/repository"
     xmlns:keyvalue="http://www.springframework.org/schema/data/keyvalue"
 	xsi:schemaLocation="    
     http://www.springframework.org/schema/beans		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-    http://www.springframework.org/schema/context                http://www.springframework.org/schema/context/spring-context-3.0.xsd
+    http://www.springframework.org/schema/oxm        http://www.springframework.org/schema/oxm/spring-oxm-4.3.xsd
     http://www.springframework.org/schema/data/repository		http://www.springframework.org/schema/data/repository/spring-repository-1.11.xsd
     http://www.springframework.org/schema/data/keyvalue		http://www.springframework.org/schema/data/repository/spring-repository-1.11.xsd">
     
+    <!-- 自动读取、保存*.jackson2 -->
     <bean id="objectMapper0" class="com.fasterxml.jackson.databind.ObjectMapper" />
+    <repository:jackson2-populator id="jackson2Populator0" locations="classpath:/cn/java/demo/data_common/data/*.jackson2" object-mapper-ref="objectMapper0"/>
     
-    <repository:jackson2-populator id="jackson2Populator0" locations="classpath:cn.java.demo.data_common.json" object-mapper-ref="objectMapper0"/>
+    <!-- 自动读取、保存 *.jaxb2.mine-->
+    <bean id="unmarshaller0" class="cn.java.demo.data_common.unmarshaller.Jaxb2Unmarshaller" />
+    <repository:unmarshaller-populator id="unmarshallerPopulator0" locations="classpath:/cn/java/demo/data_common/data/*.jaxb2.mine" unmarshaller-ref="unmarshaller0"/>
     
-    <repository:unmarshaller-populator id="unmarshallerPopulator0" locations="classpath:cn.java.demo.data_common.json" unmarshaller-ref="objectMapper0"/>
+    <!-- 自动读取、保存*.jaxb2 -->
+    <oxm:jaxb2-marshaller id="jaxb2Marshaller0">
+		<oxm:class-to-be-bound name="cn.java.demo.data_common.entity.FooOneEntity" />
+		<oxm:class-to-be-bound name="cn.java.demo.data_common.entity.FooTwoEntity" />
+	</oxm:jaxb2-marshaller>
+    <repository:unmarshaller-populator locations="classpath:/cn/java/demo/data_common/data/*.jaxb2" unmarshaller-ref="jaxb2Marshaller0"/>
+	
+    <!-- 实现RepositoryFactoryInformation接口，实例化的Repositories时候会被自动扫描    -->
+    <bean class="cn.java.demo.data_common.repository_factory_information.FooOneEntityRepositoryFactoryInformationImpl" />
+    <bean class="cn.java.demo.data_common.repository_factory_information.FooTwoEntityRepositoryFactoryInformationImpl" />
     
 </beans>  

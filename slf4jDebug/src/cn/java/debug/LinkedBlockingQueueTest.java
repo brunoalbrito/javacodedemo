@@ -1,11 +1,13 @@
-package cn.java.note.收集的代码;
+package cn.java.debug;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class LinkedBlockingQueueTest {
-	public static void main(String[] args) {
+	
+	
+	public static void test(String[] args) {
 		LinkedBlockingQueue<Object> queue = new LinkedBlockingQueue<Object>();
 		int queueSize = queue.size();
 		final int maxDrain = 128;

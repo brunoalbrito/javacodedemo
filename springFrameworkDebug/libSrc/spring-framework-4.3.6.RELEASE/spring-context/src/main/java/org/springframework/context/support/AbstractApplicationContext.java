@@ -542,7 +542,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				finishBeanFactoryInitialization(beanFactory); // 设置bean工厂的一些属性
 
 				// Last step: publish corresponding event.
-				finishRefresh();
+				finishRefresh(); // !!!!
 			}
 
 			catch (BeansException ex) {

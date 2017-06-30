@@ -109,7 +109,7 @@ public class ResourceArrayPropertyEditor extends PropertyEditorSupport {
 	public void setAsText(String text) {
 		String pattern = resolvePath(text).trim();
 		try {
-			setValue(this.resourcePatternResolver.getResources(pattern));
+			setValue(this.resourcePatternResolver.getResources(pattern));//!!!
 		}
 		catch (IOException ex) {
 			throw new IllegalArgumentException(

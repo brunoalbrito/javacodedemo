@@ -115,7 +115,7 @@ public class ResourceReaderRepositoryPopulator implements RepositoryPopulator, A
 
 			LOGGER.info(String.format("Reading resource: %s", resource));
 
-			Object result = readObjectFrom(resource);
+			Object result = readObjectFrom(resource); // 读取指定"文件中的对象"
 
 			if (result instanceof Collection) {
 				for (Object element : (Collection<?>) result) {
@@ -126,7 +126,7 @@ public class ResourceReaderRepositoryPopulator implements RepositoryPopulator, A
 					}
 				}
 			} else {
-				persist(result, invokerFactory);
+				persist(result, invokerFactory); // 读取指定"文件中的对象"信息，保存到指定位置
 			}
 		}
 
@@ -157,8 +157,11 @@ public class ResourceReaderRepositoryPopulator implements RepositoryPopulator, A
 	 */
 	private void persist(Object object, RepositoryInvokerFactory invokerFactory) {
 
-		RepositoryInvoker invoker = invokerFactory.getInvokerFor(object.getClass());
+		// invoker === org.springframework.data.repository.support.ReflectionRepositoryInvoker
+		// invoker === org.springframework.data.repository.support.PagingAndSortingRepositoryInvoker
+		// invoker === org.springframework.data.repository.support.CrudRepositoryInvoker
+		RepositoryInvoker invoker = invokerFactory.getInvokerFor(object.getClass()); 
 		LOGGER.debug(String.format("Persisting %s using repository %s", object, invoker));
-		invoker.invokeSave(object);
+		invoker.invokeSave(object); // 调用save方法
 	}
 }

@@ -80,7 +80,7 @@ public class DefaultRepositoryInvokerFactory implements RepositoryInvokerFactory
 			return invoker;
 		}
 
-		invoker = prepareInvokers(domainType);
+		invoker = prepareInvokers(domainType); // !!!!
 		invokers.put(domainType, invoker);
 
 		return invoker;
@@ -94,11 +94,15 @@ public class DefaultRepositoryInvokerFactory implements RepositoryInvokerFactory
 	 */
 	private RepositoryInvoker prepareInvokers(Class<?> domainType) {
 
+		// repositories === org.springframework.data.repository.support.Repositories
+		// repository === cn.java.demo.data_common.repository_factory_information.FooOneEntityRepositoryFactoryInformationImpl
+		// information === cn.java.demo.data_common.repository_factory_information.DefaultRepositoryInformation
+		
 		Object repository = repositories.getRepositoryFor(domainType);
 		Assert.notNull(repository, String.format("No repository found for domain type: %s", domainType));
 		RepositoryInformation information = repositories.getRepositoryInformationFor(domainType);
 
-		return createInvoker(information, repository);
+		return createInvoker(information, repository); // !!!!
 	}
 
 	@SuppressWarnings("unchecked")

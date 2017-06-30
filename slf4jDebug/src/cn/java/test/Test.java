@@ -12,26 +12,6 @@ public class Test {
 		debugSlf4jMessageFormatter();
 	}
 
-	public static void test() throws Exception {
-		/*
-		 	--------怎么使用slf4j---------
-		 		1、需要slf4j-api-1.7.25.jar的接口包，统一抽象接口（由slf4j官方提供）
-		 		2、需要slf4j-log4j12-1.7.25.jar适配器包，实现了org/slf4j/impl/StaticLoggerBinder（由slf4j官方提供，用户也可自己实现）
-		 		3、需要log4j-1.2.17.jar实现包（由log4j官方提供）
-		 	
-		 	--------slf4j扩展机制(奇葩的地方)---------
-		 	虽然slf4j-api-1.7.25.jar包内定义了 org.slf4j.impl.StaticLoggerBinder类，但是该类是无效类。
-		 	主要就是在类路径下搜寻org.slf4j.impl.StaticLoggerBinder类（有且只能有一个），如：slf4j-log4j12-1.7.25.jar中就实现了org.slf4j.impl.StaticLoggerBinder类
-		 	然后调用StaticLoggerBinder.getSingleton()、StaticLoggerBinder.getLoggerFactory()获取实际日志的适配器
-		 	
-		 	--------slf4j 和 log4j 的关系---------
-		 	第三方扩展包如果要支持slf4j的调用，只需定义一个org.slf4j.impl.StaticLoggerBinder的类，slf4j会自动搜寻到。
-		 	slf4j： slf4j-api-1.7.25.jar（不依赖log4j的代码） ---> slf4j-log4j12-1.7.25.jar（这个包开始依赖log4j的代码）
-		 	log4j： log4j-1.2.17.jar
-		 */
-		
-	}
-	
 	public static void testSlf4j() throws Exception {
 		// logger === org.slf4j.impl.Log4jLoggerAdapter（slf4j-log4j12-1.7.25.jar包实现）
 		org.slf4j.Logger logger = LoggerFactory.getLogger(Test.class); 

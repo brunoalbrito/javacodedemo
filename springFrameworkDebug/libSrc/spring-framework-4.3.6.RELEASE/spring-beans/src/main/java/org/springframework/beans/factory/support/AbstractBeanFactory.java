@@ -1442,7 +1442,8 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	 * @see #setBeanExpressionResolver
 	 */
 	protected Object evaluateBeanDefinitionString(String value, BeanDefinition beanDefinition) {
-		if (this.beanExpressionResolver == null) { // beanExpressionResolver === org.springframework.context.expression.StandardBeanExpressionResolver
+		// beanExpressionResolver === org.springframework.context.expression.StandardBeanExpressionResolver
+		if (this.beanExpressionResolver == null) { 
 			return value;
 		}
 		Scope scope = (beanDefinition != null ? getRegisteredScope(beanDefinition.getScope()) : null);

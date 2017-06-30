@@ -78,13 +78,13 @@ public class Repositories implements Iterable<Class<?>> {
 		this.repositoryFactoryInfos = new HashMap<Class<?>, RepositoryFactoryInformation<Object, Serializable>>();
 		this.repositoryBeanNames = new HashMap<Class<?>, String>();
 
-		populateRepositoryFactoryInformation(factory);
+		populateRepositoryFactoryInformation(factory); // !!!
 	}
 
 	private void populateRepositoryFactoryInformation(ListableBeanFactory factory) {
 
 		for (String name : BeanFactoryUtils.beanNamesForTypeIncludingAncestors(factory, RepositoryFactoryInformation.class,
-				false, false)) {
+				false, false)) {// 扫描实现RepositoryFactoryInformation接口的bean
 			cacheRepositoryFactory(name);
 		}
 	}
@@ -95,7 +95,7 @@ public class Repositories implements Iterable<Class<?>> {
 		RepositoryFactoryInformation repositoryFactoryInformation = beanFactory.getBean(name,
 				RepositoryFactoryInformation.class);
 		Class<?> domainType = ClassUtils
-				.getUserClass(repositoryFactoryInformation.getRepositoryInformation().getDomainType());
+				.getUserClass(repositoryFactoryInformation.getRepositoryInformation().getDomainType()); // "cn.java.demo.data_common.entity.FooEntity"
 
 		RepositoryInformation information = repositoryFactoryInformation.getRepositoryInformation();
 		Set<Class<?>> alternativeDomainTypes = information.getAlternativeDomainTypes();

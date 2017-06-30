@@ -144,12 +144,12 @@ public final class LoggerFactory {
             // http://jira.qos.ch/browse/SLF4J-328
             if (!isAndroid()) {
                 staticLoggerBinderPathSet = findPossibleStaticLoggerBinderPathSet(); // 查找类 org/slf4j/impl/StaticLoggerBinder.class
-                reportMultipleBindingAmbiguity(staticLoggerBinderPathSet); // 不能重复绑定
+                reportMultipleBindingAmbiguity(staticLoggerBinderPathSet); // 不能重复绑定，超过一个StaticLoggerBinder实现类
             }
             // the next line does the binding
             StaticLoggerBinder.getSingleton(); // org.slf4j.impl.StaticLoggerBinder 这个类是由相应的扩展包实现的
-            INITIALIZATION_STATE = SUCCESSFUL_INITIALIZATION; 
-            reportActualBinding(staticLoggerBinderPathSet);
+            INITIALIZATION_STATE = SUCCESSFUL_INITIALIZATION; // 3
+            reportActualBinding(staticLoggerBinderPathSet); // 超过一个StaticLoggerBinder实现类
             fixSubstituteLoggers();
             replayEvents(); // 触发事件
             // release all resources in SUBST_FACTORY
@@ -407,14 +407,14 @@ public final class LoggerFactory {
     public static ILoggerFactory getILoggerFactory() {
         if (INITIALIZATION_STATE == UNINITIALIZED) {
             synchronized (LoggerFactory.class) {
-                if (INITIALIZATION_STATE == UNINITIALIZED) {
-                    INITIALIZATION_STATE = ONGOING_INITIALIZATION;
+                if (INITIALIZATION_STATE == UNINITIALIZED) { // 0
+                    INITIALIZATION_STATE = ONGOING_INITIALIZATION; // 1
                     performInitialization(); //!!!
                 }
             }
         }
         switch (INITIALIZATION_STATE) {
-        case SUCCESSFUL_INITIALIZATION://!!!
+        case SUCCESSFUL_INITIALIZATION://!!! 3
             return StaticLoggerBinder.getSingleton().getLoggerFactory(); // org.slf4j.impl.StaticLoggerBinder.getLoggerFactory()
         case NOP_FALLBACK_INITIALIZATION:
             return NOP_FALLBACK_FACTORY;

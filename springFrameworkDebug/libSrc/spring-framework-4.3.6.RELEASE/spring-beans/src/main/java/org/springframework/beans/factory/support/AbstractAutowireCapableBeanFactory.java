@@ -1292,7 +1292,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	protected void autowireByName(
 			String beanName, AbstractBeanDefinition mbd, BeanWrapper bw, MutablePropertyValues pvs) {
 
-		String[] propertyNames = unsatisfiedNonSimpleProperties(mbd, bw); // 不在xml文件的属性
+		String[] propertyNames = unsatisfiedNonSimpleProperties(mbd, bw); // 不在xml文件的属性、不是简单类型
 		for (String propertyName : propertyNames) {
 			if (containsBean(propertyName)) { // 存在bean
 				Object bean = getBean(propertyName);
@@ -1540,7 +1540,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				boolean convertible = bw.isWritableProperty(propertyName) &&
 						!PropertyAccessorUtils.isNestedOrIndexedProperty(propertyName);
 				if (convertible) {
-					convertedValue = convertForProperty(resolvedValue, propertyName, bw, converter);
+					convertedValue = convertForProperty(resolvedValue, propertyName, bw, converter); // 类型转换
 				}
 				// Possibly store converted value in merged bean definition,
 				// in order to avoid re-conversion for every created bean instance.
@@ -1582,7 +1582,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 */
 	private Object convertForProperty(Object value, String propertyName, BeanWrapper bw, TypeConverter converter) {
 		if (converter instanceof BeanWrapperImpl) {
-			return ((BeanWrapperImpl) converter).convertForProperty(value, propertyName);
+			return ((BeanWrapperImpl) converter).convertForProperty(value, propertyName);// !!!
 		}
 		else {
 			PropertyDescriptor pd = bw.getPropertyDescriptor(propertyName);

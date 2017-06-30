@@ -131,7 +131,7 @@ public abstract class AbstractFactoryBean<T>
 	public void afterPropertiesSet() throws Exception {
 		if (isSingleton()) {
 			this.initialized = true;
-			this.singletonInstance = createInstance();
+			this.singletonInstance = createInstance();//!!!
 			this.earlySingletonInstance = null;
 		}
 	}

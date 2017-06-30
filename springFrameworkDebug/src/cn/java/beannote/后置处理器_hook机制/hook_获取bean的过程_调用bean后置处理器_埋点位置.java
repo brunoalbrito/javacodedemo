@@ -1,46 +1,5 @@
 package cn.java.beannote.后置处理器_hook机制;
 
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Constructor;
-import java.util.Map;
-
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.BeanWrapperImpl;
-import org.springframework.beans.MutablePropertyValues;
-import org.springframework.beans.PropertyValue;
-import org.springframework.beans.factory.Aware;
-import org.springframework.beans.factory.BeanClassLoaderAware;
-import org.springframework.beans.factory.BeanDefinitionStoreException;
-import org.springframework.beans.factory.BeanFactoryAware;
-import org.springframework.beans.factory.BeanFactoryUtils;
-import org.springframework.beans.factory.BeanNameAware;
-import org.springframework.beans.factory.FactoryBean;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.ObjectFactory;
-import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.config.BeanDefinitionHolder;
-import org.springframework.beans.factory.config.DependencyDescriptor;
-import org.springframework.beans.factory.config.RuntimeBeanNameReference;
-import org.springframework.beans.factory.config.RuntimeBeanReference;
-import org.springframework.beans.factory.config.TypedStringValue;
-import org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory;
-import org.springframework.beans.factory.support.BeanDefinitionValueResolver;
-import org.springframework.beans.factory.support.ManagedArray;
-import org.springframework.beans.factory.support.ManagedList;
-import org.springframework.beans.factory.support.ManagedMap;
-import org.springframework.beans.factory.support.ManagedProperties;
-import org.springframework.beans.factory.support.ManagedSet;
-import org.springframework.beans.factory.support.RootBeanDefinition;
-import org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.AutowireByTypeDependencyDescriptor;
-import org.springframework.beans.factory.support.DefaultListableBeanFactory.DependencyObjectProvider;
-import org.springframework.beans.factory.support.DefaultListableBeanFactory.Jsr330ProviderFactory;
-import org.springframework.beans.factory.support.DefaultListableBeanFactory.OptionalDependencyFactory;
-import org.springframework.core.MethodParameter;
-import org.springframework.core.PriorityOrdered;
-import org.springframework.util.ObjectUtils;
-
 public class hook_获取bean的过程_调用bean后置处理器_埋点位置 {
 
 	public static void main(String[] args) {
@@ -107,8 +66,19 @@ public class hook_获取bean的过程_调用bean后置处理器_埋点位置 {
 							Object exposedObject = bean;  // 实例对象
 							org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(beanName, mbd, instanceWrapper); // 填充属性
 							{
-								org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor.postProcessAfterInstantiation(bw.getWrappedInstance(), beanName) // --埋点-- 实例化后（钩子）
+								PropertyValues pvs = mbd.getPropertyValues(); // xml配置的属性值
 								
+								if (!mbd.isSynthetic() && hasInstantiationAwareBeanPostProcessors()) { //　有hook
+									for (BeanPostProcessor bp : getBeanPostProcessors()) {
+										if (bp instanceof InstantiationAwareBeanPostProcessor) {
+											InstantiationAwareBeanPostProcessor ibp = (InstantiationAwareBeanPostProcessor) bp;
+											if (!org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor.postProcessAfterInstantiation(bw.getWrappedInstance(), beanName)) { // --埋点-- 实例化后（钩子）
+												continueWithPropertyPopulation = false;
+												break;
+											}
+										}
+									}
+								}
 								
 								// 自动装配 --- 依赖注入
 								if (mbd.getResolvedAutowireMode() == RootBeanDefinition.AUTOWIRE_BY_NAME ||
@@ -118,6 +88,18 @@ public class hook_获取bean的过程_调用bean后置处理器_埋点位置 {
 									// Add property values based on autowire by name if applicable.
 									if (mbd.getResolvedAutowireMode() == RootBeanDefinition.AUTOWIRE_BY_NAME) { // “自动装配” --- 感知setter方法的“属性名”，注入依赖的bean对象
 										autowireByName(beanName, mbd, bw, newPvs);
+										{
+											String[] propertyNames = unsatisfiedNonSimpleProperties(mbd, bw); // 不在xml文件的属性、不是简单类型
+											for (String propertyName : propertyNames) {
+												if (containsBean(propertyName)) { // 存在bean
+													Object bean = getBean(propertyName);
+													newPvs.add(propertyName, bean);
+													registerDependentBean(propertyName, beanName); // 注册依赖关系
+												}
+												else {
+												}
+											}
+										}
 									}
 					
 									// Add property values based on autowire by type if applicable.
@@ -245,6 +227,7 @@ public class hook_获取bean的过程_调用bean后置处理器_埋点位置 {
 										// org.springframework.beans.factory.support.BeanDefinitionValueResolver
 										Object resolvedValue = valueResolver.resolveValueIfNecessary(pv, originalValue); // 解析依赖值
 										{
+											// value === originalValue
 											if (value instanceof RuntimeBeanReference) { // 是运行时引用，获取bean对象
 												RuntimeBeanReference ref = (RuntimeBeanReference) value;
 												return resolveReference(argName, ref);
@@ -284,8 +267,63 @@ public class hook_获取bean的过程_调用bean后置处理器_埋点位置 {
 											}
 											else {
 												return evaluate(value);
+												{
+													if (value instanceof String) {
+														return doEvaluate((String) value);
+														{
+															// org.springframework.beans.factory.support.DefaultListableBeanFactory.evaluateBeanDefinitionString(value, this.beanDefinition);
+															return this.beanFactory.evaluateBeanDefinitionString(value, this.beanDefinition);
+															{
+																// beanExpressionResolver === org.springframework.context.expression.StandardBeanExpressionResolver
+																if (this.beanExpressionResolver == null) { 
+																	return value;
+																}
+																Scope scope = (beanDefinition != null ? getRegisteredScope(beanDefinition.getScope()) : null);
+																return this.beanExpressionResolver.evaluate(value, new BeanExpressionContext(this, scope));
+															}
+														}
+													}
+													else if (value instanceof String[]) {
+														String[] values = (String[]) value;
+														boolean actuallyResolved = false;
+														Object[] resolvedValues = new Object[values.length];
+														for (int i = 0; i < values.length; i++) {
+															String originalValue = values[i];
+															Object resolvedValue = doEvaluate(originalValue);
+															if (resolvedValue != originalValue) {
+																actuallyResolved = true;
+															}
+															resolvedValues[i] = resolvedValue;
+														}
+														return (actuallyResolved ? resolvedValues : values);
+													}
+													else {
+														return value;
+													}
+												}
 											}
-											
+										}
+										Object convertedValue = resolvedValue;
+										boolean convertible = bw.isWritableProperty(propertyName) &&
+												!PropertyAccessorUtils.isNestedOrIndexedProperty(propertyName);
+										if (convertible) {
+											convertedValue = convertForProperty(resolvedValue, propertyName, bw, converter); // !!!类型转换
+										}
+										if (resolvedValue == originalValue) {
+											if (convertible) {
+												pv.setConvertedValue(convertedValue);
+											}
+											deepCopy.add(pv);
+										}
+										else if (convertible && originalValue instanceof TypedStringValue &&
+												!((TypedStringValue) originalValue).isDynamic() &&
+												!(convertedValue instanceof Collection || ObjectUtils.isArray(convertedValue))) {
+											pv.setConvertedValue(convertedValue);
+											deepCopy.add(pv);
+										}
+										else {
+											resolveNecessary = true;
+											deepCopy.add(new PropertyValue(pv, convertedValue));
 										}
 									}
 									bw.setPropertyValues(new MutablePropertyValues(deepCopy)); // 设置值

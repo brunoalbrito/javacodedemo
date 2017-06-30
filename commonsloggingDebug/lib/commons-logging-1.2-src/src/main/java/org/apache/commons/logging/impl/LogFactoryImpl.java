@@ -352,7 +352,7 @@ public class LogFactoryImpl extends LogFactory {
         if (value == null) {
             attributes.remove(name);
         } else {
-            attributes.put(name, value);
+            attributes.put(name, value); // 类路径下自定义的配置文件"commons-logging.properties"，进行内传
         }
 
         if (name.equals(TCCL_KEY)) {
@@ -842,6 +842,13 @@ public class LogFactoryImpl extends LogFactory {
                 "No user-specified Log implementation; performing discovery" +
                 " using the standard supported logging implementations...");
         }
+         	
+//     	classesToDiscover = {
+//            "org.apache.commons.logging.impl.Log4JLogger",
+//            "org.apache.commons.logging.impl.Jdk14Logger",
+//            "org.apache.commons.logging.impl.Jdk13LumberjackLogger",
+//            "org.apache.commons.logging.impl.SimpleLog"
+//	    };
         for(int i=0; i<classesToDiscover.length && result == null; ++i) { // 发现类
             result = createLogFromClass(classesToDiscover[i], logCategory, true);
         }
@@ -888,9 +895,9 @@ public class LogFactoryImpl extends LogFactory {
      */
     private String findUserSpecifiedLogClassName() {
     	/*
-	    	在配置中"org.apache.commons.logging.log"指定日志适配器类（可自己定义）
-		        在系统环境变量"org.apache.commons.logging.Log"指定日志适配器类（可自己定义）
-		        在系统环境变量"org.apache.commons.logging.log"指定日志适配器类（可自己定义）
+	    	类路径下自定义的配置文件"commons-logging.properties"中"org.apache.commons.logging.log"指定日志适配器类（可自己定义）
+		    System.getProperty("org.apache.commons.logging.Log",null)指定日志适配器类（可自己定义）
+		    System.getProperty("org.apache.commons.logging.log",null)指定日志适配器类（可自己定义）
     	 */
         if (isDiagnosticsEnabled()) {
             logDiagnostic("Trying to get log class from attribute '" + LOG_PROPERTY + "'");

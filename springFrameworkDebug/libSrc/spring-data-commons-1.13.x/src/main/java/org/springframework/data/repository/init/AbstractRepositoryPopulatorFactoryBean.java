@@ -89,8 +89,8 @@ public abstract class AbstractRepositoryPopulatorFactoryBean extends
 	public void onApplicationEvent(ContextRefreshedEvent event) {
 
 		if (event.getApplicationContext().equals(context)) {
-			Repositories repositories = new Repositories(event.getApplicationContext());
-			populator.populate(repositories);
+			Repositories repositories = new Repositories(event.getApplicationContext()); // 实例化的Repositories时候，会自动扫描上下文中实现RepositoryFactoryInformation接口的bean进行归类
+			populator.populate(repositories); // 使用reader读取resources指定的"文件中的对象"信息，保存到指定位置
 		}
 	}
 

@@ -16,6 +16,11 @@ public class InternalUtils_BeanUtilsTest {
 	public static void testInstantiateClass(AbstractRefreshableConfigApplicationContext context) {
 		FooService fooService = BeanUtils.instantiateClass(cn.java.demo.beantag.internal.InternalUtils_BeanUtilsTest.FooService.class);
 		System.out.println(fooService);
+		
+		Class<?> clazz = String.class;
+		if(BeanUtils.isSimpleProperty(clazz)){
+			System.out.println(clazz+" isSimpleProperty ");
+		}
 
 	}
 
